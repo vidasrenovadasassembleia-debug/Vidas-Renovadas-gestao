@@ -1,1 +1,111 @@
-/* Estilos do Vidas Renovadas Gestão */
+:root {
+  --azul: #0f2f48;
+  --azul-claro: #1f4f73;
+  --dourado: #b98a45;
+  --branco: #ffffff;
+  --cinza: #6b7280;
+  --borda: #d7dde3;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+  background:
+    linear-gradient(
+      135deg,
+      var(--azul) 0%,
+      var(--azul-claro) 60%,
+      var(--dourado) 100%
+    );
+}
+
+.login {
+  width: 100%;
+  max-width: 430px;
+  padding: 38px 32px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  text-align: center;
+}
+
+.logo {
+  width: 180px;
+  max-width: 75%;
+  margin-bottom: 20px;
+}
+
+h1 {
+  margin-bottom: 10px;
+  color: var(--azul);
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+p {
+  margin-bottom: 28px;
+  color: var(--cinza);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+input {
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: var(--dourado);
+  box-shadow: 0 0 0 3px rgba(185, 138, 69, 0.18);
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: var(--azul);
+  color: var(--branco);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: var(--dourado);
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 14px;
+  }
+
+  .login {
+    padding: 30px 22px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .logo {
+    width: 160px;
+  }
+}
