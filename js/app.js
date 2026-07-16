@@ -69,79 +69,78 @@ if (formularioMembro) {
   const tabelaMembros = document.getElementById("listaMembros");
 
 if (tabelaMembros) {
-  carregarMembros();
+    carregarMembros();
 }
 
 async function carregarMembros() {
 
-  tabelaMembros.innerHTML = `
-    <tr>
-      <td colspan="6" class="empty-state">
-        Carregando membros...
-      </td>
-    </tr>
-  `;
+    tabelaMembros.innerHTML = `
+        <tr>
+            <td colspan="6" class="empty-state">
+                Carregando membros...
+            </td>
+        </tr>
+    `;
 
-  try {
+    try {
 
-    const resposta = await fetch(
-      URL_API + "?acao=listar"
-    );
+        const resposta = await fetch(URL_API + "?acao=listar");
 
-    const resultado = await resposta.json();
+        const resultado = await resposta.json();
 
-    if (!resultado.sucesso) {
-      throw new Error("Erro ao carregar membros.");
+        // Caso a API retorne membros como texto
+        if (typeof resultado.membros === "string") {
+            resultado.membros = JSON.parse(resultado.membros);
+        }
+
+        if (!resultado.sucesso) {
+            throw new Error(resultado.mensagem || "Erro ao carregar membros.");
+        }
+
+        tabelaMembros.innerHTML = "";
+
+        if (!resultado.membros || resultado.membros.length === 0) {
+
+            tabelaMembros.innerHTML = `
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        Nenhum membro cadastrado.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        resultado.membros.forEach((membro) => {
+
+            tabelaMembros.innerHTML += `
+                <tr>
+                    <td>${membro.id}</td>
+                    <td>${membro.nome}</td>
+                    <td>${membro.cargo || "-"}</td>
+                    <td>${membro.congregacao || "-"}</td>
+                    <td>${membro.situacao}</td>
+                    <td>
+                        <button class="btn-acao">Visualizar</button>
+                    </td>
+                </tr>
+            `;
+
+        });
+
+    } catch (erro) {
+
+        console.error("Erro:", erro);
+
+        tabelaMembros.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty-state">
+                    Erro ao carregar os membros.
+                </td>
+            </tr>
+        `;
+
     }
 
-    tabelaMembros.innerHTML = "";
-
-    if (resultado.membros.length === 0) {
-
-      tabelaMembros.innerHTML = `
-        <tr>
-          <td colspan="6" class="empty-state">
-            Nenhum membro cadastrado.
-          </td>
-        </tr>
-      `;
-
-      return;
-    }
-
-    resultado.membros.forEach(function(membro){
-
-      tabelaMembros.innerHTML += `
-        <tr>
-
-          <td>${membro.id}</td>
-
-          <td>${membro.nome}</td>
-
-          <td>${membro.cargo || "-"}</td>
-
-          <td>${membro.congregacao || "-"}</td>
-
-          <td>${membro.situacao}</td>
-
-          <td>
-
-            <button>Visualizar</button>
-
-          </td>
-
-        </tr>
-      `;
-
-    });
-
-  }
-
-  catch(erro){
-
-    console.log(erro);
-
-  }
-
-}
 }
