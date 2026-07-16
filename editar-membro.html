@@ -58,6 +58,13 @@
       cursor: pointer;
     }
 
+    .foto-carteirinha-link {
+      width: 220px;
+      justify-content: center;
+      text-align: center;
+      text-decoration: none;
+    }
+
     #statusFoto {
       width: 220px;
       min-height: 20px;
@@ -229,6 +236,14 @@
               accept="image/jpeg,image/png,image/webp"
               hidden
             >
+
+            <a
+              id="visualizarCarteirinha"
+              class="primary-link foto-carteirinha-link"
+              href="membros.html"
+            >
+              Visualizar Carteirinha
+            </a>
 
             <p id="statusFoto">
               Selecione uma foto para visualizar.
@@ -629,6 +644,30 @@
     const campoFotoAtual =
       document.getElementById("foto");
 
+    const botaoVisualizarCarteirinha =
+      document.getElementById(
+        "visualizarCarteirinha"
+      );
+
+    const parametrosEditar =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const idMembroEditar =
+      parametrosEditar.get("id");
+
+    if (
+      botaoVisualizarCarteirinha &&
+      idMembroEditar
+    ) {
+      botaoVisualizarCarteirinha.href =
+        "carteirinha.html?id=" +
+        encodeURIComponent(
+          idMembroEditar
+        );
+    }
+
     function exibirFotoAtual() {
       const url = String(
         campoFotoAtual?.value || ""
@@ -692,5 +731,3 @@
 </body>
 
 </html>
-
-</section>
