@@ -66,4 +66,82 @@ if (formularioMembro) {
       botaoSalvar.textContent = textoOriginal;
     }
   });
+  const tabelaMembros = document.getElementById("listaMembros");
+
+if (tabelaMembros) {
+  carregarMembros();
+}
+
+async function carregarMembros() {
+
+  tabelaMembros.innerHTML = `
+    <tr>
+      <td colspan="6" class="empty-state">
+        Carregando membros...
+      </td>
+    </tr>
+  `;
+
+  try {
+
+    const resposta = await fetch(
+      URL_API + "?acao=listar"
+    );
+
+    const resultado = await resposta.json();
+
+    if (!resultado.sucesso) {
+      throw new Error("Erro ao carregar membros.");
+    }
+
+    tabelaMembros.innerHTML = "";
+
+    if (resultado.membros.length === 0) {
+
+      tabelaMembros.innerHTML = `
+        <tr>
+          <td colspan="6" class="empty-state">
+            Nenhum membro cadastrado.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+    resultado.membros.forEach(function(membro){
+
+      tabelaMembros.innerHTML += `
+        <tr>
+
+          <td>${membro.id}</td>
+
+          <td>${membro.nome}</td>
+
+          <td>${membro.cargo || "-"}</td>
+
+          <td>${membro.congregacao || "-"}</td>
+
+          <td>${membro.situacao}</td>
+
+          <td>
+
+            <button>Visualizar</button>
+
+          </td>
+
+        </tr>
+      `;
+
+    });
+
+  }
+
+  catch(erro){
+
+    console.log(erro);
+
+  }
+
+}
 }
