@@ -9,35 +9,47 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Carteirinha do Membro | Vidas Renovadas Gestão</title>
+  <title>Carteirinha | Vidas Renovadas Gestão</title>
 
   <link
     rel="stylesheet"
     href="css/estilo.css"
   >
 
+  <script
+    src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"
+    defer
+  ></script>
+
   <style>
     :root {
-      --azul-carteira: #0f2f48;
-      --azul-claro-carteira: #174867;
-      --dourado-carteira: #b98a45;
-      --branco-carteira: #ffffff;
-      --cinza-carteira: #eef2f5;
-      --texto-carteira: #243746;
+      --azul-escuro: #0b2942;
+      --azul-medio: #123f62;
+      --azul-claro: #1d557a;
+      --dourado: #c99a4c;
+      --dourado-claro: #e2bd78;
+      --branco: #ffffff;
+      --cinza-claro: #f4f5f6;
+      --cinza-texto: #5e6a73;
+      --texto: #142a3a;
     }
 
-    body.carteirinha-page {
+    * {
+      box-sizing: border-box;
+    }
+
+    body.carteirinha-modelo-page {
       min-height: 100vh;
       margin: 0;
       padding: 28px;
       background: #edf1f4;
       font-family: Arial, Helvetica, sans-serif;
-      color: var(--texto-carteira);
+      color: var(--texto);
     }
 
-    .carteirinha-header {
-      width: min(100%, 980px);
-      margin: 0 auto 24px;
+    .topo-carteirinha {
+      width: min(100%, 1100px);
+      margin: 0 auto 22px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -45,312 +57,511 @@
       flex-wrap: wrap;
     }
 
-    .carteirinha-header h1 {
+    .topo-carteirinha h1 {
       margin: 0;
-      color: var(--azul-carteira);
+      color: var(--azul-escuro);
       font-size: 28px;
     }
 
-    .carteirinha-header p {
+    .topo-carteirinha p {
       margin: 6px 0 0;
-      color: #6c7a84;
+      color: #6f7d86;
     }
 
-    .carteirinha-actions {
+    .acoes-carteirinha {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
 
-    .carteirinha-actions button,
-    .carteirinha-actions a {
+    .acoes-carteirinha a,
+    .acoes-carteirinha button {
       min-height: 42px;
       padding: 10px 16px;
       border: 0;
       border-radius: 9px;
-      background: var(--azul-carteira);
-      color: var(--branco-carteira);
       font-weight: 700;
       text-decoration: none;
       cursor: pointer;
     }
 
-    .carteirinha-actions a {
+    .acoes-carteirinha a {
       display: inline-flex;
       align-items: center;
+      background: #ffffff;
+      color: var(--azul-escuro);
+      border: 1px solid #ccd6dd;
     }
 
-    .carteirinha-actions .secundario {
-      background: var(--branco-carteira);
-      color: var(--azul-carteira);
-      border: 1px solid #cfd8df;
+    .acoes-carteirinha button {
+      background: var(--azul-escuro);
+      color: #ffffff;
     }
 
-    .carteirinha-status {
-      width: min(100%, 980px);
-      margin: 0 auto 18px;
+    #statusCarteiraModelo {
+      width: min(100%, 1100px);
+      margin: 0 auto 20px;
       padding: 14px 16px;
-      border-radius: 12px;
-      background: var(--branco-carteira);
+      border-radius: 10px;
+      background: #ffffff;
       color: #667680;
       text-align: center;
     }
 
-    .folha-carteirinha {
-      width: min(100%, 980px);
+    .area-cartoes {
+      width: min(100%, 1100px);
       margin: 0 auto;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 28px;
       justify-items: center;
+      align-items: start;
     }
 
-    .carteira {
+    .cartao {
       position: relative;
       width: 85.6mm;
       height: 54mm;
       overflow: hidden;
-      border-radius: 3.2mm;
-      background: var(--branco-carteira);
-      box-shadow: 0 16px 38px rgba(15, 47, 72, 0.18);
+      border-radius: 3mm;
+      background: #ffffff;
+      box-shadow: 0 18px 45px rgba(15, 47, 72, 0.20);
       print-color-adjust: exact;
       -webkit-print-color-adjust: exact;
     }
 
-    .carteira-frente {
-      display: grid;
-      grid-template-columns: 31mm 1fr;
-      background:
-        linear-gradient(
-          135deg,
-          rgba(185, 138, 69, 0.14),
-          transparent 48%
-        ),
-        var(--branco-carteira);
+    /* =========================
+       FRENTE
+    ========================= */
+
+    .cartao-frente {
+      background: #ffffff;
     }
 
-    .faixa-lateral {
+    .frente-painel-azul {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 31mm;
       background:
         linear-gradient(
           180deg,
-          var(--azul-carteira),
-          var(--azul-claro-carteira)
+          var(--azul-escuro),
+          var(--azul-medio)
         );
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3mm;
-      padding: 4mm;
-      color: var(--branco-carteira);
+      overflow: hidden;
     }
 
-    .foto-membro {
+    .frente-painel-azul::after {
+      content: "";
+      position: absolute;
+      width: 18mm;
+      height: 72mm;
+      right: -10mm;
+      top: -9mm;
+      border-radius: 50%;
+      background: var(--dourado);
+      box-shadow:
+        6mm 0 0 #ffffff;
+    }
+
+    .marca-frente {
+      position: absolute;
+      left: 4.5mm;
+      top: 4mm;
+      width: 20mm;
+      z-index: 3;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .marca-frente img {
+      display: block;
+      width: 18mm;
+      height: 18mm;
+      margin: 0 auto 1.2mm;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+
+    .marca-frente strong {
+      display: block;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 4mm;
+      line-height: 0.94;
+      font-weight: 500;
+    }
+
+    .marca-frente span {
+      display: block;
+      margin-top: 1.3mm;
+      font-size: 1.65mm;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .selo-status {
+      position: absolute;
+      left: 4.2mm;
+      bottom: 4mm;
+      z-index: 4;
+      min-width: 20mm;
+      padding: 2.2mm 2.8mm;
+      border-radius: 1.8mm;
+      background:
+        linear-gradient(
+          135deg,
+          var(--dourado-claro),
+          var(--dourado)
+        );
+      color: var(--azul-escuro);
+      font-size: 2.35mm;
+      font-weight: 800;
+      text-transform: uppercase;
+      text-align: center;
+      box-shadow: 0 1mm 2mm rgba(0, 0, 0, 0.18);
+    }
+
+    .foto-membro-wrap {
+      position: absolute;
+      left: 30.6mm;
+      top: 5.2mm;
       width: 23mm;
-      height: 29mm;
+      height: 31mm;
+      z-index: 5;
+      border: 0.45mm solid var(--dourado);
       border-radius: 2.4mm;
-      border: 0.8mm solid rgba(255, 255, 255, 0.82);
+      overflow: hidden;
+      background: #e6e8ea;
+      box-shadow: 0 1mm 2.5mm rgba(20, 42, 58, 0.12);
+    }
+
+    .foto-membro-wrap img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      background: #dfe7ec;
+      display: none;
     }
 
-    .foto-placeholder {
-      width: 23mm;
-      height: 29mm;
-      border-radius: 2.4mm;
-      border: 0.8mm solid rgba(255, 255, 255, 0.82);
+    .foto-placeholder-modelo {
+      width: 100%;
+      height: 100%;
       display: grid;
       place-items: center;
-      background: rgba(255, 255, 255, 0.12);
-      color: var(--branco-carteira);
-      font-size: 7mm;
+      background:
+        linear-gradient(
+          180deg,
+          #d6d8da,
+          #c5c8ca
+        );
+      color: #ffffff;
+      font-size: 8mm;
       font-weight: 700;
     }
 
-    .id-lateral {
-      font-size: 3mm;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+    .dados-frente-modelo {
+      position: absolute;
+      left: 58mm;
+      top: 5mm;
+      right: 4mm;
+      bottom: 12mm;
     }
 
-    .dados-frente {
-      padding: 4.2mm 4.5mm 3.5mm;
-      display: flex;
-      flex-direction: column;
+    .campo-mini {
+      margin-bottom: 2.2mm;
+      padding-bottom: 1.5mm;
+      border-bottom: 0.3mm solid rgba(201, 154, 76, 0.55);
     }
 
-    .marca-carteira {
-      display: flex;
-      align-items: center;
-      gap: 2.5mm;
-      margin-bottom: 3mm;
-    }
-
-    .marca-carteira img {
-      width: 12mm;
-      height: 12mm;
-      object-fit: contain;
-      border-radius: 2mm;
-      background: var(--branco-carteira);
-    }
-
-    .marca-carteira strong {
+    .campo-mini span {
       display: block;
-      color: var(--azul-carteira);
-      font-size: 3.6mm;
-      line-height: 1.05;
-    }
-
-    .marca-carteira span {
-      display: block;
-      margin-top: 0.8mm;
-      color: var(--dourado-carteira);
-      font-size: 2.2mm;
-      font-weight: 700;
-      letter-spacing: 0.07em;
+      color: #5f6b73;
+      font-size: 1.75mm;
+      font-weight: 800;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
     }
 
-    .nome-membro {
-      margin: 1mm 0 2mm;
-      color: var(--azul-carteira);
-      font-size: 4.4mm;
-      line-height: 1.08;
-    }
-
-    .linha-dado {
-      margin-top: 1.4mm;
-    }
-
-    .linha-dado span {
+    .campo-mini strong {
       display: block;
-      color: #7b8992;
-      font-size: 2.1mm;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .linha-dado strong {
-      display: block;
-      margin-top: 0.4mm;
-      color: var(--texto-carteira);
+      margin-top: 0.5mm;
+      color: var(--azul-escuro);
       font-size: 2.9mm;
-      line-height: 1.15;
+      line-height: 1.05;
+      font-weight: 800;
+      text-transform: uppercase;
     }
 
-    .rodape-frente {
-      margin-top: auto;
-      padding-top: 1.8mm;
-      border-top: 0.3mm solid #e5eaee;
-      display: flex;
-      justify-content: space-between;
-      gap: 2mm;
-      font-size: 2.2mm;
-      color: #687780;
-    }
-
-    .situacao-ativa {
-      color: #2b7548;
-      font-weight: 700;
-    }
-
-    .carteira-verso {
-      background: #0b2a41;
+    .linha-rodape-frente {
+      position: absolute;
+      left: 31mm;
+      right: 0;
+      bottom: 0;
+      height: 11mm;
+      background:
+        linear-gradient(
+          90deg,
+          var(--azul-escuro),
+          var(--azul-medio)
+        );
       color: #ffffff;
       display: grid;
-      grid-template-columns: 1fr 30mm;
-      gap: 3mm;
-      padding: 5mm;
+      grid-template-columns: 1fr 1fr 1.3fr;
+      align-items: center;
+      gap: 2mm;
+      padding: 1.6mm 4mm 1.5mm 6mm;
     }
 
-    .verso-conteudo {
-      display: flex;
-      flex-direction: column;
+    .linha-rodape-frente::before {
+      content: "";
+      position: absolute;
+      left: -9mm;
+      top: -4mm;
+      width: 23mm;
+      height: 15mm;
+      border-radius: 50%;
+      background: var(--dourado);
+      transform: rotate(-8deg);
     }
 
-    .verso-conteudo h2 {
-      margin: 0 0 1.6mm;
+    .rodape-dado {
+      position: relative;
+      z-index: 2;
+      border-right: 0.25mm solid rgba(255, 255, 255, 0.35);
+      padding-right: 1.5mm;
+    }
+
+    .rodape-dado:last-child {
+      border-right: 0;
+      text-align: right;
+    }
+
+    .rodape-dado span {
+      display: block;
+      color: #c8d5de;
+      font-size: 1.6mm;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .rodape-dado strong {
+      display: block;
+      margin-top: 0.3mm;
       color: #ffffff;
-      font-size: 4.3mm;
-      line-height: 1.08;
-      font-weight: 800;
+      font-size: 2.3mm;
     }
 
-    .verso-conteudo .subtitulo {
-      color: #ffd98f;
-      font-size: 2.5mm;
-      font-weight: 800;
+    .assinatura-pastor {
+      font-family: "Brush Script MT", cursive;
+      font-size: 4mm !important;
+      font-weight: 500 !important;
+      color: var(--dourado-claro) !important;
+    }
+
+    .cargo-assinatura {
+      margin-top: 0.2mm;
+      font-size: 1.45mm !important;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ffffff !important;
+    }
+
+    /* =========================
+       VERSO
+    ========================= */
+
+    .cartao-verso {
+      background: #ffffff;
+    }
+
+    .verso-curva {
+      position: absolute;
+      right: -10mm;
+      top: -10mm;
+      width: 43mm;
+      height: 72mm;
+      border-radius: 50%;
+      background:
+        linear-gradient(
+          180deg,
+          var(--azul-escuro),
+          var(--azul-medio)
+        );
+      border-left: 2.5mm solid var(--dourado);
+    }
+
+    .marca-verso {
+      position: absolute;
+      left: 6mm;
+      top: 5mm;
+      width: 24mm;
+      text-align: center;
+      color: var(--azul-escuro);
+    }
+
+    .marca-verso img {
+      width: 19mm;
+      height: 19mm;
+      object-fit: contain;
+    }
+
+    .marca-verso strong {
+      display: block;
+      margin-top: 0.5mm;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 4.1mm;
+      line-height: 0.94;
+      font-weight: 500;
+    }
+
+    .marca-verso span {
+      display: block;
+      margin-top: 1mm;
+      color: var(--dourado);
+      font-size: 1.65mm;
+      font-weight: 700;
       letter-spacing: 0.07em;
       text-transform: uppercase;
     }
 
-    .dados-igreja {
-      margin-top: 2.6mm;
-      padding: 2.4mm 2.6mm;
-      border: 0.35mm solid rgba(255, 255, 255, 0.42);
-      border-radius: 1.8mm;
-      background: rgba(255, 255, 255, 0.10);
-      color: #ffffff;
-      font-size: 2.65mm;
-      font-weight: 700;
+    .dados-igreja-verso {
+      position: absolute;
+      left: 34mm;
+      top: 5mm;
+      width: 28mm;
+      color: var(--texto);
+      font-size: 2.05mm;
       line-height: 1.45;
     }
 
-    .dados-igreja strong {
-      color: #ffd98f;
-      font-weight: 800;
+    .dados-igreja-verso p {
+      margin: 0 0 2.2mm;
     }
 
-    .validade {
-      margin-top: auto;
-      padding-top: 2mm;
-      border-top: 0.35mm solid rgba(255, 255, 255, 0.5);
-      color: #ffffff;
-      font-size: 2.6mm;
-      font-weight: 700;
-    }
-
-    .validade strong {
+    .dados-igreja-verso strong {
       display: block;
-      margin-top: 0.7mm;
-      color: #ffd98f;
-      font-size: 3.4mm;
-      font-weight: 800;
+      color: var(--azul-escuro);
+      font-size: 1.75mm;
+      text-transform: uppercase;
     }
 
-    .qr-area {
-      align-self: center;
-      justify-self: center;
-      padding: 2.3mm;
-      border-radius: 2mm;
-      background: var(--branco-carteira);
-      color: var(--azul-carteira);
+    .versiculo {
+      position: absolute;
+      right: 5mm;
+      top: 5mm;
+      width: 21mm;
+      color: #ffffff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.4mm;
+      font-style: italic;
+      line-height: 1.35;
+      text-align: center;
+      z-index: 3;
+    }
+
+    .versiculo span {
+      display: block;
+      margin-top: 1.6mm;
+      color: var(--dourado-claro);
+      font-size: 1.7mm;
+      font-style: normal;
+    }
+
+    .assinaturas-verso {
+      position: absolute;
+      left: 5mm;
+      right: 30mm;
+      bottom: 9mm;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5mm;
+    }
+
+    .assinatura-box {
+      padding-top: 1.5mm;
+      border-top: 0.3mm solid #aeb8bf;
       text-align: center;
     }
 
-    #qrCode {
-      width: 23mm;
-      height: 23mm;
-      display: grid;
-      place-items: center;
-    }
-
-    #qrCode img,
-    #qrCode canvas {
-      width: 23mm !important;
-      height: 23mm !important;
-    }
-
-    .qr-area span {
+    .assinatura-box span {
       display: block;
-      margin-top: 1.4mm;
-      font-size: 2mm;
+      color: #5f6b73;
+      font-size: 1.55mm;
+      text-transform: uppercase;
+    }
+
+    .assinatura-box strong {
+      display: block;
+      margin-top: 0.7mm;
+      color: var(--azul-escuro);
+      font-family: "Brush Script MT", cursive;
+      font-size: 3.3mm;
+      font-weight: 500;
+    }
+
+    .emissao-verso {
+      position: absolute;
+      right: 5mm;
+      bottom: 13mm;
+      z-index: 4;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .emissao-verso span {
+      display: block;
+      font-size: 1.55mm;
+      text-transform: uppercase;
+    }
+
+    .emissao-verso strong {
+      display: block;
+      margin-top: 0.5mm;
+      font-size: 2.2mm;
+    }
+
+    .qrcode-modelo {
+      position: absolute;
+      right: 5mm;
+      bottom: 3mm;
+      width: 16mm;
+      height: 16mm;
+      padding: 1mm;
+      z-index: 4;
+      background: #ffffff;
+      border-radius: 1mm;
+    }
+
+    .qrcode-modelo canvas,
+    .qrcode-modelo img {
+      width: 14mm !important;
+      height: 14mm !important;
+    }
+
+    .rodape-verso {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 7mm;
+      background:
+        linear-gradient(
+          90deg,
+          var(--azul-escuro),
+          var(--azul-medio)
+        );
+      color: var(--dourado-claro);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3mm;
+      font-size: 1.75mm;
       font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     @media (max-width: 900px) {
-      .folha-carteirinha {
+      .area-cartoes {
         grid-template-columns: 1fr;
       }
     }
@@ -361,160 +572,160 @@
         margin: 12mm;
       }
 
-      body.carteirinha-page {
+      body.carteirinha-modelo-page {
         padding: 0;
         background: #ffffff;
       }
 
-      .carteirinha-header,
-      .carteirinha-status {
+      .topo-carteirinha,
+      #statusCarteiraModelo {
         display: none !important;
       }
 
-      .folha-carteirinha {
+      .area-cartoes {
         width: 100%;
         margin: 0;
         grid-template-columns: repeat(2, 85.6mm);
         gap: 12mm 10mm;
-        align-items: start;
         justify-content: start;
       }
 
-      .carteira {
+      .cartao {
         box-shadow: none;
-        border: 0.2mm solid #c8d0d6;
+        border: 0.2mm solid #cbd3d9;
         break-inside: avoid;
       }
     }
   </style>
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"
-    defer
-  ></script>
 </head>
 
-<body class="carteirinha-page">
+<body class="carteirinha-modelo-page">
 
-  <header class="carteirinha-header">
+  <header class="topo-carteirinha">
 
     <div>
       <h1>Carteirinha do membro</h1>
-      <p>
-        Visualize a frente e o verso antes de imprimir.
-      </p>
+      <p>Modelo oficial para impressão e plastificação.</p>
     </div>
 
-    <div class="carteirinha-actions">
+    <div class="acoes-carteirinha">
 
       <a
-        id="voltarFicha"
-        class="secundario"
+        id="voltarFichaModelo"
         href="membros.html"
       >
         Voltar
       </a>
 
       <button
-        id="botaoImprimir"
+        id="imprimirCarteiraModelo"
         type="button"
       >
-        Imprimir carteirinha
+        Imprimir
       </button>
 
     </div>
 
   </header>
 
-  <div
-    id="statusCarteirinha"
-    class="carteirinha-status"
-    aria-live="polite"
-  >
+  <div id="statusCarteiraModelo">
     Carregando dados do membro...
   </div>
 
   <main
-    id="areaCarteirinha"
-    class="folha-carteirinha"
+    id="areaCarteiraModelo"
+    class="area-cartoes"
     hidden
   >
 
-    <section
-      class="carteira carteira-frente"
-      aria-label="Frente da carteirinha"
-    >
+    <!-- FRENTE -->
+    <section class="cartao cartao-frente">
 
-      <div class="faixa-lateral">
+      <div class="frente-painel-azul"></div>
+
+      <div class="marca-frente">
+        <img src="logo.png" alt="Logo">
+        <strong>Assembleia<br>de Deus</strong>
+        <span>Ministério Vidas Renovadas</span>
+      </div>
+
+      <div
+        id="statusSeloModelo"
+        class="selo-status"
+      >
+        Membro Ativo
+      </div>
+
+      <div class="foto-membro-wrap">
+
+        <img
+          id="fotoCarteiraModelo"
+          alt="Foto do membro"
+        >
 
         <div
-          id="fotoPlaceholder"
-          class="foto-placeholder"
+          id="fotoPlaceholderModelo"
+          class="foto-placeholder-modelo"
         >
           VR
         </div>
 
-        <img
-          id="fotoMembro"
-          class="foto-membro"
-          alt="Foto do membro"
-          hidden
-        >
+      </div>
 
-        <div
-          id="idLateral"
-          class="id-lateral"
-        >
-          VR000000
+      <div class="dados-frente-modelo">
+
+        <div class="campo-mini">
+          <span>Nome completo</span>
+          <strong id="nomeCarteiraModelo">
+            Nome do membro
+          </strong>
+        </div>
+
+        <div class="campo-mini">
+          <span>Nº de membro</span>
+          <strong id="numeroCarteiraModelo">
+            000000
+          </strong>
+        </div>
+
+        <div class="campo-mini">
+          <span>Data de batismo</span>
+          <strong id="batismoCarteiraModelo">
+            Não informada
+          </strong>
+        </div>
+
+        <div class="campo-mini">
+          <span>Cargo</span>
+          <strong id="cargoCarteiraModelo">
+            Membro
+          </strong>
         </div>
 
       </div>
 
-      <div class="dados-frente">
+      <div class="linha-rodape-frente">
 
-        <div class="marca-carteira">
-
-          <img
-            src="logo.png"
-            alt="Logo da igreja"
-          >
-
-          <div>
-            <strong>
-              Vidas Renovadas
-            </strong>
-
-            <span>
-              Carteira de membro
-            </span>
-          </div>
-
+        <div class="rodape-dado">
+          <span>Emissão</span>
+          <strong id="emissaoFrenteModelo">
+            —
+          </strong>
         </div>
 
-        <h2
-          id="nomeMembro"
-          class="nome-membro"
-        >
-          Nome do membro
-        </h2>
-
-        <div class="linha-dado">
-          <span>Cargo</span>
-          <strong id="cargoMembro">—</strong>
+        <div class="rodape-dado">
+          <span>Validade</span>
+          <strong id="validadeFrenteModelo">
+            —
+          </strong>
         </div>
 
-        <div class="linha-dado">
-          <span>Congregação</span>
-          <strong id="congregacaoMembro">—</strong>
-        </div>
-
-        <div class="rodape-frente">
-          <span id="situacaoMembro">
-            Situação: Ativo
-          </span>
-
-          <span id="numeroCarteirinha">
-            Nº —
+        <div class="rodape-dado">
+          <strong class="assinatura-pastor">
+            R. Lemos
+          </strong>
+          <span class="cargo-assinatura">
+            Pastor Presidente
           </span>
         </div>
 
@@ -522,48 +733,73 @@
 
     </section>
 
-    <section
-      class="carteira carteira-verso"
-      aria-label="Verso da carteirinha"
-    >
+    <!-- VERSO -->
+    <section class="cartao cartao-verso">
 
-      <div class="verso-conteudo">
+      <div class="verso-curva"></div>
 
-        <span class="subtitulo">
-          Assembleia de Deus
-        </span>
+      <div class="marca-verso">
+        <img src="logo.png" alt="Logo">
+        <strong>Assembleia<br>de Deus</strong>
+        <span>Ministério Vidas Renovadas</span>
+      </div>
 
-        <h2>
-          Ministério Vidas Renovadas
-        </h2>
+      <div class="dados-igreja-verso">
 
-        <div class="dados-igreja">
-          <strong>CNPJ:</strong> 60.028.677/0001-71<br>
-          <strong>Sede:</strong> Duque de Caxias — RJ<br>
-          <strong>Pastor Presidente:</strong><br>
+        <p>
+          <strong>CNPJ</strong>
+          60.028.677/0001-71
+        </p>
+
+        <p>
+          <strong>Sede</strong>
+          Duque de Caxias — RJ
+        </p>
+
+        <p>
+          <strong>Pastor Presidente</strong>
           Rogerio Lemos da Silva
+        </p>
+
+      </div>
+
+      <div class="versiculo">
+        “Portanto, se alguém está em Cristo,
+        é nova criatura; as coisas antigas já
+        passaram; eis que se fizeram novas.”
+        <span>2 Coríntios 5:17</span>
+      </div>
+
+      <div class="assinaturas-verso">
+
+        <div class="assinatura-box">
+          <span>Pastor Presidente</span>
+          <strong>R. Lemos</strong>
         </div>
 
-        <div class="validade">
-          Validade da carteirinha
-          <strong id="validadeCarteirinha">
-            Não informada
-          </strong>
+        <div class="assinatura-box">
+          <span>Secretaria</span>
+          <strong>Leila Luana</strong>
         </div>
 
       </div>
 
-      <div class="qr-area">
+      <div class="emissao-verso">
+        <span>Emissão</span>
+        <strong id="emissaoVersoModelo">
+          —
+        </strong>
+      </div>
 
-        <div
-          id="qrCode"
-          aria-label="QR Code da carteirinha"
-        ></div>
+      <div
+        id="qrCarteiraModelo"
+        class="qrcode-modelo"
+      ></div>
 
-        <span>
-          Verificação do membro
-        </span>
-
+      <div class="rodape-verso">
+        <span>✦</span>
+        Esta carteirinha é pessoal e intransferível
+        <span>✦</span>
       </div>
 
     </section>
@@ -572,7 +808,273 @@
 
   <script src="js/app.js?v=12"></script>
 
+  <script>
+    const CONFIG_IGREJA = {
+      nome: "Assembleia de Deus Ministério Vidas Renovadas",
+      cnpj: "60.028.677/0001-71",
+      cidade: "Duque de Caxias — RJ",
+      pastor: "Rogerio Lemos da Silva"
+    };
+
+    const areaModelo =
+      document.getElementById("areaCarteiraModelo");
+
+    const statusModelo =
+      document.getElementById("statusCarteiraModelo");
+
+    const botaoImprimirModelo =
+      document.getElementById("imprimirCarteiraModelo");
+
+    const voltarFichaModelo =
+      document.getElementById("voltarFichaModelo");
+
+    botaoImprimirModelo?.addEventListener(
+      "click",
+      function () {
+        window.print();
+      }
+    );
+
+    iniciarCarteiraModelo();
+
+    async function iniciarCarteiraModelo() {
+      const idMembro = obterIdDaUrl();
+
+      if (!idMembro) {
+        mostrarErroModelo(
+          "ID do membro não informado."
+        );
+        return;
+      }
+
+      if (voltarFichaModelo) {
+        voltarFichaModelo.href =
+          "membro.html?id=" +
+          encodeURIComponent(idMembro);
+      }
+
+      try {
+        const resultado = await chamarApi({
+          acao: "buscar",
+          id: idMembro
+        });
+
+        let membro = resultado.membro;
+
+        if (typeof membro === "string") {
+          membro = JSON.parse(membro);
+        }
+
+        preencherModelo(membro);
+
+        statusModelo.hidden = true;
+        areaModelo.hidden = false;
+
+      } catch (erro) {
+        console.error(erro);
+        mostrarErroModelo(erro.message);
+      }
+    }
+
+    function preencherModelo(membro) {
+      const hoje = new Date();
+
+      definirTextoModelo(
+        "nomeCarteiraModelo",
+        membro.nomeCompleto || "Nome não informado"
+      );
+
+      definirTextoModelo(
+        "numeroCarteiraModelo",
+        membro.numeroCarteirinha ||
+        membro.id ||
+        "—"
+      );
+
+      definirTextoModelo(
+        "batismoCarteiraModelo",
+        formatarDataModelo(
+          membro.dataBatismo
+        ) || "Não informada"
+      );
+
+      definirTextoModelo(
+        "cargoCarteiraModelo",
+        membro.cargo || "Membro"
+      );
+
+      definirTextoModelo(
+        "statusSeloModelo",
+        (
+          membro.situacao ||
+          "Membro Ativo"
+        )
+      );
+
+      definirTextoModelo(
+        "emissaoFrenteModelo",
+        formatarDataObjeto(hoje)
+      );
+
+      definirTextoModelo(
+        "emissaoVersoModelo",
+        formatarDataObjeto(hoje)
+      );
+
+      definirTextoModelo(
+        "validadeFrenteModelo",
+        formatarDataModelo(
+          membro.validadeCarteirinha
+        ) || "Não informada"
+      );
+
+      preencherFotoModelo(membro);
+      gerarQrModelo(membro);
+    }
+
+    function preencherFotoModelo(membro) {
+      const foto =
+        document.getElementById("fotoCarteiraModelo");
+
+      const placeholder =
+        document.getElementById(
+          "fotoPlaceholderModelo"
+        );
+
+      const url =
+        String(membro.foto || "").trim();
+
+      if (!url) {
+        placeholder.textContent =
+          iniciaisModelo(
+            membro.nomeCompleto
+          );
+        return;
+      }
+
+      foto.src = url;
+
+      foto.onload = function () {
+        foto.style.display = "block";
+        placeholder.style.display = "none";
+      };
+
+      foto.onerror = function () {
+        foto.style.display = "none";
+        placeholder.style.display = "grid";
+        placeholder.textContent =
+          iniciaisModelo(
+            membro.nomeCompleto
+          );
+      };
+    }
+
+    function gerarQrModelo(membro) {
+      const areaQr =
+        document.getElementById(
+          "qrCarteiraModelo"
+        );
+
+      const urlValidacao =
+        new URL(
+          "membro.html",
+          window.location.href
+        );
+
+      urlValidacao.searchParams.set(
+        "id",
+        membro.id || ""
+      );
+
+      if (typeof QRCode === "undefined") {
+        setTimeout(
+          function () {
+            gerarQrModelo(membro);
+          },
+          250
+        );
+        return;
+      }
+
+      areaQr.innerHTML = "";
+
+      new QRCode(areaQr, {
+        text: urlValidacao.toString(),
+        width: 180,
+        height: 180,
+        correctLevel:
+          QRCode.CorrectLevel.M
+      });
+    }
+
+    function definirTextoModelo(id, valor) {
+      const elemento =
+        document.getElementById(id);
+
+      if (elemento) {
+        elemento.textContent = valor;
+      }
+    }
+
+    function iniciaisModelo(nome) {
+      const partes = String(nome || "")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+      if (!partes.length) {
+        return "VR";
+      }
+
+      if (partes.length === 1) {
+        return partes[0]
+          .slice(0, 2)
+          .toUpperCase();
+      }
+
+      return (
+        partes[0][0] +
+        partes[partes.length - 1][0]
+      ).toUpperCase();
+    }
+
+    function formatarDataModelo(valor) {
+      if (!valor) {
+        return "";
+      }
+
+      const texto = String(valor);
+
+      if (
+        /^\d{4}-\d{2}-\d{2}$/.test(texto)
+      ) {
+        const partes = texto.split("-");
+
+        return (
+          partes[2] +
+          "/" +
+          partes[1] +
+          "/" +
+          partes[0]
+        );
+      }
+
+      return texto;
+    }
+
+    function formatarDataObjeto(data) {
+      return new Intl.DateTimeFormat(
+        "pt-BR"
+      ).format(data);
+    }
+
+    function mostrarErroModelo(mensagem) {
+      statusModelo.hidden = false;
+      statusModelo.textContent = mensagem;
+      areaModelo.hidden = true;
+    }
+  </script>
+
 </body>
 
-</html>
 </html>
