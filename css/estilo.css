@@ -104,7 +104,20 @@ button:hover {
   h1 {
     font-size: 24px;
   }
+.versiculo {
+  margin-top: 22px;
+  margin-bottom: 0;
+  color: #6b7280;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.5;
+}
 
+.versiculo span {
+  color: var(--dourado);
+  font-style: normal;
+  font-weight: bold;
+}
   .logo {
     width: 160px;
   }
