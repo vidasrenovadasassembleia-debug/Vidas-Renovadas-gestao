@@ -905,4 +905,3 @@ window.addEventListener(
     aplicarPermissoesDaTela();
   }
 );
-);
