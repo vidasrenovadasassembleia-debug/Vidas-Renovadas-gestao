@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Membros | Vidas Renovadas Gestão</title>
+
+  <link
+    rel="stylesheet"
+    href="css/estilo.css"
+  >
+</head>
+
+<body class="dashboard-page">
+
+  <aside class="sidebar">
+
+    <div class="sidebar-brand">
+      <img
+        src="logo.png"
+        alt="Logo da igreja"
+        class="sidebar-logo"
+      >
+
+      <div>
+        <strong>Vidas Renovadas</strong>
+        <span>Projeto Neemias</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-menu">
+
+      <a href="dashboard.html">
+        Dashboard
+      </a>
+
+      <a href="membros.html" class="active">
+        Membros
+      </a>
+
+      <a href="#">
+        Famílias
+      </a>
+
+      <a href="#">
+        Carteirinhas
+      </a>
+
+      <a href="#">
+        Congregações
+      </a>
+
+      <a href="#">
+        Relatórios
+      </a>
+
+      <a href="#">
+        Configurações
+      </a>
+
+    </nav>
+
+    <a href="index.html" class="logout">
+      Sair
+    </a>
+
+  </aside>
+
+  <main class="dashboard-main">
+
+    <header class="members-header">
+
+      <div>
+        <p class="dashboard-label">
+          Cadastro e consulta
+        </p>
+
+        <h1>Membros</h1>
+      </div>
+
+      <a
+        href="novo-membro.html"
+        class="primary-link"
+      >
+        Novo Membro
+      </a>
+
+    </header>
+
+    <section class="members-toolbar">
+
+      <input
+        type="search"
+        id="pesquisaMembro"
+        placeholder="Pesquisar por nome, CPF, número ou congregação"
+      >
+
+      <select id="filtroSituacao">
+        <option value="">
+          Todas as situações
+        </option>
+
+        <option value="Ativo">
+          Ativo
+        </option>
+
+        <option value="Congregado">
+          Congregado
+        </option>
+
+        <option value="Visitante">
+          Visitante
+        </option>
+
+        <option value="Inativo">
+          Inativo
+        </option>
+
+        <option value="Transferido">
+          Transferido
+        </option>
+      </select>
+
+    </section>
+
+    <section class="members-panel">
+
+      <div class="table-wrapper">
+
+        <table class="members-table">
+
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Cargo</th>
+              <th>Congregação</th>
+              <th>Situação</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+
+          <tbody id="listaMembros">
+
+            <tr>
+              <td colspan="6" class="empty-state">
+                Nenhum membro cadastrado.
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+    <footer class="dashboard-footer">
+      Vidas Renovadas Gestão — Projeto Neemias
+    </footer>
+
+  </main>
+
+  <script src="js/app.js"></script>
+
+</body>
+
+</html>
