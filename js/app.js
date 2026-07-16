@@ -1,5 +1,9 @@
 const URL_API = "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec";
 
+/* =========================
+   TELA DE LOGIN
+========================= */
+
 const botaoAcessar = document.getElementById("botaoAcessar");
 
 if (botaoAcessar) {
@@ -7,6 +11,10 @@ if (botaoAcessar) {
     window.location.href = "dashboard.html";
   });
 }
+
+/* =========================
+   CADASTRO DE MEMBRO
+========================= */
 
 const formularioMembro = document.getElementById("formNovoMembro");
 
@@ -39,22 +47,31 @@ if (formularioMembro) {
       const resultado = await resposta.json();
 
       if (!resultado.sucesso) {
-        throw new Error(resultado.mensagem);
+        throw new Error(
+          resultado.mensagem || "Não foi possível salvar."
+        );
       }
 
       alert(
-        `Membro cadastrado com sucesso!\nID: ${resultado.id}`
+        "Membro cadastrado com sucesso!\nID: " +
+        resultado.id
       );
 
       formularioMembro.reset();
 
-      document.getElementById("cidade").value =
-        "Duque de Caxias";
+      const cidade = document.getElementById("cidade");
+      const estado = document.getElementById("estado");
 
-      document.getElementById("estado").value = "RJ";
+      if (cidade) {
+        cidade.value = "Duque de Caxias";
+      }
+
+      if (estado) {
+        estado.value = "RJ";
+      }
 
     } catch (erro) {
-      console.error(erro);
+      console.error("Erro ao salvar:", erro);
 
       alert(
         "Não foi possível salvar o membro.\n\n" +
@@ -66,81 +83,136 @@ if (formularioMembro) {
       botaoSalvar.textContent = textoOriginal;
     }
   });
-  const tabelaMembros = document.getElementById("listaMembros");
+}
+
+/* =========================
+   LISTAGEM DE MEMBROS
+========================= */
+
+const tabelaMembros = document.getElementById("listaMembros");
 
 if (tabelaMembros) {
-    carregarMembros();
+  carregarMembros();
 }
 
 async function carregarMembros() {
+  tabelaMembros.innerHTML = `
+    <tr>
+      <td colspan="6" class="empty-state">
+        Carregando membros...
+      </td>
+    </tr>
+  `;
 
-    tabelaMembros.innerHTML = `
-        <tr>
-            <td colspan="6" class="empty-state">
-                Carregando membros...
-            </td>
-        </tr>
-    `;
+  try {
+    const endereco =
+      URL_API +
+      "?acao=listar&t=" +
+      Date.now();
 
-    try {
+    const resposta = await fetch(endereco, {
+      method: "GET",
+      cache: "no-store"
+    });
 
-        const resposta = await fetch(URL_API + "?acao=listar");
-
-        const resultado = await resposta.json();
-
-        // Caso a API retorne membros como texto
-        if (typeof resultado.membros === "string") {
-            resultado.membros = JSON.parse(resultado.membros);
-        }
-
-        if (!resultado.sucesso) {
-            throw new Error(resultado.mensagem || "Erro ao carregar membros.");
-        }
-
-        tabelaMembros.innerHTML = "";
-
-        if (!resultado.membros || resultado.membros.length === 0) {
-
-            tabelaMembros.innerHTML = `
-                <tr>
-                    <td colspan="6" class="empty-state">
-                        Nenhum membro cadastrado.
-                    </td>
-                </tr>
-            `;
-
-            return;
-        }
-
-        resultado.membros.forEach((membro) => {
-
-            tabelaMembros.innerHTML += `
-                <tr>
-                    <td>${membro.id}</td>
-                    <td>${membro.nome}</td>
-                    <td>${membro.cargo || "-"}</td>
-                    <td>${membro.congregacao || "-"}</td>
-                    <td>${membro.situacao}</td>
-                    <td>
-                        <button class="btn-acao">Visualizar</button>
-                    </td>
-                </tr>
-            `;
-
-        });
-
-    } catch (erro) {
-
-        console.error("Erro:", erro);
-
-        tabelaMembros.innerHTML = `
-            <tr>
-                <td colspan="6" class="empty-state">
-                    Erro ao carregar os membros.
-                </td>
-            </tr>
-        `;
-
+    if (!resposta.ok) {
+      throw new Error(
+        "A API respondeu com o código " +
+        resposta.status
+      );
     }
 
+    const resultado = await resposta.json();
+
+    let membros = resultado.membros;
+
+    // Converte o texto recebido pela API em uma lista real.
+    if (typeof membros === "string") {
+      membros = JSON.parse(membros);
+    }
+
+    if (!resultado.sucesso) {
+      throw new Error(
+        resultado.mensagem || "Erro ao carregar membros."
+      );
+    }
+
+    if (!Array.isArray(membros)) {
+      throw new Error(
+        "A lista de membros possui um formato inválido."
+      );
+    }
+
+    mostrarMembros(membros);
+
+  } catch (erro) {
+    console.error("Erro ao listar membros:", erro);
+
+    tabelaMembros.innerHTML = `
+      <tr>
+        <td colspan="6" class="empty-state">
+          Erro ao carregar os membros.
+        </td>
+      </tr>
+    `;
+  }
+}
+
+function mostrarMembros(membros) {
+  tabelaMembros.innerHTML = "";
+
+  if (membros.length === 0) {
+    tabelaMembros.innerHTML = `
+      <tr>
+        <td colspan="6" class="empty-state">
+          Nenhum membro cadastrado.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  membros.forEach(function (membro) {
+    const linha = document.createElement("tr");
+
+    linha.innerHTML = `
+      <td>${escaparHtml(membro.id || "")}</td>
+
+      <td>${escaparHtml(membro.nome || "")}</td>
+
+      <td>
+        ${escaparHtml(membro.cargo || "-")}
+      </td>
+
+      <td>
+        ${escaparHtml(membro.congregacao || "-")}
+      </td>
+
+      <td>
+        ${escaparHtml(membro.situacao || "Ativo")}
+      </td>
+
+      <td>
+        <button
+          type="button"
+          class="btn-acao"
+          data-id="${escaparHtml(membro.id || "")}"
+        >
+          Visualizar
+        </button>
+      </td>
+    `;
+
+    tabelaMembros.appendChild(linha);
+  });
+}
+
+function escaparHtml(valor) {
+  return String(valor)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
