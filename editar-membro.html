@@ -553,27 +553,38 @@
 
       </section>
 
-      <div class="form-actions">
+      <section class="form-section">
 
-        <a
-          href="membros.html"
-          class="secondary-link"
-        >
-          Cancelar
-        </a>
+  <h2>Foto do Membro</h2>
 
-        <button type="submit">
-          Salvar Alterações
-        </button>
+  <div class="foto-upload">
 
-      </div>
+    <div class="foto-preview">
 
-    </form>
+      <img
+        id="previewFoto"
+        src="https://placehold.co/220x280?text=Sem+Foto"
+        alt="Foto do membro"
+      >
 
-  </main>
+    </div>
 
-  <script src="js/app.js?v=6"></script>
+    <input
+      type="file"
+      id="fotoMembro"
+      accept="image/*"
+    >
 
-</body>
+    <button
+      type="button"
+      id="btnEnviarFoto"
+      class="primary-link"
+    >
+      Enviar Foto
+    </button>
 
-</html>
+    <p id="statusFoto"></p>
+
+  </div>
+
+</section>
