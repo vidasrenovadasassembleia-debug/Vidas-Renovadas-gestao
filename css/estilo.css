@@ -456,3 +456,125 @@ button:hover {
     grid-template-columns: 1fr;
   }
 }
+/* =========================
+   FORMULÁRIO DE MEMBROS
+========================= */
+
+.secondary-link {
+  display: inline-block;
+  padding: 12px 17px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  background: var(--branco);
+  color: var(--azul);
+  font-weight: bold;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.secondary-link:hover {
+  border-color: var(--dourado);
+  color: var(--dourado);
+}
+
+.member-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.form-section {
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--branco);
+  box-shadow: 0 10px 30px rgba(15, 47, 72, 0.08);
+}
+
+.form-section h2 {
+  margin-bottom: 20px;
+  color: var(--azul);
+  font-size: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field label {
+  margin-bottom: 7px;
+  color: #34444f;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  margin: 0;
+  padding: 13px 14px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  background: var(--branco);
+  font: inherit;
+  outline: none;
+  transition: 0.2s;
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--dourado);
+  box-shadow: 0 0 0 3px rgba(185, 138, 69, 0.18);
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-bottom: 26px;
+}
+
+.form-actions button {
+  width: auto;
+  min-width: 170px;
+  padding: 13px 20px;
+}
+
+@media (max-width: 700px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .form-actions button,
+  .form-actions .secondary-link {
+    width: 100%;
+    text-align: center;
+  }
+}
