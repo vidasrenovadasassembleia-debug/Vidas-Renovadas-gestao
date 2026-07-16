@@ -1,907 +1,565 @@
-const URL_API =
-  "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec";
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-const CLIENT_ID_GOOGLE =
-  "18655161530-n6p9th5quno3q41sp5pvbo4mj2eo5rnv.apps.googleusercontent.com";
+<head>
+  <meta charset="UTF-8">
 
-const CHAVE_SESSAO =
-  "vidasRenovadasSessao";
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-/* =========================================
-   SESSÃO E AUTENTICAÇÃO
-========================================= */
+  <title>Carteirinha do Membro | Vidas Renovadas Gestão</title>
 
-function salvarSessao(credential, usuario) {
-  sessionStorage.setItem(
-    CHAVE_SESSAO,
-    JSON.stringify({
-      credential: credential,
-      usuario: usuario
-    })
-  );
-}
+  <link
+    rel="stylesheet"
+    href="css/estilo.css"
+  >
 
-function obterSessao() {
-  const texto = sessionStorage.getItem(CHAVE_SESSAO);
-
-  if (!texto) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(texto);
-  } catch (erro) {
-    sessionStorage.removeItem(CHAVE_SESSAO);
-    return null;
-  }
-}
-
-function encerrarSessao() {
-  sessionStorage.removeItem(CHAVE_SESSAO);
-
-  if (
-    window.google &&
-    google.accounts &&
-    google.accounts.id
-  ) {
-    google.accounts.id.disableAutoSelect();
-  }
-
-  window.location.href = "index.html";
-}
-
-function paginaAtual() {
-  const caminho = window.location.pathname.split("/").pop();
-  return caminho || "index.html";
-}
-
-function paginaProtegida() {
-  const paginas = [
-    "dashboard.html",
-    "membros.html",
-    "membro.html",
-    "novo-membro.html",
-    "editar-membro.html"
-  ];
-
-  return paginas.includes(paginaAtual());
-}
-
-function exigirSessao() {
-  if (!paginaProtegida()) {
-    return;
-  }
-
-  const sessao = obterSessao();
-
-  if (!sessao || !sessao.credential) {
-    window.location.replace("index.html");
-  }
-}
-
-function usuarioAdministrador() {
-  const sessao = obterSessao();
-
-  return Boolean(
-    sessao &&
-    sessao.usuario &&
-    sessao.usuario.perfil === "administradora"
-  );
-}
-
-function aplicarIdentidadeUsuario() {
-  const sessao = obterSessao();
-
-  if (!sessao || !sessao.usuario) {
-    return;
-  }
-
-  document.querySelectorAll(".user-box").forEach(function (caixa) {
-    caixa.textContent =
-      sessao.usuario.nome ||
-      sessao.usuario.email;
-  });
-
-  document.querySelectorAll("[data-nome-usuario]").forEach(function (elemento) {
-    elemento.textContent =
-      sessao.usuario.nome ||
-      sessao.usuario.email;
-  });
-
-  document.querySelectorAll("[data-perfil-usuario]").forEach(function (elemento) {
-    elemento.textContent = sessao.usuario.perfil;
-  });
-}
-
-function aplicarPermissoesDaTela() {
-  if (usuarioAdministrador()) {
-    return;
-  }
-
-  document
-    .querySelectorAll(
-      '[href="novo-membro.html"], [href^="editar-membro.html"]'
-    )
-    .forEach(function (elemento) {
-      elemento.hidden = true;
-    });
-
-  if (
-    paginaAtual() === "novo-membro.html" ||
-    paginaAtual() === "editar-membro.html"
-  ) {
-    alert(
-      "Seu perfil não possui permissão para alterar cadastros."
-    );
-
-    window.location.replace("membros.html");
-  }
-}
-
-function iniciarGoogleLogin() {
-  const localBotao =
-    document.getElementById("googleButton");
-
-  if (!localBotao) {
-    return;
-  }
-
-  if (
-    !window.google ||
-    !google.accounts ||
-    !google.accounts.id
-  ) {
-    setTimeout(iniciarGoogleLogin, 300);
-    return;
-  }
-
-  const sessao = obterSessao();
-
-  if (sessao && sessao.credential) {
-    window.location.replace("dashboard.html");
-    return;
-  }
-
-  google.accounts.id.initialize({
-    client_id: CLIENT_ID_GOOGLE,
-    callback: tratarRespostaGoogle,
-    auto_select: false,
-    cancel_on_tap_outside: true
-  });
-
-  google.accounts.id.renderButton(
-    localBotao,
-    {
-      theme: "outline",
-      size: "large",
-      type: "standard",
-      shape: "rectangular",
-      text: "signin_with",
-      logo_alignment: "left",
-      width: 320,
-      locale: "pt-BR"
-    }
-  );
-}
-
-async function tratarRespostaGoogle(respostaGoogle) {
-  const mensagem =
-    document.getElementById("mensagemLogin");
-
-  try {
-    if (mensagem) {
-      mensagem.textContent =
-        "Verificando sua conta...";
+  <style>
+    :root {
+      --azul-carteira: #0f2f48;
+      --azul-claro-carteira: #174867;
+      --dourado-carteira: #b98a45;
+      --branco-carteira: #ffffff;
+      --cinza-carteira: #eef2f5;
+      --texto-carteira: #243746;
     }
 
-    const resultado = await chamarApi({
-      acao: "autenticar",
-      credential: respostaGoogle.credential
-    }, false);
-
-    salvarSessao(
-      respostaGoogle.credential,
-      resultado.usuario
-    );
-
-    if (mensagem) {
-      mensagem.textContent =
-        "Acesso autorizado. Abrindo o sistema...";
+    body.carteirinha-page {
+      min-height: 100vh;
+      margin: 0;
+      padding: 28px;
+      background: #edf1f4;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--texto-carteira);
     }
 
-    window.location.replace("dashboard.html");
-
-  } catch (erro) {
-    console.error("Erro de autenticação:", erro);
-
-    sessionStorage.removeItem(CHAVE_SESSAO);
-
-    if (mensagem) {
-      mensagem.textContent = erro.message;
-    }
-  }
-}
-
-window.tratarRespostaGoogle = tratarRespostaGoogle;
-
-/* =========================================
-   COMUNICAÇÃO COM A API
-========================================= */
-
-async function chamarApi(
-  conteudo,
-  incluirCredencial = true
-) {
-  const requisicao = {
-    ...conteudo
-  };
-
-  if (incluirCredencial) {
-    const sessao = obterSessao();
-
-    if (!sessao || !sessao.credential) {
-      throw new Error(
-        "Sua sessão terminou. Entre novamente."
-      );
+    .carteirinha-header {
+      width: min(100%, 980px);
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
-    requisicao.credential = sessao.credential;
-  }
-
-  const resposta = await fetch(
-    URL_API,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type":
-          "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify(requisicao),
-      cache: "no-store"
-    }
-  );
-
-  if (!resposta.ok) {
-    throw new Error(
-      "A API respondeu com o código " +
-      resposta.status
-    );
-  }
-
-  const resultado = await resposta.json();
-
-  if (!resultado.sucesso) {
-    const mensagem =
-      resultado.mensagem ||
-      "A operação não pôde ser concluída.";
-
-    if (
-      mensagem.toLowerCase().includes("sessão") ||
-      mensagem.toLowerCase().includes("token")
-    ) {
-      sessionStorage.removeItem(CHAVE_SESSAO);
+    .carteirinha-header h1 {
+      margin: 0;
+      color: var(--azul-carteira);
+      font-size: 28px;
     }
 
-    throw new Error(mensagem);
-  }
+    .carteirinha-header p {
+      margin: 6px 0 0;
+      color: #6c7a84;
+    }
 
-  return resultado;
-}
+    .carteirinha-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
-/* =========================================
-   UTILITÁRIOS
-========================================= */
+    .carteirinha-actions button,
+    .carteirinha-actions a {
+      min-height: 42px;
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 9px;
+      background: var(--azul-carteira);
+      color: var(--branco-carteira);
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
 
-function escaparHtml(valor) {
-  return String(valor ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+    .carteirinha-actions a {
+      display: inline-flex;
+      align-items: center;
+    }
 
-function obterIdDaUrl() {
-  const parametros =
-    new URLSearchParams(window.location.search);
+    .carteirinha-actions .secundario {
+      background: var(--branco-carteira);
+      color: var(--azul-carteira);
+      border: 1px solid #cfd8df;
+    }
 
-  return parametros.get("id");
-}
+    .carteirinha-status {
+      width: min(100%, 980px);
+      margin: 0 auto 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: var(--branco-carteira);
+      color: #667680;
+      text-align: center;
+    }
 
-/* =========================================
-   SAIR
-========================================= */
+    .folha-carteirinha {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px;
+      justify-items: center;
+    }
 
-document
-  .querySelectorAll(".logout")
-  .forEach(function (link) {
-    link.addEventListener(
-      "click",
-      function (evento) {
-        evento.preventDefault();
-        encerrarSessao();
-      }
-    );
-  });
+    .carteira {
+      position: relative;
+      width: 85.6mm;
+      height: 54mm;
+      overflow: hidden;
+      border-radius: 3.2mm;
+      background: var(--branco-carteira);
+      box-shadow: 0 16px 38px rgba(15, 47, 72, 0.18);
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
 
-/* =========================================
-   NOVO MEMBRO
-========================================= */
+    .carteira-frente {
+      display: grid;
+      grid-template-columns: 31mm 1fr;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(185, 138, 69, 0.14),
+          transparent 48%
+        ),
+        var(--branco-carteira);
+    }
 
-const formularioNovoMembro =
-  document.getElementById("formNovoMembro");
-
-if (formularioNovoMembro) {
-  formularioNovoMembro.addEventListener(
-    "submit",
-    async function (evento) {
-      evento.preventDefault();
-
-      const botaoSalvar =
-        formularioNovoMembro.querySelector(
-          'button[type="submit"]'
+    .faixa-lateral {
+      background:
+        linear-gradient(
+          180deg,
+          var(--azul-carteira),
+          var(--azul-claro-carteira)
         );
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3mm;
+      padding: 4mm;
+      color: var(--branco-carteira);
+    }
 
-      const textoOriginal =
-        botaoSalvar.textContent;
+    .foto-membro {
+      width: 23mm;
+      height: 29mm;
+      border-radius: 2.4mm;
+      border: 0.8mm solid rgba(255, 255, 255, 0.82);
+      object-fit: cover;
+      background: #dfe7ec;
+    }
 
-      botaoSalvar.disabled = true;
-      botaoSalvar.textContent = "Salvando...";
+    .foto-placeholder {
+      width: 23mm;
+      height: 29mm;
+      border-radius: 2.4mm;
+      border: 0.8mm solid rgba(255, 255, 255, 0.82);
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--branco-carteira);
+      font-size: 7mm;
+      font-weight: 700;
+    }
 
-      const dados =
-        Object.fromEntries(
-          new FormData(formularioNovoMembro).entries()
+    .id-lateral {
+      font-size: 3mm;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .dados-frente {
+      padding: 4.2mm 4.5mm 3.5mm;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .marca-carteira {
+      display: flex;
+      align-items: center;
+      gap: 2.5mm;
+      margin-bottom: 3mm;
+    }
+
+    .marca-carteira img {
+      width: 12mm;
+      height: 12mm;
+      object-fit: contain;
+      border-radius: 2mm;
+      background: var(--branco-carteira);
+    }
+
+    .marca-carteira strong {
+      display: block;
+      color: var(--azul-carteira);
+      font-size: 3.6mm;
+      line-height: 1.05;
+    }
+
+    .marca-carteira span {
+      display: block;
+      margin-top: 0.8mm;
+      color: var(--dourado-carteira);
+      font-size: 2.2mm;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .nome-membro {
+      margin: 1mm 0 2mm;
+      color: var(--azul-carteira);
+      font-size: 4.4mm;
+      line-height: 1.08;
+    }
+
+    .linha-dado {
+      margin-top: 1.4mm;
+    }
+
+    .linha-dado span {
+      display: block;
+      color: #7b8992;
+      font-size: 2.1mm;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .linha-dado strong {
+      display: block;
+      margin-top: 0.4mm;
+      color: var(--texto-carteira);
+      font-size: 2.9mm;
+      line-height: 1.15;
+    }
+
+    .rodape-frente {
+      margin-top: auto;
+      padding-top: 1.8mm;
+      border-top: 0.3mm solid #e5eaee;
+      display: flex;
+      justify-content: space-between;
+      gap: 2mm;
+      font-size: 2.2mm;
+      color: #687780;
+    }
+
+    .situacao-ativa {
+      color: #2b7548;
+      font-weight: 700;
+    }
+
+    .carteira-verso {
+      background:
+        linear-gradient(
+          145deg,
+          var(--azul-carteira),
+          var(--azul-claro-carteira)
         );
+      color: var(--branco-carteira);
+      display: grid;
+      grid-template-columns: 1fr 30mm;
+      gap: 3mm;
+      padding: 5mm;
+    }
 
-      try {
-        const resultado = await chamarApi({
-          acao: "cadastrar",
-          dados: dados
-        });
+    .verso-conteudo {
+      display: flex;
+      flex-direction: column;
+    }
 
-        alert(
-          "Membro cadastrado com sucesso!\nID: " +
-          resultado.id
-        );
+    .verso-conteudo h2 {
+      margin: 0 0 1.4mm;
+      font-size: 4.1mm;
+      line-height: 1.08;
+    }
 
-        formularioNovoMembro.reset();
+    .verso-conteudo .subtitulo {
+      color: #e6cda6;
+      font-size: 2.3mm;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
 
-        const cidade =
-          document.getElementById("cidade");
+    .verso-conteudo p {
+      margin: 3mm 0 0;
+      font-size: 2.5mm;
+      line-height: 1.35;
+    }
 
-        const estado =
-          document.getElementById("estado");
+    .validade {
+      margin-top: auto;
+      padding-top: 2mm;
+      border-top: 0.3mm solid rgba(255, 255, 255, 0.22);
+      font-size: 2.5mm;
+    }
 
-        if (cidade) {
-          cidade.value = "Duque de Caxias";
-        }
+    .validade strong {
+      display: block;
+      margin-top: 0.6mm;
+      color: #f2d7ab;
+      font-size: 3.2mm;
+    }
 
-        if (estado) {
-          estado.value = "RJ";
-        }
+    .qr-area {
+      align-self: center;
+      justify-self: center;
+      padding: 2.3mm;
+      border-radius: 2mm;
+      background: var(--branco-carteira);
+      color: var(--azul-carteira);
+      text-align: center;
+    }
 
-      } catch (erro) {
-        console.error(
-          "Erro ao salvar membro:",
-          erro
-        );
+    #qrCode {
+      width: 23mm;
+      height: 23mm;
+      display: grid;
+      place-items: center;
+    }
 
-        alert(
-          "Não foi possível salvar o membro.\n\n" +
-          erro.message
-        );
+    #qrCode img,
+    #qrCode canvas {
+      width: 23mm !important;
+      height: 23mm !important;
+    }
 
-      } finally {
-        botaoSalvar.disabled = false;
-        botaoSalvar.textContent =
-          textoOriginal;
+    .qr-area span {
+      display: block;
+      margin-top: 1.4mm;
+      font-size: 2mm;
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      .folha-carteirinha {
+        grid-template-columns: 1fr;
       }
     }
-  );
-}
 
-/* =========================================
-   LISTAGEM DE MEMBROS
-========================================= */
-
-const tabelaMembros =
-  document.getElementById("listaMembros");
-
-let membrosCarregados = [];
-
-if (tabelaMembros) {
-  carregarMembros();
-}
-
-async function carregarMembros() {
-  tabelaMembros.innerHTML = `
-    <tr>
-      <td colspan="6" class="empty-state">
-        Carregando membros...
-      </td>
-    </tr>
-  `;
-
-  try {
-    const resultado = await chamarApi({
-      acao: "listar"
-    });
-
-    let membros = resultado.membros;
-
-    if (typeof membros === "string") {
-      membros = JSON.parse(membros);
-    }
-
-    if (!Array.isArray(membros)) {
-      throw new Error(
-        "A lista de membros possui formato inválido."
-      );
-    }
-
-    membrosCarregados = membros;
-    mostrarMembros(membrosCarregados);
-
-  } catch (erro) {
-    console.error(
-      "Erro ao listar membros:",
-      erro
-    );
-
-    tabelaMembros.innerHTML = `
-      <tr>
-        <td colspan="6" class="empty-state">
-          ${escaparHtml(erro.message)}
-        </td>
-      </tr>
-    `;
-  }
-}
-
-function mostrarMembros(membros) {
-  tabelaMembros.innerHTML = "";
-
-  if (!membros.length) {
-    tabelaMembros.innerHTML = `
-      <tr>
-        <td colspan="6" class="empty-state">
-          Nenhum membro cadastrado.
-        </td>
-      </tr>
-    `;
-
-    return;
-  }
-
-  membros.forEach(function (membro) {
-    const linha =
-      document.createElement("tr");
-
-    const botaoEditar =
-      usuarioAdministrador()
-        ? `
-          <a
-            class="btn-acao btn-secundario"
-            href="editar-membro.html?id=${encodeURIComponent(
-              membro.id
-            )}"
-          >
-            Editar
-          </a>
-        `
-        : "";
-
-    linha.innerHTML = `
-      <td>${escaparHtml(membro.id)}</td>
-      <td>${escaparHtml(membro.nome)}</td>
-      <td>${escaparHtml(membro.cargo || "-")}</td>
-      <td>${escaparHtml(membro.congregacao || "-")}</td>
-      <td>${escaparHtml(membro.situacao || "Ativo")}</td>
-      <td class="acoes-tabela">
-        <a
-          class="btn-acao"
-          href="membro.html?id=${encodeURIComponent(
-            membro.id
-          )}"
-        >
-          Visualizar
-        </a>
-
-        ${botaoEditar}
-      </td>
-    `;
-
-    tabelaMembros.appendChild(linha);
-  });
-}
-
-/* =========================================
-   PESQUISA E FILTRO
-========================================= */
-
-const pesquisaMembro =
-  document.getElementById("pesquisaMembro");
-
-const filtroSituacao =
-  document.getElementById("filtroSituacao");
-
-if (pesquisaMembro) {
-  pesquisaMembro.addEventListener(
-    "input",
-    aplicarFiltros
-  );
-}
-
-if (filtroSituacao) {
-  filtroSituacao.addEventListener(
-    "change",
-    aplicarFiltros
-  );
-}
-
-function aplicarFiltros() {
-  const texto = String(
-    pesquisaMembro?.value || ""
-  )
-    .trim()
-    .toLowerCase();
-
-  const situacao = String(
-    filtroSituacao?.value || ""
-  );
-
-  const filtrados =
-    membrosCarregados.filter(
-      function (membro) {
-        const correspondeTexto =
-          !texto ||
-          String(membro.id || "")
-            .toLowerCase()
-            .includes(texto) ||
-          String(membro.nome || "")
-            .toLowerCase()
-            .includes(texto) ||
-          String(membro.cargo || "")
-            .toLowerCase()
-            .includes(texto) ||
-          String(membro.congregacao || "")
-            .toLowerCase()
-            .includes(texto);
-
-        const correspondeSituacao =
-          !situacao ||
-          membro.situacao === situacao;
-
-        return (
-          correspondeTexto &&
-          correspondeSituacao
-        );
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 12mm;
       }
-    );
 
-  mostrarMembros(filtrados);
-}
+      body.carteirinha-page {
+        padding: 0;
+        background: #ffffff;
+      }
 
-/* =========================================
-   FICHA DO MEMBRO
-========================================= */
+      .carteirinha-header,
+      .carteirinha-status {
+        display: none !important;
+      }
 
-const fichaMembro =
-  document.getElementById("fichaMembro");
+      .folha-carteirinha {
+        width: 100%;
+        margin: 0;
+        grid-template-columns: repeat(2, 85.6mm);
+        gap: 12mm 10mm;
+        align-items: start;
+        justify-content: start;
+      }
 
-if (fichaMembro) {
-  carregarFichaMembro();
-}
-
-async function carregarFichaMembro() {
-  const idMembro = obterIdDaUrl();
-
-  if (!idMembro) {
-    mostrarErroFicha(
-      "ID do membro não informado."
-    );
-
-    return;
-  }
-
-  try {
-    const resultado = await chamarApi({
-      acao: "buscar",
-      id: idMembro
-    });
-
-    let membro = resultado.membro;
-
-    if (typeof membro === "string") {
-      membro = JSON.parse(membro);
+      .carteira {
+        box-shadow: none;
+        border: 0.2mm solid #c8d0d6;
+        break-inside: avoid;
+      }
     }
+  </style>
 
-    mostrarFichaMembro(membro);
+  <script
+    src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"
+    defer
+  ></script>
+</head>
 
-  } catch (erro) {
-    console.error(
-      "Erro ao carregar ficha:",
-      erro
-    );
+<body class="carteirinha-page">
 
-    mostrarErroFicha(erro.message);
-  }
-}
+  <header class="carteirinha-header">
 
-function mostrarFichaMembro(membro) {
-  const titulo =
-    document.getElementById("tituloMembro");
+    <div>
+      <h1>Carteirinha do membro</h1>
+      <p>
+        Visualize a frente e o verso antes de imprimir.
+      </p>
+    </div>
 
-  if (titulo) {
-    titulo.textContent =
-      membro.nomeCompleto ||
-      "Ficha do membro";
-  }
+    <div class="carteirinha-actions">
 
-  const botaoEditar =
-    usuarioAdministrador()
-      ? `
-        <a
-          class="primary-link"
-          href="editar-membro.html?id=${encodeURIComponent(
-            membro.id
-          )}"
-        >
-          Editar cadastro
-        </a>
-      `
-      : "";
-
-  fichaMembro.innerHTML = `
-    <section class="profile-card">
-      <div>
-        <span class="profile-label">ID</span>
-        <strong>${escaparHtml(membro.id)}</strong>
-      </div>
-
-      <div>
-        <span class="profile-label">Situação</span>
-        <strong>${escaparHtml(membro.situacao || "-")}</strong>
-      </div>
-
-      <div>
-        <span class="profile-label">Cargo</span>
-        <strong>${escaparHtml(membro.cargo || "-")}</strong>
-      </div>
-
-      <div>
-        <span class="profile-label">Congregação</span>
-        <strong>${escaparHtml(membro.congregacao || "-")}</strong>
-      </div>
-    </section>
-
-    <section class="form-section">
-      <h2>Dados pessoais</h2>
-      <div class="profile-grid">
-        ${campoFicha("Nome completo", membro.nomeCompleto)}
-        ${campoFicha("CPF", membro.cpf)}
-        ${campoFicha("RG", membro.rg)}
-        ${campoFicha("Data de nascimento", membro.dataNascimento)}
-        ${campoFicha("Estado civil", membro.estadoCivil)}
-        ${campoFicha("Cônjuge", membro.conjuge)}
-        ${campoFicha("Pai", membro.pai)}
-        ${campoFicha("Mãe", membro.mae)}
-      </div>
-    </section>
-
-    <section class="form-section">
-      <h2>Contato e endereço</h2>
-      <div class="profile-grid">
-        ${campoFicha("Telefone", membro.telefone)}
-        ${campoFicha("WhatsApp", membro.whatsapp)}
-        ${campoFicha("E-mail", membro.email)}
-        ${campoFicha("CEP", membro.cep)}
-        ${campoFicha("Endereço", membro.endereco)}
-        ${campoFicha("Número", membro.numero)}
-        ${campoFicha("Complemento", membro.complemento)}
-        ${campoFicha("Bairro", membro.bairro)}
-        ${campoFicha("Cidade", membro.cidade)}
-        ${campoFicha("Estado", membro.estado)}
-      </div>
-    </section>
-
-    <section class="form-section">
-      <h2>Vida cristã</h2>
-      <div class="profile-grid">
-        ${campoFicha("Data da conversão", membro.dataConversao)}
-        ${campoFicha("Data do batismo", membro.dataBatismo)}
-        ${campoFicha("Cargo", membro.cargo)}
-        ${campoFicha("Congregação", membro.congregacao)}
-        ${campoFicha("Situação", membro.situacao)}
-        ${campoFicha("Validade da carteirinha", membro.validadeCarteirinha)}
-      </div>
-    </section>
-
-    <section class="form-section">
-      <h2>Controle do cadastro</h2>
-      <div class="profile-grid">
-        ${campoFicha("Data de cadastro", membro.dataCadastro)}
-        ${campoFicha("Última atualização", membro.ultimaAtualizacao)}
-      </div>
-    </section>
-
-    <div class="form-actions">
       <a
-        class="secondary-link"
+        id="voltarFicha"
+        class="secundario"
         href="membros.html"
       >
         Voltar
       </a>
 
-      ${botaoEditar}
+      <button
+        id="botaoImprimir"
+        type="button"
+      >
+        Imprimir carteirinha
+      </button>
+
     </div>
-  `;
-}
 
-function campoFicha(rotulo, valor) {
-  return `
-    <div class="profile-field">
-      <span>${escaparHtml(rotulo)}</span>
-      <strong>${escaparHtml(valor || "-")}</strong>
-    </div>
-  `;
-}
+  </header>
 
-function mostrarErroFicha(mensagem) {
-  fichaMembro.innerHTML = `
-    <p class="empty-state">
-      ${escaparHtml(mensagem)}
-    </p>
-  `;
-}
+  <div
+    id="statusCarteirinha"
+    class="carteirinha-status"
+    aria-live="polite"
+  >
+    Carregando dados do membro...
+  </div>
 
-/* =========================================
-   EDIÇÃO DE MEMBRO
-========================================= */
+  <main
+    id="areaCarteirinha"
+    class="folha-carteirinha"
+    hidden
+  >
 
-const formularioEditarMembro =
-  document.getElementById("formEditarMembro");
+    <section
+      class="carteira carteira-frente"
+      aria-label="Frente da carteirinha"
+    >
 
-if (formularioEditarMembro) {
-  carregarFormularioEdicao();
-}
+      <div class="faixa-lateral">
 
-async function carregarFormularioEdicao() {
-  const idMembro = obterIdDaUrl();
+        <div
+          id="fotoPlaceholder"
+          class="foto-placeholder"
+        >
+          VR
+        </div>
 
-  const mensagemCarregamento =
-    document.getElementById("mensagemCarregamento");
+        <img
+          id="fotoMembro"
+          class="foto-membro"
+          alt="Foto do membro"
+          hidden
+        >
 
-  if (!idMembro) {
-    if (mensagemCarregamento) {
-      mensagemCarregamento.textContent =
-        "ID do membro não informado.";
-    }
+        <div
+          id="idLateral"
+          class="id-lateral"
+        >
+          VR000000
+        </div>
 
-    return;
-  }
+      </div>
 
-  try {
-    const resultado = await chamarApi({
-      acao: "buscar",
-      id: idMembro
-    });
+      <div class="dados-frente">
 
-    let membro = resultado.membro;
+        <div class="marca-carteira">
 
-    if (typeof membro === "string") {
-      membro = JSON.parse(membro);
-    }
+          <img
+            src="logo.png"
+            alt="Logo da igreja"
+          >
 
-    preencherFormularioEdicao(membro);
+          <div>
+            <strong>
+              Vidas Renovadas
+            </strong>
 
-    if (mensagemCarregamento) {
-      mensagemCarregamento.hidden = true;
-    }
+            <span>
+              Carteira de membro
+            </span>
+          </div>
 
-    formularioEditarMembro.hidden = false;
+        </div>
 
-  } catch (erro) {
-    console.error(
-      "Erro ao carregar edição:",
-      erro
-    );
+        <h2
+          id="nomeMembro"
+          class="nome-membro"
+        >
+          Nome do membro
+        </h2>
 
-    if (mensagemCarregamento) {
-      mensagemCarregamento.textContent =
-        erro.message;
-    }
-  }
-}
+        <div class="linha-dado">
+          <span>Cargo</span>
+          <strong id="cargoMembro">—</strong>
+        </div>
 
-function preencherFormularioEdicao(membro) {
-  Object.entries(membro).forEach(
-    function ([campo, valor]) {
-      const elemento =
-        formularioEditarMembro.elements[campo];
+        <div class="linha-dado">
+          <span>Congregação</span>
+          <strong id="congregacaoMembro">—</strong>
+        </div>
 
-      if (elemento) {
-        elemento.value = valor || "";
-      }
-    }
-  );
+        <div class="rodape-frente">
+          <span id="situacaoMembro">
+            Situação: Ativo
+          </span>
 
-  const titulo =
-    document.getElementById("tituloEditarMembro");
+          <span id="numeroCarteirinha">
+            Nº —
+          </span>
+        </div>
 
-  if (titulo) {
-    titulo.textContent =
-      "Editar " +
-      (membro.nomeCompleto || "Membro");
-  }
-}
+      </div>
 
-formularioEditarMembro?.addEventListener(
-  "submit",
-  async function (evento) {
-    evento.preventDefault();
+    </section>
 
-    const botaoSalvar =
-      formularioEditarMembro.querySelector(
-        'button[type="submit"]'
-      );
+    <section
+      class="carteira carteira-verso"
+      aria-label="Verso da carteirinha"
+    >
 
-    const textoOriginal =
-      botaoSalvar.textContent;
+      <div class="verso-conteudo">
 
-    botaoSalvar.disabled = true;
-    botaoSalvar.textContent =
-      "Salvando alterações...";
+        <span class="subtitulo">
+          Assembleia de Deus
+        </span>
 
-    const dados =
-      Object.fromEntries(
-        new FormData(formularioEditarMembro).entries()
-      );
+        <h2>
+          Ministério Vidas Renovadas
+        </h2>
 
-    try {
-      const resultado = await chamarApi({
-        acao: "atualizar",
-        dados: dados
-      });
+        <p>
+          CNPJ 60.028.677/0001-71<br>
+          Duque de Caxias — RJ<br>
+          Pastor Presidente: Rogerio Lemos da Silva
+        </p>
 
-      alert(
-        "Cadastro atualizado com sucesso!"
-      );
+        <div class="validade">
+          Validade da carteirinha
+          <strong id="validadeCarteirinha">
+            Não informada
+          </strong>
+        </div>
 
-      window.location.href =
-        "membro.html?id=" +
-        encodeURIComponent(resultado.id);
+      </div>
 
-    } catch (erro) {
-      console.error(
-        "Erro ao atualizar membro:",
-        erro
-      );
+      <div class="qr-area">
 
-      alert(
-        "Não foi possível atualizar o cadastro.\n\n" +
-        erro.message
-      );
+        <div
+          id="qrCode"
+          aria-label="QR Code da carteirinha"
+        ></div>
 
-    } finally {
-      botaoSalvar.disabled = false;
-      botaoSalvar.textContent =
-        textoOriginal;
-    }
-  }
-);
+        <span>
+          Verificação do membro
+        </span>
 
-/* =========================================
-   INICIALIZAÇÃO
-========================================= */
+      </div>
 
-exigirSessao();
+    </section>
 
-window.addEventListener(
-  "load",
-  function () {
-    iniciarGoogleLogin();
-    aplicarIdentidadeUsuario();
-    aplicarPermissoesDaTela();
-  }
-);
+  </main>
+
+  <script src="js/app.js?v=11"></script>
+
+</body>
+
+</html>
