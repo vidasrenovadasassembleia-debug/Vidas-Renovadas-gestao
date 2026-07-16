@@ -9,7 +9,7 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Ficha do Membro | Vidas Renovadas Gestão</title>
+  <title>Membros | Vidas Renovadas Gestão</title>
 
   <link
     rel="stylesheet"
@@ -22,7 +22,6 @@
   <aside class="sidebar">
 
     <div class="sidebar-brand">
-
       <img
         src="logo.png"
         alt="Logo da igreja"
@@ -33,7 +32,6 @@
         <strong>Vidas Renovadas</strong>
         <span>Projeto Neemias</span>
       </div>
-
     </div>
 
     <nav class="sidebar-menu">
@@ -79,34 +77,92 @@
     <header class="members-header">
 
       <div>
-
         <p class="dashboard-label">
-          Ficha ministerial
+          Cadastro e consulta
         </p>
 
-        <h1 id="tituloMembro">
-          Carregando membro...
-        </h1>
-
+        <h1>Membros</h1>
       </div>
 
       <a
-        href="membros.html"
-        class="secondary-link"
+        href="novo-membro.html"
+        class="primary-link"
       >
-        Voltar
+        Novo Membro
       </a>
 
     </header>
 
-    <section
-      id="fichaMembro"
-      class="member-profile"
-    >
+    <section class="members-toolbar">
 
-      <p class="empty-state">
-        Carregando informações...
-      </p>
+      <input
+        type="search"
+        id="pesquisaMembro"
+        placeholder="Pesquisar por nome, ID, cargo ou congregação"
+      >
+
+      <select id="filtroSituacao">
+        <option value="">
+          Todas as situações
+        </option>
+
+        <option value="Ativo">
+          Ativo
+        </option>
+
+        <option value="Congregado">
+          Congregado
+        </option>
+
+        <option value="Visitante">
+          Visitante
+        </option>
+
+        <option value="Inativo">
+          Inativo
+        </option>
+
+        <option value="Transferido">
+          Transferido
+        </option>
+
+        <option value="Falecido">
+          Falecido
+        </option>
+      </select>
+
+    </section>
+
+    <section class="members-panel">
+
+      <div class="table-wrapper">
+
+        <table class="members-table">
+
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Cargo</th>
+              <th>Congregação</th>
+              <th>Situação</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+
+          <tbody id="listaMembros">
+
+            <tr>
+              <td colspan="6" class="empty-state">
+                Carregando membros...
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
 
     </section>
 
@@ -116,7 +172,7 @@
 
   </main>
 
-  <script src="js/app.js?v=7"></script>
+  <script src="js/app.js?v=8"></script>
 
 </body>
 
