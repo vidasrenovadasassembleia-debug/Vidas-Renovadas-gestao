@@ -256,13 +256,8 @@
     }
 
     .carteira-verso {
-      background:
-        linear-gradient(
-          145deg,
-          var(--azul-carteira),
-          var(--azul-claro-carteira)
-        );
-      color: var(--branco-carteira);
+      background: #0b2a41;
+      color: #ffffff;
       display: grid;
       grid-template-columns: 1fr 30mm;
       gap: 3mm;
@@ -275,37 +270,53 @@
     }
 
     .verso-conteudo h2 {
-      margin: 0 0 1.4mm;
-      font-size: 4.1mm;
+      margin: 0 0 1.6mm;
+      color: #ffffff;
+      font-size: 4.3mm;
       line-height: 1.08;
+      font-weight: 800;
     }
 
     .verso-conteudo .subtitulo {
-      color: #e6cda6;
-      font-size: 2.3mm;
-      font-weight: 700;
-      letter-spacing: 0.06em;
+      color: #ffd98f;
+      font-size: 2.5mm;
+      font-weight: 800;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
     }
 
-    .verso-conteudo p {
-      margin: 3mm 0 0;
-      font-size: 2.5mm;
-      line-height: 1.35;
+    .dados-igreja {
+      margin-top: 2.6mm;
+      padding: 2.4mm 2.6mm;
+      border: 0.35mm solid rgba(255, 255, 255, 0.42);
+      border-radius: 1.8mm;
+      background: rgba(255, 255, 255, 0.10);
+      color: #ffffff;
+      font-size: 2.65mm;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .dados-igreja strong {
+      color: #ffd98f;
+      font-weight: 800;
     }
 
     .validade {
       margin-top: auto;
       padding-top: 2mm;
-      border-top: 0.3mm solid rgba(255, 255, 255, 0.22);
-      font-size: 2.5mm;
+      border-top: 0.35mm solid rgba(255, 255, 255, 0.5);
+      color: #ffffff;
+      font-size: 2.6mm;
+      font-weight: 700;
     }
 
     .validade strong {
       display: block;
-      margin-top: 0.6mm;
-      color: #f2d7ab;
-      font-size: 3.2mm;
+      margin-top: 0.7mm;
+      color: #ffd98f;
+      font-size: 3.4mm;
+      font-weight: 800;
     }
 
     .qr-area {
@@ -526,11 +537,12 @@
           Ministério Vidas Renovadas
         </h2>
 
-        <p>
-          CNPJ 60.028.677/0001-71<br>
-          Duque de Caxias — RJ<br>
-          Pastor Presidente: Rogerio Lemos da Silva
-        </p>
+        <div class="dados-igreja">
+          <strong>CNPJ:</strong> 60.028.677/0001-71<br>
+          <strong>Sede:</strong> Duque de Caxias — RJ<br>
+          <strong>Pastor Presidente:</strong><br>
+          Rogerio Lemos da Silva
+        </div>
 
         <div class="validade">
           Validade da carteirinha
@@ -558,9 +570,9 @@
 
   </main>
 
-  <script src="js/app.js?v=10"></script>
-  <script src="js/carteirinha.js?v=1"></script>
+  <script src="js/app.js?v=12"></script>
 
 </body>
 
+</html>
 </html>
