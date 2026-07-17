@@ -6,7 +6,633 @@
 
   <title>Carteirinha do membro | Projeto Neemias</title>
 
-  <link rel="stylesheet" href="css/carteirinha.css">
+  <style>
+/* =========================================================
+   PROJETO NEEMIAS — CARTEIRINHA
+   Tamanho do cartão: 85,60 mm × 53,98 mm
+========================================================= */
+
+:root {
+  --azul-principal: #082f49;
+  --azul-escuro: #052235;
+  --azul-medio: #0e4b6d;
+  --dourado: #c99b3d;
+  --dourado-claro: #ead18a;
+  --branco: #ffffff;
+  --cinza-fundo: #edf2f5;
+  --cinza-texto: #4a5963;
+  --cinza-borda: #d6dee3;
+  --vermelho: #a32626;
+  --sombra: 0 18px 45px rgba(5, 34, 53, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(201, 155, 61, 0.12), transparent 32rem),
+    linear-gradient(145deg, #f6f8f9, var(--cinza-fundo));
+  color: var(--azul-escuro);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+.pagina-carteirinha {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 36px 0 56px;
+}
+
+.barra-superior {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.rotulo-superior {
+  margin: 0 0 4px;
+  color: var(--dourado);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.barra-superior h1 {
+  margin: 0;
+  font-size: clamp(1.55rem, 3vw, 2.35rem);
+}
+
+.acoes-superiores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.botao {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.botao:hover {
+  transform: translateY(-1px);
+}
+
+.botao-principal {
+  border-color: var(--azul-principal);
+  background: var(--azul-principal);
+  color: var(--branco);
+  box-shadow: 0 8px 20px rgba(8, 47, 73, 0.2);
+}
+
+.botao-secundario {
+  border-color: var(--cinza-borda);
+  background: var(--branco);
+  color: var(--azul-principal);
+}
+
+.mensagem-estado {
+  padding: 20px;
+  border: 1px solid var(--cinza-borda);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--cinza-texto);
+  text-align: center;
+}
+
+.mensagem-estado.erro {
+  border-color: rgba(163, 38, 38, 0.28);
+  background: #fff5f5;
+  color: var(--vermelho);
+}
+
+.area-cartoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 28px;
+}
+
+/* =========================================================
+   CARTÃO
+========================================================= */
+
+.cartao {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 85.6 / 53.98;
+  overflow: hidden;
+  border: 1px solid rgba(8, 47, 73, 0.12);
+  border-radius: 18px;
+  background: var(--branco);
+  box-shadow: var(--sombra);
+  isolation: isolate;
+}
+
+.cartao::after {
+  position: absolute;
+  z-index: 30;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: inherit;
+  content: "";
+  pointer-events: none;
+}
+
+/* =========================================================
+   FRENTE
+========================================================= */
+
+.cartao-frente {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 4.5% 5% 4.2%;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.98), rgba(245, 249, 251, 0.98)),
+    var(--branco);
+}
+
+.faixa-dourada {
+  position: absolute;
+  z-index: -1;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--dourado), var(--dourado-claro));
+  transform: rotate(-10deg);
+}
+
+.faixa-dourada-superior {
+  top: -11%;
+  right: -12%;
+  width: 62%;
+  height: 15%;
+}
+
+.faixa-dourada-inferior {
+  bottom: -13%;
+  left: -10%;
+  width: 65%;
+  height: 18%;
+}
+
+.cabecalho-frente {
+  display: flex;
+  min-height: 18%;
+  align-items: center;
+  gap: 3%;
+}
+
+.logo-frente {
+  width: 14%;
+  max-height: 46px;
+  object-fit: contain;
+}
+
+.identidade-igreja {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.identidade-igreja strong {
+  color: var(--azul-principal);
+  font-size: clamp(0.56rem, 1.4vw, 0.95rem);
+  letter-spacing: 0.07em;
+}
+
+.identidade-igreja span {
+  margin-top: 3px;
+  color: var(--dourado);
+  font-size: clamp(0.42rem, 1vw, 0.68rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.conteudo-frente {
+  display: grid;
+  grid-template-columns: 32% 1fr;
+  gap: 5%;
+  align-items: center;
+  min-height: 0;
+  padding: 2% 0 1%;
+}
+
+.moldura-foto {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 0.78;
+  overflow: hidden;
+  border: 3px solid var(--branco);
+  border-radius: 10px;
+  background: #dbe5ea;
+  box-shadow:
+    0 0 0 1px rgba(8, 47, 73, 0.18),
+    0 7px 16px rgba(5, 34, 53, 0.22);
+}
+
+.foto-membro,
+.foto-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.foto-membro {
+  display: block;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+.foto-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(145deg, rgba(8, 47, 73, 0.92), rgba(14, 75, 109, 0.8)),
+    var(--azul-principal);
+  color: var(--branco);
+  font-size: clamp(1.25rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.dados-principais {
+  min-width: 0;
+}
+
+.categoria-documento {
+  margin: 0 0 2.5%;
+  color: var(--dourado);
+  font-size: clamp(0.42rem, 0.95vw, 0.66rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.dados-principais h2 {
+  margin: 0 0 5%;
+  overflow: hidden;
+  color: var(--azul-principal);
+  font-size: clamp(0.83rem, 2.2vw, 1.45rem);
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+
+.grade-dados-frente {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(4px, 1.2vw, 10px);
+}
+
+.campo-cartao {
+  min-width: 0;
+  padding: 4% 6%;
+  border-left: 2px solid var(--dourado);
+  background: rgba(8, 47, 73, 0.045);
+}
+
+.campo-largo {
+  grid-column: 1 / -1;
+}
+
+.campo-cartao span,
+.datas-cartao span,
+.campo-verso span {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--cinza-texto);
+  font-size: clamp(0.38rem, 0.84vw, 0.57rem);
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.campo-cartao strong {
+  display: block;
+  overflow: hidden;
+  color: var(--azul-escuro);
+  font-size: clamp(0.48rem, 1.05vw, 0.72rem);
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rodape-frente {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 6%;
+  padding-top: 2%;
+}
+
+.datas-cartao {
+  display: flex;
+  gap: 10%;
+}
+
+.datas-cartao strong {
+  display: block;
+  color: var(--azul-principal);
+  font-size: clamp(0.44rem, 1vw, 0.68rem);
+}
+
+.assinatura-cartao {
+  display: flex;
+  min-width: 27%;
+  flex-direction: column;
+  align-items: center;
+  border-top: 1px solid var(--azul-escuro);
+  color: var(--azul-escuro);
+  line-height: 1.05;
+  text-align: center;
+}
+
+.assinatura-cartao .nome-assinatura {
+  margin-top: 2px;
+  font-family: "Brush Script MT", "Segoe Script", cursive;
+  font-size: clamp(0.57rem, 1.45vw, 0.95rem);
+}
+
+.assinatura-cartao span:last-child {
+  font-size: clamp(0.34rem, 0.75vw, 0.5rem);
+  font-weight: 700;
+}
+
+/* =========================================================
+   VERSO
+========================================================= */
+
+.cartao-verso {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  padding: 4.5% 5% 3.5%;
+  background:
+    linear-gradient(145deg, var(--azul-principal), var(--azul-escuro));
+  color: var(--branco);
+}
+
+.detalhe-verso {
+  position: absolute;
+  z-index: -1;
+  border: 2px solid rgba(234, 209, 138, 0.5);
+  border-radius: 50%;
+}
+
+.detalhe-verso-superior {
+  top: -38%;
+  right: -8%;
+  width: 52%;
+  aspect-ratio: 1;
+}
+
+.detalhe-verso-inferior {
+  bottom: -52%;
+  left: -13%;
+  width: 67%;
+  aspect-ratio: 1;
+}
+
+.cabecalho-verso {
+  display: flex;
+  align-items: center;
+  gap: 3%;
+}
+
+.logo-verso {
+  width: 12%;
+  max-height: 43px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.18));
+}
+
+.cabecalho-verso > div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.cabecalho-verso strong {
+  color: var(--branco);
+  font-size: clamp(0.55rem, 1.3vw, 0.9rem);
+  letter-spacing: 0.07em;
+}
+
+.cabecalho-verso span {
+  margin-top: 3px;
+  color: var(--dourado-claro);
+  font-size: clamp(0.4rem, 0.9vw, 0.62rem);
+  font-weight: 700;
+}
+
+.conteudo-verso {
+  display: grid;
+  grid-template-columns: 1fr 27%;
+  gap: 5%;
+  align-items: center;
+  min-height: 0;
+  padding: 3% 0 1%;
+}
+
+.dados-verso {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(3px, 1vw, 8px);
+  min-width: 0;
+}
+
+.campo-verso {
+  min-width: 0;
+  padding-bottom: 3%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+.campo-verso-largo {
+  grid-column: 1 / -1;
+}
+
+.campo-verso span {
+  color: var(--dourado-claro);
+}
+
+.campo-verso strong {
+  display: block;
+  overflow: hidden;
+  color: var(--branco);
+  font-size: clamp(0.47rem, 1.03vw, 0.7rem);
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.area-qrcode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  color: var(--dourado-claro);
+  font-size: clamp(0.34rem, 0.78vw, 0.5rem);
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.qrcode {
+  display: grid;
+  width: 100%;
+  aspect-ratio: 1;
+  place-items: center;
+  overflow: hidden;
+  border: 5px solid var(--branco);
+  border-radius: 7px;
+  background: var(--branco);
+}
+
+.qrcode img,
+.qrcode canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.versiculo-cartao {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(0.39rem, 0.88vw, 0.59rem);
+  font-style: italic;
+  text-align: center;
+}
+
+.versiculo-cartao cite {
+  color: var(--dourado-claro);
+  font-size: 0.9em;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.rodape-verso {
+  padding-top: 2%;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: clamp(0.31rem, 0.65vw, 0.43rem);
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 900px) {
+  .area-cartoes {
+    grid-template-columns: 1fr;
+  }
+
+  .cartao {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 620px) {
+  .pagina-carteirinha {
+    width: min(100% - 20px, 680px);
+    padding-top: 20px;
+  }
+
+  .barra-superior {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .acoes-superiores {
+    width: 100%;
+  }
+
+  .botao {
+    flex: 1;
+  }
+
+  .cartao {
+    border-radius: 12px;
+  }
+}
+
+/* =========================================================
+   IMPRESSÃO
+========================================================= */
+
+@page {
+  size: A4 portrait;
+  margin: 12mm;
+}
+
+@media print {
+  html,
+  body {
+    margin: 0;
+    background: #ffffff;
+  }
+
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .pagina-carteirinha {
+    width: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  .barra-superior,
+  .mensagem-estado {
+    display: none !important;
+  }
+
+  .area-cartoes {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    gap: 10mm;
+  }
+
+  .cartao {
+    width: 85.6mm;
+    height: 53.98mm;
+    flex: none;
+    border-radius: 3mm;
+    box-shadow: none;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+  </style>
 </head>
 
 <body>
@@ -194,6 +820,687 @@
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="js/carteirinha.js"></script>
+  <script>
+/* =========================================================
+   PROJETO NEEMIAS — CARTEIRINHA
+   Arquivo independente do app.js
+========================================================= */
+
+const URL_API_CARTEIRINHA =
+  "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec";
+
+const CHAVE_SESSAO_CARTEIRINHA =
+  "vidasRenovadasSessao";
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const botaoImprimir =
+    document.getElementById("botaoImprimir");
+
+  botaoImprimir?.addEventListener("click", function () {
+    window.print();
+  });
+
+  carregarCarteirinha();
+});
+
+/* =========================================================
+   SESSÃO E API
+========================================================= */
+
+function obterSessaoCarteirinha() {
+  const texto =
+    sessionStorage.getItem(CHAVE_SESSAO_CARTEIRINHA);
+
+  if (!texto) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(texto);
+  } catch (erro) {
+    sessionStorage.removeItem(CHAVE_SESSAO_CARTEIRINHA);
+    return null;
+  }
+}
+
+function obterIdMembroCarteirinha() {
+  const parametros =
+    new URLSearchParams(window.location.search);
+
+  return String(parametros.get("id") || "").trim();
+}
+
+async function chamarApiCarteirinha(conteudo) {
+  const sessao = obterSessaoCarteirinha();
+
+  if (!sessao || !sessao.credential) {
+    window.location.replace("index.html");
+    throw new Error(
+      "Sua sessão terminou. Entre novamente."
+    );
+  }
+
+  const resposta = await fetch(
+    URL_API_CARTEIRINHA,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify({
+        ...conteudo,
+        credential: sessao.credential
+      }),
+      cache: "no-store"
+    }
+  );
+
+  if (!resposta.ok) {
+    throw new Error(
+      "A API respondeu com o código " +
+      resposta.status +
+      "."
+    );
+  }
+
+  const resultado = await resposta.json();
+
+  if (!resultado.sucesso) {
+    const mensagem =
+      resultado.mensagem ||
+      "Não foi possível carregar a carteirinha.";
+
+    if (
+      mensagem.toLowerCase().includes("sessão") ||
+      mensagem.toLowerCase().includes("token")
+    ) {
+      sessionStorage.removeItem(CHAVE_SESSAO_CARTEIRINHA);
+    }
+
+    throw new Error(mensagem);
+  }
+
+  return resultado;
+}
+
+/* =========================================================
+   CARREGAMENTO
+========================================================= */
+
+async function carregarCarteirinha() {
+  const idMembro = obterIdMembroCarteirinha();
+
+  if (!idMembro) {
+    mostrarErroCarteirinha(
+      "O endereço não contém o ID do membro."
+    );
+    return;
+  }
+
+  configurarLinkVoltar(idMembro);
+
+  try {
+    const resultado = await chamarApiCarteirinha({
+      acao: "buscar",
+      id: idMembro
+    });
+
+    let membro = resultado.membro;
+
+    if (typeof membro === "string") {
+      membro = JSON.parse(membro);
+    }
+
+    if (!membro || typeof membro !== "object") {
+      throw new Error(
+        "A API não retornou os dados do membro."
+      );
+    }
+
+    preencherCarteirinha(membro, idMembro);
+    mostrarCarteirinha();
+
+  } catch (erro) {
+    console.error(
+      "Erro ao carregar a carteirinha:",
+      erro
+    );
+
+    mostrarErroCarteirinha(erro.message);
+  }
+}
+
+function configurarLinkVoltar(idMembro) {
+  const botaoVoltar =
+    document.getElementById("botaoVoltar");
+
+  if (botaoVoltar) {
+    botaoVoltar.href =
+      "membro.html?id=" +
+      encodeURIComponent(idMembro);
+  }
+}
+
+/* =========================================================
+   PREENCHIMENTO DOS DADOS
+========================================================= */
+
+function preencherCarteirinha(membro, idUrl) {
+  const nome =
+    primeiroValor(
+      membro.nomeCompleto,
+      membro.nome,
+      "Nome não informado"
+    );
+
+  const numero =
+    primeiroValor(
+      membro.id,
+      membro.numeroMembro,
+      membro.matricula,
+      idUrl,
+      "—"
+    );
+
+  const batismo =
+    formatarDataCarteirinha(
+      primeiroValor(
+        membro.dataBatismo,
+        membro.batismo
+      )
+    );
+
+  const cargo =
+    primeiroValor(
+      membro.cargo,
+      membro.funcao,
+      "Membro"
+    );
+
+  const situacao =
+    primeiroValor(
+      membro.situacao,
+      membro.status,
+      "Ativo"
+    );
+
+  const congregacao =
+    formatarCongregacao(
+      primeiroValor(
+        membro.congregacao,
+        membro.cidadeIgreja,
+        membro.igreja,
+        "Não informada"
+      )
+    );
+
+  const estadoCivil =
+    primeiroValor(
+      membro.estadoCivil,
+      "Não informado"
+    );
+
+  const conjuge =
+    primeiroValor(
+      membro.conjuge,
+      membro.nomeConjuge,
+      "—"
+    );
+
+  const rg =
+    primeiroValor(
+      membro.rg,
+      "—"
+    );
+
+  const cpf =
+    formatarCpfCarteirinha(
+      primeiroValor(
+        membro.cpf,
+        "—"
+      )
+    );
+
+  const emissao =
+    formatarDataCarteirinha(
+      primeiroValor(
+        membro.dataEmissaoCarteirinha,
+        membro.emissaoCarteirinha,
+        new Date()
+      )
+    );
+
+  const validade =
+    obterValidadeCarteirinha(membro);
+
+  definirTexto(
+    "nomeMembroCarteirinha",
+    nome
+  );
+
+  definirTexto(
+    "numeroMembroCarteirinha",
+    numero
+  );
+
+  definirTexto(
+    "batismoMembroCarteirinha",
+    batismo
+  );
+
+  definirTexto(
+    "cargoMembroCarteirinha",
+    cargo
+  );
+
+  definirTexto(
+    "situacaoMembroCarteirinha",
+    situacao
+  );
+
+  definirTexto(
+    "congregacaoCarteirinha",
+    congregacao
+  );
+
+  definirTexto(
+    "estadoCivilCarteirinha",
+    estadoCivil
+  );
+
+  definirTexto(
+    "conjugeCarteirinha",
+    conjuge
+  );
+
+  definirTexto(
+    "rgCarteirinha",
+    rg
+  );
+
+  definirTexto(
+    "cpfCarteirinha",
+    cpf
+  );
+
+  definirTexto(
+    "emissaoCarteirinha",
+    emissao
+  );
+
+  definirTexto(
+    "validadeCarteirinha",
+    validade
+  );
+
+  document.title =
+    nome + " | Carteirinha";
+
+  preencherFotoCarteirinha(
+    primeiroValor(membro.foto),
+    nome
+  );
+
+  ajustarCampoConjuge(
+    estadoCivil,
+    conjuge
+  );
+
+  gerarQrCodeCarteirinha(
+    membro,
+    numero
+  );
+}
+
+function definirTexto(id, valor) {
+  const elemento = document.getElementById(id);
+
+  if (elemento) {
+    elemento.textContent =
+      String(valor || "—").trim() || "—";
+  }
+}
+
+/* =========================================================
+   FOTO
+========================================================= */
+
+function preencherFotoCarteirinha(urlOriginal, nome) {
+  const foto =
+    document.getElementById(
+      "fotoMembroCarteirinha"
+    );
+
+  const placeholder =
+    document.getElementById(
+      "fotoPlaceholderCarteirinha"
+    );
+
+  if (!foto || !placeholder) {
+    return;
+  }
+
+  placeholder.textContent =
+    obterIniciais(nome);
+
+  const urlFoto =
+    normalizarUrlFotoDrive(urlOriginal);
+
+  if (!urlFoto) {
+    foto.hidden = true;
+    placeholder.hidden = false;
+    return;
+  }
+
+  foto.alt = "Foto de " + nome;
+
+  foto.onload = function () {
+    foto.hidden = false;
+    placeholder.hidden = true;
+  };
+
+  foto.onerror = function () {
+    foto.hidden = true;
+    placeholder.hidden = false;
+  };
+
+  foto.src = urlFoto;
+}
+
+function normalizarUrlFotoDrive(valor) {
+  const url = String(valor || "").trim();
+
+  if (!url) {
+    return "";
+  }
+
+  const expressoes = [
+    /\/file\/d\/([a-zA-Z0-9_-]+)/,
+    /[?&]id=([a-zA-Z0-9_-]+)/,
+    /\/d\/([a-zA-Z0-9_-]+)/
+  ];
+
+  for (const expressao of expressoes) {
+    const correspondencia = url.match(expressao);
+
+    if (correspondencia?.[1]) {
+      return (
+        "https://drive.google.com/thumbnail?id=" +
+        encodeURIComponent(correspondencia[1]) +
+        "&sz=w1000"
+      );
+    }
+  }
+
+  return url;
+}
+
+function obterIniciais(nome) {
+  const partes =
+    String(nome || "")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+
+  if (!partes.length) {
+    return "VR";
+  }
+
+  const primeira =
+    partes[0].charAt(0);
+
+  const ultima =
+    partes.length > 1
+      ? partes[partes.length - 1].charAt(0)
+      : partes[0].charAt(1);
+
+  return (
+    primeira + (ultima || "")
+  ).toUpperCase();
+}
+
+/* =========================================================
+   QR CODE
+========================================================= */
+
+function gerarQrCodeCarteirinha(membro, numero) {
+  const area =
+    document.getElementById("qrCodeCarteirinha");
+
+  if (!area) {
+    return;
+  }
+
+  area.innerHTML = "";
+
+  const id =
+    primeiroValor(
+      membro.id,
+      numero
+    );
+
+  const enderecoVerificacao =
+    new URL(
+      "membro.html?id=" +
+        encodeURIComponent(id),
+      window.location.href
+    ).href;
+
+  if (typeof QRCode === "undefined") {
+    area.textContent = "QR";
+    console.warn(
+      "A biblioteca de QR Code não foi carregada."
+    );
+    return;
+  }
+
+  new QRCode(area, {
+    text: enderecoVerificacao,
+    width: 180,
+    height: 180,
+    colorDark: "#052235",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+}
+
+/* =========================================================
+   FORMATAÇÃO
+========================================================= */
+
+function primeiroValor(...valores) {
+  for (const valor of valores) {
+    if (
+      valor !== undefined &&
+      valor !== null &&
+      String(valor).trim() !== ""
+    ) {
+      return valor;
+    }
+  }
+
+  return "";
+}
+
+function formatarDataCarteirinha(valor) {
+  if (!valor) {
+    return "—";
+  }
+
+  if (valor instanceof Date) {
+    return valor.toLocaleDateString("pt-BR");
+  }
+
+  const texto = String(valor).trim();
+
+  if (!texto) {
+    return "—";
+  }
+
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) {
+    return texto;
+  }
+
+  const somenteData =
+    texto.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+  if (somenteData) {
+    return (
+      somenteData[3] +
+      "/" +
+      somenteData[2] +
+      "/" +
+      somenteData[1]
+    );
+  }
+
+  const data = new Date(texto);
+
+  if (!Number.isNaN(data.getTime())) {
+    return data.toLocaleDateString("pt-BR");
+  }
+
+  return texto;
+}
+
+function obterValidadeCarteirinha(membro) {
+  const informada =
+    primeiroValor(
+      membro.validadeCarteirinha,
+      membro.dataValidadeCarteirinha,
+      membro.validade
+    );
+
+  if (informada) {
+    return formatarDataCarteirinha(informada);
+  }
+
+  const validade = new Date();
+  validade.setFullYear(
+    validade.getFullYear() + 2
+  );
+
+  return validade.toLocaleDateString("pt-BR");
+}
+
+function formatarCpfCarteirinha(valor) {
+  const texto = String(valor || "").trim();
+  const digitos = texto.replace(/\D/g, "");
+
+  if (digitos.length !== 11) {
+    return texto || "—";
+  }
+
+  return digitos.replace(
+    /(\d{3})(\d{3})(\d{3})(\d{2})/,
+    "$1.$2.$3-$4"
+  );
+}
+
+function formatarCongregacao(valor) {
+  const texto =
+    String(valor || "").trim();
+
+  const normalizado =
+    texto.toLowerCase();
+
+  if (
+    normalizado.includes("duque de caxias")
+  ) {
+    return "Duque de Caxias - RJ";
+  }
+
+  if (
+    normalizado.includes("petrópolis") ||
+    normalizado.includes("petropolis")
+  ) {
+    return "Petrópolis - RJ";
+  }
+
+  return texto || "Não informada";
+}
+
+function ajustarCampoConjuge(
+  estadoCivil,
+  conjuge
+) {
+  const bloco =
+    document.getElementById("blocoConjuge");
+
+  if (!bloco) {
+    return;
+  }
+
+  const civil =
+    String(estadoCivil || "")
+      .trim()
+      .toLowerCase();
+
+  const possuiConjuge =
+    String(conjuge || "").trim() &&
+    String(conjuge || "").trim() !== "—";
+
+  const casado =
+    civil.includes("casad") ||
+    civil.includes("união") ||
+    civil.includes("uniao");
+
+  bloco.hidden = !(casado || possuiConjuge);
+}
+
+/* =========================================================
+   EXIBIÇÃO E ERROS
+========================================================= */
+
+function mostrarCarteirinha() {
+  const mensagem =
+    document.getElementById(
+      "mensagemCarteirinha"
+    );
+
+  const area =
+    document.getElementById(
+      "areaCartoes"
+    );
+
+  if (mensagem) {
+    mensagem.hidden = true;
+  }
+
+  if (area) {
+    area.hidden = false;
+  }
+}
+
+function mostrarErroCarteirinha(mensagemErro) {
+  const mensagem =
+    document.getElementById(
+      "mensagemCarteirinha"
+    );
+
+  const area =
+    document.getElementById(
+      "areaCartoes"
+    );
+
+  if (area) {
+    area.hidden = true;
+  }
+
+  if (mensagem) {
+    mensagem.hidden = false;
+    mensagem.classList.add("erro");
+    mensagem.textContent =
+      mensagemErro ||
+      "Não foi possível carregar a carteirinha.";
+  }
+}
+
+  </script>
 </body>
 </html>
