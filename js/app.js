@@ -309,6 +309,29 @@ function obterIdDaUrl() {
   return parametros.get("id");
 }
 
+function obterIniciaisCarteirinha(nome) {
+  const partes = String(nome || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (!partes.length) {
+    return "VR";
+  }
+
+  const primeiraInicial = partes[0].charAt(0);
+
+  const segundaInicial =
+    partes.length > 1
+      ? partes[partes.length - 1].charAt(0)
+      : partes[0].charAt(1);
+
+  return (
+    primeiraInicial +
+    (segundaInicial || "")
+  ).toUpperCase();
+}
+
 /* =========================================
    SAIR
 ========================================= */
