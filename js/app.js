@@ -325,161 +325,6 @@ document
     );
   });
 
-
-/* =========================================
-   FOTO DO MEMBRO
-========================================= */
-
-const TIPOS_FOTO_PERMITIDOS = [
-  "image/jpeg",
-  "image/png",
-  "image/webp"
-];
-
-const TAMANHO_MAXIMO_FOTO = 4 * 1024 * 1024;
-const FOTO_PLACEHOLDER =
-  "https://placehold.co/220x280?text=Sem+Foto";
-
-function obterCampoArquivoFoto(formulario) {
-  return formulario?.querySelector(
-    '#fotoMembro, #fotoArquivo'
-  );
-}
-
-function obterArquivoFoto(formulario) {
-  return obterCampoArquivoFoto(formulario)?.files?.[0] || null;
-}
-
-function validarArquivoFoto(arquivo) {
-  if (!arquivo) {
-    return;
-  }
-
-  if (!TIPOS_FOTO_PERMITIDOS.includes(arquivo.type)) {
-    throw new Error(
-      "A foto deve estar no formato JPG, PNG ou WebP."
-    );
-  }
-
-  if (arquivo.size > TAMANHO_MAXIMO_FOTO) {
-    throw new Error("A foto deve ter no máximo 4 MB.");
-  }
-}
-
-function lerArquivoComoDataUrl(arquivo) {
-  return new Promise(function (resolve, reject) {
-    const leitor = new FileReader();
-
-    leitor.onload = function () {
-      resolve(String(leitor.result || ""));
-    };
-
-    leitor.onerror = function () {
-      reject(new Error("Não foi possível ler a foto selecionada."));
-    };
-
-    leitor.readAsDataURL(arquivo);
-  });
-}
-
-async function enviarFotoParaDrive(arquivo) {
-  validarArquivoFoto(arquivo);
-
-  const dataUrl = await lerArquivoComoDataUrl(arquivo);
-  const separador = dataUrl.indexOf(",");
-
-  if (separador < 0) {
-    throw new Error("O conteúdo da foto é inválido.");
-  }
-
-  const resultado = await chamarApi({
-    acao: "uploadFoto",
-    foto: {
-      nome: arquivo.name,
-      tipo: arquivo.type,
-      base64: dataUrl.slice(separador + 1)
-    }
-  });
-
-  if (!resultado.foto || !resultado.foto.url) {
-    throw new Error("A API não retornou o endereço da foto.");
-  }
-
-  return resultado.foto.url;
-}
-
-function atualizarStatusFoto(texto) {
-  const status = document.getElementById("statusFoto");
-
-  if (status) {
-    status.textContent = texto;
-  }
-}
-
-function atualizarPreviewFoto(url) {
-  const preview = document.getElementById("previewFoto");
-
-  if (!preview) {
-    return;
-  }
-
-  preview.src = String(url || "").trim() || FOTO_PLACEHOLDER;
-}
-
-function iniciarSelecaoFoto() {
-  const campoArquivo =
-    document.getElementById("fotoMembro") ||
-    document.getElementById("fotoArquivo");
-
-  if (!campoArquivo) {
-    return;
-  }
-
-  campoArquivo.addEventListener("change", async function () {
-    const arquivo = campoArquivo.files?.[0];
-
-    if (!arquivo) {
-      atualizarPreviewFoto(
-        document.getElementById("foto")?.value || ""
-      );
-      atualizarStatusFoto("Nenhuma nova foto selecionada.");
-      return;
-    }
-
-    try {
-      validarArquivoFoto(arquivo);
-      const dataUrl = await lerArquivoComoDataUrl(arquivo);
-      atualizarPreviewFoto(dataUrl);
-      atualizarStatusFoto(
-        "Pré-visualização pronta. A foto será enviada ao salvar."
-      );
-    } catch (erro) {
-      campoArquivo.value = "";
-      atualizarStatusFoto(erro.message);
-      alert(erro.message);
-    }
-  });
-}
-
-function gerarFotoFicha(membro) {
-  const url = String(membro.foto || "").trim();
-
-  if (!url) {
-    return "";
-  }
-
-  return `
-    <div style="display:flex;justify-content:center;margin-bottom:20px;">
-      <img
-        src="${escaparHtml(url)}"
-        alt="Foto de ${escaparHtml(membro.nomeCompleto || "membro")}" 
-        style="width:160px;height:200px;object-fit:cover;border-radius:14px;border:2px solid #d7dee4;background:#f3f5f6;"
-        onerror="this.style.display='none'"
-      >
-    </div>
-  `;
-}
-
 /* =========================================
    NOVO MEMBRO
 ========================================= */
@@ -510,17 +355,6 @@ if (formularioNovoMembro) {
         );
 
       try {
-        const arquivoFoto =
-          obterArquivoFoto(formularioNovoMembro);
-
-        if (arquivoFoto) {
-          botaoSalvar.textContent = "Enviando foto...";
-          atualizarStatusFoto("Enviando foto ao Google Drive...");
-          dados.foto = await enviarFotoParaDrive(arquivoFoto);
-          atualizarStatusFoto("Foto enviada com sucesso.");
-          botaoSalvar.textContent = "Salvando cadastro...";
-        }
-
         const resultado = await chamarApi({
           acao: "cadastrar",
           dados: dados
@@ -532,8 +366,6 @@ if (formularioNovoMembro) {
         );
 
         formularioNovoMembro.reset();
-        atualizarPreviewFoto("");
-        atualizarStatusFoto("Selecione uma foto para o cadastro.");
 
         const cidade =
           document.getElementById("cidade");
@@ -830,27 +662,74 @@ function mostrarFichaMembro(membro) {
       `
       : "";
 
+  const nomeMembro =
+    membro.nomeCompleto ||
+    "Nome não informado";
+
+  const urlFoto =
+    String(membro.foto || "").trim();
+
+  const iniciais =
+    obterIniciaisCarteirinha(nomeMembro);
+
+  const fotoPerfil = urlFoto
+    ? `
+      <img
+        class="member-profile-photo"
+        src="${escaparHtml(urlFoto)}"
+        alt="Foto de ${escaparHtml(nomeMembro)}"
+        onerror="
+          this.hidden = true;
+          this.nextElementSibling.hidden = false;
+        "
+      >
+      <div
+        class="member-profile-photo-placeholder"
+        hidden
+      >
+        ${escaparHtml(iniciais)}
+      </div>
+    `
+    : `
+      <div class="member-profile-photo-placeholder">
+        ${escaparHtml(iniciais)}
+      </div>
+    `;
+
   fichaMembro.innerHTML = `
-    ${gerarFotoFicha(membro)}
-    <section class="profile-card">
-      <div>
-        <span class="profile-label">ID</span>
-        <strong>${escaparHtml(membro.id)}</strong>
+    <section class="member-profile-hero">
+      <div class="member-profile-photo-box">
+        ${fotoPerfil}
       </div>
 
-      <div>
-        <span class="profile-label">Situação</span>
-        <strong>${escaparHtml(membro.situacao || "-")}</strong>
-      </div>
+      <div class="member-profile-summary">
+        <p class="dashboard-label">
+          Cadastro ministerial
+        </p>
 
-      <div>
-        <span class="profile-label">Cargo</span>
-        <strong>${escaparHtml(membro.cargo || "-")}</strong>
-      </div>
+        <h2>${escaparHtml(nomeMembro)}</h2>
 
-      <div>
-        <span class="profile-label">Cidade da igreja</span>
-        <strong>${escaparHtml(membro.congregacao || "-")}</strong>
+        <div class="member-profile-badges">
+          <span>
+            ID ${escaparHtml(membro.id || "—")}
+          </span>
+
+          <span>
+            ${escaparHtml(membro.situacao || "Ativo")}
+          </span>
+        </div>
+
+        <div class="member-profile-meta">
+          <div>
+            <span>Cargo</span>
+            <strong>${escaparHtml(membro.cargo || "Membro")}</strong>
+          </div>
+
+          <div>
+            <span>Cidade da igreja</span>
+            <strong>${escaparHtml(membro.congregacao || "Não informada")}</strong>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -904,7 +783,7 @@ function mostrarFichaMembro(membro) {
       </div>
     </section>
 
-    <div class="form-actions">
+    <div class="form-actions member-profile-actions">
       <a
         class="secondary-link"
         href="membros.html"
@@ -913,12 +792,12 @@ function mostrarFichaMembro(membro) {
       </a>
 
       <a
-        class="primary-link"
+        class="secondary-link"
         href="carteirinha.html?id=${encodeURIComponent(
           membro.id
         )}"
       >
-        Gerar carteirinha
+        Visualizar carteirinha
       </a>
 
       ${botaoEditar}
@@ -1022,13 +901,6 @@ function preencherFormularioEdicao(membro) {
       "Editar " +
       (membro.nomeCompleto || "Membro");
   }
-
-  atualizarPreviewFoto(membro.foto || "");
-  atualizarStatusFoto(
-    membro.foto
-      ? "Foto atual do cadastro."
-      : "Selecione uma foto para o cadastro."
-  );
 }
 
 formularioEditarMembro?.addEventListener(
@@ -1054,17 +926,6 @@ formularioEditarMembro?.addEventListener(
       );
 
     try {
-      const arquivoFoto =
-        obterArquivoFoto(formularioEditarMembro);
-
-      if (arquivoFoto) {
-        botaoSalvar.textContent = "Enviando foto...";
-        atualizarStatusFoto("Enviando foto ao Google Drive...");
-        dados.foto = await enviarFotoParaDrive(arquivoFoto);
-        atualizarStatusFoto("Foto enviada com sucesso.");
-        botaoSalvar.textContent = "Salvando alterações...";
-      }
-
       const resultado = await chamarApi({
         acao: "atualizar",
         dados: dados
@@ -1409,6 +1270,5 @@ window.addEventListener(
     iniciarGoogleLogin();
     aplicarIdentidadeUsuario();
     aplicarPermissoesDaTela();
-    iniciarSelecaoFoto();
   }
 );
