@@ -1,1064 +1,199 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <title>Carteirinha do membro | Projeto Neemias</title>
 
-  <title>Carteirinha | Vidas Renovadas Gestão</title>
-
-  <link
-    rel="stylesheet"
-    href="css/estilo.css?v=19"
-  >
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"
-    defer
-  ></script>
-
-  <style>
-    :root {
-      --azul-card: #102c46;
-      --azul-card-2: #183d5d;
-      --dourado-card: #c99a4a;
-      --dourado-card-claro: #e4c17d;
-      --branco-card: #ffffff;
-      --texto-card: #142c40;
-      --texto-suave-card: #687784;
-      --linha-card: rgba(201, 154, 74, 0.58);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body.carteirinha-page {
-      min-height: 100vh;
-      margin: 0;
-      padding: 28px;
-      display: block;
-      background: #edf2f5;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--texto-card);
-    }
-
-    .carteirinha-topo {
-      width: min(100%, 1120px);
-      margin: 0 auto 22px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .carteirinha-topo h1 {
-      margin: 0;
-      color: var(--azul-card);
-      font-size: 28px;
-    }
-
-    .carteirinha-topo p {
-      margin: 6px 0 0;
-      color: #6f7d86;
-    }
-
-    .carteirinha-acoes {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .carteirinha-acoes a,
-    .carteirinha-acoes button {
-      min-height: 42px;
-      padding: 10px 16px;
-      border-radius: 9px;
-      font-weight: 700;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .carteirinha-acoes a {
-      display: inline-flex;
-      align-items: center;
-      border: 1px solid #ccd6dd;
-      background: #ffffff;
-      color: var(--azul-card);
-    }
-
-    .carteirinha-acoes button {
-      width: auto;
-      border: 0;
-      background: var(--azul-card);
-      color: #ffffff;
-    }
-
-    #statusCarteirinha {
-      width: min(100%, 1120px);
-      margin: 0 auto 18px;
-      padding: 14px 16px;
-      border-radius: 10px;
-      background: #ffffff;
-      color: #667680;
-      text-align: center;
-    }
-
-    .cartoes-wrapper {
-      width: min(100%, 1120px);
-      margin: 0 auto;
-      padding: 34px;
-      display: grid;
-      grid-template-columns: repeat(2, max-content);
-      justify-content: center;
-      gap: 38px;
-      overflow-x: auto;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.78);
-      box-shadow: 0 16px 44px rgba(15, 47, 72, 0.10);
-    }
-
-    .cartao {
-      position: relative;
-      width: 85.6mm;
-      height: 54mm;
-      overflow: hidden;
-      flex: 0 0 auto;
-      border-radius: 3.2mm;
-      background: #ffffff;
-      box-shadow: 0 18px 38px rgba(15, 47, 72, 0.22);
-      print-color-adjust: exact;
-      -webkit-print-color-adjust: exact;
-    }
-
-    /* =========================
-       FRENTE
-    ========================= */
-
-    .frente {
-      background: #ffffff;
-    }
-
-    .painel-azul-frente {
-      position: absolute;
-      inset: 0 auto 0 0;
-      width: 29.5mm;
-      background:
-        linear-gradient(
-          180deg,
-          var(--azul-card),
-          var(--azul-card-2)
-        );
-    }
-
-    .painel-azul-frente::after {
-      content: "";
-      position: absolute;
-      top: -9mm;
-      right: -9mm;
-      width: 18mm;
-      height: 72mm;
-      border-radius: 50%;
-      background: var(--dourado-card);
-      box-shadow: 4.8mm 0 0 #ffffff;
-    }
-
-    .logo-frente {
-      position: absolute;
-      left: 3mm;
-      top: 3.6mm;
-      z-index: 3;
-      width: 22mm;
-      height: 28mm;
-      object-fit: contain;
-    }
-
-    .status-frente {
-      position: absolute;
-      left: 3.3mm;
-      bottom: 4mm;
-      z-index: 4;
-      min-width: 20.5mm;
-      padding: 2mm 2.2mm;
-      border-radius: 1.8mm;
-      background:
-        linear-gradient(
-          135deg,
-          var(--dourado-card-claro),
-          var(--dourado-card)
-        );
-      color: var(--azul-card);
-      font-size: 2.05mm;
-      font-weight: 900;
-      text-align: center;
-      text-transform: uppercase;
-    }
-
-    .foto-frente {
-      position: absolute;
-      left: 30.3mm;
-      top: 5mm;
-      width: 21.5mm;
-      height: 31mm;
-      z-index: 5;
-      overflow: hidden;
-      border: 0.45mm solid var(--dourado-card);
-      border-radius: 2mm;
-      background: #dfe5e9;
-    }
-
-    .foto-frente img {
-      display: none;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .foto-placeholder {
-      width: 100%;
-      height: 100%;
-      display: grid;
-      place-items: center;
-      background:
-        linear-gradient(
-          145deg,
-          #d8dde1,
-          #c5ccd1
-        );
-      color: #ffffff;
-      font-size: 6.7mm;
-      font-weight: 800;
-    }
-
-    .dados-frente {
-      position: absolute;
-      left: 55mm;
-      top: 4.3mm;
-      right: 4mm;
-      bottom: 11.5mm;
-    }
-
-    .campo-frente {
-      margin-bottom: 1.25mm;
-      padding-bottom: 1.05mm;
-      border-bottom: 0.28mm solid var(--linha-card);
-    }
-
-    .campo-frente span {
-      display: block;
-      color: var(--texto-suave-card);
-      font-size: 1.32mm;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .campo-frente strong {
-      display: block;
-      margin-top: 0.42mm;
-      color: var(--azul-card);
-      font-size: 2.32mm;
-      line-height: 1.05;
-      font-weight: 900;
-      text-transform: uppercase;
-      overflow-wrap: anywhere;
-    }
-
-    .campo-nome strong {
-      max-height: 6.3mm;
-      overflow: hidden;
-      font-size: 2.55mm;
-    }
-
-    .rodape-frente {
-      position: absolute;
-      left: 29.5mm;
-      right: 0;
-      bottom: 0;
-      height: 10.7mm;
-      padding: 1.6mm 3.5mm 1.3mm 5.4mm;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1.45fr;
-      gap: 2mm;
-      align-items: center;
-      background:
-        linear-gradient(
-          90deg,
-          var(--azul-card),
-          var(--azul-card-2)
-        );
-      color: #ffffff;
-    }
-
-    .rodape-frente span {
-      display: block;
-      color: #ccd8e0;
-      font-size: 1.32mm;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .rodape-frente strong {
-      display: block;
-      margin-top: 0.35mm;
-      color: #ffffff;
-      font-size: 2mm;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .assinatura-pastor {
-      text-align: right;
-    }
-
-    .assinatura-pastor strong {
-      color: var(--dourado-card-claro);
-      font-family: "Brush Script MT", cursive;
-      font-size: 3.1mm;
-      font-weight: 500;
-    }
-
-    /* =========================
-       VERSO
-    ========================= */
-
-    .verso {
-      background: #ffffff;
-    }
-
-    .curva-verso {
-      position: absolute;
-      right: -7mm;
-      top: -9mm;
-      width: 34mm;
-      height: 69mm;
-      border-radius: 50%;
-      background:
-        linear-gradient(
-          180deg,
-          var(--azul-card),
-          var(--azul-card-2)
-        );
-      border-left: 2.2mm solid var(--dourado-card);
-    }
-
-    .logo-verso {
-      position: absolute;
-      left: 3.6mm;
-      top: 4mm;
-      width: 25mm;
-      height: 31mm;
-      object-fit: contain;
-    }
-
-    .dados-verso {
-      position: absolute;
-      left: 32mm;
-      top: 4.8mm;
-      width: 27mm;
-    }
-
-    .campo-verso {
-      margin-bottom: 1.55mm;
-    }
-
-    .campo-verso span {
-      display: block;
-      color: var(--azul-card);
-      font-size: 1.3mm;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-
-    .campo-verso strong {
-      display: block;
-      margin-top: 0.3mm;
-      color: var(--texto-card);
-      font-size: 1.82mm;
-      line-height: 1.22;
-      font-weight: 600;
-      overflow-wrap: anywhere;
-    }
-
-    .campo-conjuge[hidden] {
-      display: none !important;
-    }
-
-    .versiculo-verso {
-      position: absolute;
-      right: 4mm;
-      top: 5mm;
-      z-index: 3;
-      width: 19mm;
-      margin: 0;
-      color: #ffffff;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.75mm;
-      line-height: 1.35;
-      font-style: italic;
-      text-align: center;
-    }
-
-    .versiculo-verso span {
-      display: block;
-      margin-top: 1.2mm;
-      color: var(--dourado-card-claro);
-      font-size: 1.38mm;
-      font-style: normal;
-    }
-
-    .assinatura-verso {
-      position: absolute;
-      left: 7mm;
-      bottom: 9mm;
-      width: 27mm;
-      padding-top: 1.3mm;
-      border-top: 0.28mm solid #aeb8bf;
-      text-align: center;
-    }
-
-    .assinatura-verso span {
-      display: block;
-      color: #5f6b73;
-      font-size: 1.32mm;
-      text-transform: uppercase;
-    }
-
-    .assinatura-verso strong {
-      display: block;
-      margin-top: 0.5mm;
-      color: var(--azul-card);
-      font-family: "Brush Script MT", cursive;
-      font-size: 3mm;
-      font-weight: 500;
-    }
-
-    .emissao-verso {
-      position: absolute;
-      left: 39mm;
-      bottom: 10mm;
-      color: var(--azul-card);
-      text-align: center;
-    }
-
-    .emissao-verso span {
-      display: block;
-      font-size: 1.32mm;
-      text-transform: uppercase;
-    }
-
-    .emissao-verso strong {
-      display: block;
-      margin-top: 0.4mm;
-      font-size: 2.05mm;
-    }
-
-    .qrcode-verso {
-      position: absolute;
-      right: 4mm;
-      bottom: 7.5mm;
-      z-index: 4;
-      width: 15mm;
-      height: 15mm;
-      padding: 0.8mm;
-      border-radius: 1mm;
-      background: #ffffff;
-    }
-
-    .qrcode-verso canvas,
-    .qrcode-verso img {
-      width: 13.4mm !important;
-      height: 13.4mm !important;
-    }
-
-    .rodape-verso {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 6mm;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--azul-card);
-      color: var(--dourado-card-claro);
-      font-size: 1.32mm;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    @media (max-width: 920px) {
-      .cartoes-wrapper {
-        grid-template-columns: max-content;
-      }
-    }
-
-    @media (max-width: 430px) {
-      body.carteirinha-page {
-        padding: 14px;
-      }
-
-      .cartoes-wrapper {
-        width: 100%;
-        padding: 16px;
-        justify-content: start;
-      }
-    }
-
-    @media print {
-      @page {
-        size: A4 portrait;
-        margin: 12mm;
-      }
-
-      body.carteirinha-page {
-        padding: 0;
-        background: #ffffff;
-      }
-
-      .carteirinha-topo,
-      #statusCarteirinha {
-        display: none !important;
-      }
-
-      .cartoes-wrapper {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        grid-template-columns: repeat(2, 85.6mm);
-        justify-content: start;
-        gap: 12mm 10mm;
-        overflow: visible;
-        background: transparent;
-        box-shadow: none;
-      }
-
-      .cartao {
-        box-shadow: none;
-        border: 0.2mm solid #cbd3d9;
-        break-inside: avoid;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="css/carteirinha.css">
 </head>
 
-<body class="carteirinha-page">
-
-  <header class="carteirinha-topo">
-
-    <div>
-      <h1>Carteirinha do membro</h1>
-      <p>Versão oficial para emissão e impressão.</p>
-    </div>
-
-    <div class="carteirinha-acoes">
-      <a id="voltarFicha" href="membros.html">
-        Voltar
-      </a>
-
-      <button id="imprimirCarteirinha" type="button">
-        Imprimir
-      </button>
-    </div>
-
-  </header>
-
-  <div id="statusCarteirinha">
-    Carregando dados do membro...
-  </div>
-
-  <main
-    id="areaCarteirinha"
-    class="cartoes-wrapper"
-    hidden
-  >
-
-    <!-- FRENTE -->
-    <section class="cartao frente">
-
-      <div class="painel-azul-frente"></div>
-
-      <img
-        class="logo-frente"
-        src="logo.png"
-        alt="Assembleia de Deus Ministério Vidas Renovadas"
-      >
-
-      <div id="statusFrente" class="status-frente">
-        Ativo
+<body>
+  <main class="pagina-carteirinha">
+    <header class="barra-superior">
+      <div>
+        <p class="rotulo-superior">Projeto Neemias</p>
+        <h1>Carteirinha do membro</h1>
       </div>
 
-      <div class="foto-frente">
+      <div class="acoes-superiores">
+        <a class="botao botao-secundario" id="botaoVoltar" href="membros.html">
+          Voltar
+        </a>
 
-        <img
-          id="fotoFrente"
-          alt="Foto do membro"
-        >
-
-        <div
-          id="fotoPlaceholder"
-          class="foto-placeholder"
-        >
-          VR
-        </div>
-
+        <button class="botao botao-principal" id="botaoImprimir" type="button">
+          Imprimir
+        </button>
       </div>
+    </header>
 
-      <div class="dados-frente">
-
-        <div class="campo-frente campo-nome">
-          <span>Nome completo</span>
-          <strong id="nomeFrente">
-            Nome do membro
-          </strong>
-        </div>
-
-        <div class="campo-frente">
-          <span>Nº de membro</span>
-          <strong id="numeroFrente">—</strong>
-        </div>
-
-        <div class="campo-frente">
-          <span>Data de batismo</span>
-          <strong id="batismoFrente">
-            Não informada
-          </strong>
-        </div>
-
-        <div class="campo-frente">
-          <span>Cargo</span>
-          <strong id="cargoFrente">
-            Membro
-          </strong>
-        </div>
-
-      </div>
-
-      <div class="rodape-frente">
-
-        <div>
-          <span>Emissão</span>
-          <strong id="emissaoFrente">—</strong>
-        </div>
-
-        <div>
-          <span>Validade</span>
-          <strong id="validadeFrente">—</strong>
-        </div>
-
-        <div class="assinatura-pastor">
-          <strong>Rogerio Lemos</strong>
-          <span>Pastor Presidente</span>
-        </div>
-
-      </div>
-
+    <section
+      class="mensagem-estado"
+      id="mensagemCarteirinha"
+      aria-live="polite"
+    >
+      Carregando os dados do membro...
     </section>
 
-    <!-- VERSO -->
-    <section class="cartao verso">
+    <section
+      class="area-cartoes"
+      id="areaCartoes"
+      hidden
+      aria-label="Frente e verso da carteirinha"
+    >
+      <!-- FRENTE -->
+      <article class="cartao cartao-frente" aria-label="Frente da carteirinha">
+        <div class="faixa-dourada faixa-dourada-superior"></div>
+        <div class="faixa-dourada faixa-dourada-inferior"></div>
 
-      <div class="curva-verso"></div>
+        <div class="cabecalho-frente">
+          <img
+            class="logo-frente"
+            src="logo.png"
+            alt="Logo da igreja"
+          >
 
-      <img
-        class="logo-verso"
-        src="logo.png"
-        alt="Assembleia de Deus Ministério Vidas Renovadas"
-      >
-
-      <div class="dados-verso">
-
-        <div class="campo-verso">
-          <span>Endereço da igreja</span>
-          <strong id="enderecoIgrejaVerso">
-            Não informado
-          </strong>
+          <div class="identidade-igreja">
+            <strong>VIDAS RENOVADAS</strong>
+            <span>Ministério Apostólico</span>
+          </div>
         </div>
 
-        <div class="campo-verso">
-          <span>Estado civil</span>
-          <strong id="estadoCivilVerso">
-            Não informado
-          </strong>
+        <div class="conteudo-frente">
+          <div class="moldura-foto">
+            <img
+              id="fotoMembroCarteirinha"
+              class="foto-membro"
+              src=""
+              alt="Foto do membro"
+              hidden
+            >
+
+            <div
+              id="fotoPlaceholderCarteirinha"
+              class="foto-placeholder"
+              aria-label="Foto não disponível"
+            >
+              VR
+            </div>
+          </div>
+
+          <div class="dados-principais">
+            <p class="categoria-documento">CARTEIRA DE MEMBRO</p>
+
+            <h2 id="nomeMembroCarteirinha">Nome do membro</h2>
+
+            <div class="grade-dados-frente">
+              <div class="campo-cartao">
+                <span>Nº do membro</span>
+                <strong id="numeroMembroCarteirinha">—</strong>
+              </div>
+
+              <div class="campo-cartao">
+                <span>Batismo</span>
+                <strong id="batismoMembroCarteirinha">—</strong>
+              </div>
+
+              <div class="campo-cartao campo-largo">
+                <span>Cargo / função</span>
+                <strong id="cargoMembroCarteirinha">Membro</strong>
+              </div>
+
+              <div class="campo-cartao">
+                <span>Situação</span>
+                <strong id="situacaoMembroCarteirinha">Ativo</strong>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div
-          id="campoConjugeVerso"
-          class="campo-verso campo-conjuge"
-          hidden
-        >
-          <span>Cônjuge</span>
-          <strong id="conjugeVerso">
-            Não informado
-          </strong>
+        <footer class="rodape-frente">
+          <div class="datas-cartao">
+            <div>
+              <span>Emissão</span>
+              <strong id="emissaoCarteirinha">—</strong>
+            </div>
+
+            <div>
+              <span>Validade</span>
+              <strong id="validadeCarteirinha">—</strong>
+            </div>
+          </div>
+
+          <div class="assinatura-cartao">
+            <span class="nome-assinatura">Rogerio Lemos</span>
+            <span>Pastor Presidente</span>
+          </div>
+        </footer>
+      </article>
+
+      <!-- VERSO -->
+      <article class="cartao cartao-verso" aria-label="Verso da carteirinha">
+        <div class="detalhe-verso detalhe-verso-superior"></div>
+        <div class="detalhe-verso detalhe-verso-inferior"></div>
+
+        <header class="cabecalho-verso">
+          <img
+            class="logo-verso"
+            src="logo.png"
+            alt=""
+            aria-hidden="true"
+          >
+
+          <div>
+            <strong>VIDAS RENOVADAS</strong>
+            <span>Ministério Apostólico</span>
+          </div>
+        </header>
+
+        <div class="conteudo-verso">
+          <div class="dados-verso">
+            <div class="campo-verso campo-verso-largo">
+              <span>Cidade da igreja</span>
+              <strong id="congregacaoCarteirinha">—</strong>
+            </div>
+
+            <div class="campo-verso">
+              <span>Estado civil</span>
+              <strong id="estadoCivilCarteirinha">—</strong>
+            </div>
+
+            <div class="campo-verso">
+              <span>RG</span>
+              <strong id="rgCarteirinha">—</strong>
+            </div>
+
+            <div class="campo-verso campo-verso-largo" id="blocoConjuge">
+              <span>Cônjuge</span>
+              <strong id="conjugeCarteirinha">—</strong>
+            </div>
+
+            <div class="campo-verso campo-verso-largo">
+              <span>CPF</span>
+              <strong id="cpfCarteirinha">—</strong>
+            </div>
+          </div>
+
+          <div class="area-qrcode">
+            <div id="qrCodeCarteirinha" class="qrcode"></div>
+            <span>Verificar cadastro</span>
+          </div>
         </div>
 
-        <div class="campo-verso">
-          <span>RG</span>
-          <strong id="rgVerso">—</strong>
-        </div>
+        <blockquote class="versiculo-cartao">
+          “O Senhor te abençoe e te guarde.”
+          <cite>Números 6:24</cite>
+        </blockquote>
 
-        <div class="campo-verso">
-          <span>CPF</span>
-          <strong id="cpfVerso">—</strong>
-        </div>
-
-      </div>
-
-      <p class="versiculo-verso">
-        “Portanto, se alguém está em Cristo,
-        é nova criatura; as coisas antigas já
-        passaram; eis que se fizeram novas.”
-        <span>2 Coríntios 5:17</span>
-      </p>
-
-      <div class="assinatura-verso">
-        <span>Pastor Presidente</span>
-        <strong>Rogerio Lemos</strong>
-      </div>
-
-      <div class="emissao-verso">
-        <span>Emissão</span>
-        <strong id="emissaoVerso">—</strong>
-      </div>
-
-      <div
-        id="qrCodeVerso"
-        class="qrcode-verso"
-      ></div>
-
-      <div class="rodape-verso">
-        Esta carteirinha é pessoal e intransferível
-      </div>
-
+        <footer class="rodape-verso">
+          Documento de identificação ministerial — uso pessoal e intransferível
+        </footer>
+      </article>
     </section>
-
   </main>
 
-  <script src="js/app.js?v=19"></script>
-
-  <script>
-    const areaCarteirinha =
-      document.getElementById("areaCarteirinha");
-
-    const statusCarteirinha =
-      document.getElementById("statusCarteirinha");
-
-    const voltarFicha =
-      document.getElementById("voltarFicha");
-
-    const imprimirCarteirinha =
-      document.getElementById("imprimirCarteirinha");
-
-    imprimirCarteirinha?.addEventListener(
-      "click",
-      function () {
-        window.print();
-      }
-    );
-
-    iniciarCarteirinha();
-
-    async function iniciarCarteirinha() {
-      const idMembro = obterIdDaUrl();
-
-      if (!idMembro) {
-        mostrarErro(
-          "ID do membro não informado."
-        );
-        return;
-      }
-
-      voltarFicha.href =
-        "membro.html?id=" +
-        encodeURIComponent(idMembro);
-
-      try {
-        const resultado = await chamarApi({
-          acao: "buscar",
-          id: idMembro
-        });
-
-        let membro = resultado.membro;
-
-        if (typeof membro === "string") {
-          membro = JSON.parse(membro);
-        }
-
-        preencherCarteirinha(membro);
-
-        statusCarteirinha.hidden = true;
-        areaCarteirinha.hidden = false;
-
-      } catch (erro) {
-        console.error(erro);
-        mostrarErro(erro.message);
-      }
-    }
-
-    function preencherCarteirinha(membro) {
-      const hoje = new Date();
-
-      definirTexto(
-        "nomeFrente",
-        membro.nomeCompleto ||
-        "Nome não informado"
-      );
-
-      definirTexto(
-        "numeroFrente",
-        membro.numeroCarteirinha ||
-        membro.id ||
-        "—"
-      );
-
-      definirTexto(
-        "batismoFrente",
-        formatarData(membro.dataBatismo) ||
-        "Não informada"
-      );
-
-      definirTexto(
-        "cargoFrente",
-        membro.cargo || "Membro"
-      );
-
-      definirTexto(
-        "statusFrente",
-        membro.situacao || "Ativo"
-      );
-
-      definirTexto(
-        "emissaoFrente",
-        formatarDataObjeto(hoje)
-      );
-
-      definirTexto(
-        "emissaoVerso",
-        formatarDataObjeto(hoje)
-      );
-
-      definirTexto(
-        "validadeFrente",
-        formatarData(
-          membro.validadeCarteirinha
-        ) || "Não informada"
-      );
-
-      definirTexto(
-        "enderecoIgrejaVerso",
-        obterEnderecoIgreja(
-          membro.congregacao
-        )
-      );
-
-      definirTexto(
-        "estadoCivilVerso",
-        membro.estadoCivil ||
-        "Não informado"
-      );
-
-      definirTexto(
-        "rgVerso",
-        membro.rg || "—"
-      );
-
-      definirTexto(
-        "cpfVerso",
-        membro.cpf || "—"
-      );
-
-      preencherConjuge(membro);
-      preencherFoto(membro);
-      gerarQrCode(membro);
-    }
-
-    function obterEnderecoIgreja(congregacao) {
-      const texto =
-        String(congregacao || "")
-          .trim()
-          .toLowerCase();
-
-      if (
-        texto.includes("petrópolis") ||
-        texto.includes("petropolis")
-      ) {
-        return "Petrópolis — RJ";
-      }
-
-      return "Duque de Caxias — RJ";
-    }
-
-    function preencherConjuge(membro) {
-      const estadoCivil =
-        String(membro.estadoCivil || "")
-          .trim()
-          .toLowerCase();
-
-      const campo =
-        document.getElementById(
-          "campoConjugeVerso"
-        );
-
-      const casado =
-        estadoCivil.includes("casado");
-
-      if (!casado) {
-        campo.hidden = true;
-        return;
-      }
-
-      definirTexto(
-        "conjugeVerso",
-        membro.conjuge ||
-        "Não informado"
-      );
-
-      campo.hidden = false;
-    }
-
-    function preencherFoto(membro) {
-      const foto =
-        document.getElementById("fotoFrente");
-
-      const placeholder =
-        document.getElementById(
-          "fotoPlaceholder"
-        );
-
-      const url =
-        String(membro.foto || "").trim();
-
-      placeholder.textContent =
-        obterIniciais(membro.nomeCompleto);
-
-      if (!url) {
-        return;
-      }
-
-      foto.src = url;
-
-      foto.onload = function () {
-        foto.style.display = "block";
-        placeholder.style.display = "none";
-      };
-
-      foto.onerror = function () {
-        foto.style.display = "none";
-        placeholder.style.display = "grid";
-      };
-    }
-
-    function gerarQrCode(membro) {
-      const area =
-        document.getElementById("qrCodeVerso");
-
-      if (typeof QRCode === "undefined") {
-        setTimeout(
-          function () {
-            gerarQrCode(membro);
-          },
-          200
-        );
-        return;
-      }
-
-      const url =
-        new URL(
-          "membro.html",
-          window.location.href
-        );
-
-      url.searchParams.set(
-        "id",
-        membro.id || ""
-      );
-
-      area.innerHTML = "";
-
-      new QRCode(area, {
-        text: url.toString(),
-        width: 180,
-        height: 180,
-        correctLevel:
-          QRCode.CorrectLevel.M
-      });
-    }
-
-    function definirTexto(id, valor) {
-      const elemento =
-        document.getElementById(id);
-
-      if (elemento) {
-        elemento.textContent = valor;
-      }
-    }
-
-    function obterIniciais(nome) {
-      const partes = String(nome || "")
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean);
-
-      if (!partes.length) {
-        return "VR";
-      }
-
-      if (partes.length === 1) {
-        return partes[0]
-          .slice(0, 2)
-          .toUpperCase();
-      }
-
-      return (
-        partes[0][0] +
-        partes[partes.length - 1][0]
-      ).toUpperCase();
-    }
-
-    function formatarData(valor) {
-      if (!valor) {
-        return "";
-      }
-
-      const texto = String(valor);
-
-      if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) {
-        const partes = texto.split("-");
-
-        return (
-          partes[2] +
-          "/" +
-          partes[1] +
-          "/" +
-          partes[0]
-        );
-      }
-
-      return texto;
-    }
-
-    function formatarDataObjeto(data) {
-      return new Intl.DateTimeFormat(
-        "pt-BR"
-      ).format(data);
-    }
-
-    function mostrarErro(mensagem) {
-      statusCarteirinha.hidden = false;
-      statusCarteirinha.textContent =
-        mensagem;
-      areaCarteirinha.hidden = true;
-    }
-  </script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="js/carteirinha.js"></script>
 </body>
-
 </html>
