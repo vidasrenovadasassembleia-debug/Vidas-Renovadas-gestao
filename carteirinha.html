@@ -450,7 +450,7 @@ a {
 
 .conteudo-verso {
   display: grid;
-  grid-template-columns: 1fr 27%;
+  grid-template-columns: minmax(0, 1fr) 25%;
   gap: 5%;
   align-items: center;
   min-height: 0;
@@ -460,18 +460,24 @@ a {
 .dados-verso {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(3px, 1vw, 8px);
+  gap: clamp(5px, 1.1vw, 10px);
   min-width: 0;
 }
 
 .campo-verso {
   min-width: 0;
-  padding-bottom: 3%;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+  padding: 4% 5%;
+  border: 1px solid rgba(234, 209, 138, 0.22);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.055);
 }
 
 .campo-verso-largo {
   grid-column: 1 / -1;
+}
+
+.campo-verso-documento {
+  border-left: 2px solid var(--dourado);
 }
 
 .campo-verso span {
@@ -483,9 +489,13 @@ a {
   overflow: hidden;
   color: var(--branco);
   font-size: clamp(0.47rem, 1.03vw, 0.7rem);
-  line-height: 1.1;
+  line-height: 1.18;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.campo-verso-familia strong {
+  white-space: normal;
 }
 
 .area-qrcode {
@@ -785,17 +795,17 @@ a {
               <strong id="estadoCivilCarteirinha">—</strong>
             </div>
 
-            <div class="campo-verso">
+            <div class="campo-verso campo-verso-familia">
+              <span id="rotuloFamiliaCarteirinha">Cônjuge</span>
+              <strong id="familiaCarteirinha">—</strong>
+            </div>
+
+            <div class="campo-verso campo-verso-documento">
               <span>RG</span>
               <strong id="rgCarteirinha">—</strong>
             </div>
 
-            <div class="campo-verso campo-verso-largo" id="blocoConjuge">
-              <span>Cônjuge</span>
-              <strong id="conjugeCarteirinha">—</strong>
-            </div>
-
-            <div class="campo-verso campo-verso-largo">
+            <div class="campo-verso campo-verso-documento">
               <span>CPF</span>
               <strong id="cpfCarteirinha">—</strong>
             </div>
@@ -1048,8 +1058,19 @@ function preencherCarteirinha(membro, idUrl) {
   const conjuge =
     primeiroValor(
       membro.conjuge,
-      membro.nomeConjuge,
-      "—"
+      membro.nomeConjuge
+    );
+
+  const pai =
+    primeiroValor(
+      membro.pai,
+      membro.nomePai
+    );
+
+  const mae =
+    primeiroValor(
+      membro.mae,
+      membro.nomeMae
     );
 
   const rg =
@@ -1113,9 +1134,10 @@ function preencherCarteirinha(membro, idUrl) {
     estadoCivil
   );
 
-  definirTexto(
-    "conjugeCarteirinha",
-    conjuge
+  preencherDadosFamiliares(
+    conjuge,
+    pai,
+    mae
   );
 
   definirTexto(
@@ -1144,11 +1166,6 @@ function preencherCarteirinha(membro, idUrl) {
   preencherFotoCarteirinha(
     primeiroValor(membro.foto),
     nome
-  );
-
-  ajustarCampoConjuge(
-    estadoCivil,
-    conjuge
   );
 
   gerarQrCodeCarteirinha(
@@ -1425,33 +1442,47 @@ function formatarCongregacao(valor) {
   return texto || "Não informada";
 }
 
-function ajustarCampoConjuge(
-  estadoCivil,
-  conjuge
+function preencherDadosFamiliares(
+  conjuge,
+  pai,
+  mae
 ) {
-  const bloco =
-    document.getElementById("blocoConjuge");
+  const rotulo =
+    document.getElementById(
+      "rotuloFamiliaCarteirinha"
+    );
 
-  if (!bloco) {
+  const valor =
+    document.getElementById(
+      "familiaCarteirinha"
+    );
+
+  if (!rotulo || !valor) {
     return;
   }
 
-  const civil =
-    String(estadoCivil || "")
-      .trim()
-      .toLowerCase();
+  const nomeConjuge =
+    String(conjuge || "").trim();
 
-  const possuiConjuge =
-    String(conjuge || "").trim() &&
-    String(conjuge || "").trim() !== "—";
+  if (nomeConjuge) {
+    rotulo.textContent = "Cônjuge";
+    valor.textContent = nomeConjuge;
+    return;
+  }
 
-  const casado =
-    civil.includes("casad") ||
-    civil.includes("união") ||
-    civil.includes("uniao");
+  const nomesPais = [pai, mae]
+    .map(function (nome) {
+      return String(nome || "").trim();
+    })
+    .filter(Boolean);
 
-  bloco.hidden = !(casado || possuiConjuge);
+  rotulo.textContent = "Filiação";
+  valor.textContent =
+    nomesPais.length
+      ? nomesPais.join(" • ")
+      : "Não informada";
 }
+
 
 /* =========================================================
    EXIBIÇÃO E ERROS
