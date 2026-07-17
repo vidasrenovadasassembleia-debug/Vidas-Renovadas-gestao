@@ -13,7 +13,7 @@
 
   <link
     rel="stylesheet"
-    href="css/estilo.css?v=14"
+    href="css/estilo.css?v=19"
   >
 
   <script
@@ -23,84 +23,85 @@
 
   <style>
     :root {
-      --azul-escuro: #0b2942;
-      --azul-medio: #123f62;
-      --azul-claro: #1d557a;
-      --dourado: #c99a4c;
-      --dourado-claro: #e2bd78;
-      --branco: #ffffff;
-      --cinza-claro: #f4f5f6;
-      --cinza-texto: #5e6a73;
-      --texto: #142a3a;
+      --azul-card: #102c46;
+      --azul-card-2: #183d5d;
+      --dourado-card: #c99a4a;
+      --dourado-card-claro: #e4c17d;
+      --branco-card: #ffffff;
+      --texto-card: #142c40;
+      --texto-suave-card: #687784;
+      --linha-card: rgba(201, 154, 74, 0.58);
     }
 
     * {
       box-sizing: border-box;
     }
 
-    body.carteirinha-modelo-page {
+    body.carteirinha-page {
       min-height: 100vh;
       margin: 0;
       padding: 28px;
-      background: #edf1f4;
+      display: block;
+      background: #edf2f5;
       font-family: Arial, Helvetica, sans-serif;
-      color: var(--texto);
+      color: var(--texto-card);
     }
 
-    .topo-carteirinha {
-      width: min(100%, 1100px);
+    .carteirinha-topo {
+      width: min(100%, 1120px);
       margin: 0 auto 22px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 18px;
       flex-wrap: wrap;
     }
 
-    .topo-carteirinha h1 {
+    .carteirinha-topo h1 {
       margin: 0;
-      color: var(--azul-escuro);
+      color: var(--azul-card);
       font-size: 28px;
     }
 
-    .topo-carteirinha p {
+    .carteirinha-topo p {
       margin: 6px 0 0;
       color: #6f7d86;
     }
 
-    .acoes-carteirinha {
+    .carteirinha-acoes {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
 
-    .acoes-carteirinha a,
-    .acoes-carteirinha button {
+    .carteirinha-acoes a,
+    .carteirinha-acoes button {
       min-height: 42px;
       padding: 10px 16px;
-      border: 0;
       border-radius: 9px;
       font-weight: 700;
       text-decoration: none;
       cursor: pointer;
     }
 
-    .acoes-carteirinha a {
+    .carteirinha-acoes a {
       display: inline-flex;
       align-items: center;
-      background: #ffffff;
-      color: var(--azul-escuro);
       border: 1px solid #ccd6dd;
+      background: #ffffff;
+      color: var(--azul-card);
     }
 
-    .acoes-carteirinha button {
-      background: var(--azul-escuro);
+    .carteirinha-acoes button {
+      width: auto;
+      border: 0;
+      background: var(--azul-card);
       color: #ffffff;
     }
 
-    #statusCarteiraModelo {
-      width: min(100%, 1100px);
-      margin: 0 auto 20px;
+    #statusCarteirinha {
+      width: min(100%, 1120px);
+      margin: 0 auto 18px;
       padding: 14px 16px;
       border-radius: 10px;
       background: #ffffff;
@@ -108,30 +109,29 @@
       text-align: center;
     }
 
-    .area-cartoes {
-      width: min(100%, 1100px);
+    .cartoes-wrapper {
+      width: min(100%, 1120px);
       margin: 0 auto;
+      padding: 34px;
       display: grid;
       grid-template-columns: repeat(2, max-content);
-      gap: 38px;
       justify-content: center;
-      justify-items: center;
-      align-items: start;
-      padding: 24px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.62);
-      box-shadow: 0 14px 38px rgba(15, 47, 72, 0.08);
+      gap: 38px;
+      overflow-x: auto;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 16px 44px rgba(15, 47, 72, 0.10);
     }
 
     .cartao {
       position: relative;
       width: 85.6mm;
       height: 54mm;
-      flex: 0 0 auto;
       overflow: hidden;
-      border-radius: 3mm;
+      flex: 0 0 auto;
+      border-radius: 3.2mm;
       background: #ffffff;
-      box-shadow: 0 18px 45px rgba(15, 47, 72, 0.20);
+      box-shadow: 0 18px 38px rgba(15, 47, 72, 0.22);
       print-color-adjust: exact;
       -webkit-print-color-adjust: exact;
     }
@@ -140,407 +140,341 @@
        FRENTE
     ========================= */
 
-    .cartao-frente {
+    .frente {
       background: #ffffff;
     }
 
-    .frente-painel-azul {
+    .painel-azul-frente {
       position: absolute;
       inset: 0 auto 0 0;
-      width: 31mm;
+      width: 29.5mm;
       background:
         linear-gradient(
           180deg,
-          var(--azul-escuro),
-          var(--azul-medio)
+          var(--azul-card),
+          var(--azul-card-2)
         );
-      overflow: hidden;
     }
 
-    .frente-painel-azul::after {
+    .painel-azul-frente::after {
       content: "";
       position: absolute;
+      top: -9mm;
+      right: -9mm;
       width: 18mm;
       height: 72mm;
-      right: -10mm;
-      top: -9mm;
       border-radius: 50%;
-      background: var(--dourado);
-      box-shadow:
-        6mm 0 0 #ffffff;
+      background: var(--dourado-card);
+      box-shadow: 4.8mm 0 0 #ffffff;
     }
 
-    .marca-frente {
+    .logo-frente {
       position: absolute;
-      left: 4.5mm;
-      top: 4mm;
-      width: 20mm;
+      left: 3mm;
+      top: 3.6mm;
       z-index: 3;
-      text-align: center;
-      color: #ffffff;
-    }
-
-    .marca-frente img {
-      display: block;
-      width: 18mm;
-      height: 18mm;
-      margin: 0 auto 1.2mm;
+      width: 22mm;
+      height: 28mm;
       object-fit: contain;
-      filter: brightness(0) invert(1);
     }
 
-    .marca-frente strong {
-      display: block;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 4mm;
-      line-height: 0.94;
-      font-weight: 500;
-    }
-
-    .marca-frente span {
-      display: block;
-      margin-top: 1.3mm;
-      font-size: 1.65mm;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .selo-status {
+    .status-frente {
       position: absolute;
-      left: 4.2mm;
+      left: 3.3mm;
       bottom: 4mm;
       z-index: 4;
-      min-width: 20mm;
-      padding: 2.2mm 2.8mm;
+      min-width: 20.5mm;
+      padding: 2mm 2.2mm;
       border-radius: 1.8mm;
       background:
         linear-gradient(
           135deg,
-          var(--dourado-claro),
-          var(--dourado)
+          var(--dourado-card-claro),
+          var(--dourado-card)
         );
-      color: var(--azul-escuro);
-      font-size: 2.35mm;
-      font-weight: 800;
-      text-transform: uppercase;
+      color: var(--azul-card);
+      font-size: 2.05mm;
+      font-weight: 900;
       text-align: center;
-      box-shadow: 0 1mm 2mm rgba(0, 0, 0, 0.18);
+      text-transform: uppercase;
     }
 
-    .foto-membro-wrap {
+    .foto-frente {
       position: absolute;
-      left: 30.6mm;
-      top: 5.2mm;
-      width: 23mm;
+      left: 30.3mm;
+      top: 5mm;
+      width: 21.5mm;
       height: 31mm;
       z-index: 5;
-      border: 0.45mm solid var(--dourado);
-      border-radius: 2.4mm;
       overflow: hidden;
-      background: #e6e8ea;
-      box-shadow: 0 1mm 2.5mm rgba(20, 42, 58, 0.12);
+      border: 0.45mm solid var(--dourado-card);
+      border-radius: 2mm;
+      background: #dfe5e9;
     }
 
-    .foto-membro-wrap img {
+    .foto-frente img {
+      display: none;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: none;
     }
 
-    .foto-placeholder-modelo {
+    .foto-placeholder {
       width: 100%;
       height: 100%;
       display: grid;
       place-items: center;
       background:
         linear-gradient(
-          180deg,
-          #d6d8da,
-          #c5c8ca
+          145deg,
+          #d8dde1,
+          #c5ccd1
         );
       color: #ffffff;
-      font-size: 8mm;
-      font-weight: 700;
+      font-size: 6.7mm;
+      font-weight: 800;
     }
 
-    .dados-frente-modelo {
+    .dados-frente {
       position: absolute;
-      left: 58mm;
-      top: 5mm;
+      left: 55mm;
+      top: 4.3mm;
       right: 4mm;
-      bottom: 12mm;
+      bottom: 11.5mm;
     }
 
-    .campo-mini {
-      margin-bottom: 2.2mm;
-      padding-bottom: 1.5mm;
-      border-bottom: 0.3mm solid rgba(201, 154, 76, 0.55);
+    .campo-frente {
+      margin-bottom: 1.25mm;
+      padding-bottom: 1.05mm;
+      border-bottom: 0.28mm solid var(--linha-card);
     }
 
-    .campo-mini span {
+    .campo-frente span {
       display: block;
-      color: #5f6b73;
-      font-size: 1.75mm;
+      color: var(--texto-suave-card);
+      font-size: 1.32mm;
       font-weight: 800;
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
 
-    .campo-mini strong {
+    .campo-frente strong {
       display: block;
-      margin-top: 0.5mm;
-      color: var(--azul-escuro);
-      font-size: 2.9mm;
+      margin-top: 0.42mm;
+      color: var(--azul-card);
+      font-size: 2.32mm;
       line-height: 1.05;
-      font-weight: 800;
+      font-weight: 900;
       text-transform: uppercase;
+      overflow-wrap: anywhere;
     }
 
-    .linha-rodape-frente {
+    .campo-nome strong {
+      max-height: 6.3mm;
+      overflow: hidden;
+      font-size: 2.55mm;
+    }
+
+    .rodape-frente {
       position: absolute;
-      left: 31mm;
+      left: 29.5mm;
       right: 0;
       bottom: 0;
-      height: 11mm;
+      height: 10.7mm;
+      padding: 1.6mm 3.5mm 1.3mm 5.4mm;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.45fr;
+      gap: 2mm;
+      align-items: center;
       background:
         linear-gradient(
           90deg,
-          var(--azul-escuro),
-          var(--azul-medio)
+          var(--azul-card),
+          var(--azul-card-2)
         );
       color: #ffffff;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1.3fr;
-      align-items: center;
-      gap: 2mm;
-      padding: 1.6mm 4mm 1.5mm 6mm;
     }
 
-    .linha-rodape-frente::before {
-      content: "";
-      position: absolute;
-      left: -9mm;
-      top: -4mm;
-      width: 23mm;
-      height: 15mm;
-      border-radius: 50%;
-      background: var(--dourado);
-      transform: rotate(-8deg);
-    }
-
-    .rodape-dado {
-      position: relative;
-      z-index: 2;
-      border-right: 0.25mm solid rgba(255, 255, 255, 0.35);
-      padding-right: 1.5mm;
-    }
-
-    .rodape-dado:last-child {
-      border-right: 0;
-      text-align: right;
-    }
-
-    .rodape-dado span {
+    .rodape-frente span {
       display: block;
-      color: #c8d5de;
-      font-size: 1.6mm;
+      color: #ccd8e0;
+      font-size: 1.32mm;
       font-weight: 700;
       text-transform: uppercase;
     }
 
-    .rodape-dado strong {
+    .rodape-frente strong {
       display: block;
-      margin-top: 0.3mm;
+      margin-top: 0.35mm;
       color: #ffffff;
-      font-size: 2.3mm;
+      font-size: 2mm;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .assinatura-pastor {
-      font-family: "Brush Script MT", cursive;
-      font-size: 4mm !important;
-      font-weight: 500 !important;
-      color: var(--dourado-claro) !important;
+      text-align: right;
     }
 
-    .cargo-assinatura {
-      margin-top: 0.2mm;
-      font-size: 1.45mm !important;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #ffffff !important;
+    .assinatura-pastor strong {
+      color: var(--dourado-card-claro);
+      font-family: "Brush Script MT", cursive;
+      font-size: 3.1mm;
+      font-weight: 500;
     }
 
     /* =========================
        VERSO
     ========================= */
 
-    .cartao-verso {
+    .verso {
       background: #ffffff;
     }
 
-    .verso-curva {
+    .curva-verso {
       position: absolute;
-      right: -10mm;
-      top: -10mm;
-      width: 43mm;
-      height: 72mm;
+      right: -7mm;
+      top: -9mm;
+      width: 34mm;
+      height: 69mm;
       border-radius: 50%;
       background:
         linear-gradient(
           180deg,
-          var(--azul-escuro),
-          var(--azul-medio)
+          var(--azul-card),
+          var(--azul-card-2)
         );
-      border-left: 2.5mm solid var(--dourado);
+      border-left: 2.2mm solid var(--dourado-card);
     }
 
-    .marca-verso {
+    .logo-verso {
       position: absolute;
-      left: 6mm;
-      top: 5mm;
-      width: 24mm;
-      text-align: center;
-      color: var(--azul-escuro);
-    }
-
-    .marca-verso img {
-      width: 19mm;
-      height: 19mm;
+      left: 3.6mm;
+      top: 4mm;
+      width: 25mm;
+      height: 31mm;
       object-fit: contain;
     }
 
-    .marca-verso strong {
-      display: block;
-      margin-top: 0.5mm;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 4.1mm;
-      line-height: 0.94;
-      font-weight: 500;
+    .dados-verso {
+      position: absolute;
+      left: 32mm;
+      top: 4.8mm;
+      width: 27mm;
     }
 
-    .marca-verso span {
+    .campo-verso {
+      margin-bottom: 1.55mm;
+    }
+
+    .campo-verso span {
       display: block;
-      margin-top: 1mm;
-      color: var(--dourado);
-      font-size: 1.65mm;
-      font-weight: 700;
-      letter-spacing: 0.07em;
+      color: var(--azul-card);
+      font-size: 1.3mm;
+      font-weight: 900;
       text-transform: uppercase;
     }
 
-    .dados-igreja-verso {
-      position: absolute;
-      left: 34mm;
-      top: 5mm;
-      width: 28mm;
-      color: var(--texto);
-      font-size: 2.05mm;
-      line-height: 1.45;
-    }
-
-    .dados-igreja-verso p {
-      margin: 0 0 2.2mm;
-    }
-
-    .dados-igreja-verso strong {
+    .campo-verso strong {
       display: block;
-      color: var(--azul-escuro);
-      font-size: 1.75mm;
-      text-transform: uppercase;
+      margin-top: 0.3mm;
+      color: var(--texto-card);
+      font-size: 1.82mm;
+      line-height: 1.22;
+      font-weight: 600;
+      overflow-wrap: anywhere;
     }
 
-    .versiculo {
+    .campo-conjuge[hidden] {
+      display: none !important;
+    }
+
+    .versiculo-verso {
       position: absolute;
-      right: 5mm;
+      right: 4mm;
       top: 5mm;
-      width: 21mm;
+      z-index: 3;
+      width: 19mm;
+      margin: 0;
       color: #ffffff;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: 2.4mm;
-      font-style: italic;
+      font-size: 1.75mm;
       line-height: 1.35;
+      font-style: italic;
       text-align: center;
-      z-index: 3;
     }
 
-    .versiculo span {
+    .versiculo-verso span {
       display: block;
-      margin-top: 1.6mm;
-      color: var(--dourado-claro);
-      font-size: 1.7mm;
+      margin-top: 1.2mm;
+      color: var(--dourado-card-claro);
+      font-size: 1.38mm;
       font-style: normal;
     }
 
-    .assinaturas-verso {
+    .assinatura-verso {
       position: absolute;
-      left: 5mm;
-      right: 30mm;
+      left: 7mm;
       bottom: 9mm;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5mm;
-    }
-
-    .assinatura-box {
-      padding-top: 1.5mm;
-      border-top: 0.3mm solid #aeb8bf;
+      width: 27mm;
+      padding-top: 1.3mm;
+      border-top: 0.28mm solid #aeb8bf;
       text-align: center;
     }
 
-    .assinatura-box span {
+    .assinatura-verso span {
       display: block;
       color: #5f6b73;
-      font-size: 1.55mm;
+      font-size: 1.32mm;
       text-transform: uppercase;
     }
 
-    .assinatura-box strong {
+    .assinatura-verso strong {
       display: block;
-      margin-top: 0.7mm;
-      color: var(--azul-escuro);
+      margin-top: 0.5mm;
+      color: var(--azul-card);
       font-family: "Brush Script MT", cursive;
-      font-size: 3.3mm;
+      font-size: 3mm;
       font-weight: 500;
     }
 
     .emissao-verso {
       position: absolute;
-      right: 5mm;
-      bottom: 13mm;
-      z-index: 4;
-      color: #ffffff;
+      left: 39mm;
+      bottom: 10mm;
+      color: var(--azul-card);
       text-align: center;
     }
 
     .emissao-verso span {
       display: block;
-      font-size: 1.55mm;
+      font-size: 1.32mm;
       text-transform: uppercase;
     }
 
     .emissao-verso strong {
       display: block;
-      margin-top: 0.5mm;
-      font-size: 2.2mm;
+      margin-top: 0.4mm;
+      font-size: 2.05mm;
     }
 
-    .qrcode-modelo {
+    .qrcode-verso {
       position: absolute;
-      right: 5mm;
-      bottom: 3mm;
-      width: 16mm;
-      height: 16mm;
-      padding: 1mm;
+      right: 4mm;
+      bottom: 7.5mm;
       z-index: 4;
-      background: #ffffff;
+      width: 15mm;
+      height: 15mm;
+      padding: 0.8mm;
       border-radius: 1mm;
+      background: #ffffff;
     }
 
-    .qrcode-modelo canvas,
-    .qrcode-modelo img {
-      width: 14mm !important;
-      height: 14mm !important;
+    .qrcode-verso canvas,
+    .qrcode-verso img {
+      width: 13.4mm !important;
+      height: 13.4mm !important;
     }
 
     .rodape-verso {
@@ -548,44 +482,33 @@
       left: 0;
       right: 0;
       bottom: 0;
-      height: 7mm;
-      background:
-        linear-gradient(
-          90deg,
-          var(--azul-escuro),
-          var(--azul-medio)
-        );
-      color: var(--dourado-claro);
+      height: 6mm;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 3mm;
-      font-size: 1.75mm;
-      font-weight: 700;
+      background: var(--azul-card);
+      color: var(--dourado-card-claro);
+      font-size: 1.32mm;
+      font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
-    @media (max-width: 900px) {
-      .area-cartoes {
+    @media (max-width: 920px) {
+      .cartoes-wrapper {
         grid-template-columns: max-content;
       }
     }
 
     @media (max-width: 430px) {
-      body.carteirinha-modelo-page {
+      body.carteirinha-page {
         padding: 14px;
       }
 
-      .area-cartoes {
+      .cartoes-wrapper {
         width: 100%;
-        padding: 14px 0;
-        overflow-x: auto;
+        padding: 16px;
         justify-content: start;
-      }
-
-      .cartao {
-        transform-origin: top left;
       }
     }
 
@@ -595,25 +518,26 @@
         margin: 12mm;
       }
 
-      body.carteirinha-modelo-page {
+      body.carteirinha-page {
         padding: 0;
         background: #ffffff;
       }
 
-      .topo-carteirinha,
-      #statusCarteiraModelo {
+      .carteirinha-topo,
+      #statusCarteirinha {
         display: none !important;
       }
 
-      .area-cartoes {
+      .cartoes-wrapper {
         width: 100%;
         margin: 0;
         padding: 0;
+        grid-template-columns: repeat(2, 85.6mm);
+        justify-content: start;
+        gap: 12mm 10mm;
+        overflow: visible;
         background: transparent;
         box-shadow: none;
-        grid-template-columns: repeat(2, 85.6mm);
-        gap: 12mm 10mm;
-        justify-content: start;
       }
 
       .cartao {
@@ -625,134 +549,113 @@
   </style>
 </head>
 
-<body class="carteirinha-modelo-page">
+<body class="carteirinha-page">
 
-  <header class="topo-carteirinha">
+  <header class="carteirinha-topo">
 
     <div>
       <h1>Carteirinha do membro</h1>
-      <p>Modelo oficial para impressão e plastificação.</p>
+      <p>Versão oficial para emissão e impressão.</p>
     </div>
 
-    <div class="acoes-carteirinha">
-
-      <a
-        id="voltarFichaModelo"
-        href="membros.html"
-      >
+    <div class="carteirinha-acoes">
+      <a id="voltarFicha" href="membros.html">
         Voltar
       </a>
 
-      <button
-        id="imprimirCarteiraModelo"
-        type="button"
-      >
+      <button id="imprimirCarteirinha" type="button">
         Imprimir
       </button>
-
     </div>
 
   </header>
 
-  <div id="statusCarteiraModelo">
+  <div id="statusCarteirinha">
     Carregando dados do membro...
   </div>
 
   <main
-    id="areaCarteiraModelo"
-    class="area-cartoes"
+    id="areaCarteirinha"
+    class="cartoes-wrapper"
     hidden
   >
 
     <!-- FRENTE -->
-    <section class="cartao cartao-frente">
+    <section class="cartao frente">
 
-      <div class="frente-painel-azul"></div>
+      <div class="painel-azul-frente"></div>
 
-      <div class="marca-frente">
-        <img src="logo.png" alt="Logo">
-        <strong>Assembleia<br>de Deus</strong>
-        <span>Ministério Vidas Renovadas</span>
-      </div>
-
-      <div
-        id="statusSeloModelo"
-        class="selo-status"
+      <img
+        class="logo-frente"
+        src="logo.png"
+        alt="Assembleia de Deus Ministério Vidas Renovadas"
       >
-        Membro Ativo
+
+      <div id="statusFrente" class="status-frente">
+        Ativo
       </div>
 
-      <div class="foto-membro-wrap">
+      <div class="foto-frente">
 
         <img
-          id="fotoCarteiraModelo"
+          id="fotoFrente"
           alt="Foto do membro"
         >
 
         <div
-          id="fotoPlaceholderModelo"
-          class="foto-placeholder-modelo"
+          id="fotoPlaceholder"
+          class="foto-placeholder"
         >
           VR
         </div>
 
       </div>
 
-      <div class="dados-frente-modelo">
+      <div class="dados-frente">
 
-        <div class="campo-mini">
+        <div class="campo-frente campo-nome">
           <span>Nome completo</span>
-          <strong id="nomeCarteiraModelo">
+          <strong id="nomeFrente">
             Nome do membro
           </strong>
         </div>
 
-        <div class="campo-mini">
+        <div class="campo-frente">
           <span>Nº de membro</span>
-          <strong id="numeroCarteiraModelo">
-            000000
-          </strong>
+          <strong id="numeroFrente">—</strong>
         </div>
 
-        <div class="campo-mini">
+        <div class="campo-frente">
           <span>Data de batismo</span>
-          <strong id="batismoCarteiraModelo">
+          <strong id="batismoFrente">
             Não informada
           </strong>
         </div>
 
-        <div class="campo-mini">
-          <span>Cidade da igreja</span>
-          <strong id="cidadeIgrejaCarteiraModelo">
-            Não informada
+        <div class="campo-frente">
+          <span>Cargo</span>
+          <strong id="cargoFrente">
+            Membro
           </strong>
         </div>
 
       </div>
 
-      <div class="linha-rodape-frente">
+      <div class="rodape-frente">
 
-        <div class="rodape-dado">
+        <div>
           <span>Emissão</span>
-          <strong id="emissaoFrenteModelo">
-            —
-          </strong>
+          <strong id="emissaoFrente">—</strong>
         </div>
 
-        <div class="rodape-dado">
+        <div>
           <span>Validade</span>
-          <strong id="validadeFrenteModelo">
-            —
-          </strong>
+          <strong id="validadeFrente">—</strong>
         </div>
 
-        <div class="rodape-dado">
-          <strong class="assinatura-pastor">
-            R. Lemos
-          </strong>
-          <span class="cargo-assinatura">
-            Pastor Presidente
-          </span>
+        <div class="assinatura-pastor">
+          <strong>Rogerio Lemos</strong>
+          <span>Pastor Presidente</span>
         </div>
 
       </div>
@@ -760,124 +663,122 @@
     </section>
 
     <!-- VERSO -->
-    <section class="cartao cartao-verso">
+    <section class="cartao verso">
 
-      <div class="verso-curva"></div>
+      <div class="curva-verso"></div>
 
-      <div class="marca-verso">
-        <img src="logo.png" alt="Logo">
-        <strong>Assembleia<br>de Deus</strong>
-        <span>Ministério Vidas Renovadas</span>
+      <img
+        class="logo-verso"
+        src="logo.png"
+        alt="Assembleia de Deus Ministério Vidas Renovadas"
+      >
+
+      <div class="dados-verso">
+
+        <div class="campo-verso">
+          <span>Endereço da igreja</span>
+          <strong id="enderecoIgrejaVerso">
+            Não informado
+          </strong>
+        </div>
+
+        <div class="campo-verso">
+          <span>Estado civil</span>
+          <strong id="estadoCivilVerso">
+            Não informado
+          </strong>
+        </div>
+
+        <div
+          id="campoConjugeVerso"
+          class="campo-verso campo-conjuge"
+          hidden
+        >
+          <span>Cônjuge</span>
+          <strong id="conjugeVerso">
+            Não informado
+          </strong>
+        </div>
+
+        <div class="campo-verso">
+          <span>RG</span>
+          <strong id="rgVerso">—</strong>
+        </div>
+
+        <div class="campo-verso">
+          <span>CPF</span>
+          <strong id="cpfVerso">—</strong>
+        </div>
+
       </div>
 
-      <div class="dados-igreja-verso">
-
-        <p>
-          <strong>CNPJ</strong>
-          60.028.677/0001-71
-        </p>
-
-        <p>
-          <strong>Sede</strong>
-          Duque de Caxias — RJ
-        </p>
-
-        <p>
-          <strong>Pastor Presidente</strong>
-          Rogerio Lemos da Silva
-        </p>
-
-      </div>
-
-      <div class="versiculo">
+      <p class="versiculo-verso">
         “Portanto, se alguém está em Cristo,
         é nova criatura; as coisas antigas já
         passaram; eis que se fizeram novas.”
         <span>2 Coríntios 5:17</span>
-      </div>
+      </p>
 
-      <div class="assinaturas-verso">
-
-        <div class="assinatura-box">
-          <span>Pastor Presidente</span>
-          <strong>R. Lemos</strong>
-        </div>
-
-        <div class="assinatura-box">
-          <span>Secretaria</span>
-          <strong>Leila Luana</strong>
-        </div>
-
+      <div class="assinatura-verso">
+        <span>Pastor Presidente</span>
+        <strong>Rogerio Lemos</strong>
       </div>
 
       <div class="emissao-verso">
         <span>Emissão</span>
-        <strong id="emissaoVersoModelo">
-          —
-        </strong>
+        <strong id="emissaoVerso">—</strong>
       </div>
 
       <div
-        id="qrCarteiraModelo"
-        class="qrcode-modelo"
+        id="qrCodeVerso"
+        class="qrcode-verso"
       ></div>
 
       <div class="rodape-verso">
-        <span>✦</span>
         Esta carteirinha é pessoal e intransferível
-        <span>✦</span>
       </div>
 
     </section>
 
   </main>
 
-  <script src="js/app.js?v=14"></script>
+  <script src="js/app.js?v=19"></script>
 
   <script>
-    const CONFIG_IGREJA = {
-      nome: "Assembleia de Deus Ministério Vidas Renovadas",
-      cnpj: "60.028.677/0001-71",
-      cidade: "Duque de Caxias — RJ",
-      pastor: "Rogerio Lemos da Silva"
-    };
+    const areaCarteirinha =
+      document.getElementById("areaCarteirinha");
 
-    const areaModelo =
-      document.getElementById("areaCarteiraModelo");
+    const statusCarteirinha =
+      document.getElementById("statusCarteirinha");
 
-    const statusModelo =
-      document.getElementById("statusCarteiraModelo");
+    const voltarFicha =
+      document.getElementById("voltarFicha");
 
-    const botaoImprimirModelo =
-      document.getElementById("imprimirCarteiraModelo");
+    const imprimirCarteirinha =
+      document.getElementById("imprimirCarteirinha");
 
-    const voltarFichaModelo =
-      document.getElementById("voltarFichaModelo");
-
-    botaoImprimirModelo?.addEventListener(
+    imprimirCarteirinha?.addEventListener(
       "click",
       function () {
         window.print();
       }
     );
 
-    iniciarCarteiraModelo();
+    iniciarCarteirinha();
 
-    async function iniciarCarteiraModelo() {
+    async function iniciarCarteirinha() {
       const idMembro = obterIdDaUrl();
 
       if (!idMembro) {
-        mostrarErroModelo(
+        mostrarErro(
           "ID do membro não informado."
         );
         return;
       }
 
-      if (voltarFichaModelo) {
-        voltarFichaModelo.href =
-          "membro.html?id=" +
-          encodeURIComponent(idMembro);
-      }
+      voltarFicha.href =
+        "membro.html?id=" +
+        encodeURIComponent(idMembro);
 
       try {
         const resultado = await chamarApi({
@@ -891,90 +792,154 @@
           membro = JSON.parse(membro);
         }
 
-        preencherModelo(membro);
+        preencherCarteirinha(membro);
 
-        statusModelo.hidden = true;
-        areaModelo.hidden = false;
+        statusCarteirinha.hidden = true;
+        areaCarteirinha.hidden = false;
 
       } catch (erro) {
         console.error(erro);
-        mostrarErroModelo(erro.message);
+        mostrarErro(erro.message);
       }
     }
 
-    function preencherModelo(membro) {
+    function preencherCarteirinha(membro) {
       const hoje = new Date();
 
-      definirTextoModelo(
-        "nomeCarteiraModelo",
-        membro.nomeCompleto || "Nome não informado"
+      definirTexto(
+        "nomeFrente",
+        membro.nomeCompleto ||
+        "Nome não informado"
       );
 
-      definirTextoModelo(
-        "numeroCarteiraModelo",
+      definirTexto(
+        "numeroFrente",
         membro.numeroCarteirinha ||
         membro.id ||
         "—"
       );
 
-      definirTextoModelo(
-        "batismoCarteiraModelo",
-        formatarDataModelo(
-          membro.dataBatismo
-        ) || "Não informada"
+      definirTexto(
+        "batismoFrente",
+        formatarData(membro.dataBatismo) ||
+        "Não informada"
       );
 
-      definirTextoModelo(
-        "cidadeIgrejaCarteiraModelo",
-        membro.congregacao || "Não informada"
+      definirTexto(
+        "cargoFrente",
+        membro.cargo || "Membro"
       );
 
-      definirTextoModelo(
-        "statusSeloModelo",
-        (
-          membro.situacao ||
-          "Membro Ativo"
-        )
+      definirTexto(
+        "statusFrente",
+        membro.situacao || "Ativo"
       );
 
-      definirTextoModelo(
-        "emissaoFrenteModelo",
+      definirTexto(
+        "emissaoFrente",
         formatarDataObjeto(hoje)
       );
 
-      definirTextoModelo(
-        "emissaoVersoModelo",
+      definirTexto(
+        "emissaoVerso",
         formatarDataObjeto(hoje)
       );
 
-      definirTextoModelo(
-        "validadeFrenteModelo",
-        formatarDataModelo(
+      definirTexto(
+        "validadeFrente",
+        formatarData(
           membro.validadeCarteirinha
         ) || "Não informada"
       );
 
-      preencherFotoModelo(membro);
-      gerarQrModelo(membro);
+      definirTexto(
+        "enderecoIgrejaVerso",
+        obterEnderecoIgreja(
+          membro.congregacao
+        )
+      );
+
+      definirTexto(
+        "estadoCivilVerso",
+        membro.estadoCivil ||
+        "Não informado"
+      );
+
+      definirTexto(
+        "rgVerso",
+        membro.rg || "—"
+      );
+
+      definirTexto(
+        "cpfVerso",
+        membro.cpf || "—"
+      );
+
+      preencherConjuge(membro);
+      preencherFoto(membro);
+      gerarQrCode(membro);
     }
 
-    function preencherFotoModelo(membro) {
+    function obterEnderecoIgreja(congregacao) {
+      const texto =
+        String(congregacao || "")
+          .trim()
+          .toLowerCase();
+
+      if (
+        texto.includes("petrópolis") ||
+        texto.includes("petropolis")
+      ) {
+        return "Petrópolis — RJ";
+      }
+
+      return "Duque de Caxias — RJ";
+    }
+
+    function preencherConjuge(membro) {
+      const estadoCivil =
+        String(membro.estadoCivil || "")
+          .trim()
+          .toLowerCase();
+
+      const campo =
+        document.getElementById(
+          "campoConjugeVerso"
+        );
+
+      const casado =
+        estadoCivil.includes("casado");
+
+      if (!casado) {
+        campo.hidden = true;
+        return;
+      }
+
+      definirTexto(
+        "conjugeVerso",
+        membro.conjuge ||
+        "Não informado"
+      );
+
+      campo.hidden = false;
+    }
+
+    function preencherFoto(membro) {
       const foto =
-        document.getElementById("fotoCarteiraModelo");
+        document.getElementById("fotoFrente");
 
       const placeholder =
         document.getElementById(
-          "fotoPlaceholderModelo"
+          "fotoPlaceholder"
         );
 
       const url =
         String(membro.foto || "").trim();
 
+      placeholder.textContent =
+        obterIniciais(membro.nomeCompleto);
+
       if (!url) {
-        placeholder.textContent =
-          iniciaisModelo(
-            membro.nomeCompleto
-          );
         return;
       }
 
@@ -988,44 +953,38 @@
       foto.onerror = function () {
         foto.style.display = "none";
         placeholder.style.display = "grid";
-        placeholder.textContent =
-          iniciaisModelo(
-            membro.nomeCompleto
-          );
       };
     }
 
-    function gerarQrModelo(membro) {
-      const areaQr =
-        document.getElementById(
-          "qrCarteiraModelo"
-        );
+    function gerarQrCode(membro) {
+      const area =
+        document.getElementById("qrCodeVerso");
 
-      const urlValidacao =
+      if (typeof QRCode === "undefined") {
+        setTimeout(
+          function () {
+            gerarQrCode(membro);
+          },
+          200
+        );
+        return;
+      }
+
+      const url =
         new URL(
           "membro.html",
           window.location.href
         );
 
-      urlValidacao.searchParams.set(
+      url.searchParams.set(
         "id",
         membro.id || ""
       );
 
-      if (typeof QRCode === "undefined") {
-        setTimeout(
-          function () {
-            gerarQrModelo(membro);
-          },
-          250
-        );
-        return;
-      }
+      area.innerHTML = "";
 
-      areaQr.innerHTML = "";
-
-      new QRCode(areaQr, {
-        text: urlValidacao.toString(),
+      new QRCode(area, {
+        text: url.toString(),
         width: 180,
         height: 180,
         correctLevel:
@@ -1033,7 +992,7 @@
       });
     }
 
-    function definirTextoModelo(id, valor) {
+    function definirTexto(id, valor) {
       const elemento =
         document.getElementById(id);
 
@@ -1042,7 +1001,7 @@
       }
     }
 
-    function iniciaisModelo(nome) {
+    function obterIniciais(nome) {
       const partes = String(nome || "")
         .trim()
         .split(/\s+/)
@@ -1064,16 +1023,14 @@
       ).toUpperCase();
     }
 
-    function formatarDataModelo(valor) {
+    function formatarData(valor) {
       if (!valor) {
         return "";
       }
 
       const texto = String(valor);
 
-      if (
-        /^\d{4}-\d{2}-\d{2}$/.test(texto)
-      ) {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) {
         const partes = texto.split("-");
 
         return (
@@ -1094,10 +1051,11 @@
       ).format(data);
     }
 
-    function mostrarErroModelo(mensagem) {
-      statusModelo.hidden = false;
-      statusModelo.textContent = mensagem;
-      areaModelo.hidden = true;
+    function mostrarErro(mensagem) {
+      statusCarteirinha.hidden = false;
+      statusCarteirinha.textContent =
+        mensagem;
+      areaCarteirinha.hidden = true;
     }
   </script>
 
