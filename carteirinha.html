@@ -1165,140 +1165,7 @@ a {
     </section>
   </main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
-/* =========================================================
-   TEXTOS INTELIGENTES
-   Reduz a fonte somente quando o conteúdo não cabe.
-========================================================= */
-
-let temporizadorAjusteCarteirinha = null;
-
-function solicitarAjusteTextosCarteirinha() {
-  window.clearTimeout(temporizadorAjusteCarteirinha);
-
-  temporizadorAjusteCarteirinha = window.setTimeout(function () {
-    window.requestAnimationFrame(ajustarTodosOsTextosCarteirinha);
-  }, 40);
-}
-
-function ajustarTodosOsTextosCarteirinha() {
-  const configuracoes = [
-    {
-      id: "nomeMembroCarteirinha",
-      fonteMaxima: 27,
-      fonteMinima: 13,
-      maxLinhas: 2
-    },
-    {
-      id: "cargoMembroCarteirinha",
-      fonteMaxima: 13,
-      fonteMinima: 8,
-      maxLinhas: 2
-    },
-    {
-      id: "congregacaoCarteirinha",
-      fonteMaxima: 13,
-      fonteMinima: 8,
-      maxLinhas: 2
-    },
-    {
-      id: "familiaCarteirinha",
-      fonteMaxima: 12,
-      fonteMinima: 7,
-      maxLinhas: 4
-    },
-    {
-      id: "estadoCivilCarteirinha",
-      fonteMaxima: 12,
-      fonteMinima: 8,
-      maxLinhas: 2
-    },
-    {
-      id: "rgCarteirinha",
-      fonteMaxima: 12,
-      fonteMinima: 8,
-      maxLinhas: 2
-    },
-    {
-      id: "cpfCarteirinha",
-      fonteMaxima: 12,
-      fonteMinima: 8,
-      maxLinhas: 2
-    }
-  ];
-
-  configuracoes.forEach(function (configuracao) {
-    const elemento = document.getElementById(configuracao.id);
-
-    if (!elemento) {
-      return;
-    }
-
-    ajustarTextoCarteirinha(elemento, configuracao);
-  });
-}
-
-function ajustarTextoCarteirinha(elemento, configuracao) {
-  const fonteMaxima = Number(configuracao.fonteMaxima) || 16;
-  const fonteMinima = Number(configuracao.fonteMinima) || 8;
-  const maxLinhas = Number(configuracao.maxLinhas) || 2;
-
-  elemento.classList.add("texto-ajustavel");
-  elemento.classList.remove(
-    "texto-uma-linha",
-    "texto-duas-linhas",
-    "texto-quatro-linhas"
-  );
-
-  if (maxLinhas === 1) {
-    elemento.classList.add("texto-uma-linha");
-  } else if (maxLinhas >= 4) {
-    elemento.classList.add("texto-quatro-linhas");
-  } else {
-    elemento.classList.add("texto-duas-linhas");
-  }
-
-  elemento.style.fontSize = fonteMaxima + "px";
-
-  let tamanho = fonteMaxima;
-  let tentativas = 0;
-  const limiteTentativas = 40;
-
-  while (
-    tamanho > fonteMinima &&
-    textoUltrapassaEspaco(elemento) &&
-    tentativas < limiteTentativas
-  ) {
-    tamanho -= 0.5;
-    elemento.style.fontSize = tamanho + "px";
-    tentativas += 1;
-  }
-
-  if (textoUltrapassaEspaco(elemento)) {
-    elemento.style.fontSize = fonteMinima + "px";
-  }
-}
-
-function textoUltrapassaEspaco(elemento) {
-  const tolerancia = 1;
-
-  return (
-    elemento.scrollWidth > elemento.clientWidth + tolerancia ||
-    elemento.scrollHeight > elemento.clientHeight + tolerancia
-  );
-}
-
-window.addEventListener("resize", solicitarAjusteTextosCarteirinha);
-
-window.addEventListener("beforeprint", function () {
-  ajustarTodosOsTextosCarteirinha();
-});
-
-if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(solicitarAjusteTextosCarteirinha);
-}
-
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
 /* =========================================================
    PROJETO NEEMIAS — CARTEIRINHA
@@ -2011,6 +1878,140 @@ function mostrarErroCarteirinha(mensagemErro) {
       mensagemErro ||
       "Não foi possível carregar a carteirinha.";
   }
+}
+
+  
+
+/* =========================================================
+   TEXTOS INTELIGENTES
+   Reduz a fonte somente quando o conteúdo não cabe.
+========================================================= */
+
+let temporizadorAjusteCarteirinha = null;
+
+function solicitarAjusteTextosCarteirinha() {
+  window.clearTimeout(temporizadorAjusteCarteirinha);
+
+  temporizadorAjusteCarteirinha = window.setTimeout(function () {
+    window.requestAnimationFrame(ajustarTodosOsTextosCarteirinha);
+  }, 40);
+}
+
+function ajustarTodosOsTextosCarteirinha() {
+  const configuracoes = [
+    {
+      id: "nomeMembroCarteirinha",
+      fonteMaxima: 27,
+      fonteMinima: 13,
+      maxLinhas: 2
+    },
+    {
+      id: "cargoMembroCarteirinha",
+      fonteMaxima: 13,
+      fonteMinima: 8,
+      maxLinhas: 2
+    },
+    {
+      id: "congregacaoCarteirinha",
+      fonteMaxima: 13,
+      fonteMinima: 8,
+      maxLinhas: 2
+    },
+    {
+      id: "familiaCarteirinha",
+      fonteMaxima: 12,
+      fonteMinima: 7,
+      maxLinhas: 4
+    },
+    {
+      id: "estadoCivilCarteirinha",
+      fonteMaxima: 12,
+      fonteMinima: 8,
+      maxLinhas: 2
+    },
+    {
+      id: "rgCarteirinha",
+      fonteMaxima: 12,
+      fonteMinima: 8,
+      maxLinhas: 2
+    },
+    {
+      id: "cpfCarteirinha",
+      fonteMaxima: 12,
+      fonteMinima: 8,
+      maxLinhas: 2
+    }
+  ];
+
+  configuracoes.forEach(function (configuracao) {
+    const elemento = document.getElementById(configuracao.id);
+
+    if (!elemento) {
+      return;
+    }
+
+    ajustarTextoCarteirinha(elemento, configuracao);
+  });
+}
+
+function ajustarTextoCarteirinha(elemento, configuracao) {
+  const fonteMaxima = Number(configuracao.fonteMaxima) || 16;
+  const fonteMinima = Number(configuracao.fonteMinima) || 8;
+  const maxLinhas = Number(configuracao.maxLinhas) || 2;
+
+  elemento.classList.add("texto-ajustavel");
+  elemento.classList.remove(
+    "texto-uma-linha",
+    "texto-duas-linhas",
+    "texto-quatro-linhas"
+  );
+
+  if (maxLinhas === 1) {
+    elemento.classList.add("texto-uma-linha");
+  } else if (maxLinhas >= 4) {
+    elemento.classList.add("texto-quatro-linhas");
+  } else {
+    elemento.classList.add("texto-duas-linhas");
+  }
+
+  elemento.style.fontSize = fonteMaxima + "px";
+
+  let tamanho = fonteMaxima;
+  let tentativas = 0;
+  const limiteTentativas = 40;
+
+  while (
+    tamanho > fonteMinima &&
+    textoUltrapassaEspaco(elemento) &&
+    tentativas < limiteTentativas
+  ) {
+    tamanho -= 0.5;
+    elemento.style.fontSize = tamanho + "px";
+    tentativas += 1;
+  }
+
+  if (textoUltrapassaEspaco(elemento)) {
+    elemento.style.fontSize = fonteMinima + "px";
+  }
+}
+
+function textoUltrapassaEspaco(elemento) {
+  const tolerancia = 1;
+
+  return (
+    elemento.scrollWidth > elemento.clientWidth + tolerancia ||
+    elemento.scrollHeight > elemento.clientHeight + tolerancia
+  );
+}
+
+window.addEventListener("resize", solicitarAjusteTextosCarteirinha);
+
+window.addEventListener("beforeprint", function () {
+  ajustarTodosOsTextosCarteirinha();
+});
+
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(solicitarAjusteTextosCarteirinha);
 }
 
   </script>
