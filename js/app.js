@@ -721,7 +721,7 @@ function mostrarFichaMembro(membro) {
         ${campoFicha("Data da conversão", membro.dataConversao)}
         ${campoFicha("Data do batismo", membro.dataBatismo)}
         ${campoFicha("Cargo", membro.cargo)}
-        ${campoFicha("Congregação", membro.congregacao)}
+        ${campoFicha("Cidade da igreja", membro.congregacao)}
         ${campoFicha("Situação", membro.situacao)}
         ${campoFicha("Validade da carteirinha", membro.validadeCarteirinha)}
       </div>
