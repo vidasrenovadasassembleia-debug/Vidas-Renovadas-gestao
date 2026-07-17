@@ -202,15 +202,18 @@ a {
 
 .cabecalho-frente {
   display: flex;
-  min-height: 18%;
+  min-height: 20%;
   align-items: center;
-  gap: 3%;
+  gap: 3.5%;
 }
 
 .logo-frente {
-  width: 14%;
-  max-height: 46px;
+  width: 20%;
+  max-height: 62px;
   object-fit: contain;
+  object-position: center;
+  transform: scale(1.08);
+  transform-origin: center;
 }
 
 .identidade-igreja {
@@ -418,15 +421,21 @@ a {
 
 .cabecalho-verso {
   display: flex;
+  min-height: 18%;
   align-items: center;
-  gap: 3%;
+  gap: 3.5%;
 }
 
 .logo-verso {
-  width: 12%;
-  max-height: 43px;
+  width: 18%;
+  max-height: 58px;
+  padding: 1.4%;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.94);
   object-fit: contain;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.18));
+  object-position: center;
+  filter: none;
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.18);
 }
 
 .cabecalho-verso > div {
@@ -450,7 +459,7 @@ a {
 
 .conteudo-verso {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 25%;
+  grid-template-columns: 1fr 27%;
   gap: 5%;
   align-items: center;
   min-height: 0;
@@ -460,24 +469,18 @@ a {
 .dados-verso {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(5px, 1.1vw, 10px);
+  gap: clamp(3px, 1vw, 8px);
   min-width: 0;
 }
 
 .campo-verso {
   min-width: 0;
-  padding: 4% 5%;
-  border: 1px solid rgba(234, 209, 138, 0.22);
-  border-radius: 7px;
-  background: rgba(255, 255, 255, 0.055);
+  padding-bottom: 3%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.24);
 }
 
 .campo-verso-largo {
   grid-column: 1 / -1;
-}
-
-.campo-verso-documento {
-  border-left: 2px solid var(--dourado);
 }
 
 .campo-verso span {
@@ -489,13 +492,9 @@ a {
   overflow: hidden;
   color: var(--branco);
   font-size: clamp(0.47rem, 1.03vw, 0.7rem);
-  line-height: 1.18;
+  line-height: 1.1;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.campo-verso-familia strong {
-  white-space: normal;
 }
 
 .area-qrcode {
@@ -795,17 +794,17 @@ a {
               <strong id="estadoCivilCarteirinha">—</strong>
             </div>
 
-            <div class="campo-verso campo-verso-familia">
-              <span id="rotuloFamiliaCarteirinha">Cônjuge</span>
-              <strong id="familiaCarteirinha">—</strong>
-            </div>
-
-            <div class="campo-verso campo-verso-documento">
+            <div class="campo-verso">
               <span>RG</span>
               <strong id="rgCarteirinha">—</strong>
             </div>
 
-            <div class="campo-verso campo-verso-documento">
+            <div class="campo-verso campo-verso-largo" id="blocoConjuge">
+              <span>Cônjuge</span>
+              <strong id="conjugeCarteirinha">—</strong>
+            </div>
+
+            <div class="campo-verso campo-verso-largo">
               <span>CPF</span>
               <strong id="cpfCarteirinha">—</strong>
             </div>
@@ -1058,19 +1057,8 @@ function preencherCarteirinha(membro, idUrl) {
   const conjuge =
     primeiroValor(
       membro.conjuge,
-      membro.nomeConjuge
-    );
-
-  const pai =
-    primeiroValor(
-      membro.pai,
-      membro.nomePai
-    );
-
-  const mae =
-    primeiroValor(
-      membro.mae,
-      membro.nomeMae
+      membro.nomeConjuge,
+      "—"
     );
 
   const rg =
@@ -1134,10 +1122,9 @@ function preencherCarteirinha(membro, idUrl) {
     estadoCivil
   );
 
-  preencherDadosFamiliares(
-    conjuge,
-    pai,
-    mae
+  definirTexto(
+    "conjugeCarteirinha",
+    conjuge
   );
 
   definirTexto(
@@ -1166,6 +1153,11 @@ function preencherCarteirinha(membro, idUrl) {
   preencherFotoCarteirinha(
     primeiroValor(membro.foto),
     nome
+  );
+
+  ajustarCampoConjuge(
+    estadoCivil,
+    conjuge
   );
 
   gerarQrCodeCarteirinha(
@@ -1442,47 +1434,33 @@ function formatarCongregacao(valor) {
   return texto || "Não informada";
 }
 
-function preencherDadosFamiliares(
-  conjuge,
-  pai,
-  mae
+function ajustarCampoConjuge(
+  estadoCivil,
+  conjuge
 ) {
-  const rotulo =
-    document.getElementById(
-      "rotuloFamiliaCarteirinha"
-    );
+  const bloco =
+    document.getElementById("blocoConjuge");
 
-  const valor =
-    document.getElementById(
-      "familiaCarteirinha"
-    );
-
-  if (!rotulo || !valor) {
+  if (!bloco) {
     return;
   }
 
-  const nomeConjuge =
-    String(conjuge || "").trim();
+  const civil =
+    String(estadoCivil || "")
+      .trim()
+      .toLowerCase();
 
-  if (nomeConjuge) {
-    rotulo.textContent = "Cônjuge";
-    valor.textContent = nomeConjuge;
-    return;
-  }
+  const possuiConjuge =
+    String(conjuge || "").trim() &&
+    String(conjuge || "").trim() !== "—";
 
-  const nomesPais = [pai, mae]
-    .map(function (nome) {
-      return String(nome || "").trim();
-    })
-    .filter(Boolean);
+  const casado =
+    civil.includes("casad") ||
+    civil.includes("união") ||
+    civil.includes("uniao");
 
-  rotulo.textContent = "Filiação";
-  valor.textContent =
-    nomesPais.length
-      ? nomesPais.join(" • ")
-      : "Não informada";
+  bloco.hidden = !(casado || possuiConjuge);
 }
-
 
 /* =========================================================
    EXIBIÇÃO E ERROS
