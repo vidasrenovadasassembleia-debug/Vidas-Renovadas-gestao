@@ -1,431 +1,101 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Novo Membro | Vidas Renovadas Gestão</title>
-
-  <link
-    rel="stylesheet"
-    href="css/estilo.css"
-  >
+  <link rel="stylesheet" href="css/estilo.css">
+  <style>
+    .member-photo-section { padding: 26px; }
+    .member-photo-layout { display:grid; grid-template-columns:240px minmax(0,1fr); gap:34px; align-items:start; }
+    .foto-upload { display:flex; flex-direction:column; gap:14px; }
+    .foto-upload h2 { margin:0; }
+    .foto-preview, .foto-preview img { width:220px; }
+    .foto-preview img { display:block; height:280px; object-fit:cover; border:2px solid #d7dee4; border-radius:14px; background:#f3f5f6; }
+    .foto-escolher { width:220px; justify-content:center; text-align:center; cursor:pointer; }
+    #statusFoto { width:220px; min-height:20px; margin:0; color:#63737d; font-size:13px; line-height:1.45; }
+    .member-photo-info { padding-top:34px; }
+    .member-photo-info h2 { margin:6px 0 12px; }
+    .member-photo-info > p:not(.dashboard-label) { max-width:560px; color:#667680; line-height:1.65; }
+    .photo-guidelines { max-width:560px; margin-top:20px; padding:18px; border-radius:12px; background:#f4f7f9; display:grid; gap:8px; color:#53636d; }
+    .photo-guidelines strong { color:#0f2f48; }
+    .photo-guidelines span::before { content:"✓"; margin-right:8px; color:#b98a45; font-weight:700; }
+    @media (max-width:760px) { .member-photo-layout { grid-template-columns:1fr; } .member-photo-info { padding-top:0; } }
+  </style>
 </head>
-
 <body class="dashboard-page">
-
   <aside class="sidebar">
-
     <div class="sidebar-brand">
-      <img
-        src="logo.png"
-        alt="Logo da igreja"
-        class="sidebar-logo"
-      >
-
-      <div>
-        <strong>Vidas Renovadas</strong>
-        <span>Projeto Neemias</span>
-      </div>
+      <img src="logo.png" alt="Logo da igreja" class="sidebar-logo">
+      <div><strong>Vidas Renovadas</strong><span>Projeto Neemias</span></div>
     </div>
-
     <nav class="sidebar-menu">
-
-      <a href="dashboard.html">
-        Dashboard
-      </a>
-
-      <a href="membros.html" class="active">
-        Membros
-      </a>
-
-      <a href="#">
-        Famílias
-      </a>
-
-      <a href="#">
-        Carteirinhas
-      </a>
-
-      <a href="#">
-        Congregações
-      </a>
-
-      <a href="#">
-        Relatórios
-      </a>
-
-      <a href="#">
-        Configurações
-      </a>
-
+      <a href="dashboard.html">Dashboard</a>
+      <a href="membros.html" class="active">Membros</a>
+      <a href="#">Famílias</a><a href="#">Carteirinhas</a><a href="#">Congregações</a><a href="#">Relatórios</a><a href="#">Configurações</a>
     </nav>
-
-    <a href="index.html" class="logout">
-      Sair
-    </a>
-
+    <a href="index.html" class="logout">Sair</a>
   </aside>
-
   <main class="dashboard-main">
-
     <header class="members-header">
-
-      <div>
-        <p class="dashboard-label">
-          Ficha ministerial
-        </p>
-
-        <h1>Novo Membro</h1>
-      </div>
-
-      <a
-        href="membros.html"
-        class="secondary-link"
-      >
-        Voltar
-      </a>
-
+      <div><p class="dashboard-label">Ficha ministerial</p><h1>Novo Membro</h1></div>
+      <a href="membros.html" class="secondary-link">Voltar</a>
     </header>
-
     <form id="formNovoMembro" class="member-form">
-
-      <section class="form-section">
-        <h2>Identificação</h2>
-
-        <div class="form-grid">
-
-          <div class="form-field full-width">
-            <label for="nomeCompleto">
-              Nome completo
-            </label>
-
-            <input
-              type="text"
-              id="nomeCompleto"
-              name="nomeCompleto"
-              required
-            >
+      <input type="hidden" id="foto" name="foto">
+      <section class="form-section member-photo-section">
+        <div class="member-photo-layout">
+          <div class="foto-upload">
+            <h2>Foto do Membro</h2>
+            <div class="foto-preview"><img id="previewFoto" src="https://placehold.co/220x280?text=Sem+Foto" alt="Pré-visualização da foto"></div>
+            <label for="fotoMembro" class="secondary-link foto-escolher">Escolher foto</label>
+            <input type="file" id="fotoMembro" accept="image/jpeg,image/png,image/webp" hidden>
+            <p id="statusFoto">Selecione uma foto para o cadastro.</p>
           </div>
-
-          <div class="form-field">
-            <label for="cpf">CPF</label>
-
-            <input
-              type="text"
-              id="cpf"
-              name="cpf"
-            >
+          <div class="member-photo-info">
+            <p class="dashboard-label">Identificação visual</p>
+            <h2>Foto para ficha e carteirinha</h2>
+            <p>Use uma foto de frente, com boa iluminação, fundo claro e o rosto centralizado. O arquivo será enviado ao Google Drive quando o cadastro for salvo.</p>
+            <div class="photo-guidelines"><strong>Recomendações</strong><span>Formato vertical</span><span>Arquivo JPG, PNG ou WebP</span><span>Tamanho máximo de 4 MB</span><span>Evite fotos escuras ou desfocadas</span></div>
           </div>
-
-          <div class="form-field">
-            <label for="rg">RG</label>
-
-            <input
-              type="text"
-              id="rg"
-              name="rg"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="dataNascimento">
-              Data de nascimento
-            </label>
-
-            <input
-              type="date"
-              id="dataNascimento"
-              name="dataNascimento"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="sexo">Sexo</label>
-
-            <select id="sexo" name="sexo">
-              <option value="">Selecione</option>
-              <option value="Feminino">Feminino</option>
-              <option value="Masculino">Masculino</option>
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label for="estadoCivil">
-              Estado civil
-            </label>
-
-            <select id="estadoCivil" name="estadoCivil">
-              <option value="">Selecione</option>
-              <option value="Solteiro(a)">Solteiro(a)</option>
-              <option value="Casado(a)">Casado(a)</option>
-              <option value="Divorciado(a)">Divorciado(a)</option>
-              <option value="Viúvo(a)">Viúvo(a)</option>
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label for="conjuge">
-              Nome do cônjuge
-            </label>
-
-            <input
-              type="text"
-              id="conjuge"
-              name="conjuge"
-            >
-          </div>
-
         </div>
       </section>
-
-      <section class="form-section">
-        <h2>Família</h2>
-
-        <div class="form-grid">
-
-          <div class="form-field">
-            <label for="pai">Nome do pai</label>
-
-            <input
-              type="text"
-              id="pai"
-              name="pai"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="mae">Nome da mãe</label>
-
-            <input
-              type="text"
-              id="mae"
-              name="mae"
-            >
-          </div>
-
-        </div>
-      </section>
-
-      <section class="form-section">
-        <h2>Endereço e contato</h2>
-
-        <div class="form-grid">
-
-          <div class="form-field">
-            <label for="cep">CEP</label>
-
-            <input
-              type="text"
-              id="cep"
-              name="cep"
-            >
-          </div>
-
-          <div class="form-field full-width">
-            <label for="endereco">Endereço</label>
-
-            <input
-              type="text"
-              id="endereco"
-              name="endereco"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="numero">Número</label>
-
-            <input
-              type="text"
-              id="numero"
-              name="numero"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="bairro">Bairro</label>
-
-            <input
-              type="text"
-              id="bairro"
-              name="bairro"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="cidade">Cidade</label>
-
-            <input
-              type="text"
-              id="cidade"
-              name="cidade"
-              value="Duque de Caxias"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="estado">Estado</label>
-
-            <input
-              type="text"
-              id="estado"
-              name="estado"
-              value="RJ"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="telefone">Telefone</label>
-
-            <input
-              type="text"
-              id="telefone"
-              name="telefone"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="whatsapp">WhatsApp</label>
-
-            <input
-              type="text"
-              id="whatsapp"
-              name="whatsapp"
-            >
-          </div>
-
-          <div class="form-field full-width">
-            <label for="email">E-mail</label>
-
-            <input
-              type="email"
-              id="email"
-              name="email"
-            >
-          </div>
-
-        </div>
-      </section>
-
-      <section class="form-section">
-        <h2>Vida cristã</h2>
-
-        <div class="form-grid">
-
-          <div class="form-field">
-            <label for="dataConversao">
-              Data da conversão
-            </label>
-
-            <input
-              type="date"
-              id="dataConversao"
-              name="dataConversao"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="dataBatismo">
-              Data do batismo nas águas
-            </label>
-
-            <input
-              type="date"
-              id="dataBatismo"
-              name="dataBatismo"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="cargo">Cargo</label>
-
-            <input
-              type="text"
-              id="cargo"
-              name="cargo"
-            >
-          </div>
-
-         <div class="form-field">
-  <label for="congregacao">
-    Cidade da igreja
-  </label>
-
-  <select
-    id="congregacao"
-    name="congregacao"
-    required
-  >
-    <option value="">
-      Selecione
-    </option>
-
-    <option value="Duque de Caxias - RJ">
-      Duque de Caxias - RJ
-    </option>
-
-    <option value="Petrópolis - RJ">
-      Petrópolis - RJ
-    </option>
-  </select>
-</div>
-
-          <div class="form-field">
-            <label for="situacao">
-              Situação
-            </label>
-
-            <select id="situacao" name="situacao">
-              <option value="Ativo">Ativo</option>
-              <option value="Congregado">Congregado</option>
-              <option value="Visitante">Visitante</option>
-              <option value="Inativo">Inativo</option>
-              <option value="Transferido">Transferido</option>
-              <option value="Falecido">Falecido</option>
-            </select>
-          </div>
-
-          <div class="form-field full-width">
-            <label for="observacoes">
-              Observações
-            </label>
-
-            <textarea
-              id="observacoes"
-              name="observacoes"
-              rows="5"
-            ></textarea>
-          </div>
-
-        </div>
-      </section>
-
-      <div class="form-actions">
-
-        <a
-          href="membros.html"
-          class="secondary-link"
-        >
-          Cancelar
-        </a>
-
-        <button type="submit">
-          Salvar Membro
-        </button>
-
-      </div>
-
+      <section class="form-section"><h2>Identificação</h2><div class="form-grid">
+        <div class="form-field full-width"><label for="nomeCompleto">Nome completo</label><input type="text" id="nomeCompleto" name="nomeCompleto" required></div>
+        <div class="form-field"><label for="cpf">CPF</label><input type="text" id="cpf" name="cpf"></div>
+        <div class="form-field"><label for="rg">RG</label><input type="text" id="rg" name="rg"></div>
+        <div class="form-field"><label for="dataNascimento">Data de nascimento</label><input type="date" id="dataNascimento" name="dataNascimento"></div>
+        <div class="form-field"><label for="sexo">Sexo</label><select id="sexo" name="sexo"><option value="">Selecione</option><option value="Feminino">Feminino</option><option value="Masculino">Masculino</option></select></div>
+        <div class="form-field"><label for="estadoCivil">Estado civil</label><select id="estadoCivil" name="estadoCivil"><option value="">Selecione</option><option value="Solteiro(a)">Solteiro(a)</option><option value="Casado(a)">Casado(a)</option><option value="Divorciado(a)">Divorciado(a)</option><option value="Viúvo(a)">Viúvo(a)</option></select></div>
+        <div class="form-field"><label for="conjuge">Nome do cônjuge</label><input type="text" id="conjuge" name="conjuge"></div>
+      </div></section>
+      <section class="form-section"><h2>Família</h2><div class="form-grid">
+        <div class="form-field"><label for="pai">Nome do pai</label><input type="text" id="pai" name="pai"></div>
+        <div class="form-field"><label for="mae">Nome da mãe</label><input type="text" id="mae" name="mae"></div>
+      </div></section>
+      <section class="form-section"><h2>Endereço e contato</h2><div class="form-grid">
+        <div class="form-field"><label for="cep">CEP</label><input type="text" id="cep" name="cep"></div>
+        <div class="form-field full-width"><label for="endereco">Endereço</label><input type="text" id="endereco" name="endereco"></div>
+        <div class="form-field"><label for="numero">Número</label><input type="text" id="numero" name="numero"></div>
+        <div class="form-field"><label for="complemento">Complemento</label><input type="text" id="complemento" name="complemento"></div>
+        <div class="form-field"><label for="bairro">Bairro</label><input type="text" id="bairro" name="bairro"></div>
+        <div class="form-field"><label for="cidade">Cidade</label><input type="text" id="cidade" name="cidade" value="Duque de Caxias"></div>
+        <div class="form-field"><label for="estado">Estado</label><input type="text" id="estado" name="estado" value="RJ"></div>
+        <div class="form-field"><label for="telefone">Telefone</label><input type="text" id="telefone" name="telefone"></div>
+        <div class="form-field"><label for="whatsapp">WhatsApp</label><input type="text" id="whatsapp" name="whatsapp"></div>
+        <div class="form-field full-width"><label for="email">E-mail</label><input type="email" id="email" name="email"></div>
+      </div></section>
+      <section class="form-section"><h2>Vida cristã</h2><div class="form-grid">
+        <div class="form-field"><label for="dataConversao">Data da conversão</label><input type="date" id="dataConversao" name="dataConversao"></div>
+        <div class="form-field"><label for="dataBatismo">Data do batismo nas águas</label><input type="date" id="dataBatismo" name="dataBatismo"></div>
+        <div class="form-field"><label for="cargo">Cargo</label><input type="text" id="cargo" name="cargo"></div>
+        <div class="form-field"><label for="congregacao">Cidade da igreja</label><select id="congregacao" name="congregacao" required><option value="">Selecione</option><option value="Duque de Caxias - RJ">Duque de Caxias - RJ</option><option value="Petrópolis - RJ">Petrópolis - RJ</option></select></div>
+        <div class="form-field"><label for="situacao">Situação</label><select id="situacao" name="situacao"><option value="Ativo">Ativo</option><option value="Congregado">Congregado</option><option value="Visitante">Visitante</option><option value="Inativo">Inativo</option><option value="Transferido">Transferido</option><option value="Falecido">Falecido</option></select></div>
+        <div class="form-field full-width"><label for="observacoes">Observações</label><textarea id="observacoes" name="observacoes" rows="5"></textarea></div>
+      </div></section>
+      <div class="form-actions"><a href="membros.html" class="secondary-link">Cancelar</a><button type="submit">Salvar Membro</button></div>
     </form>
-
   </main>
-
-  <script src="js/app.js?v=6"></script>
-
+  <script src="js/app.js?v=13"></script>
 </body>
-
 </html>
