@@ -8,7 +8,7 @@
 
   <style>
 /* =========================================================
-   PROJETO NEEMIAS — CARTEIRINHA V4 OFICIAL
+   PROJETO NEEMIAS — CARTEIRINHA V4.1 DEFINITIVA
    Tamanho do cartão: 85,60 mm × 53,98 mm
 ========================================================= */
 
@@ -829,6 +829,162 @@ a {
   }
 }
 
+  
+/* =========================================================
+   V4.1 DEFINITIVA — ACABAMENTO + TEXTOS INTELIGENTES
+========================================================= */
+
+/* Frente: identidade e equilíbrio final */
+.cartao-frente {
+  padding: 3.8% 4.6% 3.5%;
+}
+
+.cabecalho-frente {
+  min-height: 20%;
+  gap: 3.2%;
+}
+
+.logo-frente {
+  width: 23%;
+  max-height: 70px;
+}
+
+.identidade-igreja strong {
+  font-size: clamp(0.67rem, 1.65vw, 1.1rem);
+}
+
+.identidade-igreja span {
+  color: #b88a23;
+  font-size: clamp(0.45rem, 1.05vw, 0.72rem);
+}
+
+.conteudo-frente {
+  grid-template-columns: 26% minmax(0, 1fr);
+  gap: 4.2%;
+  padding-top: 0.8%;
+}
+
+.moldura-foto {
+  width: 94%;
+  justify-self: center;
+  align-self: start;
+}
+
+.categoria-documento {
+  margin-bottom: 1.8%;
+}
+
+.dados-principais h2 {
+  display: -webkit-box;
+  margin-bottom: 3.4%;
+  overflow: hidden;
+  font-size: clamp(1rem, 2.55vw, 1.72rem);
+  font-weight: 900;
+  line-height: 0.98;
+  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.grade-dados-frente {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(5px, 1vw, 8px);
+}
+
+.campo-cartao {
+  min-height: clamp(35px, 5.7vw, 47px);
+}
+
+.campo-cartao strong,
+.campo-verso strong {
+  display: -webkit-box;
+  overflow: hidden;
+  line-height: 1.08;
+  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.rodape-frente {
+  align-items: center;
+  padding-top: 0.5%;
+}
+
+.assinatura-cartao {
+  transform: translateY(-3px);
+}
+
+/* Verso: campos fixos e conteúdo variável seguro */
+.cabecalho-verso {
+  min-height: 18%;
+  padding-bottom: 1%;
+}
+
+.conteudo-verso {
+  grid-template-columns: minmax(0, 1fr) 24%;
+  gap: 3.5%;
+  padding: 2% 0 0.8%;
+}
+
+.dados-verso {
+  align-content: start;
+}
+
+.campo-verso {
+  min-height: clamp(38px, 6vw, 50px);
+}
+
+.campo-verso-familia {
+  min-height: clamp(48px, 7.8vw, 66px);
+}
+
+.campo-verso-familia strong {
+  display: block;
+  line-height: 1.08;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.area-qrcode {
+  align-self: center;
+  justify-self: center;
+}
+
+.qrcode {
+  width: min(100%, 108px);
+}
+
+/* Classes aplicadas pelo JavaScript de ajuste automático */
+.texto-ajustavel {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.texto-ajustavel.texto-uma-linha {
+  white-space: nowrap;
+  -webkit-line-clamp: 1;
+}
+
+.texto-ajustavel.texto-duas-linhas {
+  white-space: normal;
+  -webkit-line-clamp: 2;
+}
+
+.texto-ajustavel.texto-quatro-linhas {
+  white-space: pre-line;
+  -webkit-line-clamp: 4;
+}
+
+@media print {
+  .texto-ajustavel {
+    overflow: hidden !important;
+  }
+}
+
   </style>
 </head>
 
@@ -1009,7 +1165,140 @@ a {
     </section>
   </main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+/* =========================================================
+   TEXTOS INTELIGENTES
+   Reduz a fonte somente quando o conteúdo não cabe.
+========================================================= */
+
+let temporizadorAjusteCarteirinha = null;
+
+function solicitarAjusteTextosCarteirinha() {
+  window.clearTimeout(temporizadorAjusteCarteirinha);
+
+  temporizadorAjusteCarteirinha = window.setTimeout(function () {
+    window.requestAnimationFrame(ajustarTodosOsTextosCarteirinha);
+  }, 40);
+}
+
+function ajustarTodosOsTextosCarteirinha() {
+  const configuracoes = [
+    {
+      id: "nomeMembroCarteirinha",
+      fonteMaxima: 27,
+      fonteMinima: 13,
+      maxLinhas: 2
+    },
+    {
+      id: "cargoMembroCarteirinha",
+      fonteMaxima: 13,
+      fonteMinima: 8,
+      maxLinhas: 2
+    },
+    {
+      id: "congregacaoCarteirinha",
+      fonteMaxima: 13,
+      fonteMinima: 8,
+      maxLinhas: 2
+    },
+    {
+      id: "familiaCarteirinha",
+      fonteMaxima: 12,
+      fonteMinima: 7,
+      maxLinhas: 4
+    },
+    {
+      id: "estadoCivilCarteirinha",
+      fonteMaxima: 12,
+      fonteMinima: 8,
+      maxLinhas: 2
+    },
+    {
+      id: "rgCarteirinha",
+      fonteMaxima: 12,
+      fonteMinima: 8,
+      maxLinhas: 2
+    },
+    {
+      id: "cpfCarteirinha",
+      fonteMaxima: 12,
+      fonteMinima: 8,
+      maxLinhas: 2
+    }
+  ];
+
+  configuracoes.forEach(function (configuracao) {
+    const elemento = document.getElementById(configuracao.id);
+
+    if (!elemento) {
+      return;
+    }
+
+    ajustarTextoCarteirinha(elemento, configuracao);
+  });
+}
+
+function ajustarTextoCarteirinha(elemento, configuracao) {
+  const fonteMaxima = Number(configuracao.fonteMaxima) || 16;
+  const fonteMinima = Number(configuracao.fonteMinima) || 8;
+  const maxLinhas = Number(configuracao.maxLinhas) || 2;
+
+  elemento.classList.add("texto-ajustavel");
+  elemento.classList.remove(
+    "texto-uma-linha",
+    "texto-duas-linhas",
+    "texto-quatro-linhas"
+  );
+
+  if (maxLinhas === 1) {
+    elemento.classList.add("texto-uma-linha");
+  } else if (maxLinhas >= 4) {
+    elemento.classList.add("texto-quatro-linhas");
+  } else {
+    elemento.classList.add("texto-duas-linhas");
+  }
+
+  elemento.style.fontSize = fonteMaxima + "px";
+
+  let tamanho = fonteMaxima;
+  let tentativas = 0;
+  const limiteTentativas = 40;
+
+  while (
+    tamanho > fonteMinima &&
+    textoUltrapassaEspaco(elemento) &&
+    tentativas < limiteTentativas
+  ) {
+    tamanho -= 0.5;
+    elemento.style.fontSize = tamanho + "px";
+    tentativas += 1;
+  }
+
+  if (textoUltrapassaEspaco(elemento)) {
+    elemento.style.fontSize = fonteMinima + "px";
+  }
+}
+
+function textoUltrapassaEspaco(elemento) {
+  const tolerancia = 1;
+
+  return (
+    elemento.scrollWidth > elemento.clientWidth + tolerancia ||
+    elemento.scrollHeight > elemento.clientHeight + tolerancia
+  );
+}
+
+window.addEventListener("resize", solicitarAjusteTextosCarteirinha);
+
+window.addEventListener("beforeprint", function () {
+  ajustarTodosOsTextosCarteirinha();
+});
+
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(solicitarAjusteTextosCarteirinha);
+}
+
+  </script>
   <script>
 /* =========================================================
    PROJETO NEEMIAS — CARTEIRINHA
@@ -1352,6 +1641,8 @@ function preencherCarteirinha(membro, idUrl) {
     membro,
     numero
   );
+
+  solicitarAjusteTextosCarteirinha();
 }
 
 function definirTexto(id, valor) {
@@ -1650,17 +1941,27 @@ function preencherDadosFamiliares(
     return;
   }
 
-  const nomesPais = [pai, mae]
-    .map(function (nome) {
-      return String(nome || "").trim();
-    })
-    .filter(Boolean);
+  const nomePai = String(pai || "").trim();
+  const nomeMae = String(mae || "").trim();
 
   rotulo.textContent = "Filiação";
-  valor.textContent =
-    nomesPais.length
-      ? nomesPais.join(" • ")
-      : "Não informada";
+
+  if (nomePai || nomeMae) {
+    const linhas = [];
+
+    if (nomePai) {
+      linhas.push("Pai: " + nomePai);
+    }
+
+    if (nomeMae) {
+      linhas.push("Mãe: " + nomeMae);
+    }
+
+    valor.textContent = linhas.join("
+");
+  } else {
+    valor.textContent = "Não informada";
+  }
 }
 
 
