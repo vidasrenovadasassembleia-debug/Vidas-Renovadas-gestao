@@ -62,7 +62,8 @@ function paginaProtegida() {
     "membro.html",
     "novo-membro.html",
     "editar-membro.html",
-    "carteirinha.html"
+    "carteirinha.html",
+    "configuracoes.html"
   ];
 
   return paginas.includes(paginaAtual());
@@ -121,7 +122,7 @@ function aplicarPermissoesDaTela() {
 
   document
     .querySelectorAll(
-      '[href="novo-membro.html"], [href^="editar-membro.html"]'
+      '[href="novo-membro.html"], [href^="editar-membro.html"], [href="configuracoes.html"]'
     )
     .forEach(function (elemento) {
       elemento.hidden = true;
@@ -129,7 +130,8 @@ function aplicarPermissoesDaTela() {
 
   if (
     paginaAtual() === "novo-membro.html" ||
-    paginaAtual() === "editar-membro.html"
+    paginaAtual() === "editar-membro.html" ||
+    paginaAtual() === "configuracoes.html"
   ) {
     alert(
       "Seu perfil não possui permissão para alterar cadastros."
@@ -1166,6 +1168,301 @@ formularioEditarMembro?.addEventListener(
     }
   }
 );
+
+
+
+
+/* =========================================
+   CONFIGURAÇÕES GERAIS
+========================================= */
+
+const formularioConfiguracoes =
+  document.getElementById("formConfiguracoes");
+
+const mensagemConfiguracoes =
+  document.getElementById("mensagemConfiguracoes");
+
+const TIPOS_ARQUIVO_SISTEMA = [
+  "image/jpeg",
+  "image/png",
+  "image/webp"
+];
+
+const TAMANHO_MAXIMO_ARQUIVO_SISTEMA =
+  4 * 1024 * 1024;
+
+if (formularioConfiguracoes) {
+  carregarConfiguracoes();
+  iniciarCamposDeCor();
+  iniciarUploadsConfiguracoes();
+
+  formularioConfiguracoes.addEventListener(
+    "submit",
+    salvarConfiguracoes
+  );
+}
+
+async function carregarConfiguracoes() {
+  try {
+    definirMensagemConfiguracoes(
+      "Carregando configurações...",
+      "info"
+    );
+
+    const resultado = await chamarApi({
+      acao: "obterConfiguracoes"
+    });
+
+    preencherConfiguracoes(
+      resultado.configuracoes || {},
+      resultado.arquivos || {}
+    );
+
+    formularioConfiguracoes.hidden = false;
+    definirMensagemConfiguracoes(
+      "Configurações carregadas.",
+      "success"
+    );
+  } catch (erro) {
+    console.error("Erro ao carregar configurações:", erro);
+    definirMensagemConfiguracoes(erro.message, "error");
+  }
+}
+
+function preencherConfiguracoes(configuracoes, arquivos) {
+  Object.entries(configuracoes).forEach(
+    function ([chave, valor]) {
+      const campo = formularioConfiguracoes.elements[chave];
+
+      if (!campo) {
+        return;
+      }
+
+      if (campo.type === "checkbox") {
+        campo.checked = valor === true ||
+          String(valor).toLowerCase() === "true";
+      } else {
+        campo.value = valor ?? "";
+      }
+    }
+  );
+
+  preencherArquivoConfiguracao("Logo", arquivos.logo || "");
+  preencherArquivoConfiguracao(
+    "Assinatura",
+    arquivos.assinatura || ""
+  );
+  preencherArquivoConfiguracao(
+    "Favicon",
+    arquivos.favicon || ""
+  );
+
+  sincronizarCamposDeCor();
+}
+
+function preencherArquivoConfiguracao(tipo, url) {
+  const campoUrl = document.getElementById("url" + tipo);
+  const preview = document.getElementById("preview" + tipo);
+  const placeholder = document.getElementById("placeholder" + tipo);
+
+  if (campoUrl) {
+    campoUrl.value = url;
+  }
+
+  if (!preview || !placeholder) {
+    return;
+  }
+
+  if (url) {
+    preview.src = url;
+    preview.hidden = false;
+    placeholder.hidden = true;
+  } else {
+    preview.removeAttribute("src");
+    preview.hidden = true;
+    placeholder.hidden = false;
+  }
+}
+
+async function salvarConfiguracoes(evento) {
+  evento.preventDefault();
+
+  const botao = document.getElementById(
+    "botaoSalvarConfiguracoes"
+  );
+  const textoOriginal = botao.textContent;
+
+  try {
+    botao.disabled = true;
+    botao.textContent = "Salvando...";
+    definirMensagemConfiguracoes(
+      "Salvando configurações...",
+      "info"
+    );
+
+    const dados = {};
+
+    formularioConfiguracoes
+      .querySelectorAll("[name]")
+      .forEach(function (campo) {
+        if (["logo", "assinatura", "favicon"].includes(campo.name)) {
+          return;
+        }
+
+        dados[campo.name] = campo.type === "checkbox"
+          ? campo.checked
+          : String(campo.value || "").trim();
+      });
+
+    const resultado = await chamarApi({
+      acao: "salvarConfiguracoes",
+      dados: dados
+    });
+
+    definirMensagemConfiguracoes(
+      resultado.mensagem ||
+        "Configurações salvas com sucesso.",
+      "success"
+    );
+  } catch (erro) {
+    console.error("Erro ao salvar configurações:", erro);
+    definirMensagemConfiguracoes(erro.message, "error");
+    alert(
+      "Não foi possível salvar as configurações.\n\n" +
+      erro.message
+    );
+  } finally {
+    botao.disabled = false;
+    botao.textContent = textoOriginal;
+  }
+}
+
+function iniciarUploadsConfiguracoes() {
+  [
+    ["arquivoLogo", "logo", "Logo"],
+    ["arquivoAssinatura", "assinatura", "Assinatura"],
+    ["arquivoFavicon", "favicon", "Favicon"]
+  ].forEach(function ([idCampo, chave, tipoVisual]) {
+    const campo = document.getElementById(idCampo);
+
+    campo?.addEventListener("change", async function () {
+      const arquivo = campo.files?.[0];
+
+      if (!arquivo) {
+        return;
+      }
+
+      try {
+        validarArquivoSistema(arquivo);
+        definirMensagemConfiguracoes(
+          "Enviando " + chave + "...",
+          "info"
+        );
+
+        const url = await enviarArquivoSistema(
+          arquivo,
+          chave
+        );
+
+        preencherArquivoConfiguracao(tipoVisual, url);
+        definirMensagemConfiguracoes(
+          "Arquivo enviado com sucesso.",
+          "success"
+        );
+      } catch (erro) {
+        campo.value = "";
+        definirMensagemConfiguracoes(erro.message, "error");
+        alert(erro.message);
+      }
+    });
+  });
+}
+
+function validarArquivoSistema(arquivo) {
+  if (!TIPOS_ARQUIVO_SISTEMA.includes(arquivo.type)) {
+    throw new Error(
+      "O arquivo deve estar no formato JPG, PNG ou WebP."
+    );
+  }
+
+  if (arquivo.size > TAMANHO_MAXIMO_ARQUIVO_SISTEMA) {
+    throw new Error("O arquivo deve ter no máximo 4 MB.");
+  }
+}
+
+async function enviarArquivoSistema(arquivo, chave) {
+  const dataUrl = await lerArquivoComoDataUrl(arquivo);
+  const separador = dataUrl.indexOf(",");
+
+  if (separador < 0) {
+    throw new Error("O conteúdo do arquivo é inválido.");
+  }
+
+  const resultado = await chamarApi({
+    acao: "uploadArquivoSistema",
+    chave: chave,
+    arquivo: {
+      nome: arquivo.name,
+      tipo: arquivo.type,
+      base64: dataUrl.slice(separador + 1)
+    }
+  });
+
+  if (!resultado.arquivo || !resultado.arquivo.url) {
+    throw new Error(
+      "A API não retornou o endereço do arquivo."
+    );
+  }
+
+  return resultado.arquivo.url;
+}
+
+function iniciarCamposDeCor() {
+  [
+    ["corPrincipal", "corPrincipalTexto"],
+    ["corSecundaria", "corSecundariaTexto"]
+  ].forEach(function ([idCor, idTexto]) {
+    const cor = document.getElementById(idCor);
+    const texto = document.getElementById(idTexto);
+
+    cor?.addEventListener("input", function () {
+      texto.value = cor.value;
+    });
+
+    texto?.addEventListener("change", function () {
+      const valor = texto.value.trim();
+
+      if (/^#[0-9a-f]{6}$/i.test(valor)) {
+        cor.value = valor;
+      } else {
+        texto.value = cor.value;
+      }
+    });
+  });
+}
+
+function sincronizarCamposDeCor() {
+  [
+    ["corPrincipal", "corPrincipalTexto"],
+    ["corSecundaria", "corSecundariaTexto"]
+  ].forEach(function ([idCor, idTexto]) {
+    const cor = document.getElementById(idCor);
+    const texto = document.getElementById(idTexto);
+
+    if (cor && texto) {
+      texto.value = cor.value;
+    }
+  });
+}
+
+function definirMensagemConfiguracoes(texto, tipo) {
+  if (!mensagemConfiguracoes) {
+    return;
+  }
+
+  mensagemConfiguracoes.textContent = texto;
+  mensagemConfiguracoes.dataset.tipo = tipo || "info";
+}
 
 
 /* =========================================
