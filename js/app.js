@@ -325,6 +325,161 @@ document
     );
   });
 
+
+/* =========================================
+   FOTO DO MEMBRO
+========================================= */
+
+const TIPOS_FOTO_PERMITIDOS = [
+  "image/jpeg",
+  "image/png",
+  "image/webp"
+];
+
+const TAMANHO_MAXIMO_FOTO = 4 * 1024 * 1024;
+const FOTO_PLACEHOLDER =
+  "https://placehold.co/220x280?text=Sem+Foto";
+
+function obterCampoArquivoFoto(formulario) {
+  return formulario?.querySelector(
+    '#fotoMembro, #fotoArquivo'
+  );
+}
+
+function obterArquivoFoto(formulario) {
+  return obterCampoArquivoFoto(formulario)?.files?.[0] || null;
+}
+
+function validarArquivoFoto(arquivo) {
+  if (!arquivo) {
+    return;
+  }
+
+  if (!TIPOS_FOTO_PERMITIDOS.includes(arquivo.type)) {
+    throw new Error(
+      "A foto deve estar no formato JPG, PNG ou WebP."
+    );
+  }
+
+  if (arquivo.size > TAMANHO_MAXIMO_FOTO) {
+    throw new Error("A foto deve ter no máximo 4 MB.");
+  }
+}
+
+function lerArquivoComoDataUrl(arquivo) {
+  return new Promise(function (resolve, reject) {
+    const leitor = new FileReader();
+
+    leitor.onload = function () {
+      resolve(String(leitor.result || ""));
+    };
+
+    leitor.onerror = function () {
+      reject(new Error("Não foi possível ler a foto selecionada."));
+    };
+
+    leitor.readAsDataURL(arquivo);
+  });
+}
+
+async function enviarFotoParaDrive(arquivo) {
+  validarArquivoFoto(arquivo);
+
+  const dataUrl = await lerArquivoComoDataUrl(arquivo);
+  const separador = dataUrl.indexOf(",");
+
+  if (separador < 0) {
+    throw new Error("O conteúdo da foto é inválido.");
+  }
+
+  const resultado = await chamarApi({
+    acao: "uploadFoto",
+    foto: {
+      nome: arquivo.name,
+      tipo: arquivo.type,
+      base64: dataUrl.slice(separador + 1)
+    }
+  });
+
+  if (!resultado.foto || !resultado.foto.url) {
+    throw new Error("A API não retornou o endereço da foto.");
+  }
+
+  return resultado.foto.url;
+}
+
+function atualizarStatusFoto(texto) {
+  const status = document.getElementById("statusFoto");
+
+  if (status) {
+    status.textContent = texto;
+  }
+}
+
+function atualizarPreviewFoto(url) {
+  const preview = document.getElementById("previewFoto");
+
+  if (!preview) {
+    return;
+  }
+
+  preview.src = String(url || "").trim() || FOTO_PLACEHOLDER;
+}
+
+function iniciarSelecaoFoto() {
+  const campoArquivo =
+    document.getElementById("fotoMembro") ||
+    document.getElementById("fotoArquivo");
+
+  if (!campoArquivo) {
+    return;
+  }
+
+  campoArquivo.addEventListener("change", async function () {
+    const arquivo = campoArquivo.files?.[0];
+
+    if (!arquivo) {
+      atualizarPreviewFoto(
+        document.getElementById("foto")?.value || ""
+      );
+      atualizarStatusFoto("Nenhuma nova foto selecionada.");
+      return;
+    }
+
+    try {
+      validarArquivoFoto(arquivo);
+      const dataUrl = await lerArquivoComoDataUrl(arquivo);
+      atualizarPreviewFoto(dataUrl);
+      atualizarStatusFoto(
+        "Pré-visualização pronta. A foto será enviada ao salvar."
+      );
+    } catch (erro) {
+      campoArquivo.value = "";
+      atualizarStatusFoto(erro.message);
+      alert(erro.message);
+    }
+  });
+}
+
+function gerarFotoFicha(membro) {
+  const url = String(membro.foto || "").trim();
+
+  if (!url) {
+    return "";
+  }
+
+  return `
+    <div style="display:flex;justify-content:center;margin-bottom:20px;">
+      <img
+        src="${escaparHtml(url)}"
+        alt="Foto de ${escaparHtml(membro.nomeCompleto || "membro")}" 
+        style="width:160px;height:200px;object-fit:cover;border-radius:14px;border:2px solid #d7dee4;background:#f3f5f6;"
+        onerror="this.style.display='none'"
+      >
+    </div>
+  `;
+}
+
 /* =========================================
    NOVO MEMBRO
 ========================================= */
@@ -355,6 +510,17 @@ if (formularioNovoMembro) {
         );
 
       try {
+        const arquivoFoto =
+          obterArquivoFoto(formularioNovoMembro);
+
+        if (arquivoFoto) {
+          botaoSalvar.textContent = "Enviando foto...";
+          atualizarStatusFoto("Enviando foto ao Google Drive...");
+          dados.foto = await enviarFotoParaDrive(arquivoFoto);
+          atualizarStatusFoto("Foto enviada com sucesso.");
+          botaoSalvar.textContent = "Salvando cadastro...";
+        }
+
         const resultado = await chamarApi({
           acao: "cadastrar",
           dados: dados
@@ -366,6 +532,8 @@ if (formularioNovoMembro) {
         );
 
         formularioNovoMembro.reset();
+        atualizarPreviewFoto("");
+        atualizarStatusFoto("Selecione uma foto para o cadastro.");
 
         const cidade =
           document.getElementById("cidade");
@@ -901,6 +1069,13 @@ function preencherFormularioEdicao(membro) {
       "Editar " +
       (membro.nomeCompleto || "Membro");
   }
+
+  atualizarPreviewFoto(membro.foto || "");
+  atualizarStatusFoto(
+    membro.foto
+      ? "Foto atual do cadastro."
+      : "Selecione uma foto para o cadastro."
+  );
 }
 
 formularioEditarMembro?.addEventListener(
@@ -926,6 +1101,17 @@ formularioEditarMembro?.addEventListener(
       );
 
     try {
+      const arquivoFoto =
+        obterArquivoFoto(formularioEditarMembro);
+
+      if (arquivoFoto) {
+        botaoSalvar.textContent = "Enviando foto...";
+        atualizarStatusFoto("Enviando foto ao Google Drive...");
+        dados.foto = await enviarFotoParaDrive(arquivoFoto);
+        atualizarStatusFoto("Foto enviada com sucesso.");
+        botaoSalvar.textContent = "Salvando alterações...";
+      }
+
       const resultado = await chamarApi({
         acao: "atualizar",
         dados: dados
@@ -960,305 +1146,6 @@ formularioEditarMembro?.addEventListener(
 
 
 /* =========================================
-   CARTEIRINHA DO MEMBRO
-========================================= */
-
-const areaCarteirinha =
-  document.getElementById("areaCarteirinha");
-
-const statusCarteirinha =
-  document.getElementById("statusCarteirinha");
-
-const botaoImprimirCarteirinha =
-  document.getElementById("botaoImprimir");
-
-const voltarFichaCarteirinha =
-  document.getElementById("voltarFicha");
-
-if (areaCarteirinha) {
-  carregarCarteirinha();
-}
-
-botaoImprimirCarteirinha?.addEventListener(
-  "click",
-  function () {
-    window.print();
-  }
-);
-
-async function carregarCarteirinha() {
-  const idMembro = obterIdDaUrl();
-
-  if (!idMembro) {
-    mostrarErroCarteirinha(
-      "ID do membro não informado."
-    );
-    return;
-  }
-
-  if (voltarFichaCarteirinha) {
-    voltarFichaCarteirinha.href =
-      "membro.html?id=" +
-      encodeURIComponent(idMembro);
-  }
-
-  try {
-    const resultado = await chamarApi({
-      acao: "buscar",
-      id: idMembro
-    });
-
-    let membro = resultado.membro;
-
-    if (typeof membro === "string") {
-      membro = JSON.parse(membro);
-    }
-
-    preencherCarteirinha(membro);
-
-    if (statusCarteirinha) {
-      statusCarteirinha.hidden = true;
-    }
-
-    areaCarteirinha.hidden = false;
-
-  } catch (erro) {
-    console.error(
-      "Erro ao carregar carteirinha:",
-      erro
-    );
-
-    mostrarErroCarteirinha(
-      erro.message
-    );
-  }
-}
-
-function preencherCarteirinha(membro) {
-  definirTextoCarteirinha(
-    "idLateral",
-    membro.id || "—"
-  );
-
-  definirTextoCarteirinha(
-    "nomeMembro",
-    membro.nomeCompleto ||
-    "Nome não informado"
-  );
-
-  definirTextoCarteirinha(
-    "cargoMembro",
-    membro.cargo || "Membro"
-  );
-
-  definirTextoCarteirinha(
-    "congregacaoMembro",
-    membro.congregacao || "Sede"
-  );
-
-  definirTextoCarteirinha(
-    "situacaoMembro",
-    "Situação: " +
-    (membro.situacao || "Ativo")
-  );
-
-  definirTextoCarteirinha(
-    "numeroCarteirinha",
-    "Nº " +
-    (
-      membro.numeroCarteirinha ||
-      membro.id ||
-      "—"
-    )
-  );
-
-  definirTextoCarteirinha(
-    "validadeCarteirinha",
-    formatarDataCarteirinha(
-      membro.validadeCarteirinha
-    ) || "Não informada"
-  );
-
-  preencherFotoCarteirinha(membro);
-  aguardarQrCode(membro, 0);
-}
-
-function definirTextoCarteirinha(id, valor) {
-  const elemento =
-    document.getElementById(id);
-
-  if (elemento) {
-    elemento.textContent = valor;
-  }
-}
-
-function preencherFotoCarteirinha(membro) {
-  const foto =
-    document.getElementById("fotoMembro");
-
-  const placeholder =
-    document.getElementById(
-      "fotoPlaceholder"
-    );
-
-  const urlFoto =
-    String(membro.foto || "").trim();
-
-  if (urlFoto && foto) {
-    foto.src = urlFoto;
-    foto.hidden = false;
-
-    if (placeholder) {
-      placeholder.hidden = true;
-    }
-
-    foto.addEventListener(
-      "error",
-      function () {
-        foto.hidden = true;
-
-        if (placeholder) {
-          placeholder.hidden = false;
-          placeholder.textContent =
-            obterIniciaisCarteirinha(
-              membro.nomeCompleto
-            );
-        }
-      },
-      {
-        once: true
-      }
-    );
-
-    return;
-  }
-
-  if (placeholder) {
-    placeholder.textContent =
-      obterIniciaisCarteirinha(
-        membro.nomeCompleto
-      );
-  }
-}
-
-function obterIniciaisCarteirinha(nome) {
-  const partes = String(nome || "")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-
-  if (!partes.length) {
-    return "VR";
-  }
-
-  if (partes.length === 1) {
-    return partes[0]
-      .slice(0, 2)
-      .toUpperCase();
-  }
-
-  return (
-    partes[0][0] +
-    partes[partes.length - 1][0]
-  ).toUpperCase();
-}
-
-function aguardarQrCode(membro, tentativa) {
-  if (typeof QRCode !== "undefined") {
-    gerarQrCodeCarteirinha(membro);
-    return;
-  }
-
-  if (tentativa >= 20) {
-    const areaQr =
-      document.getElementById("qrCode");
-
-    if (areaQr) {
-      areaQr.textContent =
-        membro.id || "QR";
-    }
-
-    return;
-  }
-
-  setTimeout(
-    function () {
-      aguardarQrCode(
-        membro,
-        tentativa + 1
-      );
-    },
-    150
-  );
-}
-
-function gerarQrCodeCarteirinha(membro) {
-  const areaQr =
-    document.getElementById("qrCode");
-
-  if (!areaQr) {
-    return;
-  }
-
-  const urlVerificacao =
-    new URL(
-      "membro.html",
-      window.location.href
-    );
-
-  urlVerificacao.searchParams.set(
-    "id",
-    membro.id || ""
-  );
-
-  areaQr.innerHTML = "";
-
-  new QRCode(areaQr, {
-    text: urlVerificacao.toString(),
-    width: 220,
-    height: 220,
-    correctLevel:
-      QRCode.CorrectLevel.M
-  });
-}
-
-function formatarDataCarteirinha(valor) {
-  if (!valor) {
-    return "";
-  }
-
-  const texto = String(valor);
-
-  if (
-    /^\d{4}-\d{2}-\d{2}$/.test(texto)
-  ) {
-    const partes = texto.split("-");
-
-    return (
-      partes[2] +
-      "/" +
-      partes[1] +
-      "/" +
-      partes[0]
-    );
-  }
-
-  return texto;
-}
-
-function mostrarErroCarteirinha(mensagem) {
-  if (statusCarteirinha) {
-    statusCarteirinha.hidden = false;
-    statusCarteirinha.textContent =
-      mensagem;
-  }
-
-  if (areaCarteirinha) {
-    areaCarteirinha.hidden = true;
-  }
-}
-
-/* =========================================
    INICIALIZAÇÃO
 ========================================= */
 
@@ -1270,5 +1157,6 @@ window.addEventListener(
     iniciarGoogleLogin();
     aplicarIdentidadeUsuario();
     aplicarPermissoesDaTela();
+    iniciarSelecaoFoto();
   }
 );
