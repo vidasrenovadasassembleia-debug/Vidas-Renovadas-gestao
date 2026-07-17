@@ -808,3 +808,142 @@ button:hover {
     padding: 19px;
   }
 }
+
+/* =========================
+   CONFIGURAÇÕES GERAIS
+========================= */
+
+.settings-message {
+  margin: 0 0 18px;
+  padding: 13px 15px;
+  border: 1px solid #d8e0e5;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #52616b;
+  font-size: 14px;
+}
+
+.settings-message[data-tipo="success"] {
+  border-color: #b9dec8;
+  background: #f1fbf5;
+  color: #24633d;
+}
+
+.settings-message[data-tipo="error"] {
+  border-color: #efc1c1;
+  background: #fff5f5;
+  color: #9a2f2f;
+}
+
+.settings-help {
+  margin: -8px 0 20px;
+}
+
+.settings-files-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.settings-file-card {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 18px;
+  border: 1px solid #e1e7eb;
+  border-radius: 14px;
+  background: #fbfcfd;
+}
+
+.settings-file-card label {
+  color: #34444f;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.settings-file-card input[type="file"] {
+  margin: 0;
+  padding: 10px;
+  background: #ffffff;
+  font-size: 13px;
+}
+
+.settings-preview-box {
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px dashed #bdc8cf;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #89949c;
+  text-align: center;
+}
+
+.settings-preview-box img {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  padding: 12px;
+}
+
+.signature-preview img {
+  height: 120px;
+}
+
+.favicon-preview img {
+  width: 92px;
+  height: 92px;
+}
+
+.color-field {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.color-field input[type="color"] {
+  height: 48px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.settings-switches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.settings-switches label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #e1e7eb;
+  border-radius: 10px;
+  background: #fbfcfd;
+  color: #34444f;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.settings-switches input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .settings-files-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .settings-switches {
+    grid-template-columns: 1fr;
+  }
+}
