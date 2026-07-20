@@ -1082,12 +1082,8 @@ a {
           Voltar
         </a>
 
-        <button class="botao botao-secundario" id="botaoExportarPdf" type="button">
-          Baixar PDF A4
-        </button>
-
         <button class="botao botao-principal" id="botaoImprimir" type="button">
-          Imprimir
+          Gerar PDF A4
         </button>
       </div>
     </header>
@@ -1278,19 +1274,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const botaoImprimir =
     document.getElementById("botaoImprimir");
 
-  const botaoExportarPdf =
-    document.getElementById("botaoExportarPdf");
-
-  botaoImprimir?.addEventListener("click", function () {
-    if (modoLoteCarteirinhas()) {
-      exportarCarteirinhaPdf();
-      return;
-    }
-
-    window.print();
-  });
-
-  botaoExportarPdf?.addEventListener("click", exportarCarteirinhaPdf);
+  botaoImprimir?.addEventListener("click", exportarCarteirinhaPdf);
 
   carregarCarteirinha();
 });
@@ -1425,15 +1409,9 @@ async function carregarCarteirinha() {
     preencherCarteirinha(membro, idsMembros[0]);
     mostrarCarteirinha();
 
-    const botao = document.getElementById("botaoExportarPdf");
     const botaoImprimir = document.getElementById("botaoImprimir");
 
-    if (botao && idsMembros.length > 1) {
-      botao.textContent =
-        "Gerar PDF A4 com " + idsMembros.length + " carteirinhas";
-    }
-
-    if (botaoImprimir && idsMembros.length > 1) {
+    if (botaoImprimir) {
       botaoImprimir.textContent = "Gerar PDF A4";
     }
 
@@ -1829,8 +1807,8 @@ function criarEnderecoVerificacao(idMembro) {
 ========================================================= */
 
 async function exportarCarteirinhaPdf() {
-  const botao = document.getElementById("botaoExportarPdf");
-  const textoOriginal = botao?.textContent || "Baixar PDF A4";
+  const botao = document.getElementById("botaoImprimir");
+  const textoOriginal = botao?.textContent || "Gerar PDF A4";
   const idsMembros = obterIdsMembrosCarteirinha();
 
   if (!idsMembros.length) {
