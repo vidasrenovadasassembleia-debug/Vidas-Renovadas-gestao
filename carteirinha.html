@@ -1915,6 +1915,15 @@ async function exportarCarteirinhaPdf() {
 
       ajustarTodosOsTextosCarteirinha();
 
+      const frente = document.querySelector(".cartao-frente");
+      const verso = document.querySelector(".cartao-verso");
+
+      if (!frente || !verso) {
+        throw new Error(
+          "Não foi possível localizar a frente ou o verso da carteirinha."
+        );
+      }
+
       const canvasFrente = await html2canvas(frente, opcoesCaptura);
       const canvasVerso = await html2canvas(verso, opcoesCaptura);
 
