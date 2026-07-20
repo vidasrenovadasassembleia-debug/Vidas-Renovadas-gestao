@@ -3,13 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Configurações | Vidas Renovadas Gestão</title>
+
   <link rel="stylesheet" href="css/estilo.css">
 </head>
+
 <body class="dashboard-page">
+
   <aside class="sidebar">
+
     <div class="sidebar-brand">
-      <img src="logo.png" alt="Logo da igreja" class="sidebar-logo" id="logoSidebar">
+      <img
+        src="logo.png"
+        alt="Logo da igreja"
+        class="sidebar-logo"
+        id="logoSidebar"
+      >
+
       <div>
         <strong data-nome-igreja>Vidas Renovadas</strong>
         <span data-nome-sistema>Projeto Neemias</span>
@@ -27,215 +38,530 @@
     </nav>
 
     <a href="index.html" class="logout">Sair</a>
+
   </aside>
 
   <main class="dashboard-main">
+
     <header class="members-header">
       <div>
         <p class="dashboard-label">Administração do sistema</p>
         <h1>Configurações Gerais</h1>
       </div>
+
       <div class="user-box">Usuário</div>
     </header>
 
-    <p id="mensagemConfiguracoes" class="settings-message" role="status" aria-live="polite">
+    <p
+      id="mensagemConfiguracoes"
+      class="settings-message"
+      role="status"
+      aria-live="polite"
+    >
       Carregando configurações...
     </p>
 
-    <form id="formConfiguracoes" class="member-form" hidden>
+    <form
+      id="formConfiguracoes"
+      class="member-form"
+      hidden
+    >
+
+      <!-- INFORMAÇÕES DA IGREJA -->
+
       <section class="form-section">
+
         <h2>Informações da igreja</h2>
+
         <div class="form-grid">
+
           <div class="form-field full-width">
             <label for="nomeIgreja">Nome da igreja</label>
-            <input id="nomeIgreja" name="nomeIgreja" type="text" required>
+
+            <input
+              id="nomeIgreja"
+              name="nomeIgreja"
+              type="text"
+              required
+            >
           </div>
+
           <div class="form-field">
             <label for="cnpj">CNPJ</label>
-            <input id="cnpj" name="cnpj" type="text">
+
+            <input
+              id="cnpj"
+              name="cnpj"
+              type="text"
+            >
           </div>
+
           <div class="form-field">
             <label for="pastorPresidente">Pastor presidente</label>
-            <input id="pastorPresidente" name="pastorPresidente" type="text">
+
+            <input
+              id="pastorPresidente"
+              name="pastorPresidente"
+              type="text"
+            >
           </div>
+
           <div class="form-field">
             <label for="pastorLocal">Pastor local</label>
-            <input id="pastorLocal" name="pastorLocal" type="text">
+
+            <input
+              id="pastorLocal"
+              name="pastorLocal"
+              type="text"
+            >
           </div>
+
           <div class="form-field">
             <label for="telefoneIgreja">Telefone</label>
-            <input id="telefoneIgreja" name="telefoneIgreja" type="text">
+
+            <input
+              id="telefoneIgreja"
+              name="telefoneIgreja"
+              type="text"
+            >
           </div>
+
           <div class="form-field">
             <label for="whatsappIgreja">WhatsApp</label>
-            <input id="whatsappIgreja" name="whatsappIgreja" type="text">
+
+            <input
+              id="whatsappIgreja"
+              name="whatsappIgreja"
+              type="text"
+            >
           </div>
+
           <div class="form-field">
             <label for="emailIgreja">E-mail</label>
-            <input id="emailIgreja" name="emailIgreja" type="email">
+
+            <input
+              id="emailIgreja"
+              name="emailIgreja"
+              type="email"
+            >
           </div>
+
           <div class="form-field full-width">
             <label for="enderecoIgreja">Endereço</label>
-            <input id="enderecoIgreja" name="enderecoIgreja" type="text">
+
+            <input
+              id="enderecoIgreja"
+              name="enderecoIgreja"
+              type="text"
+            >
           </div>
+
           <div class="form-field">
             <label for="cidadeIgreja">Cidade</label>
-            <input id="cidadeIgreja" name="cidadeIgreja" type="text">
+
+            <input
+              id="cidadeIgreja"
+              name="cidadeIgreja"
+              type="text"
+            >
           </div>
+
           <div class="form-field">
             <label for="estadoIgreja">Estado</label>
-            <input id="estadoIgreja" name="estadoIgreja" type="text" maxlength="2">
+
+            <input
+              id="estadoIgreja"
+              name="estadoIgreja"
+              type="text"
+              maxlength="2"
+            >
           </div>
+
           <div class="form-field">
             <label for="cepIgreja">CEP</label>
-            <input id="cepIgreja" name="cepIgreja" type="text">
+
+            <input
+              id="cepIgreja"
+              name="cepIgreja"
+              type="text"
+            >
           </div>
+
           <div class="form-field">
             <label for="siteIgreja">Site</label>
-            <input id="siteIgreja" name="siteIgreja" type="url">
+
+            <input
+              id="siteIgreja"
+              name="siteIgreja"
+              type="url"
+            >
           </div>
+
         </div>
+
       </section>
 
+      <!-- CARTEIRINHAS -->
+
       <section class="form-section">
+
         <h2>Carteirinhas</h2>
+
         <div class="form-grid">
+
           <div class="form-field">
-            <label for="validadePadraoMeses">Validade padrão (meses)</label>
-            <input id="validadePadraoMeses" name="validadePadraoMeses" type="number" min="1" max="120">
+            <label for="validadePadraoMeses">
+              Validade padrão (meses)
+            </label>
+
+            <input
+              id="validadePadraoMeses"
+              name="validadePadraoMeses"
+              type="number"
+              min="1"
+              max="120"
+            >
           </div>
+
           <div class="form-field">
             <label for="cargoPadrao">Cargo padrão</label>
-            <input id="cargoPadrao" name="cargoPadrao" type="text">
+
+            <input
+              id="cargoPadrao"
+              name="cargoPadrao"
+              type="text"
+            >
           </div>
-          <<div class="form-field">
+
+          <div class="form-field">
             <label for="congregacaoPadrao">Unidade padrão</label>
-           <input id="congregacaoPadrao" name="congregacaoPadrao" type="text">
-</div>
+
+            <input
+              id="congregacaoPadrao"
+              name="congregacaoPadrao"
+              type="text"
+            >
+          </div>
+
           <div class="form-field">
             <label for="corPrincipal">Cor principal</label>
+
             <div class="color-field">
-              <input id="corPrincipal" name="corPrincipal" type="color" value="#0f2f48">
-              <input id="corPrincipalTexto" type="text" value="#0f2f48" maxlength="7" aria-label="Código da cor principal">
+
+              <input
+                id="corPrincipal"
+                name="corPrincipal"
+                type="color"
+                value="#0f2f48"
+              >
+
+              <input
+                id="corPrincipalTexto"
+                type="text"
+                value="#0f2f48"
+                maxlength="7"
+                aria-label="Código da cor principal"
+              >
+
             </div>
           </div>
+
           <div class="form-field">
             <label for="corSecundaria">Cor secundária</label>
+
             <div class="color-field">
-              <input id="corSecundaria" name="corSecundaria" type="color" value="#b98a45">
-              <input id="corSecundariaTexto" type="text" value="#b98a45" maxlength="7" aria-label="Código da cor secundária">
+
+              <input
+                id="corSecundaria"
+                name="corSecundaria"
+                type="color"
+                value="#b98a45"
+              >
+
+              <input
+                id="corSecundariaTexto"
+                type="text"
+                value="#b98a45"
+                maxlength="7"
+                aria-label="Código da cor secundária"
+              >
+
             </div>
           </div>
+
           <div class="form-field full-width">
-            <label for="textoRodapeCarteirinha">Texto do rodapé</label>
-            <textarea id="textoRodapeCarteirinha" name="textoRodapeCarteirinha"></textarea>
+            <label for="textoRodapeCarteirinha">
+              Texto do rodapé
+            </label>
+
+            <textarea
+              id="textoRodapeCarteirinha"
+              name="textoRodapeCarteirinha"
+            ></textarea>
           </div>
+
         </div>
+
       </section>
+
+      <!-- ARQUIVOS INSTITUCIONAIS -->
 
       <section class="form-section">
+
         <h2>Arquivos institucionais</h2>
-        <p class="settings-help">Formatos aceitos: JPG, PNG ou WebP. Limite de 4 MB por arquivo.</p>
+
+        <p class="settings-help">
+          Formatos aceitos: JPG, PNG ou WebP. Limite de 4 MB por arquivo.
+        </p>
+
         <div class="settings-files-grid">
+
           <article class="settings-file-card">
+
             <div class="settings-preview-box">
-              <img id="previewLogo" alt="Pré-visualização da logo" hidden>
+
+              <img
+                id="previewLogo"
+                alt="Pré-visualização da logo"
+                hidden
+              >
+
               <span id="placeholderLogo">Sem logo</span>
+
             </div>
+
             <label for="arquivoLogo">Logo da igreja</label>
-            <input id="arquivoLogo" type="file" accept="image/jpeg,image/png,image/webp">
-            <input id="urlLogo" name="logo" type="hidden">
+
+            <input
+              id="arquivoLogo"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <input
+              id="urlLogo"
+              name="logo"
+              type="hidden"
+            >
+
           </article>
 
           <article class="settings-file-card">
+
             <div class="settings-preview-box signature-preview">
-              <img id="previewAssinatura" alt="Pré-visualização da assinatura" hidden>
-              <span id="placeholderAssinatura">Sem assinatura</span>
+
+              <img
+                id="previewAssinatura"
+                alt="Pré-visualização da assinatura"
+                hidden
+              >
+
+              <span id="placeholderAssinatura">
+                Sem assinatura
+              </span>
+
             </div>
+
             <label for="arquivoAssinatura">Assinatura</label>
-            <input id="arquivoAssinatura" type="file" accept="image/jpeg,image/png,image/webp">
-            <input id="urlAssinatura" name="assinatura" type="hidden">
+
+            <input
+              id="arquivoAssinatura"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <input
+              id="urlAssinatura"
+              name="assinatura"
+              type="hidden"
+            >
+
           </article>
 
           <article class="settings-file-card">
+
             <div class="settings-preview-box favicon-preview">
-              <img id="previewFavicon" alt="Pré-visualização do favicon" hidden>
-              <span id="placeholderFavicon">Sem favicon</span>
+
+              <img
+                id="previewFavicon"
+                alt="Pré-visualização do favicon"
+                hidden
+              >
+
+              <span id="placeholderFavicon">
+                Sem favicon
+              </span>
+
             </div>
+
             <label for="arquivoFavicon">Favicon</label>
-            <input id="arquivoFavicon" type="file" accept="image/jpeg,image/png,image/webp">
-            <input id="urlFavicon" name="favicon" type="hidden">
+
+            <input
+              id="arquivoFavicon"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+            >
+
+            <input
+              id="urlFavicon"
+              name="favicon"
+              type="hidden"
+            >
+
           </article>
+
         </div>
+
       </section>
-        <section class="form-section">
-  <h2>Listas do sistema</h2>
 
-  <p class="settings-help">
-    Valores utilizados nos cadastros de membros.
-  </p>
+      <!-- LISTAS DO SISTEMA -->
 
-  <p
-    id="mensagemListas"
-    class="settings-message"
-    role="status"
-    aria-live="polite"
-  >
-    Carregando listas...
-  </p>
+      <section class="form-section">
 
-  <div id="listasSistema" class="settings-lists-grid" hidden>
-    <article class="settings-list-card">
-      <h3>Unidades</h3>
-      <ul id="listaUnidades"></ul>
-    </article>
+        <h2>Listas do sistema</h2>
 
-    <article class="settings-list-card">
-      <h3>Cargos</h3>
-      <ul id="listaCargos"></ul>
-    </article>
+        <p class="settings-help">
+          Valores utilizados nos cadastros de membros.
+        </p>
 
-    <article class="settings-list-card">
-      <h3>Estado civil</h3>
-      <ul id="listaEstadoCivil"></ul>
-    </article>
+        <p
+          id="mensagemListas"
+          class="settings-message"
+          role="status"
+          aria-live="polite"
+        >
+          Carregando listas...
+        </p>
 
-    <article class="settings-list-card">
-      <h3>Situações</h3>
-      <ul id="listaSituacoes"></ul>
-    </article>
-  </div>
-</section>
+        <div
+          id="listasSistema"
+          class="settings-lists-grid"
+          hidden
+        >
 
-<section class="form-section">
-  <h2>Sistema</h2>
+          <article class="settings-list-card">
+            <h3>Unidades</h3>
+            <ul id="listaUnidades"></ul>
+          </article>
+
+          <article class="settings-list-card">
+            <h3>Cargos</h3>
+            <ul id="listaCargos"></ul>
+          </article>
+
+          <article class="settings-list-card">
+            <h3>Estado civil</h3>
+            <ul id="listaEstadoCivil"></ul>
+          </article>
+
+          <article class="settings-list-card">
+            <h3>Situações</h3>
+            <ul id="listaSituacoes"></ul>
+          </article>
+
+        </div>
+
+      </section>
+
+      <!-- SISTEMA -->
+
+      <section class="form-section">
+
+        <h2>Sistema</h2>
+
         <div class="form-grid">
+
           <div class="form-field">
             <label for="nomeSistema">Nome do sistema</label>
-            <input id="nomeSistema" name="nomeSistema" type="text">
+
+            <input
+              id="nomeSistema"
+              name="nomeSistema"
+              type="text"
+            >
           </div>
+
           <div class="form-field">
             <label for="versaoSistema">Versão</label>
-            <input id="versaoSistema" name="versaoSistema" type="text">
+
+            <input
+              id="versaoSistema"
+              name="versaoSistema"
+              type="text"
+            >
           </div>
+
         </div>
+
         <div class="settings-switches">
-          <label><input name="exibirQrCode" type="checkbox" value="true"> Exibir QR Code</label>
-          <label><input name="exibirAssinatura" type="checkbox" value="true"> Exibir assinatura</label>
-          <label><input name="exibirFoto" type="checkbox" value="true"> Exibir foto</label>
-          <label><input name="registrarLogs" type="checkbox" value="true"> Registrar logs</label>
+
+          <label>
+            <input
+              name="exibirQrCode"
+              type="checkbox"
+              value="true"
+            >
+            Exibir QR Code
+          </label>
+
+          <label>
+            <input
+              name="exibirAssinatura"
+              type="checkbox"
+              value="true"
+            >
+            Exibir assinatura
+          </label>
+
+          <label>
+            <input
+              name="exibirFoto"
+              type="checkbox"
+              value="true"
+            >
+            Exibir foto
+          </label>
+
+          <label>
+            <input
+              name="registrarLogs"
+              type="checkbox"
+              value="true"
+            >
+            Registrar logs
+          </label>
+
         </div>
+
       </section>
 
       <div class="form-actions">
-        <a href="dashboard.html" class="secondary-link">Cancelar</a>
-        <button id="botaoSalvarConfiguracoes" type="submit">Salvar configurações</button>
+
+        <a
+          href="dashboard.html"
+          class="secondary-link"
+        >
+          Cancelar
+        </a>
+
+        <button
+          id="botaoSalvarConfiguracoes"
+          type="submit"
+        >
+          Salvar configurações
+        </button>
+
       </div>
+
     </form>
 
-    <footer class="dashboard-footer">Vidas Renovadas Gestão — Projeto Neemias</footer>
+    <footer class="dashboard-footer">
+      Vidas Renovadas Gestão — Projeto Neemias
+    </footer>
+
   </main>
 
   <script src="js/app.js?v=10"></script>
+
 </body>
 </html>
