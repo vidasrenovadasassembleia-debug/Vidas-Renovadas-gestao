@@ -7,7 +7,7 @@
    * Exemplo:
    * https://script.google.com/macros/s/SEU_ID/exec
    */
-  const API_URL = "COLE_AQUI_A_URL_DO_APPS_SCRIPT";
+  const API_URL = "const API_URL = "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec";
 
   const elementos = {
     carregando: document.getElementById("estadoCarregando"),
