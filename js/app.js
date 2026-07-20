@@ -840,6 +840,9 @@ const pesquisaMembro =
 const filtroSituacao =
   document.getElementById("filtroSituacao");
 
+const filtroRegiao =
+  document.getElementById("filtroRegiao");
+
 if (pesquisaMembro) {
   pesquisaMembro.addEventListener(
     "input",
@@ -849,6 +852,13 @@ if (pesquisaMembro) {
 
 if (filtroSituacao) {
   filtroSituacao.addEventListener(
+    "change",
+    aplicarFiltros
+  );
+}
+
+if (filtroRegiao) {
+  filtroRegiao.addEventListener(
     "change",
     aplicarFiltros
   );
@@ -864,6 +874,10 @@ function aplicarFiltros() {
   const situacao = String(
     filtroSituacao?.value || ""
   );
+
+  const regiao = String(
+    filtroRegiao?.value || ""
+  ).toLowerCase();
 
   const filtrados =
     membrosCarregados.filter(
@@ -887,9 +901,16 @@ function aplicarFiltros() {
           !situacao ||
           membro.situacao === situacao;
 
+        const correspondeRegiao =
+          !regiao ||
+          String(membro.congregacao || "")
+            .toLowerCase()
+            .includes(regiao);
+
         return (
           correspondeTexto &&
-          correspondeSituacao
+          correspondeSituacao &&
+          correspondeRegiao
         );
       }
     );
