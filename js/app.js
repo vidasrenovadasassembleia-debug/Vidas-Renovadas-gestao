@@ -1,4 +1,4 @@
-const URL_API =
+onst URL_API =
   "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec";
 
 const CLIENT_ID_GOOGLE =
@@ -602,6 +602,17 @@ const tabelaMembros =
   document.getElementById("listaMembros");
 
 let membrosCarregados = [];
+let membrosExibidos = [];
+const idsCarteirinhasSelecionadas = new Set();
+
+const selecionarTodosMembros =
+  document.getElementById("selecionarTodosMembros");
+
+const botaoExportarSelecionadas =
+  document.getElementById("botaoExportarSelecionadas");
+
+const contadorSelecionados =
+  document.getElementById("contadorSelecionados");
 
 if (tabelaMembros) {
   carregarMembros();
@@ -610,7 +621,7 @@ if (tabelaMembros) {
 async function carregarMembros() {
   tabelaMembros.innerHTML = `
     <tr>
-      <td colspan="6" class="empty-state">
+      <td colspan="7" class="empty-state">
         Carregando membros...
       </td>
     </tr>
@@ -644,7 +655,7 @@ async function carregarMembros() {
 
     tabelaMembros.innerHTML = `
       <tr>
-        <td colspan="6" class="empty-state">
+        <td colspan="7" class="empty-state">
           ${escaparHtml(erro.message)}
         </td>
       </tr>
@@ -654,11 +665,12 @@ async function carregarMembros() {
 
 function mostrarMembros(membros) {
   tabelaMembros.innerHTML = "";
+  membrosExibidos = Array.isArray(membros) ? membros : [];
 
   if (!membros.length) {
     tabelaMembros.innerHTML = `
       <tr>
-        <td colspan="6" class="empty-state">
+        <td colspan="7" class="empty-state">
           Nenhum membro cadastrado.
         </td>
       </tr>
@@ -685,7 +697,20 @@ function mostrarMembros(membros) {
         `
         : "";
 
+    const idMembro = String(membro.id || "").trim();
+    const marcado = idsCarteirinhasSelecionadas.has(idMembro);
+
     linha.innerHTML = `
+      <td class="coluna-selecao">
+        <input
+          type="checkbox"
+          class="seletor-carteirinha"
+          value="${escaparHtml(idMembro)}"
+          aria-label="Selecionar carteirinha de ${escaparHtml(membro.nome || idMembro)}"
+          ${marcado ? "checked" : ""}
+        >
+      </td>
+
       <td>${escaparHtml(membro.id)}</td>
       <td>${escaparHtml(membro.nome)}</td>
       <td>${escaparHtml(membro.cargo || "-")}</td>
@@ -716,6 +741,93 @@ function mostrarMembros(membros) {
 
     tabelaMembros.appendChild(linha);
   });
+  atualizarControlesCarteirinhas();
+}
+
+if (tabelaMembros) {
+  tabelaMembros.addEventListener("change", function (evento) {
+    const seletor = evento.target.closest(".seletor-carteirinha");
+
+    if (!seletor) {
+      return;
+    }
+
+    const id = String(seletor.value || "").trim();
+
+    if (seletor.checked) {
+      idsCarteirinhasSelecionadas.add(id);
+    } else {
+      idsCarteirinhasSelecionadas.delete(id);
+    }
+
+    atualizarControlesCarteirinhas();
+  });
+}
+
+selecionarTodosMembros?.addEventListener("change", function () {
+  membrosExibidos.forEach(function (membro) {
+    const id = String(membro.id || "").trim();
+
+    if (!id) {
+      return;
+    }
+
+    if (selecionarTodosMembros.checked) {
+      idsCarteirinhasSelecionadas.add(id);
+    } else {
+      idsCarteirinhasSelecionadas.delete(id);
+    }
+  });
+
+  mostrarMembros(membrosExibidos);
+});
+
+botaoExportarSelecionadas?.addEventListener("click", function () {
+  const ids = Array.from(idsCarteirinhasSelecionadas);
+
+  if (!ids.length) {
+    alert("Selecione pelo menos uma carteirinha.");
+    return;
+  }
+
+  const parametros = new URLSearchParams();
+  parametros.set("ids", ids.join(","));
+  parametros.set("lote", "1");
+
+  window.location.href = "carteirinha.html?" + parametros.toString();
+});
+
+function atualizarControlesCarteirinhas() {
+  const quantidade = idsCarteirinhasSelecionadas.size;
+
+  if (contadorSelecionados) {
+    contadorSelecionados.textContent =
+      quantidade === 1
+        ? "1 selecionado"
+        : quantidade + " selecionados";
+  }
+
+  if (botaoExportarSelecionadas) {
+    botaoExportarSelecionadas.disabled = quantidade === 0;
+  }
+
+  if (selecionarTodosMembros) {
+    const idsVisiveis = membrosExibidos
+      .map(function (membro) {
+        return String(membro.id || "").trim();
+      })
+      .filter(Boolean);
+
+    const selecionadosVisiveis = idsVisiveis.filter(function (id) {
+      return idsCarteirinhasSelecionadas.has(id);
+    }).length;
+
+    selecionarTodosMembros.checked =
+      idsVisiveis.length > 0 && selecionadosVisiveis === idsVisiveis.length;
+
+    selecionarTodosMembros.indeterminate =
+      selecionadosVisiveis > 0 && selecionadosVisiveis < idsVisiveis.length;
+  }
 }
 
 /* =========================================
@@ -1193,7 +1305,6 @@ const TAMANHO_MAXIMO_ARQUIVO_SISTEMA =
 
 if (formularioConfiguracoes) {
   carregarConfiguracoes();
-  carregarListasSistema();
   iniciarCamposDeCor();
   iniciarUploadsConfiguracoes();
 
@@ -1463,93 +1574,6 @@ function definirMensagemConfiguracoes(texto, tipo) {
 
   mensagemConfiguracoes.textContent = texto;
   mensagemConfiguracoes.dataset.tipo = tipo || "info";
-}
-
-/* =========================================
-   LISTAS DO SISTEMA
-========================================= */
-
-async function carregarListasSistema() {
-  const mensagem = document.getElementById("mensagemListas");
-  const painel = document.getElementById("listasSistema");
-
-  if (!mensagem || !painel) {
-    return;
-  }
-
-  try {
-    mensagem.hidden = false;
-    mensagem.textContent = "Carregando listas...";
-    mensagem.dataset.tipo = "info";
-    painel.hidden = true;
-
-    const resultado = await chamarApi({
-      acao: "listarListas"
-    });
-
-    preencherListasSistema(resultado.listas || {});
-
-    painel.hidden = false;
-    mensagem.textContent = "Listas carregadas com sucesso.";
-    mensagem.dataset.tipo = "success";
-  } catch (erro) {
-    console.error("Erro ao carregar listas do sistema:", erro);
-    painel.hidden = true;
-    mensagem.hidden = false;
-    mensagem.textContent = erro.message;
-    mensagem.dataset.tipo = "error";
-  }
-}
-
-function preencherListasSistema(listas) {
-  preencherListaSistema(
-    "listaUnidades",
-    listas.UNIDADE || []
-  );
-
-  preencherListaSistema(
-    "listaCargos",
-    listas.CARGO || []
-  );
-
-  preencherListaSistema(
-    "listaEstadoCivil",
-    listas["ESTADO CIVIL"] || []
-  );
-
-  preencherListaSistema(
-    "listaSituacoes",
-    listas["SITUAÇÃO"] || listas.SITUACAO || []
-  );
-}
-
-function preencherListaSistema(idElemento, valores) {
-  const lista = document.getElementById(idElemento);
-
-  if (!lista) {
-    return;
-  }
-
-  lista.innerHTML = "";
-
-  const itens = Array.isArray(valores)
-    ? valores.filter(function (valor) {
-        return String(valor || "").trim();
-      })
-    : [];
-
-  if (!itens.length) {
-    const itemVazio = document.createElement("li");
-    itemVazio.textContent = "Nenhum valor cadastrado.";
-    lista.appendChild(itemVazio);
-    return;
-  }
-
-  itens.forEach(function (valor) {
-    const item = document.createElement("li");
-    item.textContent = String(valor).trim();
-    lista.appendChild(item);
-  });
 }
 
 
