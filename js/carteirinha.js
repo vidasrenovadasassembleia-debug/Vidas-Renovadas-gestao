@@ -1,566 +1,505 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+(() => {
+  "use strict";
 
-<head>
-  <meta charset="UTF-8">
+  /*
+   * Projeto Neemias / Vidas Renovadas Gestão
+   * Arquivo: js/carteirinha.js
+   *
+   * Este arquivo:
+   * 1. busca os dados do membro;
+   * 2. preenche a carteirinha;
+   * 3. exibe foto, situação e validade;
+   * 4. gera um QR Code para a validação pública;
+   * 5. permite imprimir a carteirinha.
+   */
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  const API_URL =
+    "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec";
 
-  <title>Carteirinha do Membro | Vidas Renovadas Gestão</title>
+  const URL_VALIDACAO =
+    "https://vidasrenovadasassembleia-debug.github.io/Vidas-Renovadas-gestao/validar.html";
 
-  <link
-    rel="stylesheet"
-    href="css/estilo.css"
-  >
+  const ACAO_BUSCAR_MEMBRO = "buscarMembro";
 
-  <style>
-    :root {
-      --azul-carteira: #0f2f48;
-      --azul-claro-carteira: #174867;
-      --dourado-carteira: #b98a45;
-      --branco-carteira: #ffffff;
-      --cinza-carteira: #eef2f5;
-      --texto-carteira: #243746;
+  const elementos = {};
+
+  document.addEventListener("DOMContentLoaded", iniciar);
+
+  async function iniciar() {
+    mapearElementos();
+    configurarEventos();
+
+    const identificador = obterIdentificadorDaUrl();
+
+    if (!identificador) {
+      mostrarErro(
+        "Não foi informado qual membro deve ser exibido. Volte à ficha do membro e abra a carteirinha novamente."
+      );
+      return;
     }
 
-    body.carteirinha-page {
-      min-height: 100vh;
-      margin: 0;
-      padding: 28px;
-      background: #edf1f4;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--texto-carteira);
-    }
+    try {
+      mostrarStatus("Carregando dados do membro...");
 
-    .carteirinha-header {
-      width: min(100%, 980px);
-      margin: 0 auto 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
+      const resposta = await buscarMembro(identificador);
+      const membro = extrairMembro(resposta);
 
-    .carteirinha-header h1 {
-      margin: 0;
-      color: var(--azul-carteira);
-      font-size: 28px;
-    }
-
-    .carteirinha-header p {
-      margin: 6px 0 0;
-      color: #6c7a84;
-    }
-
-    .carteirinha-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .carteirinha-actions button,
-    .carteirinha-actions a {
-      min-height: 42px;
-      padding: 10px 16px;
-      border: 0;
-      border-radius: 9px;
-      background: var(--azul-carteira);
-      color: var(--branco-carteira);
-      font-weight: 700;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .carteirinha-actions a {
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .carteirinha-actions .secundario {
-      background: var(--branco-carteira);
-      color: var(--azul-carteira);
-      border: 1px solid #cfd8df;
-    }
-
-    .carteirinha-status {
-      width: min(100%, 980px);
-      margin: 0 auto 18px;
-      padding: 14px 16px;
-      border-radius: 12px;
-      background: var(--branco-carteira);
-      color: #667680;
-      text-align: center;
-    }
-
-    .folha-carteirinha {
-      width: min(100%, 980px);
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 28px;
-      justify-items: center;
-    }
-
-    .carteira {
-      position: relative;
-      width: 85.6mm;
-      height: 54mm;
-      overflow: hidden;
-      border-radius: 3.2mm;
-      background: var(--branco-carteira);
-      box-shadow: 0 16px 38px rgba(15, 47, 72, 0.18);
-      print-color-adjust: exact;
-      -webkit-print-color-adjust: exact;
-    }
-
-    .carteira-frente {
-      display: grid;
-      grid-template-columns: 31mm 1fr;
-      background:
-        linear-gradient(
-          135deg,
-          rgba(185, 138, 69, 0.14),
-          transparent 48%
-        ),
-        var(--branco-carteira);
-    }
-
-    .faixa-lateral {
-      background:
-        linear-gradient(
-          180deg,
-          var(--azul-carteira),
-          var(--azul-claro-carteira)
+      if (!membro) {
+        throw new Error(
+          resposta?.mensagem ||
+          resposta?.message ||
+          "Membro não encontrado."
         );
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3mm;
-      padding: 4mm;
-      color: var(--branco-carteira);
+      }
+
+      preencherCarteirinha(membro);
+      gerarQrCode(membro);
+
+      elementos.areaCarteirinha.hidden = false;
+      ocultarStatus();
+    } catch (erro) {
+      console.error("Erro ao carregar carteirinha:", erro);
+      mostrarErro(
+        erro?.message ||
+        "Não foi possível carregar a carteirinha."
+      );
+    }
+  }
+
+  function mapearElementos() {
+    elementos.status = document.getElementById("statusCarteirinha");
+    elementos.areaCarteirinha = document.getElementById("areaCarteirinha");
+    elementos.botaoImprimir = document.getElementById("botaoImprimir");
+    elementos.voltarFicha = document.getElementById("voltarFicha");
+
+    elementos.fotoMembro = document.getElementById("fotoMembro");
+    elementos.fotoPlaceholder = document.getElementById("fotoPlaceholder");
+
+    elementos.idLateral = document.getElementById("idLateral");
+    elementos.nomeMembro = document.getElementById("nomeMembro");
+    elementos.cargoMembro = document.getElementById("cargoMembro");
+    elementos.congregacaoMembro =
+      document.getElementById("congregacaoMembro");
+
+    elementos.situacaoMembro =
+      document.getElementById("situacaoMembro");
+
+    elementos.numeroCarteirinha =
+      document.getElementById("numeroCarteirinha");
+
+    elementos.validadeCarteirinha =
+      document.getElementById("validadeCarteirinha");
+
+    elementos.qrCode = document.getElementById("qrCode");
+  }
+
+  function configurarEventos() {
+    elementos.botaoImprimir?.addEventListener("click", () => {
+      window.print();
+    });
+
+    elementos.fotoMembro?.addEventListener("error", () => {
+      ocultarFoto();
+    });
+  }
+
+  function obterIdentificadorDaUrl() {
+    const parametros = new URLSearchParams(window.location.search);
+
+    return (
+      parametros.get("id") ||
+      parametros.get("membro") ||
+      parametros.get("codigo") ||
+      parametros.get("numero") ||
+      ""
+    ).trim();
+  }
+
+  async function buscarMembro(identificador) {
+    const corpo = new URLSearchParams();
+
+    corpo.set("acao", ACAO_BUSCAR_MEMBRO);
+
+    /*
+     * Enviamos o mesmo identificador com nomes diferentes para manter
+     * compatibilidade com versões anteriores do backend.
+     */
+    corpo.set("id", identificador);
+    corpo.set("codigo", identificador);
+    corpo.set("numero", identificador);
+
+    const resposta = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+      },
+      body: corpo.toString()
+    });
+
+    if (!resposta.ok) {
+      throw new Error(
+        `A API respondeu com o código ${resposta.status}.`
+      );
     }
 
-    .foto-membro {
-      width: 23mm;
-      height: 29mm;
-      border-radius: 2.4mm;
-      border: 0.8mm solid rgba(255, 255, 255, 0.82);
-      object-fit: cover;
-      background: #dfe7ec;
+    const texto = await resposta.text();
+
+    try {
+      return JSON.parse(texto);
+    } catch {
+      throw new Error(
+        "A resposta recebida da API não está em formato JSON."
+      );
+    }
+  }
+
+  function extrairMembro(resposta) {
+    if (!resposta || typeof resposta !== "object") {
+      return null;
     }
 
-    .foto-placeholder {
-      width: 23mm;
-      height: 29mm;
-      border-radius: 2.4mm;
-      border: 0.8mm solid rgba(255, 255, 255, 0.82);
-      display: grid;
-      place-items: center;
-      background: rgba(255, 255, 255, 0.12);
-      color: var(--branco-carteira);
-      font-size: 7mm;
-      font-weight: 700;
+    if (resposta.sucesso === false || resposta.success === false) {
+      return null;
     }
 
-    .id-lateral {
-      font-size: 3mm;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+    if (resposta.membro && typeof resposta.membro === "object") {
+      return resposta.membro;
     }
 
-    .dados-frente {
-      padding: 4.2mm 4.5mm 3.5mm;
-      display: flex;
-      flex-direction: column;
+    if (resposta.dados && typeof resposta.dados === "object") {
+      if (resposta.dados.membro) {
+        return resposta.dados.membro;
+      }
+
+      return resposta.dados;
     }
 
-    .marca-carteira {
-      display: flex;
-      align-items: center;
-      gap: 2.5mm;
-      margin-bottom: 3mm;
+    if (resposta.data && typeof resposta.data === "object") {
+      if (resposta.data.membro) {
+        return resposta.data.membro;
+      }
+
+      return resposta.data;
     }
 
-    .marca-carteira img {
-      width: 12mm;
-      height: 12mm;
-      object-fit: contain;
-      border-radius: 2mm;
-      background: var(--branco-carteira);
+    /*
+     * Algumas versões da API devolvem os dados diretamente no objeto.
+     */
+    if (
+      resposta.nome ||
+      resposta.nomeCompleto ||
+      resposta.numeroCarteirinha ||
+      resposta.tokenPublico
+    ) {
+      return resposta;
     }
 
-    .marca-carteira strong {
-      display: block;
-      color: var(--azul-carteira);
-      font-size: 3.6mm;
-      line-height: 1.05;
-    }
+    return null;
+  }
 
-    .marca-carteira span {
-      display: block;
-      margin-top: 0.8mm;
-      color: var(--dourado-carteira);
-      font-size: 2.2mm;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-    }
+  function preencherCarteirinha(membro) {
+    const nome = primeiroValor(
+      membro.nomeCompleto,
+      membro.nome,
+      membro.nomeMembro
+    );
 
-    .nome-membro {
-      margin: 1mm 0 2mm;
-      color: var(--azul-carteira);
-      font-size: 4.4mm;
-      line-height: 1.08;
-    }
+    const cargo = primeiroValor(
+      membro.cargo,
+      membro.funcao,
+      membro.ministerio
+    );
 
-    .linha-dado {
-      margin-top: 1.4mm;
-    }
+    const congregacao = primeiroValor(
+      membro.congregacao,
+      membro.igreja,
+      membro.local
+    );
 
-    .linha-dado span {
-      display: block;
-      color: #7b8992;
-      font-size: 2.1mm;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
+    const situacao = primeiroValor(
+      membro.situacao,
+      membro.status,
+      "Não informada"
+    );
 
-    .linha-dado strong {
-      display: block;
-      margin-top: 0.4mm;
-      color: var(--texto-carteira);
-      font-size: 2.9mm;
-      line-height: 1.15;
-    }
+    const numero = primeiroValor(
+      membro.numeroCarteirinha,
+      membro.numero,
+      membro.codigo,
+      membro.id
+    );
 
-    .rodape-frente {
-      margin-top: auto;
-      padding-top: 1.8mm;
-      border-top: 0.3mm solid #e5eaee;
-      display: flex;
-      justify-content: space-between;
-      gap: 2mm;
-      font-size: 2.2mm;
-      color: #687780;
-    }
+    const validade = primeiroValor(
+      membro.validade,
+      membro.validadeCarteirinha,
+      membro.dataValidade
+    );
 
-    .situacao-ativa {
-      color: #2b7548;
-      font-weight: 700;
-    }
+    const foto = primeiroValor(
+      membro.foto,
+      membro.fotoUrl,
+      membro.urlFoto,
+      membro.imagem
+    );
 
-    .carteira-verso {
-      background:
-        linear-gradient(
-          145deg,
-          var(--azul-carteira),
-          var(--azul-claro-carteira)
-        );
-      color: var(--branco-carteira);
-      display: grid;
-      grid-template-columns: 1fr 30mm;
-      gap: 3mm;
-      padding: 5mm;
-    }
+    definirTexto(elementos.nomeMembro, nome || "Nome não informado");
+    definirTexto(elementos.cargoMembro, cargo || "Não informado");
+    definirTexto(
+      elementos.congregacaoMembro,
+      congregacao || "Não informada"
+    );
 
-    .verso-conteudo {
-      display: flex;
-      flex-direction: column;
-    }
+    const numeroExibicao = numero || "—";
 
-    .verso-conteudo h2 {
-      margin: 0 0 1.4mm;
-      font-size: 4.1mm;
-      line-height: 1.08;
-    }
+    definirTexto(elementos.idLateral, numeroExibicao);
+    definirTexto(
+      elementos.numeroCarteirinha,
+      `Nº ${numeroExibicao}`
+    );
 
-    .verso-conteudo .subtitulo {
-      color: #e6cda6;
-      font-size: 2.3mm;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
+    preencherSituacao(situacao);
+    preencherValidade(validade);
+    preencherFoto(foto, nome);
 
-    .verso-conteudo p {
-      margin: 3mm 0 0;
-      font-size: 2.5mm;
-      line-height: 1.35;
-    }
+    if (elementos.voltarFicha) {
+      const identificador = obterIdentificadorDaUrl();
 
-    .validade {
-      margin-top: auto;
-      padding-top: 2mm;
-      border-top: 0.3mm solid rgba(255, 255, 255, 0.22);
-      font-size: 2.5mm;
-    }
-
-    .validade strong {
-      display: block;
-      margin-top: 0.6mm;
-      color: #f2d7ab;
-      font-size: 3.2mm;
-    }
-
-    .qr-area {
-      align-self: center;
-      justify-self: center;
-      padding: 2.3mm;
-      border-radius: 2mm;
-      background: var(--branco-carteira);
-      color: var(--azul-carteira);
-      text-align: center;
-    }
-
-    #qrCode {
-      width: 23mm;
-      height: 23mm;
-      display: grid;
-      place-items: center;
-    }
-
-    #qrCode img,
-    #qrCode canvas {
-      width: 23mm !important;
-      height: 23mm !important;
-    }
-
-    .qr-area span {
-      display: block;
-      margin-top: 1.4mm;
-      font-size: 2mm;
-      font-weight: 700;
-    }
-
-    @media (max-width: 900px) {
-      .folha-carteirinha {
-        grid-template-columns: 1fr;
+      if (identificador) {
+        elementos.voltarFicha.href =
+          `membro.html?id=${encodeURIComponent(identificador)}`;
       }
     }
 
-    @media print {
-      @page {
-        size: A4 portrait;
-        margin: 12mm;
-      }
+    document.title =
+      `${nome || "Membro"} | Carteirinha Vidas Renovadas`;
+  }
 
-      body.carteirinha-page {
-        padding: 0;
-        background: #ffffff;
-      }
+  function preencherSituacao(situacaoOriginal) {
+    const situacao = String(
+      situacaoOriginal || "Não informada"
+    ).trim();
 
-      .carteirinha-header,
-      .carteirinha-status {
-        display: none !important;
-      }
+    definirTexto(
+      elementos.situacaoMembro,
+      `Situação: ${situacao}`
+    );
 
-      .folha-carteirinha {
-        width: 100%;
-        margin: 0;
-        grid-template-columns: repeat(2, 85.6mm);
-        gap: 12mm 10mm;
-        align-items: start;
-        justify-content: start;
-      }
-
-      .carteira {
-        box-shadow: none;
-        border: 0.2mm solid #c8d0d6;
-        break-inside: avoid;
-      }
+    if (!elementos.situacaoMembro) {
+      return;
     }
-  </style>
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"
-    defer
-  ></script>
-</head>
+    elementos.situacaoMembro.classList.remove(
+      "situacao-ativa",
+      "situacao-inativa",
+      "situacao-pendente"
+    );
 
-<body class="carteirinha-page">
+    const situacaoNormalizada = normalizarTexto(situacao);
 
-  <header class="carteirinha-header">
+    if (
+      situacaoNormalizada === "ativo" ||
+      situacaoNormalizada === "ativa"
+    ) {
+      elementos.situacaoMembro.classList.add("situacao-ativa");
+      return;
+    }
 
-    <div>
-      <h1>Carteirinha do membro</h1>
-      <p>
-        Visualize a frente e o verso antes de imprimir.
-      </p>
-    </div>
+    if (
+      situacaoNormalizada.includes("inativ") ||
+      situacaoNormalizada.includes("cancel")
+    ) {
+      elementos.situacaoMembro.classList.add("situacao-inativa");
+      return;
+    }
 
-    <div class="carteirinha-actions">
+    elementos.situacaoMembro.classList.add("situacao-pendente");
+  }
 
-      <a
-        id="voltarFicha"
-        class="secundario"
-        href="membros.html"
-      >
-        Voltar
-      </a>
+  function preencherValidade(valor) {
+    if (!valor) {
+      definirTexto(
+        elementos.validadeCarteirinha,
+        "Não informada"
+      );
+      return;
+    }
 
-      <button
-        id="botaoImprimir"
-        type="button"
-      >
-        Imprimir carteirinha
-      </button>
+    definirTexto(
+      elementos.validadeCarteirinha,
+      formatarData(valor)
+    );
+  }
 
-    </div>
+  function preencherFoto(url, nome) {
+    if (!url) {
+      ocultarFoto();
+      atualizarIniciais(nome);
+      return;
+    }
 
-  </header>
+    elementos.fotoMembro.src = String(url).trim();
+    elementos.fotoMembro.alt =
+      `Foto de ${nome || "membro"}`;
 
-  <div
-    id="statusCarteirinha"
-    class="carteirinha-status"
-    aria-live="polite"
-  >
-    Carregando dados do membro...
-  </div>
+    elementos.fotoMembro.hidden = false;
+    elementos.fotoPlaceholder.hidden = true;
+  }
 
-  <main
-    id="areaCarteirinha"
-    class="folha-carteirinha"
-    hidden
-  >
+  function ocultarFoto() {
+    if (elementos.fotoMembro) {
+      elementos.fotoMembro.hidden = true;
+      elementos.fotoMembro.removeAttribute("src");
+    }
 
-    <section
-      class="carteira carteira-frente"
-      aria-label="Frente da carteirinha"
-    >
+    if (elementos.fotoPlaceholder) {
+      elementos.fotoPlaceholder.hidden = false;
+    }
+  }
 
-      <div class="faixa-lateral">
+  function atualizarIniciais(nome) {
+    if (!elementos.fotoPlaceholder) {
+      return;
+    }
 
-        <div
-          id="fotoPlaceholder"
-          class="foto-placeholder"
-        >
-          VR
-        </div>
+    const partes = String(nome || "VR")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
 
-        <img
-          id="fotoMembro"
-          class="foto-membro"
-          alt="Foto do membro"
-          hidden
-        >
+    const iniciais = partes.length === 1
+      ? partes[0].slice(0, 2)
+      : `${partes[0][0]}${partes[partes.length - 1][0]}`;
 
-        <div
-          id="idLateral"
-          class="id-lateral"
-        >
-          VR000000
-        </div>
+    elementos.fotoPlaceholder.textContent =
+      iniciais.toUpperCase();
+  }
 
-      </div>
+  function gerarQrCode(membro) {
+    if (!elementos.qrCode) {
+      return;
+    }
 
-      <div class="dados-frente">
+    const token = primeiroValor(
+      membro.tokenPublico,
+      membro.token_publico,
+      membro.tokenCarteirinha,
+      membro.token
+    );
 
-        <div class="marca-carteira">
+    elementos.qrCode.innerHTML = "";
 
-          <img
-            src="logo.png"
-            alt="Logo da igreja"
-          >
+    if (!token) {
+      elementos.qrCode.textContent = "QR indisponível";
+      console.warn(
+        "O membro não possui token público para gerar o QR Code."
+      );
+      return;
+    }
 
-          <div>
-            <strong>
-              Vidas Renovadas
-            </strong>
+    if (typeof window.QRCode !== "function") {
+      elementos.qrCode.textContent = "QR indisponível";
+      console.error(
+        "A biblioteca QRCode não foi carregada."
+      );
+      return;
+    }
 
-            <span>
-              Carteira de membro
-            </span>
-          </div>
+    const urlPublica =
+      `${URL_VALIDACAO}?token=${encodeURIComponent(token)}`;
 
-        </div>
+    new window.QRCode(elementos.qrCode, {
+      text: urlPublica,
+      width: 174,
+      height: 174,
+      correctLevel: window.QRCode.CorrectLevel.M
+    });
 
-        <h2
-          id="nomeMembro"
-          class="nome-membro"
-        >
-          Nome do membro
-        </h2>
+    elementos.qrCode.title = urlPublica;
+  }
 
-        <div class="linha-dado">
-          <span>Cargo</span>
-          <strong id="cargoMembro">—</strong>
-        </div>
+  function formatarData(valor) {
+    if (!valor) {
+      return "Não informada";
+    }
 
-        <div class="linha-dado">
-          <span>Congregação</span>
-          <strong id="congregacaoMembro">—</strong>
-        </div>
+    if (
+      typeof valor === "string" &&
+      /^\d{2}\/\d{2}\/\d{4}$/.test(valor.trim())
+    ) {
+      return valor.trim();
+    }
 
-        <div class="rodape-frente">
-          <span id="situacaoMembro">
-            Situação: Ativo
-          </span>
+    let data;
 
-          <span id="numeroCarteirinha">
-            Nº —
-          </span>
-        </div>
+    if (
+      typeof valor === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(valor.trim())
+    ) {
+      const [ano, mes, dia] = valor.trim().split("-").map(Number);
+      data = new Date(ano, mes - 1, dia);
+    } else {
+      data = new Date(valor);
+    }
 
-      </div>
+    if (Number.isNaN(data.getTime())) {
+      return String(valor);
+    }
 
-    </section>
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }).format(data);
+  }
 
-    <section
-      class="carteira carteira-verso"
-      aria-label="Verso da carteirinha"
-    >
+  function primeiroValor(...valores) {
+    return valores.find((valor) => {
+      return valor !== undefined &&
+        valor !== null &&
+        String(valor).trim() !== "";
+    });
+  }
 
-      <div class="verso-conteudo">
+  function definirTexto(elemento, texto) {
+    if (elemento) {
+      elemento.textContent = texto;
+    }
+  }
 
-        <span class="subtitulo">
-          Assembleia de Deus
-        </span>
+  function normalizarTexto(valor) {
+    return String(valor || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLowerCase();
+  }
 
-        <h2>
-          Ministério Vidas Renovadas
-        </h2>
+  function mostrarStatus(mensagem) {
+    if (!elementos.status) {
+      return;
+    }
 
-        <p>
-          CNPJ 60.028.677/0001-71<br>
-          Duque de Caxias — RJ<br>
-          Pastor Presidente: Rogerio Lemos da Silva
-        </p>
+    elementos.status.hidden = false;
+    elementos.status.textContent = mensagem;
+  }
 
-        <div class="validade">
-          Validade da carteirinha
-          <strong id="validadeCarteirinha">
-            Não informada
-          </strong>
-        </div>
+  function ocultarStatus() {
+    if (elementos.status) {
+      elementos.status.hidden = true;
+    }
+  }
 
-      </div>
+  function mostrarErro(mensagem) {
+    if (elementos.areaCarteirinha) {
+      elementos.areaCarteirinha.hidden = true;
+    }
 
-      <div class="qr-area">
-
-        <div
-          id="qrCode"
-          aria-label="QR Code da carteirinha"
-        ></div>
-
-        <span>
-          Verificação do membro
-        </span>
-
-      </div>
-
-    </section>
-
-  </main>
-
-  <script src="js/app.js?v=10"></script>
-  <script src="js/carteirinha.js?v=1"></script>
-
-</body>
-
-</html>
+    if (elementos.status) {
+      elementos.status.hidden = false;
+      elementos.status.textContent = mensagem;
+      elementos.status.style.color = "#9b1c1c";
+      elementos.status.style.background = "#fff1f1";
+      elementos.status.style.border = "1px solid #f2b8b8";
+    }
+  }
+})();
