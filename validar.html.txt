@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Validação de Carteirinha | Vidas Renovadas</title>
+
+  <link rel="stylesheet" href="css/estilo.css?v=14">
+  <link rel="stylesheet" href="css/validar.css?v=1">
+</head>
+
+<body class="validation-page">
+
+  <main class="validation-shell">
+
+    <header class="validation-header">
+      <img
+        src="logo.png"
+        alt="Logo da igreja"
+        class="validation-logo"
+      >
+
+      <div>
+        <p class="validation-kicker">Projeto Neemias</p>
+        <h1>Validação de Carteirinha</h1>
+        <p class="validation-subtitle">
+          Vidas Renovadas Gestão
+        </p>
+      </div>
+    </header>
+
+    <section
+      id="estadoCarregando"
+      class="validation-state"
+      aria-live="polite"
+    >
+      <div class="validation-spinner" aria-hidden="true"></div>
+      <p>Consultando a carteirinha...</p>
+    </section>
+
+    <section
+      id="estadoErro"
+      class="validation-state validation-state-error"
+      hidden
+      aria-live="assertive"
+    >
+      <div class="validation-icon" aria-hidden="true">!</div>
+      <h2>Carteirinha não validada</h2>
+      <p id="mensagemErro">
+        Não foi possível localizar este documento.
+      </p>
+    </section>
+
+    <section
+      id="fichaPublica"
+      class="public-member-card"
+      hidden
+    >
+      <div class="public-member-top">
+        <div class="public-photo-wrap">
+          <img
+            id="fotoMembro"
+            src=""
+            alt="Foto do membro"
+            class="public-member-photo"
+            hidden
+          >
+
+          <div
+            id="fotoPlaceholder"
+            class="public-photo-placeholder"
+            aria-hidden="true"
+          >
+            <span>Sem foto</span>
+          </div>
+        </div>
+
+        <div class="public-member-heading">
+          <span
+            id="seloValidacao"
+            class="validation-badge"
+          >
+            Carteirinha validada
+          </span>
+
+          <h2 id="nomeMembro">—</h2>
+
+          <p id="resumoMinisterial" class="public-member-summary">
+            —
+          </p>
+        </div>
+      </div>
+
+      <div class="public-data-grid">
+
+        <article class="public-data-item">
+          <span class="public-data-label">Cargo</span>
+          <strong id="cargoMembro">—</strong>
+        </article>
+
+        <article class="public-data-item">
+          <span class="public-data-label">Congregação</span>
+          <strong id="congregacaoMembro">—</strong>
+        </article>
+
+        <article class="public-data-item">
+          <span class="public-data-label">Situação</span>
+          <strong id="situacaoMembro">—</strong>
+        </article>
+
+        <article class="public-data-item">
+          <span class="public-data-label">Emissão</span>
+          <strong id="emissaoCarteirinha">—</strong>
+        </article>
+
+        <article class="public-data-item">
+          <span class="public-data-label">Validade</span>
+          <strong id="validadeCarteirinha">—</strong>
+        </article>
+
+        <article
+          id="blocoConjuge"
+          class="public-data-item"
+          hidden
+        >
+          <span class="public-data-label">Cônjuge</span>
+          <strong id="conjugeMembro">—</strong>
+        </article>
+
+        <article
+          id="blocoPai"
+          class="public-data-item"
+          hidden
+        >
+          <span class="public-data-label">Pai</span>
+          <strong id="paiMembro">—</strong>
+        </article>
+
+        <article
+          id="blocoMae"
+          class="public-data-item"
+          hidden
+        >
+          <span class="public-data-label">Mãe</span>
+          <strong id="maeMembro">—</strong>
+        </article>
+
+        <article
+          id="blocoObservacao"
+          class="public-data-item public-data-item-full"
+          hidden
+        >
+          <span class="public-data-label">
+            Observação da carteirinha
+          </span>
+          <strong id="observacaoCarteirinha">—</strong>
+        </article>
+
+      </div>
+
+      <footer class="public-card-footer">
+        <p>
+          Documento consultado em
+          <strong id="dataConsulta">—</strong>
+        </p>
+
+        <p>
+          Validação pública emitida pelo Projeto Neemias.
+        </p>
+      </footer>
+    </section>
+
+  </main>
+
+  <script src="js/validar.js?v=1"></script>
+</body>
+</html>
