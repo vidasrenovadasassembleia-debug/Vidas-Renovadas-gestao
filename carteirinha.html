@@ -1863,12 +1863,12 @@ async function exportarCarteirinhaPdf() {
     const larguraCartaoMm = 85.6;
     const alturaCartaoMm = 53.98;
 
-    // Cada linha contém a frente e o verso do mesmo membro.
-    const margemHorizontalMm = 12;
-    const espacoEntreColunasMm =
-      larguraPaginaMm -
-      (margemHorizontalMm * 2) -
-      (larguraCartaoMm * 2);
+    // Cada linha forma uma peça única para recortar, dobrar ao meio
+    // e plastificar. Frente e verso ficam encostados, sem espaço.
+    const larguraConjuntoMm = larguraCartaoMm * 2;
+    const margemHorizontalMm =
+      (larguraPaginaMm - larguraConjuntoMm) / 2;
+    const espacoEntreColunasMm = 0;
 
     const margemVerticalMm = 18;
     const linhasPorPagina = 4;
@@ -1965,21 +1965,27 @@ async function exportarCarteirinhaPdf() {
         "FAST"
       );
 
-      // Marcas discretas de corte ao redor de cada carteirinha.
-      pdf.setDrawColor(185);
-      pdf.setLineWidth(0.12);
+      // Uma única linha externa de corte envolve frente e verso.
+      // A linha central indica exatamente onde dobrar antes de plastificar.
+      pdf.setDrawColor(155);
+      pdf.setLineWidth(0.15);
       pdf.rect(
         posicaoFrenteX,
         posicaoY,
-        larguraCartaoMm,
+        larguraConjuntoMm,
         alturaCartaoMm
       );
-      pdf.rect(
+
+      pdf.setDrawColor(185);
+      pdf.setLineWidth(0.12);
+      pdf.setLineDashPattern([1.4, 1.2], 0);
+      pdf.line(
         posicaoVersoX,
         posicaoY,
-        larguraCartaoMm,
-        alturaCartaoMm
+        posicaoVersoX,
+        posicaoY + alturaCartaoMm
       );
+      pdf.setLineDashPattern([], 0);
     }
 
     const nomeArquivo = idsMembros.length === 1
