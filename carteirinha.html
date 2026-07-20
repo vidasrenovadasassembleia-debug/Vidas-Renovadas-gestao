@@ -1082,7 +1082,7 @@ a {
         </a>
 
         <button class="botao botao-secundario" id="botaoExportarPdf" type="button">
-          Exportar PDF
+          Baixar PDF A4
         </button>
 
         <button class="botao botao-principal" id="botaoImprimir" type="button">
@@ -1281,6 +1281,11 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("botaoExportarPdf");
 
   botaoImprimir?.addEventListener("click", function () {
+    if (modoLoteCarteirinhas()) {
+      exportarCarteirinhaPdf();
+      return;
+    }
+
     window.print();
   });
 
@@ -1420,9 +1425,15 @@ async function carregarCarteirinha() {
     mostrarCarteirinha();
 
     const botao = document.getElementById("botaoExportarPdf");
+    const botaoImprimir = document.getElementById("botaoImprimir");
+
     if (botao && idsMembros.length > 1) {
       botao.textContent =
-        "Exportar " + idsMembros.length + " carteirinhas em PDF";
+        "Gerar PDF A4 com " + idsMembros.length + " carteirinhas";
+    }
+
+    if (botaoImprimir && idsMembros.length > 1) {
+      botaoImprimir.textContent = "Gerar PDF A4";
     }
 
   } catch (erro) {
@@ -1818,7 +1829,7 @@ function criarEnderecoVerificacao(idMembro) {
 
 async function exportarCarteirinhaPdf() {
   const botao = document.getElementById("botaoExportarPdf");
-  const textoOriginal = botao?.textContent || "Exportar PDF";
+  const textoOriginal = botao?.textContent || "Baixar PDF A4";
   const idsMembros = obterIdsMembrosCarteirinha();
 
   if (!idsMembros.length) {
@@ -1859,9 +1870,12 @@ async function exportarCarteirinhaPdf() {
       (margemHorizontalMm * 2) -
       (larguraCartaoMm * 2);
 
-    const margemVerticalMm = 10;
-    const espacoEntreLinhasMm = 3.5;
-    const linhasPorPagina = 5;
+    const margemVerticalMm = 18;
+    const linhasPorPagina = 4;
+    const espacoEntreLinhasMm =
+      (alturaPaginaMm - (margemVerticalMm * 2) -
+      (alturaCartaoMm * linhasPorPagina)) /
+      (linhasPorPagina - 1);
 
     let pdf = new jsPDF({
       orientation: "portrait",
@@ -1870,8 +1884,11 @@ async function exportarCarteirinhaPdf() {
       compress: true
     });
 
+    pdf.setFillColor(255, 255, 255);
+    pdf.rect(0, 0, larguraPaginaMm, alturaPaginaMm, "F");
+
     const opcoesCaptura = {
-      backgroundColor: null,
+      backgroundColor: "#ffffff",
       scale: 3,
       useCORS: true,
       allowTaint: false,
@@ -1905,6 +1922,8 @@ async function exportarCarteirinhaPdf() {
 
       if (indice > 0 && linhaNaPagina === 0) {
         pdf.addPage("a4", "portrait");
+        pdf.setFillColor(255, 255, 255);
+        pdf.rect(0, 0, larguraPaginaMm, alturaPaginaMm, "F");
       }
 
       const posicaoY =
