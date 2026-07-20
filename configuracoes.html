@@ -109,8 +109,8 @@
             <input id="cargoPadrao" name="cargoPadrao" type="text">
           </div>
           <div class="form-field">
-            <label for="congregacaoPadrao">Congregação padrão</label>
-            <input id="congregacaoPadrao" name="congregacaoPadrao" type="text">
+            <label for="congregacaoPadrao">Unidade padrão</label>
+<input id="congregacaoPadrao" name="congregacaoPadrao" type="text">
           </div>
           <div class="form-field">
             <label for="corPrincipal">Cor principal</label>
@@ -170,6 +170,44 @@
       </section>
 
       <section class="form-section">
+        <section class="form-section">
+  <h2>Listas do sistema</h2>
+
+  <p class="settings-help">
+    Valores utilizados nos cadastros de membros.
+  </p>
+
+  <p
+    id="mensagemListas"
+    class="settings-message"
+    role="status"
+    aria-live="polite"
+  >
+    Carregando listas...
+  </p>
+
+  <div id="listasSistema" class="settings-lists-grid" hidden>
+    <article class="settings-list-card">
+      <h3>Unidades</h3>
+      <ul id="listaUnidades"></ul>
+    </article>
+
+    <article class="settings-list-card">
+      <h3>Cargos</h3>
+      <ul id="listaCargos"></ul>
+    </article>
+
+    <article class="settings-list-card">
+      <h3>Estado civil</h3>
+      <ul id="listaEstadoCivil"></ul>
+    </article>
+
+    <article class="settings-list-card">
+      <h3>Situações</h3>
+      <ul id="listaSituacoes"></ul>
+    </article>
+  </div>
+</section>
         <h2>Sistema</h2>
         <div class="form-grid">
           <div class="form-field">
