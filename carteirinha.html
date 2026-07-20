@@ -1818,31 +1818,23 @@ function criarEnderecoVerificacao(idMembro) {
 
 async function exportarCarteirinhaPdf() {
   const botao = document.getElementById("botaoExportarPdf");
-  const frente = document.querySelector(".cartao-frente");
-  const verso = document.querySelector(".cartao-verso");
+  const textoOriginal = botao?.textContent || "Exportar PDF";
   const idsMembros = obterIdsMembrosCarteirinha();
 
-  if (!frente || !verso) {
-    alert("A frente ou o verso da carteirinha não foi encontrado.");
-    return;
-  }
-
   if (!idsMembros.length) {
-    alert("Nenhuma carteirinha foi selecionada.");
+    alert("Nenhum membro foi selecionado para exportação.");
     return;
   }
 
   if (typeof html2canvas === "undefined") {
-    alert("O recurso de geração de imagem não foi carregado.");
+    alert("A biblioteca de geração de imagens não foi carregada.");
     return;
   }
 
   if (!window.jspdf || !window.jspdf.jsPDF) {
-    alert("O recurso de geração de PDF não foi carregado.");
+    alert("A biblioteca de geração de PDF não foi carregada.");
     return;
   }
-
-  const textoOriginal = botao?.textContent || "Exportar PDF";
 
   try {
     if (botao) {
@@ -1851,9 +1843,32 @@ async function exportarCarteirinhaPdf() {
     }
 
     const { jsPDF } = window.jspdf;
-    const larguraMm = 85.6;
-    const alturaMm = 53.98;
-    let pdf = null;
+
+    // Página A4 em orientação retrato.
+    const larguraPaginaMm = 210;
+    const alturaPaginaMm = 297;
+
+    // Medidas oficiais da carteirinha.
+    const larguraCartaoMm = 85.6;
+    const alturaCartaoMm = 53.98;
+
+    // Cada linha contém a frente e o verso do mesmo membro.
+    const margemHorizontalMm = 12;
+    const espacoEntreColunasMm =
+      larguraPaginaMm -
+      (margemHorizontalMm * 2) -
+      (larguraCartaoMm * 2);
+
+    const margemVerticalMm = 10;
+    const espacoEntreLinhasMm = 3.5;
+    const linhasPorPagina = 5;
+
+    let pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+      compress: true
+    });
 
     const opcoesCaptura = {
       backgroundColor: null,
@@ -1886,44 +1901,57 @@ async function exportarCarteirinhaPdf() {
       const canvasFrente = await html2canvas(frente, opcoesCaptura);
       const canvasVerso = await html2canvas(verso, opcoesCaptura);
 
-      if (!pdf) {
-        pdf = new jsPDF({
-          orientation: "landscape",
-          unit: "mm",
-          format: [larguraMm, alturaMm],
-          compress: true
-        });
-      } else {
-        pdf.addPage([larguraMm, alturaMm], "landscape");
+      const linhaNaPagina = indice % linhasPorPagina;
+
+      if (indice > 0 && linhaNaPagina === 0) {
+        pdf.addPage("a4", "portrait");
       }
+
+      const posicaoY =
+        margemVerticalMm +
+        linhaNaPagina * (alturaCartaoMm + espacoEntreLinhasMm);
+
+      const posicaoFrenteX = margemHorizontalMm;
+      const posicaoVersoX =
+        margemHorizontalMm + larguraCartaoMm + espacoEntreColunasMm;
 
       pdf.addImage(
         canvasFrente.toDataURL("image/png"),
         "PNG",
-        0,
-        0,
-        larguraMm,
-        alturaMm,
+        posicaoFrenteX,
+        posicaoY,
+        larguraCartaoMm,
+        alturaCartaoMm,
         undefined,
         "FAST"
       );
-
-      pdf.addPage([larguraMm, alturaMm], "landscape");
 
       pdf.addImage(
         canvasVerso.toDataURL("image/png"),
         "PNG",
-        0,
-        0,
-        larguraMm,
-        alturaMm,
+        posicaoVersoX,
+        posicaoY,
+        larguraCartaoMm,
+        alturaCartaoMm,
         undefined,
         "FAST"
       );
-    }
 
-    if (!pdf) {
-      throw new Error("Nenhuma carteirinha pôde ser gerada.");
+      // Marcas discretas de corte ao redor de cada carteirinha.
+      pdf.setDrawColor(185);
+      pdf.setLineWidth(0.12);
+      pdf.rect(
+        posicaoFrenteX,
+        posicaoY,
+        larguraCartaoMm,
+        alturaCartaoMm
+      );
+      pdf.rect(
+        posicaoVersoX,
+        posicaoY,
+        larguraCartaoMm,
+        alturaCartaoMm
+      );
     }
 
     const nomeArquivo = idsMembros.length === 1
