@@ -1104,7 +1104,280 @@ a {
   }
 }
 
-  </style>
+
+
+/* =========================================================
+   VERSÃO OFICIAL 1.0 — PROPORÇÃO E LEGIBILIDADE
+   Pré-visualização compacta; conteúdo interno mais legível.
+========================================================= */
+
+/* Evita que a pré-visualização ocupe toda a largura da tela. */
+.area-cartoes:not(.area-modelo-lote),
+.galeria-carteirinhas {
+  width: min(920px, 100%);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.area-cartoes:not(.area-modelo-lote) {
+  gap: 18px;
+}
+
+.galeria-carteirinhas {
+  gap: 24px;
+}
+
+.item-preview-carteirinha {
+  grid-template-columns: repeat(2, minmax(0, 430px));
+  justify-content: center;
+  gap: 18px;
+}
+
+.item-preview-carteirinha img {
+  width: 100%;
+  max-width: 430px;
+  border-radius: 12px;
+}
+
+/* Frente: menos vazio e dados maiores. */
+.cartao-frente {
+  padding: 3.2% 4% 3%;
+}
+
+.cabecalho-frente {
+  min-height: 18%;
+  gap: 3%;
+}
+
+.logo-frente {
+  width: 24%;
+  max-height: none;
+}
+
+.identidade-igreja strong {
+  font-size: 15px;
+  line-height: 1.02;
+}
+
+.identidade-igreja span {
+  margin-top: 2px;
+  font-size: 9px;
+}
+
+.conteudo-frente {
+  grid-template-columns: 30% minmax(0, 1fr);
+  gap: 4%;
+  padding: 0;
+}
+
+.moldura-foto {
+  width: 100%;
+  max-height: 82%;
+  align-self: center;
+}
+
+.categoria-documento {
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+
+.dados-principais h2 {
+  margin-top: 2px;
+  margin-bottom: 6px;
+  font-size: 17px;
+  line-height: 1;
+}
+
+.grade-dados-frente {
+  gap: 5px;
+}
+
+.campo-cartao {
+  min-height: 36px;
+  padding: 4px 8px;
+}
+
+.campo-cartao span,
+.datas-cartao span {
+  font-size: 7px;
+  line-height: 1;
+}
+
+.campo-cartao strong {
+  font-size: 10px;
+  line-height: 1.08;
+}
+
+.rodape-frente {
+  gap: 3%;
+  padding-top: 0;
+}
+
+.datas-cartao {
+  gap: 14px;
+}
+
+.datas-cartao strong {
+  font-size: 9px;
+}
+
+.assinatura-cartao {
+  width: 34%;
+  min-height: 48px;
+  margin-right: 1%;
+  transform: translateY(-2px);
+}
+
+.imagem-assinatura {
+  width: 100%;
+  height: 28px;
+}
+
+.nome-pastor-assinatura {
+  font-size: 7px;
+}
+
+.cargo-pastor-assinatura {
+  font-size: 6.5px !important;
+}
+
+/* Verso: campos e QR maiores, com melhor ocupação do espaço. */
+.cartao-verso {
+  padding: 3.2% 4.2% 3%;
+}
+
+.cabecalho-verso {
+  min-height: 16%;
+}
+
+.cabecalho-verso strong {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.cabecalho-verso span {
+  margin-top: 2px;
+  font-size: 9px;
+}
+
+.conteudo-verso {
+  grid-template-columns: minmax(0, 1fr) 25%;
+  gap: 3%;
+  padding: 1.2% 0 0.4%;
+}
+
+.dados-verso {
+  gap: 5px;
+}
+
+.campo-verso,
+.campo-verso-familia {
+  min-height: 38px;
+  padding: 4px 8px;
+}
+
+.campo-verso span {
+  font-size: 7px;
+  line-height: 1;
+}
+
+.campo-verso strong {
+  font-size: 10px;
+  line-height: 1.08;
+}
+
+.qrcode {
+  width: min(100%, 118px);
+}
+
+.area-qrcode > span,
+.texto-qrcode {
+  font-size: 7px;
+}
+
+.versiculo-cartao {
+  margin-top: 0;
+  font-size: 8px;
+}
+
+.rodape-verso {
+  margin-top: 0;
+  font-size: 6px;
+}
+
+@media (max-width: 760px) {
+  .area-cartoes:not(.area-modelo-lote),
+  .item-preview-carteirinha {
+    grid-template-columns: 1fr;
+  }
+
+  .item-preview-carteirinha img {
+    max-width: 430px;
+    margin: 0 auto;
+  }
+}
+
+  
+/* =========================================================
+   AJUSTE FINAL — TAMANHO VISUAL DE CARTÃO PVC
+   Mantém 85,6 × 53,98 mm no PDF e reduz apenas a exibição.
+========================================================= */
+.area-cartoes:not(.area-modelo-lote),
+.galeria-carteirinhas {
+  width: min(760px, 100%);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.area-cartoes:not(.area-modelo-lote) {
+  grid-template-columns: repeat(2, minmax(0, 360px));
+  justify-content: center;
+  gap: 16px;
+}
+
+.item-preview-carteirinha {
+  grid-template-columns: repeat(2, minmax(0, 360px));
+  justify-content: center;
+  gap: 16px;
+}
+
+.item-preview-carteirinha img,
+.area-cartoes:not(.area-modelo-lote) .cartao {
+  width: 100%;
+  max-width: 360px;
+}
+
+/* Conteúdo permanece maior em relação ao cartão, sem aumentar o cartão. */
+.dados-principais h2 {
+  font-size: 17px;
+}
+
+.campo-cartao strong,
+.campo-verso strong {
+  font-size: 10px;
+}
+
+.campo-cartao span,
+.campo-verso span,
+.datas-cartao span {
+  font-size: 7px;
+}
+
+@media (max-width: 780px) {
+  .area-cartoes:not(.area-modelo-lote),
+  .item-preview-carteirinha {
+    grid-template-columns: 1fr;
+  }
+
+  .item-preview-carteirinha img,
+  .area-cartoes:not(.area-modelo-lote) .cartao {
+    max-width: 360px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+</style>
 </head>
 
 <body>
@@ -1798,6 +2071,10 @@ function preencherFotoCarteirinha(urlOriginal, nome) {
 
   foto.alt = "Foto de " + nome;
 
+  // Permite que o html2canvas inclua a foto no PDF sem contaminar o canvas.
+  foto.crossOrigin = "anonymous";
+  foto.referrerPolicy = "no-referrer";
+
   foto.onload = function () {
     foto.hidden = false;
     placeholder.hidden = true;
@@ -1828,10 +2105,12 @@ function normalizarUrlFotoDrive(valor) {
     const correspondencia = url.match(expressao);
 
     if (correspondencia?.[1]) {
+      // O domínio lh3.googleusercontent.com entrega a imagem pública com
+      // compatibilidade melhor para html2canvas e exportação em PDF.
       return (
-        "https://drive.google.com/thumbnail?id=" +
+        "https://lh3.googleusercontent.com/d/" +
         encodeURIComponent(correspondencia[1]) +
-        "&sz=w1000"
+        "=s1000"
       );
     }
   }
@@ -1991,6 +2270,7 @@ async function exportarCarteirinhaPdf() {
       scale: 3,
       useCORS: true,
       allowTaint: false,
+      imageTimeout: 20000,
       logging: false
     };
 
