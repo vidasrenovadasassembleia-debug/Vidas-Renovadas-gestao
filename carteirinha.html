@@ -1081,6 +1081,10 @@ a {
           Voltar
         </a>
 
+        <button class="botao botao-secundario" id="botaoExportarPdf" type="button">
+          Exportar PDF
+        </button>
+
         <button class="botao botao-principal" id="botaoImprimir" type="button">
           Imprimir
         </button>
@@ -1251,6 +1255,8 @@ a {
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
 /* =========================================================
    PROJETO NEEMIAS — CARTEIRINHA
@@ -1271,9 +1277,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const botaoImprimir =
     document.getElementById("botaoImprimir");
 
+  const botaoExportarPdf =
+    document.getElementById("botaoExportarPdf");
+
   botaoImprimir?.addEventListener("click", function () {
     window.print();
   });
+
+  botaoExportarPdf?.addEventListener("click", exportarCarteirinhaPdf);
 
   carregarCarteirinha();
 });
@@ -1725,11 +1736,10 @@ function gerarQrCodeCarteirinha(membro, numero) {
     );
 
   const enderecoVerificacao =
-    new URL(
-      "membro.html?id=" +
-        encodeURIComponent(id),
-      window.location.href
-    ).href;
+    criarEnderecoVerificacao(id);
+
+  area.dataset.endereco = enderecoVerificacao;
+  area.title = enderecoVerificacao;
 
   if (typeof QRCode === "undefined") {
     area.textContent = "QR";
@@ -1747,6 +1757,145 @@ function gerarQrCodeCarteirinha(membro, numero) {
     colorLight: "#ffffff",
     correctLevel: QRCode.CorrectLevel.M
   });
+}
+
+function criarEnderecoVerificacao(idMembro) {
+  const paginaAtual = new URL(window.location.href);
+  const diretorio = paginaAtual.pathname.replace(/[^/]*$/, "");
+
+  const endereco = new URL(
+    diretorio + "membro.html",
+    paginaAtual.origin
+  );
+
+  endereco.searchParams.set("id", String(idMembro || "").trim());
+
+  return endereco.href;
+}
+
+/* =========================================================
+   EXPORTAÇÃO EM PDF
+========================================================= */
+
+async function exportarCarteirinhaPdf() {
+  const botao = document.getElementById("botaoExportarPdf");
+  const frente = document.querySelector(".cartao-frente");
+  const verso = document.querySelector(".cartao-verso");
+
+  if (!frente || !verso) {
+    alert("A frente ou o verso da carteirinha não foi encontrado.");
+    return;
+  }
+
+  if (typeof html2canvas === "undefined") {
+    alert("O recurso de geração de imagem não foi carregado.");
+    return;
+  }
+
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert("O recurso de geração de PDF não foi carregado.");
+    return;
+  }
+
+  const textoOriginal = botao?.textContent || "Exportar PDF";
+
+  try {
+    if (botao) {
+      botao.disabled = true;
+      botao.textContent = "Gerando PDF...";
+    }
+
+    await aguardarImagensCarteirinha();
+    ajustarTodosOsTextosCarteirinha();
+
+    const opcoesCaptura = {
+      backgroundColor: null,
+      scale: 3,
+      useCORS: true,
+      allowTaint: false,
+      logging: false
+    };
+
+    const canvasFrente = await html2canvas(frente, opcoesCaptura);
+    const canvasVerso = await html2canvas(verso, opcoesCaptura);
+
+    const { jsPDF } = window.jspdf;
+    const larguraMm = 85.6;
+    const alturaMm = 53.98;
+
+    const pdf = new jsPDF({
+      orientation: "landscape",
+      unit: "mm",
+      format: [larguraMm, alturaMm],
+      compress: true
+    });
+
+    pdf.addImage(
+      canvasFrente.toDataURL("image/png"),
+      "PNG",
+      0,
+      0,
+      larguraMm,
+      alturaMm,
+      undefined,
+      "FAST"
+    );
+
+    pdf.addPage([larguraMm, alturaMm], "landscape");
+
+    pdf.addImage(
+      canvasVerso.toDataURL("image/png"),
+      "PNG",
+      0,
+      0,
+      larguraMm,
+      alturaMm,
+      undefined,
+      "FAST"
+    );
+
+    const idMembro = obterIdMembroCarteirinha() || "membro";
+    pdf.save("carteirinha-" + normalizarNomeArquivo(idMembro) + ".pdf");
+  } catch (erro) {
+    console.error("Erro ao exportar PDF:", erro);
+    alert(
+      "Não foi possível exportar a carteirinha em PDF.\n\n" +
+      (erro.message || "Erro desconhecido.")
+    );
+  } finally {
+    if (botao) {
+      botao.disabled = false;
+      botao.textContent = textoOriginal;
+    }
+  }
+}
+
+function aguardarImagensCarteirinha() {
+  const imagens = Array.from(
+    document.querySelectorAll(".area-cartoes img")
+  );
+
+  return Promise.all(
+    imagens.map(function (imagem) {
+      if (imagem.complete) {
+        return Promise.resolve();
+      }
+
+      return new Promise(function (resolve) {
+        imagem.addEventListener("load", resolve, { once: true });
+        imagem.addEventListener("error", resolve, { once: true });
+      });
+    })
+  );
+}
+
+function normalizarNomeArquivo(valor) {
+  return String(valor || "membro")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9_-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase() || "membro";
 }
 
 /* =========================================================
