@@ -1066,6 +1066,44 @@ a {
   }
 }
 
+
+/* PRÉ-VISUALIZAÇÃO EM LOTE */
+.galeria-carteirinhas {
+  display: grid;
+  gap: 28px;
+  width: 100%;
+}
+
+.item-preview-carteirinha {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.item-preview-carteirinha img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 16px 35px rgba(5, 34, 53, 0.14);
+}
+
+.area-cartoes.area-modelo-lote {
+  position: fixed !important;
+  left: -10000px !important;
+  top: 0 !important;
+  display: grid !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 760px) {
+  .item-preview-carteirinha {
+    grid-template-columns: 1fr;
+  }
+}
+
   </style>
 </head>
 
@@ -1249,6 +1287,14 @@ a {
         </footer>
       </article>
     </section>
+
+    <section
+      class="galeria-carteirinhas"
+      id="galeriaCarteirinhas"
+      hidden
+      aria-label="Pré-visualização das carteirinhas selecionadas"
+    ></section>
+
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -1404,10 +1450,13 @@ async function carregarCarteirinha() {
   }
 
   try {
-    const membro = await buscarMembroCarteirinha(idsMembros[0]);
-
-    preencherCarteirinha(membro, idsMembros[0]);
-    mostrarCarteirinha();
+    if (modoLoteCarteirinhas()) {
+      await carregarPreVisualizacaoEmLote(idsMembros);
+    } else {
+      const membro = await buscarMembroCarteirinha(idsMembros[0]);
+      preencherCarteirinha(membro, idsMembros[0]);
+      mostrarCarteirinha();
+    }
 
     const botaoImprimir = document.getElementById("botaoImprimir");
 
@@ -1422,6 +1471,76 @@ async function carregarCarteirinha() {
     );
 
     mostrarErroCarteirinha(erro.message);
+  }
+}
+
+async function carregarPreVisualizacaoEmLote(idsMembros) {
+  const area = document.getElementById("areaCartoes");
+  const galeria = document.getElementById("galeriaCarteirinhas");
+  const mensagem = document.getElementById("mensagemCarteirinha");
+
+  if (!area || !galeria) {
+    throw new Error("Não foi possível preparar a pré-visualização em lote.");
+  }
+
+  galeria.innerHTML = "";
+  galeria.hidden = false;
+  area.hidden = false;
+  area.classList.add("area-modelo-lote");
+
+  const opcoesCaptura = {
+    backgroundColor: "#ffffff",
+    scale: 2,
+    useCORS: true,
+    allowTaint: false,
+    logging: false
+  };
+
+  for (let indice = 0; indice < idsMembros.length; indice += 1) {
+    const idMembro = idsMembros[indice];
+
+    if (mensagem) {
+      mensagem.hidden = false;
+      mensagem.textContent =
+        "Carregando carteirinha " + (indice + 1) + " de " + idsMembros.length + "...";
+    }
+
+    const membro = await buscarMembroCarteirinha(idMembro);
+    preencherCarteirinha(membro, idMembro);
+    await aguardarImagensCarteirinha();
+
+    await new Promise(function (resolver) {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(resolver);
+      });
+    });
+
+    ajustarTodosOsTextosCarteirinha();
+
+    const frente = area.querySelector(".cartao-frente");
+    const verso = area.querySelector(".cartao-verso");
+
+    const canvasFrente = await html2canvas(frente, opcoesCaptura);
+    const canvasVerso = await html2canvas(verso, opcoesCaptura);
+
+    const item = document.createElement("div");
+    item.className = "item-preview-carteirinha";
+
+    const imagemFrente = document.createElement("img");
+    imagemFrente.src = canvasFrente.toDataURL("image/png");
+    imagemFrente.alt = "Frente da carteirinha de " + (membro.nomeCompleto || membro.nome || idMembro);
+
+    const imagemVerso = document.createElement("img");
+    imagemVerso.src = canvasVerso.toDataURL("image/png");
+    imagemVerso.alt = "Verso da carteirinha de " + (membro.nomeCompleto || membro.nome || idMembro);
+
+    item.appendChild(imagemFrente);
+    item.appendChild(imagemVerso);
+    galeria.appendChild(item);
+  }
+
+  if (mensagem) {
+    mensagem.hidden = true;
   }
 }
 
