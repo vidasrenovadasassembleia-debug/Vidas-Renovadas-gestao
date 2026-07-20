@@ -30,6 +30,11 @@
   box-sizing: border-box;
 }
 
+/* Garante que elementos com o atributo hidden nunca ocupem espaço. */
+[hidden] {
+  display: none !important;
+}
+
 html {
   min-height: 100%;
 }
@@ -261,6 +266,8 @@ a {
 
 .foto-membro,
 .foto-placeholder {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
 }
