@@ -17,13 +17,41 @@
   >
 
   <style>
+    .members-header {
+      margin-bottom: 20px;
+    }
+
+    .members-toolbar {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) 220px 220px auto;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .members-toolbar input,
+    .members-toolbar select {
+      width: 100%;
+      min-height: 46px;
+      box-sizing: border-box;
+    }
+
+    .members-toolbar .primary-link {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      white-space: nowrap;
+    }
+
     .toolbar-carteirinhas {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
       margin-bottom: 16px;
-      padding: 14px 16px;
+      padding: 12px 16px;
       border: 1px solid #d8e0e5;
       border-radius: 12px;
       background: #ffffff;
@@ -32,13 +60,22 @@
     .selecao-carteirinhas-resumo {
       display: flex;
       align-items: center;
-      gap: 12px;
       color: #4a5963;
-      font-weight: 700;
+      font-weight: 800;
+    }
+
+    #contadorSelecionados {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: #eef3f6;
+      color: #082f49;
     }
 
     .botao-exportar-selecionadas {
-      min-height: 42px;
+      min-height: 40px;
       padding: 0 18px;
       border: 0;
       border-radius: 9px;
@@ -47,6 +84,7 @@
       cursor: pointer;
       font: inherit;
       font-weight: 800;
+      white-space: nowrap;
     }
 
     .botao-exportar-selecionadas:disabled {
@@ -67,10 +105,35 @@
       accent-color: #082f49;
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 1100px) {
+      .members-toolbar {
+        grid-template-columns: minmax(260px, 1fr) 190px 190px;
+      }
+
+      .members-toolbar .primary-link {
+        grid-column: 1 / -1;
+        justify-self: end;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .members-toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .members-toolbar .primary-link {
+        width: 100%;
+        grid-column: auto;
+        justify-self: stretch;
+      }
+
       .toolbar-carteirinhas {
         align-items: stretch;
         flex-direction: column;
+      }
+
+      .selecao-carteirinhas-resumo {
+        justify-content: center;
       }
 
       .botao-exportar-selecionadas {
@@ -147,24 +210,18 @@
         <h1>Membros</h1>
       </div>
 
-      <a
-        href="novo-membro.html"
-        class="primary-link"
-      >
-        Novo Membro
-      </a>
-
     </header>
 
-    <section class="members-toolbar">
+    <section class="members-toolbar" aria-label="Filtros de membros">
 
       <input
         type="search"
         id="pesquisaMembro"
         placeholder="Pesquisar por nome, ID, cargo ou congregação"
+        aria-label="Pesquisar membros"
       >
 
-      <select id="filtroSituacao">
+      <select id="filtroSituacao" aria-label="Filtrar por situação">
         <option value="">
           Todas as situações
         </option>
@@ -194,12 +251,33 @@
         </option>
       </select>
 
+      <select id="filtroRegiao" aria-label="Filtrar por região">
+        <option value="">
+          Todas as regiões
+        </option>
+
+        <option value="Duque de Caxias - RJ">
+          Duque de Caxias - RJ
+        </option>
+
+        <option value="Petrópolis - RJ">
+          Petrópolis - RJ
+        </option>
+      </select>
+
+      <a
+        href="novo-membro.html"
+        class="primary-link"
+      >
+        + Novo Membro
+      </a>
+
     </section>
 
     <section class="toolbar-carteirinhas" aria-label="Exportação de carteirinhas">
+
       <div class="selecao-carteirinhas-resumo">
         <span id="contadorSelecionados">0 selecionados</span>
-        <small>Marque as pessoas na tabela abaixo.</small>
       </div>
 
       <button
@@ -208,8 +286,9 @@
         class="botao-exportar-selecionadas"
         disabled
       >
-        Exportar carteirinhas selecionadas
+        📄 Exportar selecionadas
       </button>
+
     </section>
 
     <section class="members-panel">
@@ -259,7 +338,7 @@
 
   </main>
 
-  <script src="js/app.js?v=10"></script>
+  <script src="js/app.js?v=11"></script>
 
 </body>
 
