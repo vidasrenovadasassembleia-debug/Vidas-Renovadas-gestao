@@ -1377,6 +1377,250 @@ a {
   }
 }
 
+
+/* =========================================================
+   AJUSTE DEFINITIVO — CARTÃO PVC 85,6 × 53,98 MM
+   Mantém o tamanho externo e corrige apenas a proporção interna.
+========================================================= */
+
+.cartao {
+  container-type: inline-size;
+}
+
+/* A captura usa uma base estável de 856 × 540 px. Isso evita
+   que o PDF herde o tamanho reduzido da pré-visualização. */
+body.modo-captura-pdf .area-cartoes,
+.area-cartoes.area-modelo-lote {
+  width: 856px !important;
+  max-width: none !important;
+  grid-template-columns: 856px 856px !important;
+  gap: 24px !important;
+}
+
+body.modo-captura-pdf .cartao,
+.area-cartoes.area-modelo-lote .cartao {
+  width: 856px !important;
+  height: 540px !important;
+  max-width: none !important;
+  aspect-ratio: auto !important;
+  border-radius: 26px !important;
+}
+
+/* Frente */
+.cartao-frente {
+  grid-template-rows: 21% 59% 20% !important;
+  padding: 3.6% 4.4% 3.5% !important;
+}
+
+.cabecalho-frente {
+  min-height: 0 !important;
+  gap: 3.2% !important;
+  align-items: center !important;
+}
+
+.logo-frente {
+  width: 20.5% !important;
+  max-height: 100% !important;
+}
+
+.identidade-igreja strong {
+  font-size: 2.05cqw !important;
+  line-height: 1 !important;
+}
+
+.identidade-igreja span {
+  margin-top: 0.45cqw !important;
+  font-size: 1.15cqw !important;
+}
+
+.conteudo-frente {
+  grid-template-columns: 28% minmax(0, 1fr) !important;
+  gap: 4% !important;
+  align-items: center !important;
+  padding: 0.6% 0 0 !important;
+}
+
+.moldura-foto {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  aspect-ratio: 3 / 4 !important;
+  align-self: center !important;
+  justify-self: stretch !important;
+  border-width: 0.45cqw !important;
+  border-radius: 1.2cqw !important;
+}
+
+.categoria-documento {
+  margin: 0 0 0.55cqw !important;
+  font-size: 1.02cqw !important;
+  line-height: 1 !important;
+}
+
+.dados-principais h2 {
+  margin: 0 0 1.05cqw !important;
+  font-size: 2.75cqw !important;
+  line-height: 0.98 !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+.grade-dados-frente {
+  gap: 0.72cqw !important;
+}
+
+.campo-cartao {
+  min-height: 4.6cqw !important;
+  padding: 0.55cqw 0.9cqw !important;
+  border-left-width: 0.28cqw !important;
+}
+
+.campo-cartao span,
+.datas-cartao span {
+  margin-bottom: 0.18cqw !important;
+  font-size: 0.86cqw !important;
+  line-height: 1 !important;
+}
+
+.campo-cartao strong {
+  font-size: 1.28cqw !important;
+  line-height: 1.08 !important;
+}
+
+.rodape-frente {
+  grid-template-columns: 1fr 35% !important;
+  gap: 3.5% !important;
+  align-items: end !important;
+  padding-top: 0.4% !important;
+}
+
+.datas-cartao {
+  gap: 2.2cqw !important;
+}
+
+.datas-cartao strong {
+  font-size: 1.12cqw !important;
+}
+
+.assinatura-cartao {
+  width: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+.imagem-assinatura {
+  width: 88% !important;
+  height: 4.2cqw !important;
+  object-fit: contain !important;
+}
+
+.nome-pastor-assinatura {
+  font-size: 0.95cqw !important;
+}
+
+.cargo-pastor-assinatura {
+  font-size: 0.76cqw !important;
+}
+
+/* Verso */
+.cartao-verso {
+  grid-template-rows: 18% 61% 11% 10% !important;
+  padding: 3.6% 4.4% 3.2% !important;
+}
+
+.cabecalho-verso {
+  min-height: 0 !important;
+  padding: 0 !important;
+}
+
+.cabecalho-verso strong {
+  font-size: 2.05cqw !important;
+}
+
+.cabecalho-verso span {
+  margin-top: 0.4cqw !important;
+  font-size: 1.12cqw !important;
+}
+
+.conteudo-verso {
+  grid-template-columns: minmax(0, 1fr) 24% !important;
+  gap: 3.6% !important;
+  align-items: center !important;
+  padding: 0.8% 0 0 !important;
+}
+
+.dados-verso {
+  gap: 0.7cqw !important;
+}
+
+.campo-verso,
+.campo-verso-familia {
+  min-height: 4.75cqw !important;
+  padding: 0.55cqw 0.85cqw !important;
+  border-radius: 0.75cqw !important;
+}
+
+.campo-verso span {
+  margin-bottom: 0.18cqw !important;
+  font-size: 0.84cqw !important;
+}
+
+.campo-verso strong {
+  font-size: 1.22cqw !important;
+  line-height: 1.08 !important;
+}
+
+.qrcode {
+  width: 100% !important;
+  max-width: none !important;
+  border-width: 0.55cqw !important;
+  border-radius: 0.8cqw !important;
+}
+
+.area-qrcode {
+  gap: 0.45cqw !important;
+  font-size: 0.8cqw !important;
+}
+
+.versiculo-cartao {
+  margin: 0 !important;
+  align-self: center !important;
+  font-size: 0.9cqw !important;
+}
+
+.rodape-verso {
+  margin: 0 !important;
+  padding: 0 !important;
+  align-self: end !important;
+  font-size: 0.68cqw !important;
+}
+
+/* Pré-visualização: aparência real de cartão, sem ampliar o modelo. */
+.area-cartoes:not(.area-modelo-lote),
+.galeria-carteirinhas {
+  width: min(780px, 100%) !important;
+}
+
+.area-cartoes:not(.area-modelo-lote),
+.item-preview-carteirinha {
+  grid-template-columns: repeat(2, minmax(0, 370px)) !important;
+  gap: 18px !important;
+  justify-content: center !important;
+}
+
+.area-cartoes:not(.area-modelo-lote) .cartao,
+.item-preview-carteirinha img {
+  width: 100% !important;
+  max-width: 370px !important;
+}
+
+@media (max-width: 800px) {
+  .area-cartoes:not(.area-modelo-lote),
+  .item-preview-carteirinha {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 </style>
 </head>
 
@@ -2230,6 +2474,8 @@ async function exportarCarteirinhaPdf() {
       botao.textContent = "Preparando PDF...";
     }
 
+    document.body.classList.add("modo-captura-pdf");
+
     const { jsPDF } = window.jspdf;
 
     // Página A4 em orientação retrato.
@@ -2437,6 +2683,8 @@ async function exportarCarteirinhaPdf() {
       (erro.message || "Erro desconhecido.")
     );
   } finally {
+    document.body.classList.remove("modo-captura-pdf");
+
     if (botao) {
       botao.disabled = false;
       botao.textContent = textoOriginal;
