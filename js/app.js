@@ -1,4 +1,4 @@
-onst URL_API =
+const URL_API =
   "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec";
 
 const CLIENT_ID_GOOGLE =
@@ -1305,6 +1305,7 @@ const TAMANHO_MAXIMO_ARQUIVO_SISTEMA =
 
 if (formularioConfiguracoes) {
   carregarConfiguracoes();
+  carregarListasSistema();
   iniciarCamposDeCor();
   iniciarUploadsConfiguracoes();
 
@@ -1574,6 +1575,93 @@ function definirMensagemConfiguracoes(texto, tipo) {
 
   mensagemConfiguracoes.textContent = texto;
   mensagemConfiguracoes.dataset.tipo = tipo || "info";
+}
+
+/* =========================================
+   LISTAS DO SISTEMA
+========================================= */
+
+async function carregarListasSistema() {
+  const mensagem = document.getElementById("mensagemListas");
+  const painel = document.getElementById("listasSistema");
+
+  if (!mensagem || !painel) {
+    return;
+  }
+
+  try {
+    mensagem.hidden = false;
+    mensagem.textContent = "Carregando listas...";
+    mensagem.dataset.tipo = "info";
+    painel.hidden = true;
+
+    const resultado = await chamarApi({
+      acao: "listarListas"
+    });
+
+    preencherListasSistema(resultado.listas || {});
+
+    painel.hidden = false;
+    mensagem.textContent = "Listas carregadas com sucesso.";
+    mensagem.dataset.tipo = "success";
+  } catch (erro) {
+    console.error("Erro ao carregar listas do sistema:", erro);
+    painel.hidden = true;
+    mensagem.hidden = false;
+    mensagem.textContent = erro.message;
+    mensagem.dataset.tipo = "error";
+  }
+}
+
+function preencherListasSistema(listas) {
+  preencherListaSistema(
+    "listaUnidades",
+    listas.UNIDADE || []
+  );
+
+  preencherListaSistema(
+    "listaCargos",
+    listas.CARGO || []
+  );
+
+  preencherListaSistema(
+    "listaEstadoCivil",
+    listas["ESTADO CIVIL"] || []
+  );
+
+  preencherListaSistema(
+    "listaSituacoes",
+    listas["SITUAÇÃO"] || listas.SITUACAO || []
+  );
+}
+
+function preencherListaSistema(idElemento, valores) {
+  const lista = document.getElementById(idElemento);
+
+  if (!lista) {
+    return;
+  }
+
+  lista.innerHTML = "";
+
+  const itens = Array.isArray(valores)
+    ? valores.filter(function (valor) {
+        return String(valor || "").trim();
+      })
+    : [];
+
+  if (!itens.length) {
+    const itemVazio = document.createElement("li");
+    itemVazio.textContent = "Nenhum valor cadastrado.";
+    lista.appendChild(itemVazio);
+    return;
+  }
+
+  itens.forEach(function (valor) {
+    const item = document.createElement("li");
+    item.textContent = String(valor).trim();
+    lista.appendChild(item);
+  });
 }
 
 
