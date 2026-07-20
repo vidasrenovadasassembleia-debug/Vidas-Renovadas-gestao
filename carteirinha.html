@@ -1309,11 +1309,31 @@ function obterSessaoCarteirinha() {
   }
 }
 
-function obterIdMembroCarteirinha() {
+function obterIdsMembrosCarteirinha() {
   const parametros =
     new URLSearchParams(window.location.search);
 
-  return String(parametros.get("id") || "").trim();
+  const idsEmLote = String(parametros.get("ids") || "")
+    .split(",")
+    .map(function (id) {
+      return id.trim();
+    })
+    .filter(Boolean);
+
+  if (idsEmLote.length) {
+    return Array.from(new Set(idsEmLote));
+  }
+
+  const idIndividual = String(parametros.get("id") || "").trim();
+  return idIndividual ? [idIndividual] : [];
+}
+
+function obterIdMembroCarteirinha() {
+  return obterIdsMembrosCarteirinha()[0] || "";
+}
+
+function modoLoteCarteirinhas() {
+  return obterIdsMembrosCarteirinha().length > 1;
 }
 
 async function chamarApiCarteirinha(conteudo) {
@@ -1375,37 +1395,35 @@ async function chamarApiCarteirinha(conteudo) {
 ========================================================= */
 
 async function carregarCarteirinha() {
-  const idMembro = obterIdMembroCarteirinha();
+  const idsMembros = obterIdsMembrosCarteirinha();
 
-  if (!idMembro) {
+  if (!idsMembros.length) {
     mostrarErroCarteirinha(
       "O endereço não contém o ID do membro."
     );
     return;
   }
 
-  configurarLinkVoltar(idMembro);
+  configurarLinkVoltar(idsMembros[0]);
+
+  if (modoLoteCarteirinhas()) {
+    const titulo = document.querySelector(".barra-superior h1");
+    if (titulo) {
+      titulo.textContent = "Carteirinhas selecionadas";
+    }
+  }
 
   try {
-    const resultado = await chamarApiCarteirinha({
-      acao: "buscar",
-      id: idMembro
-    });
+    const membro = await buscarMembroCarteirinha(idsMembros[0]);
 
-    let membro = resultado.membro;
-
-    if (typeof membro === "string") {
-      membro = JSON.parse(membro);
-    }
-
-    if (!membro || typeof membro !== "object") {
-      throw new Error(
-        "A API não retornou os dados do membro."
-      );
-    }
-
-    preencherCarteirinha(membro, idMembro);
+    preencherCarteirinha(membro, idsMembros[0]);
     mostrarCarteirinha();
+
+    const botao = document.getElementById("botaoExportarPdf");
+    if (botao && idsMembros.length > 1) {
+      botao.textContent =
+        "Exportar " + idsMembros.length + " carteirinhas em PDF";
+    }
 
   } catch (erro) {
     console.error(
@@ -1417,14 +1435,35 @@ async function carregarCarteirinha() {
   }
 }
 
+async function buscarMembroCarteirinha(idMembro) {
+  const resultado = await chamarApiCarteirinha({
+    acao: "buscar",
+    id: idMembro
+  });
+
+  let membro = resultado.membro;
+
+  if (typeof membro === "string") {
+    membro = JSON.parse(membro);
+  }
+
+  if (!membro || typeof membro !== "object") {
+    throw new Error(
+      "A API não retornou os dados do membro " + idMembro + "."
+    );
+  }
+
+  return membro;
+}
+
 function configurarLinkVoltar(idMembro) {
   const botaoVoltar =
     document.getElementById("botaoVoltar");
 
   if (botaoVoltar) {
-    botaoVoltar.href =
-      "membro.html?id=" +
-      encodeURIComponent(idMembro);
+    botaoVoltar.href = modoLoteCarteirinhas()
+      ? "membros.html"
+      : "membro.html?id=" + encodeURIComponent(idMembro);
   }
 }
 
@@ -1781,9 +1820,15 @@ async function exportarCarteirinhaPdf() {
   const botao = document.getElementById("botaoExportarPdf");
   const frente = document.querySelector(".cartao-frente");
   const verso = document.querySelector(".cartao-verso");
+  const idsMembros = obterIdsMembrosCarteirinha();
 
   if (!frente || !verso) {
     alert("A frente ou o verso da carteirinha não foi encontrado.");
+    return;
+  }
+
+  if (!idsMembros.length) {
+    alert("Nenhuma carteirinha foi selecionada.");
     return;
   }
 
@@ -1802,11 +1847,13 @@ async function exportarCarteirinhaPdf() {
   try {
     if (botao) {
       botao.disabled = true;
-      botao.textContent = "Gerando PDF...";
+      botao.textContent = "Preparando PDF...";
     }
 
-    await aguardarImagensCarteirinha();
-    ajustarTodosOsTextosCarteirinha();
+    const { jsPDF } = window.jspdf;
+    const larguraMm = 85.6;
+    const alturaMm = 53.98;
+    let pdf = null;
 
     const opcoesCaptura = {
       backgroundColor: null,
@@ -1816,50 +1863,78 @@ async function exportarCarteirinhaPdf() {
       logging: false
     };
 
-    const canvasFrente = await html2canvas(frente, opcoesCaptura);
-    const canvasVerso = await html2canvas(verso, opcoesCaptura);
+    for (let indice = 0; indice < idsMembros.length; indice += 1) {
+      const idMembro = idsMembros[indice];
 
-    const { jsPDF } = window.jspdf;
-    const larguraMm = 85.6;
-    const alturaMm = 53.98;
+      if (botao) {
+        botao.textContent =
+          "Gerando " + (indice + 1) + " de " + idsMembros.length + "...";
+      }
 
-    const pdf = new jsPDF({
-      orientation: "landscape",
-      unit: "mm",
-      format: [larguraMm, alturaMm],
-      compress: true
-    });
+      const membro = await buscarMembroCarteirinha(idMembro);
+      preencherCarteirinha(membro, idMembro);
 
-    pdf.addImage(
-      canvasFrente.toDataURL("image/png"),
-      "PNG",
-      0,
-      0,
-      larguraMm,
-      alturaMm,
-      undefined,
-      "FAST"
-    );
+      await aguardarImagensCarteirinha();
+      await new Promise(function (resolver) {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(resolver);
+        });
+      });
 
-    pdf.addPage([larguraMm, alturaMm], "landscape");
+      ajustarTodosOsTextosCarteirinha();
 
-    pdf.addImage(
-      canvasVerso.toDataURL("image/png"),
-      "PNG",
-      0,
-      0,
-      larguraMm,
-      alturaMm,
-      undefined,
-      "FAST"
-    );
+      const canvasFrente = await html2canvas(frente, opcoesCaptura);
+      const canvasVerso = await html2canvas(verso, opcoesCaptura);
 
-    const idMembro = obterIdMembroCarteirinha() || "membro";
-    pdf.save("carteirinha-" + normalizarNomeArquivo(idMembro) + ".pdf");
+      if (!pdf) {
+        pdf = new jsPDF({
+          orientation: "landscape",
+          unit: "mm",
+          format: [larguraMm, alturaMm],
+          compress: true
+        });
+      } else {
+        pdf.addPage([larguraMm, alturaMm], "landscape");
+      }
+
+      pdf.addImage(
+        canvasFrente.toDataURL("image/png"),
+        "PNG",
+        0,
+        0,
+        larguraMm,
+        alturaMm,
+        undefined,
+        "FAST"
+      );
+
+      pdf.addPage([larguraMm, alturaMm], "landscape");
+
+      pdf.addImage(
+        canvasVerso.toDataURL("image/png"),
+        "PNG",
+        0,
+        0,
+        larguraMm,
+        alturaMm,
+        undefined,
+        "FAST"
+      );
+    }
+
+    if (!pdf) {
+      throw new Error("Nenhuma carteirinha pôde ser gerada.");
+    }
+
+    const nomeArquivo = idsMembros.length === 1
+      ? "carteirinha-" + normalizarNomeArquivo(idsMembros[0]) + ".pdf"
+      : "carteirinhas-selecionadas-" + idsMembros.length + ".pdf";
+
+    pdf.save(nomeArquivo);
   } catch (erro) {
     console.error("Erro ao exportar PDF:", erro);
     alert(
-      "Não foi possível exportar a carteirinha em PDF.\n\n" +
+      "Não foi possível exportar as carteirinhas em PDF.\n\n" +
       (erro.message || "Erro desconhecido.")
     );
   } finally {
