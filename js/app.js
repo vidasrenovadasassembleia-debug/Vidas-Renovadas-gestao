@@ -691,6 +691,20 @@ function mostrarMembros(membros) {
         `
         : "";
 
+    const botaoExcluir =
+      usuarioAdministrador()
+        ? `
+          <button
+            type="button"
+            class="btn-acao btn-secundario botao-excluir-membro"
+            data-id="${escaparHtml(String(membro.id || ""))}"
+            data-nome="${escaparHtml(String(membro.nome || ""))}"
+          >
+            Excluir
+          </button>
+        `
+        : "";
+
     const idMembro = String(membro.id || "").trim();
     const marcado = idsCarteirinhasSelecionadas.has(idMembro);
 
@@ -730,6 +744,7 @@ function mostrarMembros(membros) {
         </a>
 
         ${botaoEditar}
+        ${botaoExcluir}
       </td>
     `;
 
@@ -740,6 +755,77 @@ function mostrarMembros(membros) {
 }
 
 if (tabelaMembros) {
+  tabelaMembros.addEventListener("click", async function (evento) {
+    const botaoExcluir = evento.target.closest(
+      ".botao-excluir-membro"
+    );
+
+    if (!botaoExcluir) {
+      return;
+    }
+
+    if (!usuarioAdministrador()) {
+      alert("Seu perfil não possui permissão para excluir membros.");
+      return;
+    }
+
+    const idMembro = String(
+      botaoExcluir.dataset.id || ""
+    ).trim();
+
+    const nomeMembro = String(
+      botaoExcluir.dataset.nome || ""
+    ).trim();
+
+    if (!idMembro) {
+      alert("Não foi possível identificar o membro.");
+      return;
+    }
+
+    const confirmou = window.confirm(
+      "Deseja realmente excluir este membro?\n\n" +
+      (nomeMembro ? "Nome: " + nomeMembro + "\n" : "") +
+      "ID: " + idMembro +
+      "\n\nEsta ação não poderá ser desfeita."
+    );
+
+    if (!confirmou) {
+      return;
+    }
+
+    const textoOriginal = botaoExcluir.textContent;
+    botaoExcluir.disabled = true;
+    botaoExcluir.textContent = "Excluindo...";
+
+    try {
+      const resultado = await chamarApi({
+        acao: "excluir",
+        id: idMembro
+      });
+
+      membrosCarregados = membrosCarregados.filter(
+        function (membro) {
+          return String(membro.id || "").trim() !== idMembro;
+        }
+      );
+
+      idsCarteirinhasSelecionadas.delete(idMembro);
+      aplicarFiltros();
+
+      alert(
+        resultado.mensagem ||
+        "Membro excluído com sucesso."
+      );
+
+    } catch (erro) {
+      console.error("Erro ao excluir membro:", erro);
+      alert(erro.message);
+
+      botaoExcluir.disabled = false;
+      botaoExcluir.textContent = textoOriginal;
+    }
+  });
+
   tabelaMembros.addEventListener("change", function (evento) {
     const seletor = evento.target.closest(".seletor-carteirinha");
 
