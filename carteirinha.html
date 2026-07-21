@@ -1758,6 +1758,119 @@ a {
   width: min(100%, 76px) !important;
 }
 
+
+
+/* =========================================================
+   FINALIZAÇÃO OFICIAL — 3 ÚLTIMOS AJUSTES
+   1) Restaura a assinatura do Pastor Presidente na frente.
+   2) Reduz o quadro da Situação.
+   3) Reduz levemente o nome, mantendo no máximo duas linhas.
+========================================================= */
+
+/* Nome do membro: menor e limitado a duas linhas. */
+.dados-principais h2 {
+  min-height: 26px !important;
+  max-height: 28px !important;
+  font-size: 14px !important;
+  line-height: 0.96 !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+/* Situação: faixa curta e discreta, sem ocupar toda a largura. */
+.campo-situacao-frente {
+  grid-column: 1 / -1 !important;
+  width: 58% !important;
+  min-height: 19px !important;
+  justify-self: start !important;
+  padding: 2px 5px !important;
+}
+
+.campo-situacao-frente span {
+  margin-bottom: 0 !important;
+  font-size: 5.5px !important;
+}
+
+.campo-situacao-frente strong {
+  font-size: 7.5px !important;
+  line-height: 1 !important;
+}
+
+/* Rodapé preparado para receber datas e assinatura sem sobreposição. */
+.rodape-frente {
+  position: relative !important;
+  display: block !important;
+  min-height: 46px !important;
+  padding-top: 0 !important;
+}
+
+.datas-cartao {
+  width: 62% !important;
+  min-height: 42px !important;
+  align-items: flex-end !important;
+  justify-content: flex-end !important;
+  gap: 16px !important;
+  padding-bottom: 1px !important;
+}
+
+/* Restaura a assinatura do Pastor Presidente na frente. */
+.assinatura-cartao {
+  position: absolute !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  display: flex !important;
+  width: 34% !important;
+  min-width: 0 !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  color: var(--azul-escuro) !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  transform: none !important;
+  overflow: visible !important;
+}
+
+.imagem-assinatura {
+  display: block !important;
+  width: 96% !important;
+  height: 25px !important;
+  margin: 0 auto 1px !important;
+  object-fit: contain !important;
+  object-position: center bottom !important;
+}
+
+.nome-pastor-assinatura {
+  display: block !important;
+  width: 100% !important;
+  padding-top: 2px !important;
+  border-top: 1px solid var(--azul-escuro) !important;
+  font-size: 6.3px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+}
+
+.cargo-pastor-assinatura {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 1px !important;
+  font-size: 5.7px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  text-align: center !important;
+}
+
+@media print {
+  .assinatura-cartao,
+  .imagem-assinatura {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+}
+
 </style>
 </head>
 
