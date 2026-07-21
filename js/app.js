@@ -697,6 +697,7 @@ function mostrarMembros(membros) {
           <button
             type="button"
             class="btn-acao btn-secundario botao-excluir-membro"
+            style="width: auto; display: inline-flex; flex: 0 0 auto;"
             data-id="${escaparHtml(String(membro.id || ""))}"
             data-nome="${escaparHtml(String(membro.nome || ""))}"
           >
@@ -756,16 +757,17 @@ function mostrarMembros(membros) {
 
 if (tabelaMembros) {
   tabelaMembros.addEventListener("click", async function (evento) {
-    const botaoExcluir = evento.target.closest(
+    const elementoClicado = evento.target;
+
+    if (!(elementoClicado instanceof Element)) {
+      return;
+    }
+
+    const botaoExcluir = elementoClicado.closest(
       ".botao-excluir-membro"
     );
 
     if (!botaoExcluir) {
-      return;
-    }
-
-    if (!usuarioAdministrador()) {
-      alert("Seu perfil não possui permissão para excluir membros.");
       return;
     }
 
@@ -793,7 +795,6 @@ if (tabelaMembros) {
       return;
     }
 
-    const textoOriginal = botaoExcluir.textContent;
     botaoExcluir.disabled = true;
     botaoExcluir.textContent = "Excluindo...";
 
@@ -803,26 +804,19 @@ if (tabelaMembros) {
         id: idMembro
       });
 
-      membrosCarregados = membrosCarregados.filter(
-        function (membro) {
-          return String(membro.id || "").trim() !== idMembro;
-        }
-      );
-
-      idsCarteirinhasSelecionadas.delete(idMembro);
-      aplicarFiltros();
-
       alert(
         resultado.mensagem ||
         "Membro excluído com sucesso."
       );
+
+      await carregarMembros();
 
     } catch (erro) {
       console.error("Erro ao excluir membro:", erro);
       alert(erro.message);
 
       botaoExcluir.disabled = false;
-      botaoExcluir.textContent = textoOriginal;
+      botaoExcluir.textContent = "Excluir";
     }
   });
 
