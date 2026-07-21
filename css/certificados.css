@@ -1,445 +1,131 @@
-.certificados-main {
-min-width:0
-}
-
-.certificados-header {
-margin-bottom:18px
-}
-
-.logout-button {
-width:calc(100% - 32px);
-margin:0 16px 18px;
-border:0;
-text-align:left;
-cursor:pointer;
-font:inherit
-}
-
-.mensagem-modulo {
-margin-bottom:14px;
-padding:12px 16px;
-border-radius:10px;
-font-weight:700
-}
-
-.mensagem-modulo[data-tipo="success"] {
-background:#e8f7ef;
-color:#146c43
-}
-
-.mensagem-modulo[data-tipo="error"] {
-background:#fdecec;
-color:#a12b2b
-}
-
-.mensagem-modulo[data-tipo="info"] {
-background:#eaf4fc;
-color:#245f91
-}
-
-.abas-certificados {
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin-bottom:18px;
-padding:6px;
-border:1px solid #d8e0e5;
-border-radius:12px;
-background:#fff
-}
-
-.aba-certificado {
-min-height:42px;
-padding:0 18px;
-border:0;
-border-radius:9px;
-background:transparent;
-color:#53636e;
-font:inherit;
-font-weight:800;
-cursor:pointer
-}
-
-.aba-certificado.active {
-background:#082f49;
-color:#fff
-}
-
-.painel-certificado {
-display:none
-}
-
-.painel-certificado.active {
-display:block
-}
-
-.grade-certificado {
-display:grid;
-grid-template-columns:minmax(360px,520px) minmax(480px,1fr);
-gap:20px;
-align-items:start
-}
-
-.cartao-formulario,.area-preview {
-border:1px solid #d8e0e5;
-border-radius:14px;
-background:#fff;
-box-shadow:0 8px 25px rgba(8,47,73,.06)
-}
-
-.cartao-formulario {
-padding:22px
-}
-
-.area-preview {
-padding:18px;
-overflow:auto;
-position:sticky;
-top:18px
-}
-
-.titulo-secao,.historico-cabecalho {
-display:flex;
-justify-content:space-between;
-gap:16px;
-align-items:end;
-margin-bottom:18px
-}
-
-.titulo-secao span,.historico-cabecalho span {
-color:#b07b2b;
-font-size:.78rem;
-font-weight:900;
-text-transform:uppercase;
-letter-spacing:.08em
-}
-
-.titulo-secao h2,.historico-cabecalho h2 {
-margin:3px 0 0;
-color:#082f49
-}
-
-.grade-campos {
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:14px
-}
-
-.campo {
-display:flex;
-flex-direction:column;
-gap:7px;
-color:#344854;
-font-weight:800;
-font-size:.9rem
-}
-
-.campo-largo {
-grid-column:1/-1
-}
-
-.campo input,.campo select,.campo textarea,.historico-cabecalho input {
-width:100%;
-box-sizing:border-box;
-border:1px solid #cbd6dc;
-border-radius:9px;
-padding:11px 12px;
-background:#fff;
-font:inherit;
-color:#243740
-}
-
-.campo input:focus,.campo select:focus,.campo textarea:focus {
-outline:3px solid rgba(36,95,145,.15);
-border-color:#245f91
-}
-
-.linha-pesquisa {
-display:flex;
-gap:8px
-}
-
-.linha-pesquisa input {
-flex:1
-}
-
-.linha-pesquisa button,.botao-principal,.botao-secundario {
-border:0;
-border-radius:9px;
-padding:0 16px;
-min-height:44px;
-font:inherit;
-font-weight:900;
-cursor:pointer
-}
-
-.linha-pesquisa button,.botao-principal {
-background:#082f49;
-color:#fff
-}
-
-.botao-secundario {
-background:#eef3f6;
-color:#082f49
-}
-
-.acoes-formulario {
-display:flex;
-justify-content:flex-end;
-gap:10px;
-margin-top:18px
-}
-
-.resultados-membros {
-margin:8px 0 16px;
-border:1px solid #d8e0e5;
-border-radius:10px;
-overflow:hidden
-}
-
-.resultado-membro {
-width:100%;
-display:flex;
-justify-content:space-between;
-gap:12px;
-padding:11px 13px;
-border:0;
-border-bottom:1px solid #e6ecef;
-background:#fff;
-text-align:left;
-cursor:pointer
-}
-
-.resultado-membro:last-child {
-border-bottom:0
-}
-
-.resultado-membro:hover {
-background:#f5f8fa
-}
-
-.resultado-membro strong {
-color:#082f49
-}
-
-.resultado-membro span {
-color:#667781;
-font-size:.84rem
-}
-
-.folha-certificado {
-width:297mm;
-min-height:210mm;
-box-sizing:border-box;
-padding:13mm;
-background:#fff;
-color:#18313f;
-font-family:Georgia,'Times New Roman',serif;
-border:1px solid #d5d5d5;
-box-shadow:0 6px 22px rgba(0,0,0,.12);
-transform-origin:top left
-}
-
-.cert-borda {
-min-height:184mm;
-box-sizing:border-box;
-border:3px double #b98a45;
-padding:9mm 12mm;
-text-align:center;
-position:relative
-}
+/* ===================================================
+   CERTIFICADOS - VIDAS RENOVADAS GESTÃO
+   =================================================== */
 
-.cert-topo {
-display:flex;
-align-items:center;
-justify-content:center;
-gap:12px
+/* Layout principal */
+.certificados-main{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
 }
 
-.cert-logo {
-max-width:22mm;
-max-height:22mm
+.abas-certificados{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:10px;
 }
 
-.cert-igreja {
-font-family:Arial,sans-serif;
-font-size:12px;
-font-weight:800;
-text-transform:uppercase;
-letter-spacing:.05em
+.aba-certificado{
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
 }
 
-.cert-titulo {
-margin:12mm 0 2mm;
-color:#0f2f48;
-font-size:34px;
-text-transform:uppercase;
-letter-spacing:.08em
+.aba-certificado.active{
+    background:#0d6efd;
+    color:#fff;
 }
 
-.cert-subtitulo {
-color:#b07b2b;
-font:700 16px Arial,sans-serif;
-text-transform:uppercase;
-letter-spacing:.16em
+.painel-certificado{
+    display:none;
 }
 
-.cert-texto {
-max-width:235mm;
-margin:11mm auto 0;
-font-size:19px;
-line-height:1.65
+.painel-certificado.active{
+    display:block;
 }
 
-.cert-nome {
-display:block;
-margin:5mm 0 3mm;
-color:#0f2f48;
-font-size:31px;
-font-weight:700;
-border-bottom:1px solid #b98a45
+.grade-certificado{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
 }
 
-.cert-destaque {
-font-weight:700;
-color:#0f2f48
+.cartao-formulario,
+.area-preview{
+    background:#fff;
+    border-radius:12px;
+    padding:24px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
 }
 
-.cert-rodape {
-display:flex;
-justify-content:center;
-gap:34mm;
-margin-top:16mm
+.grade-campos{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
 }
 
-.cert-assinatura {
-width:72mm;
-border-top:1px solid #334a56;
-padding-top:2mm;
-font:12px Arial,sans-serif
+.campo{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
 }
 
-.cert-assinatura img {
-display:block;
-max-width:55mm;
-max-height:17mm;
-margin:-17mm auto 1mm
+.campo-largo{
+    grid-column:1/-1;
 }
 
-.cert-numero {
-position:absolute;
-right:8mm;
-bottom:5mm;
-font:11px Arial,sans-serif;
-color:#5b6870
+.campo input,
+.campo select,
+.campo textarea{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:14px;
 }
 
-.tabela-responsiva {
-overflow:auto
+.linha-pesquisa{
+    display:flex;
+    gap:10px;
 }
 
-.tabela-responsiva table {
-width:100%;
-border-collapse:collapse
+.resultados-membros{
+    margin:12px 0;
 }
 
-.tabela-responsiva th,.tabela-responsiva td {
-padding:12px 10px;
-border-bottom:1px solid #e2e8eb;
-text-align:left;
-white-space:nowrap
+.acoes-formulario{
+    display:flex;
+    gap:12px;
+    margin-top:20px;
 }
 
-.tabela-responsiva th {
-color:#53636e;
-font-size:.78rem;
-text-transform:uppercase
+.botao-principal,
+.botao-secundario{
+    padding:10px 18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
 }
 
-.botao-reimprimir {
-border:0;
-border-radius:8px;
-background:#eef3f6;
-color:#082f49;
-padding:8px 12px;
-font-weight:800;
-cursor:pointer
+.botao-principal{
+    background:#198754;
+    color:#fff;
 }
 
-.historico-vazio {
-text-align:center;
-color:#71818a;
-padding:32px!important
+.botao-secundario{
+    background:#6c757d;
+    color:#fff;
 }
 
-@media(max-width:1200px) {
-.grade-certificado {
-grid-template-columns:1fr
+.folha-certificado{
+    min-height:700px;
+    border:2px dashed #bbb;
+    border-radius:10px;
+    padding:30px;
+    background:#fafafa;
 }
 
-.area-preview {
-position:static
-}
-
-.folha-certificado {
-transform:scale(.75);
-margin-bottom:-52mm
-}
-
-}
-
-@media(max-width:760px) {
-.grade-campos {
-grid-template-columns:1fr
-}
-
-.campo-largo {
-grid-column:auto
-}
-
-.linha-pesquisa {
-flex-direction:column
-}
-
-.acoes-formulario {
-flex-direction:column
-}
-
-.folha-certificado {
-transform:scale(.42);
-margin-bottom:-120mm
-}
-
-.historico-cabecalho {
-align-items:stretch;
-flex-direction:column
-}
-
-}
-
-@media print {
-body * {
-visibility:hidden
-}
+@media(max-width:900px){
 
-.folha-certificado,.folha-certificado * {
-visibility:visible
-}
-
-.folha-certificado {
-position:absolute;
-left:0;
-top:0;
-width:297mm;
-min-height:210mm;
-border:0;
-box-shadow:none;
-transform:none!important
-}
+    .grade-certificado{
+        grid-template-columns:1fr;
+    }
 
-@page {
-size:A4 landscape;
-margin:0
-}
+    .grade-campos{
+        grid-template-columns:1fr;
+    }
 
 }
