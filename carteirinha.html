@@ -1682,6 +1682,82 @@ a {
   }
 }
 
+
+
+/* =========================================================
+   VERSO DEFINITIVO — DADOS PESSOAIS + TEXTO INSTITUCIONAL
+   Pai e mãe aparecem somente quando não houver cônjuge.
+========================================================= */
+.cartao-verso {
+  grid-template-rows: 16% minmax(0, 1fr) auto !important;
+  padding: 3.2% 4.2% 2.8% !important;
+}
+
+.conteudo-verso {
+  grid-template-columns: minmax(0, 1fr) 20% !important;
+  gap: 2.5% !important;
+  padding: 1% 0 0 !important;
+}
+
+.dados-verso-pessoais {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  align-content: start;
+  gap: 4px !important;
+  min-width: 0;
+}
+
+.dados-verso-pessoais .campo-verso {
+  min-height: 30px !important;
+  padding: 3px 6px !important;
+}
+
+.dados-verso-pessoais .campo-verso span {
+  margin-bottom: 1px !important;
+  font-size: 5.8px !important;
+  line-height: 1 !important;
+}
+
+.dados-verso-pessoais .campo-verso strong {
+  font-size: 8px !important;
+  line-height: 1.05 !important;
+}
+
+.campo-familia-verso {
+  grid-column: 1 / -1;
+  min-height: 36px !important;
+}
+
+.campo-familia-verso strong {
+  display: block !important;
+  white-space: pre-line !important;
+  overflow-wrap: anywhere !important;
+  -webkit-line-clamp: 3 !important;
+}
+
+.texto-institucional-verso {
+  margin: 2px 0 0;
+  padding-top: 3px;
+  border-top: 1px solid rgba(234, 209, 138, 0.35);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 5.3px;
+  line-height: 1.22;
+  text-align: center;
+}
+
+.texto-institucional-verso strong {
+  color: var(--dourado-claro);
+  font-weight: 800;
+}
+
+.area-qrcode {
+  align-self: center !important;
+}
+
+.qrcode {
+  width: min(100%, 76px) !important;
+}
+
 </style>
 </head>
 
@@ -1827,25 +1903,30 @@ a {
         </header>
 
         <div class="conteudo-verso">
-          <div class="dados-verso dados-verso-institucional">
-            <div class="campo-verso campo-institucional-largo">
-              <span>CNPJ</span>
-              <strong>60.028.677/0001-71</strong>
-            </div>
-
-            <div class="campo-verso campo-institucional-largo">
-              <span>Sede</span>
-              <strong>Km 51 / Xerém</strong>
-            </div>
-
-            <div class="campo-verso campo-institucional-largo">
-              <span>Pastor Presidente</span>
-              <strong>Rogério Lemos da Silva</strong>
-            </div>
-
-            <div class="campo-verso campo-institucional-largo">
+          <div class="dados-verso dados-verso-pessoais">
+            <div class="campo-verso">
               <span>Data de nascimento</span>
               <strong id="nascimentoCarteirinha">—</strong>
+            </div>
+
+            <div class="campo-verso">
+              <span>Data de batismo</span>
+              <strong id="batismoVersoCarteirinha">—</strong>
+            </div>
+
+            <div class="campo-verso">
+              <span>Estado civil</span>
+              <strong id="estadoCivilCarteirinha">—</strong>
+            </div>
+
+            <div class="campo-verso">
+              <span>Validade</span>
+              <strong id="validadeVersoCarteirinha">—</strong>
+            </div>
+
+            <div class="campo-verso campo-verso-familia campo-familia-verso">
+              <span id="rotuloFamiliaCarteirinha">Cônjuge</span>
+              <strong id="familiaCarteirinha">—</strong>
             </div>
           </div>
 
@@ -1855,14 +1936,12 @@ a {
           </div>
         </div>
 
-        <blockquote class="versiculo-cartao">
-          “O Senhor te abençoe e te guarde.”
-          <cite>Números 6:24</cite>
-        </blockquote>
-
-        <footer class="rodape-verso">
-          Documento de identificação ministerial — uso pessoal e intransferível
-        </footer>
+        <p class="texto-institucional-verso">
+          <strong>CNPJ:</strong> 60.028.677/0001-71 &nbsp;•&nbsp;
+          <strong>Sede:</strong> Km 51 / Xerém &nbsp;•&nbsp;
+          <strong>Pastor Presidente:</strong> Rogério Lemos da Silva<br>
+          Documento de identificação ministerial — uso pessoal e intransferível.
+        </p>
       </article>
     </section>
 
@@ -2285,6 +2364,11 @@ function preencherCarteirinha(membro, idUrl) {
   );
 
   definirTexto(
+    "batismoVersoCarteirinha",
+    batismo
+  );
+
+  definirTexto(
     "cargoMembroCarteirinha",
     cargo
   );
@@ -2332,6 +2416,11 @@ function preencherCarteirinha(membro, idUrl) {
 
   definirTexto(
     "validadeCarteirinha",
+    validade
+  );
+
+  definirTexto(
+    "validadeVersoCarteirinha",
     validade
   );
 
@@ -3071,14 +3160,26 @@ function ajustarTodosOsTextosCarteirinha() {
     },
     {
       id: "familiaCarteirinha",
-      fonteMaxima: 12,
-      fonteMinima: 7,
-      maxLinhas: 4
+      fonteMaxima: 8,
+      fonteMinima: 5.5,
+      maxLinhas: 3
     },
     {
       id: "estadoCivilCarteirinha",
-      fonteMaxima: 12,
-      fonteMinima: 8,
+      fonteMaxima: 8,
+      fonteMinima: 6,
+      maxLinhas: 2
+    },
+    {
+      id: "batismoVersoCarteirinha",
+      fonteMaxima: 8,
+      fonteMinima: 6,
+      maxLinhas: 2
+    },
+    {
+      id: "validadeVersoCarteirinha",
+      fonteMaxima: 8,
+      fonteMinima: 6,
       maxLinhas: 2
     },
     {
