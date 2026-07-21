@@ -1,96 +1,218 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Certificados | Vidas Renovadas Gestão</title>
-  <link rel="stylesheet" href="../css/estilo.css">
-  <link rel="stylesheet" href="../css/certificados.css">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Vidas Renovadas Gestão</title>
+
+  <link
+    rel="stylesheet"
+    href="css/estilo.css"
+  >
+
+  <script
+    src="https://accounts.google.com/gsi/client"
+    async
+    defer
+  ></script>
+
+  <style>
+    body.login-page {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(
+          circle at top,
+          rgba(185, 138, 69, 0.24),
+          transparent 34%
+        ),
+        linear-gradient(
+          135deg,
+          #0f2f48 0%,
+          #174867 52%,
+          #0f2f48 100%
+        );
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .login-shell {
+      width: min(100%, 460px);
+    }
+
+    .login-card {
+      padding: 34px 30px;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+      text-align: center;
+    }
+
+    .login-logo {
+      display: block;
+      width: 128px;
+      height: 128px;
+      margin: 0 auto 18px;
+      object-fit: contain;
+      border-radius: 22px;
+      background: #ffffff;
+    }
+
+    .login-kicker {
+      margin: 0 0 8px;
+      color: #b98a45;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .login-card h1 {
+      margin: 0;
+      color: #0f2f48;
+      font-size: clamp(26px, 6vw, 36px);
+      line-height: 1.12;
+    }
+
+    .login-church {
+      margin: 12px 0 24px;
+      color: #5c6972;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .login-project {
+      display: inline-block;
+      margin-bottom: 22px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(185, 138, 69, 0.12);
+      color: #8a632b;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    #googleButton {
+      min-height: 44px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .mensagem-login {
+      min-height: 22px;
+      margin: 14px 0 0;
+      color: #a04444;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .login-verse {
+      margin: 24px 0 0;
+      padding-top: 20px;
+      border-top: 1px solid #e8edf1;
+      color: #697680;
+      font-size: 13px;
+      font-style: italic;
+      line-height: 1.55;
+    }
+
+    .login-verse strong {
+      display: inline-block;
+      margin-top: 5px;
+      color: #b98a45;
+      font-style: normal;
+    }
+
+    .login-footer {
+      margin: 16px 0 0;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 520px) {
+      body.login-page {
+        padding: 14px;
+      }
+
+      .login-card {
+        padding: 28px 20px;
+        border-radius: 20px;
+      }
+
+      .login-logo {
+        width: 108px;
+        height: 108px;
+      }
+    }
+  </style>
 </head>
-<body class="dashboard-page certificados-page">
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <img src="../logo.png" alt="Logo da igreja" class="sidebar-logo">
-      <div><strong>Vidas Renovadas</strong><span>Projeto Neemias</span></div>
-    </div>
-    <nav class="sidebar-menu">
-      <a href="../dashboard.html">Dashboard</a>
-      <a href="../membros.html">Membros</a>
-      <a href="index.html" class="active">Certificados</a>
-      <a href="../configuracoes.html">Configurações</a>
-    </nav>
-    <button type="button" class="logout logout-button" id="botaoSair">Sair</button>
-  </aside>
 
-  <main class="dashboard-main certificados-main">
-    <header class="dashboard-header certificados-header">
-      <div><p class="dashboard-label">Documentos e cerimônias</p><h1>Certificados</h1></div>
-      <div class="user-box">Usuário</div>
-    </header>
+<body class="login-page">
 
-    <div id="mensagemModulo" class="mensagem-modulo" hidden></div>
+  <div class="login-shell">
 
-    <nav class="abas-certificados" aria-label="Tipos de certificado">
-      <button class="aba-certificado active" data-aba="consagracao">Consagração</button>
-      <button class="aba-certificado" data-aba="apresentacao">Apresentação de criança</button>
-      <button class="aba-certificado" data-aba="historico">Histórico</button>
-    </nav>
+    <main class="login-card">
 
-    <section class="painel-certificado active" data-painel="consagracao">
-      <div class="grade-certificado">
-        <form id="formConsagracao" class="cartao-formulario">
-          <div class="titulo-secao"><div><span>Certificado ministerial</span><h2>Consagração</h2></div></div>
-          <label class="campo campo-largo">Pesquisar membro
-            <div class="linha-pesquisa"><input id="pesquisaMembro" type="search" placeholder="Nome ou número da carteirinha"><button type="button" id="botaoPesquisarMembro">Pesquisar</button></div>
-          </label>
-          <div id="resultadosMembros" class="resultados-membros" hidden></div>
-          <input type="hidden" name="idMembro"><input type="hidden" name="numeroCarteirinha">
-          <div class="grade-campos">
-            <label class="campo campo-largo">Nome do membro<input name="nome" required readonly></label>
-            <label class="campo">Cargo da consagração<select name="cargo" required><option value="">Selecione</option></select></label>
-            <label class="campo">Data da consagração<input name="dataCerimonia" type="date" required></label>
-            <label class="campo">Congregação<input name="congregacao"></label>
-            <label class="campo">Local da cerimônia<input name="local" required></label>
-            <label class="campo campo-largo">Pastor responsável<input name="pastor" required></label>
-            <label class="campo campo-largo">Observações<textarea name="observacoes" rows="3"></textarea></label>
-          </div>
-          <div class="acoes-formulario"><button type="button" class="botao-secundario" data-visualizar="consagracao">Visualizar</button><button type="submit" class="botao-principal">Registrar e imprimir</button></div>
-        </form>
-        <div class="area-preview"><div id="previewConsagracao" class="folha-certificado"></div></div>
-      </div>
-    </section>
+      <img
+        src="logo.png"
+        class="login-logo"
+        alt="Logo da Assembleia de Deus Ministério Vidas Renovadas"
+      >
 
-    <section class="painel-certificado" data-painel="apresentacao">
-      <div class="grade-certificado">
-        <form id="formApresentacao" class="cartao-formulario">
-          <div class="titulo-secao"><div><span>Certificado infantil</span><h2>Apresentação de criança</h2></div></div>
-          <div class="grade-campos">
-            <label class="campo campo-largo">Nome da criança<input name="nome" required></label>
-            <label class="campo">Sexo<select name="sexo" required><option value="">Selecione</option><option value="MENINO">Menino</option><option value="MENINA">Menina</option></select></label>
-            <label class="campo">Data de nascimento<input name="dataNascimento" type="date" required></label>
-            <label class="campo campo-largo">Nome do pai<input name="nomePai"></label>
-            <label class="campo campo-largo">Nome da mãe<input name="nomeMae" required></label>
-            <label class="campo">Data da apresentação<input name="dataCerimonia" type="date" required></label>
-            <label class="campo">Congregação<input name="congregacao"></label>
-            <label class="campo">Local da cerimônia<input name="local" required></label>
-            <label class="campo">Pastor responsável<input name="pastor" required></label>
-            <label class="campo campo-largo">Observações<textarea name="observacoes" rows="3"></textarea></label>
-          </div>
-          <div class="acoes-formulario"><button type="button" class="botao-secundario" data-visualizar="apresentacao">Visualizar</button><button type="submit" class="botao-principal">Registrar e imprimir</button></div>
-        </form>
-        <div class="area-preview"><div id="previewApresentacao" class="folha-certificado"></div></div>
-      </div>
-    </section>
+      <p class="login-kicker">
+        Assembleia de Deus
+      </p>
 
-    <section class="painel-certificado" data-painel="historico">
-      <div class="cartao-formulario">
-        <div class="historico-cabecalho"><div><span>Registro oficial</span><h2>Certificados emitidos</h2></div><input id="filtroHistorico" type="search" placeholder="Filtrar por número ou nome"></div>
-        <div class="tabela-responsiva"><table><thead><tr><th>Número</th><th>Tipo</th><th>Nome</th><th>Data</th><th>Emitido por</th><th></th></tr></thead><tbody id="corpoHistorico"></tbody></table></div>
-      </div>
-    </section>
-    <footer class="dashboard-footer">Vidas Renovadas Gestão — Módulo de Certificados</footer>
-  </main>
-  <script src="../js/app.js?v=12"></script>
-  <script src="../js/certificados.js?v=1"></script>
+      <h1>
+        Vidas Renovadas Gestão
+      </h1>
+
+      <p class="login-church">
+        Ministério Vidas Renovadas<br>
+        Duque de Caxias — RJ
+      </p>
+
+      <span class="login-project">
+        Projeto Neemias • Versão 1.0
+      </span>
+
+      <div
+        id="googleButton"
+        aria-label="Entrar com Google"
+      ></div>
+
+      <p
+        id="mensagemLogin"
+        class="mensagem-login"
+        aria-live="polite"
+      ></p>
+
+      <p class="login-verse">
+        “Tudo quanto fizerdes, fazei-o de todo o coração, como ao Senhor.”
+        <br>
+        <strong>Colossenses 3:23</strong>
+      </p>
+
+    </main>
+
+    <p class="login-footer">
+      Organizando vidas para servir melhor ao Reino de Deus.
+    </p>
+
+  </div>
+
+ <script src="js/app.js?v=12"></script>
+
 </body>
+
 </html>
