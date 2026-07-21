@@ -81,14 +81,24 @@ function exigirSessao() {
   }
 }
 
+function normalizarPerfil(perfil) {
+  return String(perfil || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 function usuarioAdministrador() {
   const sessao = obterSessao();
+  const perfil = normalizarPerfil(sessao?.usuario?.perfil);
 
-  return Boolean(
-    sessao &&
-    sessao.usuario &&
-    sessao.usuario.perfil === "administradora"
-  );
+  return [
+    "administradora",
+    "administrador",
+    "pastor",
+    "pastor presidente"
+  ].includes(perfil);
 }
 
 function aplicarIdentidadeUsuario() {
@@ -350,7 +360,6 @@ document
     );
   });
 
-
 /* =========================================
    FOTO DO MEMBRO
 ========================================= */
@@ -497,7 +506,7 @@ function gerarFotoFicha(membro) {
     <div style="display:flex;justify-content:center;margin-bottom:20px;">
       <img
         src="${escaparHtml(url)}"
-        alt="Foto de ${escaparHtml(membro.nomeCompleto || "membro")}" 
+        alt="Foto de ${escaparHtml(membro.nomeCompleto || "membro")}"
         style="width:160px;height:200px;object-fit:cover;border-radius:14px;border:2px solid #d7dee4;background:#f3f5f6;"
         onerror="this.style.display='none'"
       >
@@ -667,7 +676,7 @@ function mostrarMembros(membros) {
   tabelaMembros.innerHTML = "";
   membrosExibidos = Array.isArray(membros) ? membros : [];
 
-  if (!membros.length) {
+  if (!membrosExibidos.length) {
     tabelaMembros.innerHTML = `
       <tr>
         <td colspan="7" class="empty-state">
@@ -676,10 +685,11 @@ function mostrarMembros(membros) {
       </tr>
     `;
 
+    atualizarControlesCarteirinhas();
     return;
   }
 
-  membros.forEach(function (membro) {
+  membrosExibidos.forEach(function (membro) {
     const linha =
       document.createElement("tr");
 
@@ -741,6 +751,7 @@ function mostrarMembros(membros) {
 
     tabelaMembros.appendChild(linha);
   });
+
   atualizarControlesCarteirinhas();
 }
 
@@ -840,29 +851,12 @@ const pesquisaMembro =
 const filtroSituacao =
   document.getElementById("filtroSituacao");
 
-const filtroRegiao =
-  document.getElementById("filtroRegiao");
+const filtroCongregacao =
+  document.getElementById("filtroCongregacao");
 
-if (pesquisaMembro) {
-  pesquisaMembro.addEventListener(
-    "input",
-    aplicarFiltros
-  );
-}
-
-if (filtroSituacao) {
-  filtroSituacao.addEventListener(
-    "change",
-    aplicarFiltros
-  );
-}
-
-if (filtroRegiao) {
-  filtroRegiao.addEventListener(
-    "change",
-    aplicarFiltros
-  );
-}
+pesquisaMembro?.addEventListener("input", aplicarFiltros);
+filtroSituacao?.addEventListener("change", aplicarFiltros);
+filtroCongregacao?.addEventListener("change", aplicarFiltros);
 
 function aplicarFiltros() {
   const texto = String(
@@ -873,11 +867,13 @@ function aplicarFiltros() {
 
   const situacao = String(
     filtroSituacao?.value || ""
-  );
+  ).trim();
 
-  const regiao = String(
-    filtroRegiao?.value || ""
-  ).toLowerCase();
+  const congregacao = String(
+    filtroCongregacao?.value || ""
+  )
+    .trim()
+    .toLowerCase();
 
   const filtrados =
     membrosCarregados.filter(
@@ -899,18 +895,18 @@ function aplicarFiltros() {
 
         const correspondeSituacao =
           !situacao ||
-          membro.situacao === situacao;
+          String(membro.situacao || "").trim() === situacao;
 
-        const correspondeRegiao =
-          !regiao ||
+        const correspondeCongregacao =
+          !congregacao ||
           String(membro.congregacao || "")
-            .toLowerCase()
-            .includes(regiao);
+            .trim()
+            .toLowerCase() === congregacao;
 
         return (
           correspondeTexto &&
           correspondeSituacao &&
-          correspondeRegiao
+          correspondeCongregacao
         );
       }
     );
@@ -1052,7 +1048,7 @@ function mostrarFichaMembro(membro) {
           </div>
 
           <div>
-            <span>Cidade da igreja</span>
+            <span>Congregação</span>
             <strong>${escaparHtml(membro.congregacao || "Não informada")}</strong>
           </div>
         </div>
@@ -1095,7 +1091,7 @@ function mostrarFichaMembro(membro) {
         ${campoFicha("Data da conversão", membro.dataConversao)}
         ${campoFicha("Data do batismo", membro.dataBatismo)}
         ${campoFicha("Cargo", membro.cargo)}
-        ${campoFicha("Cidade da igreja", membro.congregacao)}
+        ${campoFicha("Congregação", membro.congregacao)}
         ${campoFicha("Situação", membro.situacao)}
         ${campoFicha("Validade da carteirinha", membro.validadeCarteirinha)}
       </div>
@@ -1301,9 +1297,6 @@ formularioEditarMembro?.addEventListener(
     }
   }
 );
-
-
-
 
 /* =========================================
    CONFIGURAÇÕES GERAIS
@@ -1684,7 +1677,6 @@ function preencherListaSistema(idElemento, valores) {
     lista.appendChild(item);
   });
 }
-
 
 /* =========================================
    INICIALIZAÇÃO
