@@ -105,6 +105,118 @@
       accent-color: #082f49;
     }
 
+    .badge-cargo,
+    .badge-congregacao,
+    .badge-situacao {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 30px;
+      max-width: 100%;
+      padding: 5px 10px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+
+    .badge-status-dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 9px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
+    }
+
+    .badge-cargo-pastoral {
+      border-color: #d8c6f0;
+      background: #f3ecfb;
+      color: #6941a5;
+    }
+
+    .badge-cargo-presbitero {
+      border-color: #bfd6ed;
+      background: #eaf4fc;
+      color: #245f91;
+    }
+
+    .badge-cargo-diacono {
+      border-color: #bfe2d1;
+      background: #e9f7f0;
+      color: #16704a;
+    }
+
+    .badge-cargo-evangelista {
+      border-color: #f0d0aa;
+      background: #fff3e4;
+      color: #9a5a13;
+    }
+
+    .badge-cargo-missionario {
+      border-color: #e8c7d9;
+      background: #fbedf5;
+      color: #913c6c;
+    }
+
+    .badge-cargo-padrao,
+    .badge-congregacao-padrao,
+    .badge-situacao-padrao {
+      border-color: #d8e0e5;
+      background: #f3f6f8;
+      color: #53636e;
+    }
+
+    .badge-congregacao-independencia {
+      border-color: #bfd6ed;
+      background: #eaf4fc;
+      color: #245f91;
+    }
+
+    .badge-congregacao-xerem {
+      border-color: #ead79a;
+      background: #fff8df;
+      color: #866518;
+    }
+
+    .badge-situacao-ativo {
+      border-color: #b9dfca;
+      background: #e7f6ee;
+      color: #16794f;
+    }
+
+    .badge-situacao-congregado {
+      border-color: #ead79a;
+      background: #fff8df;
+      color: #866518;
+    }
+
+    .badge-situacao-visitante {
+      border-color: #bfd6ed;
+      background: #eaf4fc;
+      color: #245f91;
+    }
+
+    .badge-situacao-inativo {
+      border-color: #efc1bd;
+      background: #fcebea;
+      color: #b3261e;
+    }
+
+    .badge-situacao-transferido {
+      border-color: #f0d0aa;
+      background: #fff3e4;
+      color: #9a5a13;
+    }
+
+    .badge-situacao-falecido {
+      border-color: #c9cfd4;
+      background: #eceff1;
+      color: #39444b;
+    }
+
     @media (max-width: 1100px) {
       .members-toolbar {
         grid-template-columns: minmax(260px, 1fr) 190px 190px;
@@ -138,6 +250,12 @@
 
       .botao-exportar-selecionadas {
         width: 100%;
+      }
+
+      .badge-cargo,
+      .badge-congregacao,
+      .badge-situacao {
+        white-space: normal;
       }
     }
   </style>
@@ -239,8 +357,8 @@
           Todas as congregações
         </option>
 
-        <option value="Independência Petrópolis">
-          Independência Petrópolis
+        <option value="Independência / Petrópolis">
+          Independência / Petrópolis
         </option>
 
         <option value="Km 51 / Xerém">
@@ -319,7 +437,7 @@
 
   </main>
 
-  <script src="js/app.js?v=12"></script>
+  <script src="js/app.js?v=13"></script>
 
 </body>
 
