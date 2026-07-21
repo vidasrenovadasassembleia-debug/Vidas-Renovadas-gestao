@@ -1925,6 +1925,29 @@ a {
   font-size: 5.2px !important;
 }
 
+
+/* =========================================================
+   UNIFICAÇÃO DEFINITIVA — INDIVIDUAL E LOTE
+   O modelo oculto usado no lote passa a ter exatamente as
+   mesmas dimensões da carteirinha exibida individualmente.
+========================================================= */
+
+.area-cartoes.area-modelo-lote {
+  width: 760px !important;
+  grid-template-columns: repeat(2, minmax(0, 360px)) !important;
+  justify-content: center !important;
+  gap: 16px !important;
+}
+
+.area-cartoes.area-modelo-lote .cartao,
+.modo-captura-pdf .area-cartoes.area-modelo-lote .cartao,
+.modo-captura-pdf .area-cartoes:not(.area-modelo-lote) .cartao {
+  width: 360px !important;
+  height: auto !important;
+  max-width: 360px !important;
+  aspect-ratio: 85.6 / 53.98 !important;
+}
+
 </style>
 </head>
 
