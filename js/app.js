@@ -1,4 +1,4 @@
-const URL_API =
+onst URL_API =
   "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec";
 
 const CLIENT_ID_GOOGLE =
@@ -697,6 +697,7 @@ function mostrarMembros(membros) {
           <button
             type="button"
             class="btn-acao btn-secundario botao-excluir-membro"
+            style="width: auto; display: inline-flex; flex: 0 0 auto;"
             data-id="${escaparHtml(String(membro.id || ""))}"
             data-nome="${escaparHtml(String(membro.nome || ""))}"
           >
