@@ -1028,7 +1028,7 @@ a {
   color: var(--azul-escuro);
   line-height: 1;
   text-align: center;
-  transform: translate(-4px, -5px);
+  transform: translate(-4px, -2px);
   overflow: visible;
 }
 
@@ -2808,9 +2808,8 @@ async function exportarCarteirinhaPdf() {
       botao.textContent = "Preparando PDF...";
     }
 
-    // A captura usa exatamente as dimensões que estão visíveis na tela.
-    // Não ativamos o modo-captura-pdf, pois ele redimensionava o cartão
-    // e podia alterar posições, quebras de linha e proporções.
+    document.body.classList.add("modo-captura-pdf");
+
     const { jsPDF } = window.jspdf;
 
     // Página A4 em orientação retrato.
@@ -2846,22 +2845,14 @@ async function exportarCarteirinhaPdf() {
     pdf.setFillColor(255, 255, 255);
     pdf.rect(0, 0, larguraPaginaMm, alturaPaginaMm, "F");
 
-    function criarOpcoesCaptura(elemento) {
-      const retangulo = elemento.getBoundingClientRect();
-
-      return {
-        backgroundColor: "#ffffff",
-        scale: 4,
-        useCORS: true,
-        allowTaint: false,
-        imageTimeout: 20000,
-        logging: false,
-        width: Math.round(retangulo.width),
-        height: Math.round(retangulo.height),
-        scrollX: -window.scrollX,
-        scrollY: -window.scrollY
-      };
-    }
+    const opcoesCaptura = {
+      backgroundColor: "#ffffff",
+      scale: 3,
+      useCORS: true,
+      allowTaint: false,
+      imageTimeout: 20000,
+      logging: false
+    };
 
     for (let indice = 0; indice < idsMembros.length; indice += 1) {
       const idMembro = idsMembros[indice];
@@ -2892,15 +2883,8 @@ async function exportarCarteirinhaPdf() {
         );
       }
 
-      const canvasFrente = await html2canvas(
-        frente,
-        criarOpcoesCaptura(frente)
-      );
-
-      const canvasVerso = await html2canvas(
-        verso,
-        criarOpcoesCaptura(verso)
-      );
+      const canvasFrente = await html2canvas(frente, opcoesCaptura);
+      const canvasVerso = await html2canvas(verso, opcoesCaptura);
 
       const linhaNaPagina = indice % linhasPorPagina;
 
@@ -3033,6 +3017,8 @@ async function exportarCarteirinhaPdf() {
       (erro.message || "Erro desconhecido.")
     );
   } finally {
+    document.body.classList.remove("modo-captura-pdf");
+
     if (botao) {
       botao.disabled = false;
       botao.textContent = textoOriginal;
