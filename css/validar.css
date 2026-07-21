@@ -1,7 +1,9 @@
 :root {
   --validacao-azul: #0f2f48;
+  --validacao-azul-profundo: #0a2235;
   --validacao-azul-claro: #eaf1f6;
-  --validacao-dourado: #b98a45;
+  --validacao-dourado: #d4af37;
+  --validacao-dourado-claro: #f2d77f;
   --validacao-verde: #16794f;
   --validacao-verde-claro: #e7f5ee;
   --validacao-vermelho: #b3261e;
@@ -18,7 +20,6 @@
   box-sizing: border-box;
 }
 
-/* Garante que qualquer elemento com hidden não ocupe espaço. */
 [hidden] {
   display: none !important;
 }
@@ -27,7 +28,11 @@ body.validation-page {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(185, 138, 69, 0.12), transparent 32rem),
+    radial-gradient(
+      circle at top left,
+      rgba(212, 175, 55, 0.14),
+      transparent 32rem
+    ),
     var(--validacao-fundo);
   color: var(--validacao-texto);
   font-family: Arial, Helvetica, sans-serif;
@@ -40,46 +45,98 @@ body.validation-page {
 }
 
 .validation-header {
+  position: relative;
+  min-height: 154px;
   display: flex;
   align-items: center;
-  gap: 18px;
   margin-bottom: 24px;
-  padding: 22px 26px;
+  padding: 22px 30px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.38);
   border-radius: 22px;
-  background: var(--validacao-azul);
-  color: var(--validacao-branco);
+  background:
+    linear-gradient(
+      135deg,
+      var(--validacao-azul-profundo),
+      var(--validacao-azul)
+    );
   box-shadow: var(--validacao-sombra);
 }
 
+.validation-header::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--validacao-dourado),
+    transparent
+  );
+}
+
+.validation-brand {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 320px;
+  flex: 0 0 320px;
+}
+
 .validation-logo {
-  width: 76px;
-  height: 76px;
+  width: 108px;
+  height: 108px;
+  flex: 0 0 108px;
   object-fit: contain;
-  border-radius: 16px;
+  border: 2px solid rgba(212, 175, 55, 0.55);
+  border-radius: 20px;
   background: var(--validacao-branco);
-  padding: 8px;
+  padding: 7px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
 }
 
-.validation-kicker,
-.validation-subtitle {
+.validation-church-identification {
+  min-width: 0;
+}
+
+.validation-church-main,
+.validation-church-ministry {
   margin: 0;
+  line-height: 1.25;
 }
 
-.validation-kicker {
-  color: #e8c991;
-  font-size: 0.82rem;
+.validation-church-main {
+  color: var(--validacao-dourado);
+  font-size: 0.96rem;
+  font-weight: 800;
+  letter-spacing: 0.075em;
+}
+
+.validation-church-ministry {
+  margin-top: 6px;
+  color: var(--validacao-branco);
+  font-size: 0.93rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
-.validation-header h1 {
-  margin: 4px 0;
-  font-size: clamp(1.55rem, 4vw, 2.2rem);
-}
-
-.validation-subtitle {
-  color: #dce8ef;
+.validation-document-title {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  width: calc(100% - 380px);
+  margin: 0;
+  transform: translate(-34%, -50%);
+  color: var(--validacao-dourado);
+  font-size: clamp(2rem, 4.8vw, 3.25rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.055em;
+  text-align: center;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
 }
 
 .validation-state,
@@ -133,7 +190,7 @@ body.validation-page {
   place-items: center;
   border-radius: 50%;
   background: var(--validacao-vermelho);
-  color: white;
+  color: var(--validacao-branco);
   font-size: 1.7rem;
   font-weight: 800;
 }
@@ -167,7 +224,7 @@ body.validation-page {
   width: 100%;
   height: 100%;
   border-radius: 18px;
-  border: 4px solid white;
+  border: 4px solid var(--validacao-branco);
   box-shadow: 0 10px 28px rgba(15, 47, 72, 0.16);
 }
 
@@ -191,23 +248,14 @@ body.validation-page {
   width: fit-content;
   margin-bottom: 10px;
   padding: 8px 12px;
+  border: 1px solid rgba(212, 175, 55, 0.45);
   border-radius: 999px;
-  background: var(--validacao-verde-claro);
-  color: var(--validacao-verde);
+  background: #fff8dc;
+  color: #765b21;
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-}
-
-.validation-badge.is-inactive {
-  background: #f3f0e8;
-  color: #765b21;
-}
-
-.validation-badge.is-expired {
-  background: var(--validacao-vermelho-claro);
-  color: var(--validacao-vermelho);
 }
 
 .public-member-heading h2 {
@@ -272,6 +320,39 @@ body.validation-page {
   margin: 4px 0;
 }
 
+@media (max-width: 820px) {
+  .validation-header {
+    min-height: 180px;
+    padding: 20px;
+  }
+
+  .validation-brand {
+    width: 250px;
+    flex-basis: 250px;
+  }
+
+  .validation-logo {
+    width: 92px;
+    height: 92px;
+    flex-basis: 92px;
+  }
+
+  .validation-church-main {
+    font-size: 0.82rem;
+  }
+
+  .validation-church-ministry {
+    font-size: 0.8rem;
+  }
+
+  .validation-document-title {
+    left: 58%;
+    width: 48%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(1.7rem, 5vw, 2.5rem);
+  }
+}
+
 @media (max-width: 640px) {
   .validation-shell {
     width: min(100% - 20px, 940px);
@@ -279,14 +360,33 @@ body.validation-page {
   }
 
   .validation-header {
-    align-items: flex-start;
-    padding: 18px;
+    min-height: auto;
+    display: grid;
+    justify-items: center;
+    gap: 18px;
+    padding: 20px 16px 24px;
     border-radius: 18px;
   }
 
+  .validation-brand {
+    width: 100%;
+    flex-basis: auto;
+    justify-content: center;
+    text-align: left;
+  }
+
   .validation-logo {
-    width: 58px;
-    height: 58px;
+    width: 86px;
+    height: 86px;
+    flex-basis: 86px;
+  }
+
+  .validation-document-title {
+    position: static;
+    width: 100%;
+    transform: none;
+    font-size: clamp(1.7rem, 8vw, 2.35rem);
+    text-align: center;
   }
 
   .public-member-top {
