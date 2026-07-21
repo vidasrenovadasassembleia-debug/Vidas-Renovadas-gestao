@@ -1453,6 +1453,235 @@ a {
   }
 }
 
+
+
+/* =========================================================
+   CORREÇÃO DEFINITIVA — FRENTE SEM SOBREPOSIÇÃO E PDF PVC
+   Esta seção é a última regra do arquivo e prevalece sobre
+   as revisões anteriores sem alterar a medida física do cartão.
+========================================================= */
+
+/* Frente compacta: cabe integralmente em 85,6 × 53,98 mm. */
+.cartao-frente {
+  grid-template-rows: 21% minmax(0, 1fr) 10% !important;
+  padding: 3.6% 4.2% 3.2% !important;
+}
+
+.cabecalho-frente {
+  min-height: 0 !important;
+  gap: 3.2% !important;
+}
+
+.logo-frente {
+  width: 18% !important;
+  max-height: 48px !important;
+}
+
+.identidade-igreja strong {
+  font-size: 15px !important;
+}
+
+.identidade-igreja span {
+  margin-top: 2px !important;
+  font-size: 8px !important;
+}
+
+.conteudo-frente {
+  grid-template-columns: 30% minmax(0, 1fr) !important;
+  gap: 4% !important;
+  align-items: end !important;
+  padding: 1% 0 0 !important;
+}
+
+.moldura-foto {
+  width: 92% !important;
+  margin: 0 auto !important;
+  border-width: 2px !important;
+  border-radius: 8px !important;
+}
+
+.dados-principais {
+  align-self: center !important;
+  min-width: 0 !important;
+}
+
+.categoria-documento {
+  margin: 0 0 1px !important;
+  font-size: 7px !important;
+  line-height: 1 !important;
+}
+
+.dados-principais h2 {
+  min-height: 28px !important;
+  max-height: 30px !important;
+  margin: 0 0 4px !important;
+  font-size: 15px !important;
+  line-height: 0.98 !important;
+  white-space: normal !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+.grade-dados-frente {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 4px !important;
+}
+
+.campo-cartao {
+  min-height: 34px !important;
+  padding: 4px 5px !important;
+  border-left-width: 2px !important;
+}
+
+.campo-cartao span {
+  margin-bottom: 1px !important;
+  font-size: 6px !important;
+  line-height: 1 !important;
+}
+
+.campo-cartao strong {
+  font-size: 9px !important;
+  line-height: 1.05 !important;
+}
+
+.campo-cargo strong,
+.campo-congregacao-frente strong {
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  white-space: normal !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+/* Situação discreta, em uma faixa curta na parte inferior da grade. */
+.campo-situacao-frente {
+  grid-column: 1 / -1 !important;
+  min-height: 23px !important;
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+}
+
+.campo-situacao-frente strong {
+  font-size: 8px !important;
+}
+
+/* A identificação do Pastor Presidente permanece somente no verso. */
+.assinatura-cartao {
+  display: none !important;
+}
+
+.rodape-frente {
+  display: block !important;
+  min-height: 0 !important;
+  padding-top: 1px !important;
+}
+
+.datas-cartao {
+  justify-content: flex-end !important;
+  gap: 18px !important;
+}
+
+.datas-cartao span {
+  margin-bottom: 0 !important;
+  font-size: 5.5px !important;
+}
+
+.datas-cartao strong {
+  font-size: 7px !important;
+  line-height: 1 !important;
+}
+
+/* Verso: caixas largas e QR menor, sem retirar as informações. */
+.cartao-verso {
+  grid-template-rows: 18% minmax(0, 1fr) auto auto !important;
+  padding: 3.5% 4.2% 2.7% !important;
+}
+
+.cabecalho-verso {
+  min-height: 0 !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.cabecalho-verso strong {
+  font-size: 15px !important;
+}
+
+.cabecalho-verso span {
+  margin-top: 1px !important;
+  font-size: 7px !important;
+}
+
+.conteudo-verso {
+  grid-template-columns: minmax(0, 1fr) 19% !important;
+  gap: 2.5% !important;
+  padding: 1.5% 0 0 !important;
+}
+
+.dados-verso-institucional {
+  grid-template-columns: 1fr !important;
+  gap: 4px !important;
+}
+
+.dados-verso-institucional .campo-verso {
+  min-height: 31px !important;
+  padding: 4px 7px !important;
+}
+
+.campo-verso span {
+  margin-bottom: 1px !important;
+  font-size: 6px !important;
+}
+
+.campo-verso strong {
+  font-size: 8.5px !important;
+  line-height: 1.05 !important;
+}
+
+.area-qrcode {
+  gap: 3px !important;
+  font-size: 6px !important;
+  line-height: 1.05 !important;
+}
+
+.qrcode {
+  width: min(100%, 74px) !important;
+  border-width: 4px !important;
+  border-radius: 6px !important;
+}
+
+.versiculo-cartao {
+  margin-top: 1px !important;
+  font-size: 5.7px !important;
+  line-height: 1.05 !important;
+}
+
+.rodape-verso {
+  padding-top: 2px !important;
+  font-size: 4.8px !important;
+  line-height: 1 !important;
+}
+
+/* Captura e impressão usam exatamente a mesma composição visual. */
+.modo-captura-pdf .cartao {
+  width: 856px !important;
+  height: 540px !important;
+  max-width: none !important;
+  aspect-ratio: auto !important;
+}
+
+@media print {
+  .cartao {
+    width: 85.6mm !important;
+    height: 53.98mm !important;
+    max-width: none !important;
+    aspect-ratio: auto !important;
+  }
+}
+
 </style>
 </head>
 
@@ -2824,20 +3053,20 @@ function ajustarTodosOsTextosCarteirinha() {
   const configuracoes = [
     {
       id: "nomeMembroCarteirinha",
-      fonteMaxima: 27,
-      fonteMinima: 13,
+      fonteMaxima: 15,
+      fonteMinima: 11,
       maxLinhas: 2
     },
     {
       id: "cargoMembroCarteirinha",
-      fonteMaxima: 13,
-      fonteMinima: 8,
+      fonteMaxima: 9,
+      fonteMinima: 7,
       maxLinhas: 2
     },
     {
       id: "congregacaoFrenteCarteirinha",
-      fonteMaxima: 13,
-      fonteMinima: 8,
+      fonteMaxima: 9,
+      fonteMinima: 6,
       maxLinhas: 2
     },
     {
