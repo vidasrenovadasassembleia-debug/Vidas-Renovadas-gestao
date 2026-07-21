@@ -2,12 +2,10 @@
   "use strict";
 
   /*
-   * IMPORTANTE:
-   * Cole abaixo a URL da implantação do seu Apps Script.
-   * Exemplo:
-   * https://script.google.com/macros/s/SEU_ID/exec
+   * URL da implantação do Apps Script responsável pela validação pública.
    */
   const API_URL = "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec";
+
   const elementos = {
     carregando: document.getElementById("estadoCarregando"),
     erro: document.getElementById("estadoErro"),
@@ -43,78 +41,142 @@
   };
 
   function texto(valor, fallback = "Não informado") {
-    const resultado = String(valor || "").trim();
+    const resultado = String(valor ?? "").trim();
     return resultado || fallback;
   }
 
   function possuiValor(valor) {
-    return Boolean(String(valor || "").trim());
+    return Boolean(String(valor ?? "").trim());
+  }
+
+  function normalizarTexto(valor) {
+    return String(valor ?? "")
+      .trim()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  }
+
+  function ocultarDadosPublicos() {
+    elementos.ficha.hidden = true;
+
+    elementos.nome.textContent = "—";
+    elementos.resumo.textContent = "—";
+    elementos.cargo.textContent = "—";
+    elementos.congregacao.textContent = "—";
+    elementos.situacao.textContent = "—";
+    elementos.emissao.textContent = "—";
+    elementos.validade.textContent = "—";
+
+    elementos.blocoConjuge.hidden = true;
+    elementos.blocoPai.hidden = true;
+    elementos.blocoMae.hidden = true;
+    elementos.blocoObservacao.hidden = true;
+
+    elementos.conjuge.textContent = "—";
+    elementos.pai.textContent = "—";
+    elementos.mae.textContent = "—";
+    elementos.observacao.textContent = "—";
+
+    elementos.foto.removeAttribute("src");
+    elementos.foto.hidden = true;
+    elementos.fotoPlaceholder.hidden = false;
   }
 
   function mostrarErro(mensagem) {
     elementos.carregando.hidden = true;
-    elementos.ficha.hidden = true;
+    ocultarDadosPublicos();
     elementos.erro.hidden = false;
     elementos.mensagemErro.textContent = mensagem;
+
+    document.title = "Carteirinha não validada | Vidas Renovadas";
   }
 
   function preencherCampoOpcional(bloco, campo, valor) {
     const existe = possuiValor(valor);
-    bloco.hidden = !existe;
 
-    if (existe) {
-      campo.textContent = String(valor).trim();
-    }
+    bloco.hidden = !existe;
+    campo.textContent = existe
+      ? String(valor).trim()
+      : "—";
   }
 
   function converterDataBrasileira(data) {
-    const valor = String(data || "").trim();
+    const valor = String(data ?? "").trim();
+    const correspondencia = valor.match(
+      /^(\d{2})\/(\d{2})\/(\d{4})$/
+    );
 
-    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(valor)) {
+    if (!correspondencia) {
       return null;
     }
 
-    const [dia, mes, ano] = valor.split("/").map(Number);
-    const objetoData = new Date(ano, mes - 1, dia, 23, 59, 59);
+    const dia = Number(correspondencia[1]);
+    const mes = Number(correspondencia[2]);
+    const ano = Number(correspondencia[3]);
 
-    return Number.isNaN(objetoData.getTime())
-      ? null
-      : objetoData;
+    const objetoData = new Date(ano, mes - 1, dia, 23, 59, 59, 999);
+
+    const dataValida =
+      objetoData.getFullYear() === ano &&
+      objetoData.getMonth() === mes - 1 &&
+      objetoData.getDate() === dia;
+
+    return dataValida ? objetoData : null;
   }
 
-  function avaliarValidade(membro) {
-    const situacao = texto(membro.situacao, "").toLowerCase();
+  function verificarCredencial(membro) {
+    const situacao = normalizarTexto(membro.situacao);
+    const validadeInformada = possuiValor(membro.validade);
     const validade = converterDataBrasileira(membro.validade);
-    const hoje = new Date();
 
+    const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
 
-    elementos.selo.className = "validation-badge";
+    if (!situacao || !["ativo", "ativa"].includes(situacao)) {
+      return {
+        valida: false,
+        mensagem:
+          "Esta credencial não está ativa ou não pode mais ser utilizada."
+      };
+    }
+
+    if (validadeInformada && !validade) {
+      return {
+        valida: false,
+        mensagem:
+          "Não foi possível confirmar a validade desta credencial."
+      };
+    }
 
     if (validade && validade < hoje) {
-      elementos.selo.textContent = "Carteirinha vencida";
-      elementos.selo.classList.add("is-expired");
-      return;
+      return {
+        valida: false,
+        mensagem:
+          "Esta credencial está vencida e não pode mais ser utilizada."
+      };
     }
 
-    if (situacao && situacao !== "ativo" && situacao !== "ativa") {
-      elementos.selo.textContent = "Cadastro " + texto(membro.situacao, "inativo");
-      elementos.selo.classList.add("is-inactive");
-      return;
-    }
-
-    elementos.selo.textContent = "Carteirinha validada";
+    return {
+      valida: true,
+      mensagem: ""
+    };
   }
 
   function preencherFoto(url, nome) {
+    elementos.foto.onload = null;
+    elementos.foto.onerror = null;
+
     if (!possuiValor(url)) {
+      elementos.foto.removeAttribute("src");
       elementos.foto.hidden = true;
       elementos.fotoPlaceholder.hidden = false;
       return;
     }
 
     elementos.foto.alt = "Foto de " + texto(nome, "membro");
-    elementos.foto.src = String(url).trim();
+    elementos.foto.hidden = true;
+    elementos.fotoPlaceholder.hidden = false;
 
     elementos.foto.onload = () => {
       elementos.fotoPlaceholder.hidden = true;
@@ -122,12 +184,43 @@
     };
 
     elementos.foto.onerror = () => {
+      elementos.foto.removeAttribute("src");
       elementos.foto.hidden = true;
       elementos.fotoPlaceholder.hidden = false;
     };
+
+    elementos.foto.src = String(url).trim();
+  }
+
+  function formatarDataConsulta() {
+    const agora = new Date();
+
+    const data = new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }).format(agora);
+
+    const hora = new Intl.DateTimeFormat("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).format(agora);
+
+    return `${data}, ${hora}`;
   }
 
   function exibirMembro(membro) {
+    const verificacao = verificarCredencial(membro);
+
+    if (!verificacao.valida) {
+      mostrarErro(verificacao.mensagem);
+      return;
+    }
+
+    elementos.selo.className = "validation-badge";
+    elementos.selo.textContent = "🟡 CARTEIRINHA VALIDADA";
+
     elementos.nome.textContent = texto(membro.nome);
     elementos.cargo.textContent = texto(membro.cargo);
     elementos.congregacao.textContent = texto(membro.congregacao);
@@ -136,7 +229,9 @@
     elementos.validade.textContent = texto(membro.validade);
 
     const resumo = [
-      possuiValor(membro.cargo) ? String(membro.cargo).trim() : "",
+      possuiValor(membro.cargo)
+        ? String(membro.cargo).trim()
+        : "",
       possuiValor(membro.congregacao)
         ? String(membro.congregacao).trim()
         : ""
@@ -167,17 +262,12 @@
     preencherCampoOpcional(
       elementos.blocoObservacao,
       elementos.observacao,
-      membro.observacao
+      membro.observacaoCarteirinha ?? membro.observacao
     );
 
     preencherFoto(membro.foto, membro.nome);
-    avaliarValidade(membro);
 
-    elementos.dataConsulta.textContent =
-      new Intl.DateTimeFormat("pt-BR", {
-        dateStyle: "short",
-        timeStyle: "short"
-      }).format(new Date());
+    elementos.dataConsulta.textContent = formatarDataConsulta();
 
     elementos.carregando.hidden = true;
     elementos.erro.hidden = true;
@@ -199,10 +289,7 @@
       return;
     }
 
-    if (
-      !API_URL ||
-      API_URL.includes("COLE_AQUI")
-    ) {
+    if (!API_URL || API_URL.includes("COLE_AQUI")) {
       mostrarErro(
         "A página de validação ainda não foi conectada à API."
       );
@@ -224,7 +311,9 @@
 
       if (!resposta.ok) {
         throw new Error(
-          "A API respondeu com o código " + resposta.status + "."
+          "A API respondeu com o código " +
+          resposta.status +
+          "."
         );
       }
 
@@ -239,7 +328,6 @@
       }
 
       exibirMembro(dados.membro);
-
     } catch (erro) {
       console.error("Erro ao validar carteirinha:", erro);
 
