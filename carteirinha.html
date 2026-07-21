@@ -1874,9 +1874,10 @@ a {
 
 
 /* =========================================================
-   LIBERAÇÃO FINAL — DOIS MICROAJUSTES
-   1) Sobe a assinatura 8 px, mantendo tamanho e conteúdo.
-   2) Amplia discretamente a faixa Situação.
+   CORREÇÃO REAL — ASSINATURA + SITUAÇÃO — 21-07-2026
+   1) Sobe e reduz discretamente a assinatura.
+   2) Reposiciona Emissão e Validade dentro do cartão.
+   3) Amplia levemente a faixa Situação.
 ========================================================= */
 
 .campo-situacao-frente {
@@ -1904,8 +1905,9 @@ a {
 
 .assinatura-cartao {
   right: 0 !important;
-  bottom: 21px !important;
+  bottom: 13px !important;
   width: 31% !important;
+  transform: translateY(-8px) !important;
   min-height: 37px !important;
 }
 
