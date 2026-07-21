@@ -1,1 +1,276 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Certificados | Vidas Renovadas Gestão
+  </title>
+  <link href="../css/estilo.css" rel="stylesheet"/>
+  <link href="../css/certificados.css" rel="stylesheet"/>
+ </head>
+ <body class="dashboard-page certificados-page">
+  <aside class="sidebar">
+   <div class="sidebar-brand">
+    <img alt="Logo da igreja" class="sidebar-logo" src="../logo.png"/>
+    <div>
+     <strong>
+      Vidas Renovadas
+     </strong>
+     <span>
+      Projeto Neemias
+     </span>
+    </div>
+   </div>
+   <nav class="sidebar-menu">
+    <a href="../dashboard.html">
+     Dashboard
+    </a>
+    <a href="../membros.html">
+     Membros
+    </a>
+    <a class="active" href="index.html">
+     Certificados
+    </a>
+    <a href="../configuracoes.html">
+     Configurações
+    </a>
+   </nav>
+   <button class="logout logout-button" id="botaoSair" type="button">
+    Sair
+   </button>
+  </aside>
+  <main class="dashboard-main certificados-main">
+   <header class="dashboard-header certificados-header">
+    <div>
+     <p class="dashboard-label">
+      Documentos e cerimônias
+     </p>
+     <h1>
+      Certificados
+     </h1>
+    </div>
+    <div class="user-box">
+     Usuário
+    </div>
+   </header>
+   <div class="mensagem-modulo" hidden="" id="mensagemModulo">
+   </div>
+   <nav aria-label="Tipos de certificado" class="abas-certificados">
+    <button class="aba-certificado active" data-aba="consagracao">
+     Consagração
+    </button>
+    <button class="aba-certificado" data-aba="apresentacao">
+     Apresentação de criança
+    </button>
+    <button class="aba-certificado" data-aba="historico">
+     Histórico
+    </button>
+   </nav>
+   <section class="painel-certificado active" data-painel="consagracao">
+    <div class="grade-certificado">
+     <form class="cartao-formulario" id="formConsagracao">
+      <div class="titulo-secao">
+       <div>
+        <span>
+         Certificado ministerial
+        </span>
+        <h2>
+         Consagração
+        </h2>
+       </div>
+      </div>
+      <label class="campo campo-largo">
+       Pesquisar membro
+       <div class="linha-pesquisa">
+        <input id="pesquisaMembro" placeholder="Nome ou número da carteirinha" type="search"/>
+        <button id="botaoPesquisarMembro" type="button">
+         Pesquisar
+        </button>
+       </div>
+      </label>
+      <div class="resultados-membros" hidden="" id="resultadosMembros">
+      </div>
+      <input name="idMembro" type="hidden"/>
+      <input name="numeroCarteirinha" type="hidden"/>
+      <div class="grade-campos">
+       <label class="campo campo-largo">
+        Nome do membro
+        <input name="nome" readonly="" required=""/>
+       </label>
+       <label class="campo">
+        Cargo da consagração
+        <select name="cargo" required="">
+         <option value="">
+          Selecione
+         </option>
+        </select>
+       </label>
+       <label class="campo">
+        Data da consagração
+        <input name="dataCerimonia" required="" type="date"/>
+       </label>
+       <label class="campo">
+        Congregação
+        <input name="congregacao"/>
+       </label>
+       <label class="campo">
+        Local da cerimônia
+        <input name="local" required=""/>
+       </label>
+       <label class="campo campo-largo">
+        Pastor responsável
+        <input name="pastor" required=""/>
+       </label>
+       <label class="campo campo-largo">
+        Observações
+        <textarea name="observacoes" rows="3"></textarea>
+       </label>
+      </div>
+      <div class="acoes-formulario">
+       <button class="botao-secundario" data-visualizar="consagracao" type="button">
+        Visualizar
+       </button>
+       <button class="botao-principal" type="submit">
+        Registrar e imprimir
+       </button>
+      </div>
+     </form>
+     <div class="area-preview">
+      <div class="folha-certificado" id="previewConsagracao">
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="painel-certificado" data-painel="apresentacao">
+    <div class="grade-certificado">
+     <form class="cartao-formulario" id="formApresentacao">
+      <div class="titulo-secao">
+       <div>
+        <span>
+         Certificado infantil
+        </span>
+        <h2>
+         Apresentação de criança
+        </h2>
+       </div>
+      </div>
+      <div class="grade-campos">
+       <label class="campo campo-largo">
+        Nome da criança
+        <input name="nome" required=""/>
+       </label>
+       <label class="campo">
+        Sexo
+        <select name="sexo" required="">
+         <option value="">
+          Selecione
+         </option>
+         <option value="MENINO">
+          Menino
+         </option>
+         <option value="MENINA">
+          Menina
+         </option>
+        </select>
+       </label>
+       <label class="campo">
+        Data de nascimento
+        <input name="dataNascimento" required="" type="date"/>
+       </label>
+       <label class="campo campo-largo">
+        Nome do pai
+        <input name="nomePai"/>
+       </label>
+       <label class="campo campo-largo">
+        Nome da mãe
+        <input name="nomeMae" required=""/>
+       </label>
+       <label class="campo">
+        Data da apresentação
+        <input name="dataCerimonia" required="" type="date"/>
+       </label>
+       <label class="campo">
+        Congregação
+        <input name="congregacao"/>
+       </label>
+       <label class="campo">
+        Local da cerimônia
+        <input name="local" required=""/>
+       </label>
+       <label class="campo">
+        Pastor responsável
+        <input name="pastor" required=""/>
+       </label>
+       <label class="campo campo-largo">
+        Observações
+        <textarea name="observacoes" rows="3"></textarea>
+       </label>
+      </div>
+      <div class="acoes-formulario">
+       <button class="botao-secundario" data-visualizar="apresentacao" type="button">
+        Visualizar
+       </button>
+       <button class="botao-principal" type="submit">
+        Registrar e imprimir
+       </button>
+      </div>
+     </form>
+     <div class="area-preview">
+      <div class="folha-certificado" id="previewApresentacao">
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="painel-certificado" data-painel="historico">
+    <div class="cartao-formulario">
+     <div class="historico-cabecalho">
+      <div>
+       <span>
+        Registro oficial
+       </span>
+       <h2>
+        Certificados emitidos
+       </h2>
+      </div>
+      <input id="filtroHistorico" placeholder="Filtrar por número ou nome" type="search"/>
+     </div>
+     <div class="tabela-responsiva">
+      <table>
+       <thead>
+        <tr>
+         <th>
+          Número
+         </th>
+         <th>
+          Tipo
+         </th>
+         <th>
+          Nome
+         </th>
+         <th>
+          Data
+         </th>
+         <th>
+          Emitido por
+         </th>
+         <th>
+         </th>
+        </tr>
+       </thead>
+       <tbody id="corpoHistorico">
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </section>
+   <footer class="dashboard-footer">
+    Vidas Renovadas Gestão — Módulo de Certificados
+   </footer>
+  </main>
+  <script src="../js/app.js?v=12">
+  </script>
+  <script src="../js/certificados.js?v=1">
+  </script>
+ </body>
+</html>
