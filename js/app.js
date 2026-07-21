@@ -314,119 +314,6 @@ function escaparHtml(valor) {
     .replaceAll("'", "&#039;");
 }
 
-
-function normalizarTexto(valor) {
-  return String(valor || "")
-    .trim()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, " ");
-}
-
-function padronizarCongregacao(valor) {
-  const texto = normalizarTexto(valor);
-
-  if (!texto) {
-    return "";
-  }
-
-  if (
-    texto.includes("independencia") ||
-    texto.includes("petropolis")
-  ) {
-    return "Independência / Petrópolis";
-  }
-
-  if (
-    texto.includes("km 51") ||
-    texto.includes("km51") ||
-    texto.includes("xerem")
-  ) {
-    return "Km 51 / Xerém";
-  }
-
-  return String(valor || "").trim();
-}
-
-function gerarBadgeCargo(cargo) {
-  const texto = String(cargo || "Não informado").trim();
-  const normalizado = normalizarTexto(texto);
-
-  let classe = "badge-cargo badge-cargo-padrao";
-
-  if (normalizado.includes("pastor")) {
-    classe = "badge-cargo badge-cargo-pastoral";
-  } else if (normalizado.includes("presbiter")) {
-    classe = "badge-cargo badge-cargo-presbitero";
-  } else if (normalizado.includes("diacon")) {
-    classe = "badge-cargo badge-cargo-diacono";
-  } else if (normalizado.includes("evangelista")) {
-    classe = "badge-cargo badge-cargo-evangelista";
-  } else if (normalizado.includes("missionar")) {
-    classe = "badge-cargo badge-cargo-missionario";
-  }
-
-  return `
-    <span class="${classe}">
-      <span class="badge-status-dot" aria-hidden="true"></span>
-      ${escaparHtml(texto)}
-    </span>
-  `;
-}
-
-function gerarBadgeCongregacao(congregacao) {
-  const textoPadronizado =
-    padronizarCongregacao(congregacao) || "Não informada";
-
-  const normalizado = normalizarTexto(textoPadronizado);
-
-  let classe = "badge-congregacao badge-congregacao-padrao";
-
-  if (normalizado.includes("independencia")) {
-    classe =
-      "badge-congregacao badge-congregacao-independencia";
-  } else if (
-    normalizado.includes("km 51") ||
-    normalizado.includes("xerem")
-  ) {
-    classe =
-      "badge-congregacao badge-congregacao-xerem";
-  }
-
-  return `
-    <span class="${classe}">
-      <span class="badge-status-dot" aria-hidden="true"></span>
-      ${escaparHtml(textoPadronizado)}
-    </span>
-  `;
-}
-
-function gerarBadgeSituacao(situacao) {
-  const texto = String(situacao || "Ativo").trim();
-  const normalizado = normalizarTexto(texto);
-
-  const classes = {
-    ativo: "badge-situacao badge-situacao-ativo",
-    congregado: "badge-situacao badge-situacao-congregado",
-    visitante: "badge-situacao badge-situacao-visitante",
-    inativo: "badge-situacao badge-situacao-inativo",
-    transferido: "badge-situacao badge-situacao-transferido",
-    falecido: "badge-situacao badge-situacao-falecido"
-  };
-
-  const classe =
-    classes[normalizado] ||
-    "badge-situacao badge-situacao-padrao";
-
-  return `
-    <span class="${classe}">
-      <span class="badge-status-dot" aria-hidden="true"></span>
-      ${escaparHtml(texto)}
-    </span>
-  `;
-}
-
 function obterIdDaUrl() {
   const parametros =
     new URLSearchParams(window.location.search);
@@ -678,23 +565,7 @@ if (formularioNovoMembro) {
           resultado.id
         );
 
-        formularioNovoMembro.reset();
-        atualizarPreviewFoto("");
-        atualizarStatusFoto("Selecione uma foto para o cadastro.");
-
-        const cidade =
-          document.getElementById("cidade");
-
-        const estado =
-          document.getElementById("estado");
-
-        if (cidade) {
-          cidade.value = "Duque de Caxias";
-        }
-
-        if (estado) {
-          estado.value = "RJ";
-        }
+        window.location.href = "membros.html";
 
       } catch (erro) {
         console.error(
@@ -836,9 +707,9 @@ function mostrarMembros(membros) {
 
       <td>${escaparHtml(membro.id)}</td>
       <td>${escaparHtml(membro.nome)}</td>
-      <td>${gerarBadgeCargo(membro.cargo)}</td>
-      <td>${gerarBadgeCongregacao(membro.congregacao)}</td>
-      <td>${gerarBadgeSituacao(membro.situacao)}</td>
+      <td>${escaparHtml(membro.cargo || "-")}</td>
+      <td>${escaparHtml(membro.congregacao || "-")}</td>
+      <td>${escaparHtml(membro.situacao || "Ativo")}</td>
       <td class="acoes-tabela">
         <a
           class="btn-acao"
@@ -972,57 +843,49 @@ filtroSituacao?.addEventListener("change", aplicarFiltros);
 filtroCongregacao?.addEventListener("change", aplicarFiltros);
 
 function aplicarFiltros() {
-  const texto = normalizarTexto(
+  const texto = String(
     pesquisaMembro?.value || ""
-  );
+  )
+    .trim()
+    .toLowerCase();
 
-  const situacao = normalizarTexto(
+  const situacao = String(
     filtroSituacao?.value || ""
-  );
+  ).trim();
 
-  const congregacaoSelecionada =
-    padronizarCongregacao(
-      filtroCongregacao?.value || ""
-    );
-
-  const congregacaoNormalizada =
-    normalizarTexto(congregacaoSelecionada);
+  const congregacao = String(
+    filtroCongregacao?.value || ""
+  )
+    .trim()
+    .toLowerCase();
 
   const filtrados =
     membrosCarregados.filter(
       function (membro) {
-        const id = normalizarTexto(membro.id);
-        const nome = normalizarTexto(membro.nome);
-        const cargo = normalizarTexto(membro.cargo);
-
-        const congregacaoDoMembro =
-          padronizarCongregacao(
-            membro.congregacao || ""
-          );
-
-        const congregacaoDoMembroNormalizada =
-          normalizarTexto(congregacaoDoMembro);
-
-        const situacaoDoMembro =
-          normalizarTexto(
-            membro.situacao || "Ativo"
-          );
-
         const correspondeTexto =
           !texto ||
-          id.includes(texto) ||
-          nome.includes(texto) ||
-          cargo.includes(texto) ||
-          congregacaoDoMembroNormalizada.includes(texto);
+          String(membro.id || "")
+            .toLowerCase()
+            .includes(texto) ||
+          String(membro.nome || "")
+            .toLowerCase()
+            .includes(texto) ||
+          String(membro.cargo || "")
+            .toLowerCase()
+            .includes(texto) ||
+          String(membro.congregacao || "")
+            .toLowerCase()
+            .includes(texto);
 
         const correspondeSituacao =
           !situacao ||
-          situacaoDoMembro === situacao;
+          String(membro.situacao || "").trim() === situacao;
 
         const correspondeCongregacao =
-          !congregacaoNormalizada ||
-          congregacaoDoMembroNormalizada ===
-            congregacaoNormalizada;
+          !congregacao ||
+          String(membro.congregacao || "")
+            .trim()
+            .toLowerCase() === congregacao;
 
         return (
           correspondeTexto &&
