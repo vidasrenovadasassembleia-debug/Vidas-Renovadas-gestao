@@ -1386,245 +1386,70 @@ a {
 
 
 /* =========================================================
-   AJUSTE DEFINITIVO — CARTÃO PVC 85,6 × 53,98 MM
-   Mantém o tamanho externo e corrige apenas a proporção interna.
+   VERSÃO OFICIAL — AJUSTES SOLICITADOS
+   Preserva o tamanho do PDF e altera apenas os campos.
 ========================================================= */
 
-.cartao {
-  container-type: inline-size;
+/* Cargo e congregação dividem a mesma linha. */
+.campo-cargo,
+.campo-congregacao-frente {
+  grid-column: auto;
 }
 
-/* A captura usa uma base estável de 856 × 540 px. Isso evita
-   que o PDF herde o tamanho reduzido da pré-visualização. */
-body.modo-captura-pdf .area-cartoes,
-.area-cartoes.area-modelo-lote {
-  width: 856px !important;
-  max-width: none !important;
-  grid-template-columns: 856px 856px !important;
-  gap: 24px !important;
+.campo-congregacao-frente strong {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  -webkit-line-clamp: 2;
 }
 
-body.modo-captura-pdf .cartao,
-.area-cartoes.area-modelo-lote .cartao {
-  width: 856px !important;
-  height: 540px !important;
-  max-width: none !important;
-  aspect-ratio: auto !important;
-  border-radius: 26px !important;
+/* Situação ocupa a largura disponível e permanece discreta. */
+.campo-situacao-frente {
+  grid-column: 1 / -1;
+  min-height: 30px;
 }
 
-/* Frente */
-.cartao-frente {
-  grid-template-rows: 21% 59% 20% !important;
-  padding: 3.6% 4.4% 3.5% !important;
-}
-
-.cabecalho-frente {
-  min-height: 0 !important;
-  gap: 3.2% !important;
-  align-items: center !important;
-}
-
-.logo-frente {
-  width: 20.5% !important;
-  max-height: 100% !important;
-}
-
-.identidade-igreja strong {
-  font-size: 2.05cqw !important;
-  line-height: 1 !important;
-}
-
-.identidade-igreja span {
-  margin-top: 0.45cqw !important;
-  font-size: 1.15cqw !important;
-}
-
-.conteudo-frente {
-  grid-template-columns: 28% minmax(0, 1fr) !important;
-  gap: 4% !important;
-  align-items: center !important;
-  padding: 0.6% 0 0 !important;
-}
-
-.moldura-foto {
-  width: 100% !important;
-  height: auto !important;
-  max-height: none !important;
-  aspect-ratio: 3 / 4 !important;
-  align-self: center !important;
-  justify-self: stretch !important;
-  border-width: 0.45cqw !important;
-  border-radius: 1.2cqw !important;
-}
-
-.categoria-documento {
-  margin: 0 0 0.55cqw !important;
-  font-size: 1.02cqw !important;
-  line-height: 1 !important;
-}
-
-.dados-principais h2 {
-  margin: 0 0 1.05cqw !important;
-  font-size: 2.75cqw !important;
-  line-height: 0.98 !important;
-  -webkit-line-clamp: 2 !important;
-}
-
-.grade-dados-frente {
-  gap: 0.72cqw !important;
-}
-
-.campo-cartao {
-  min-height: 4.6cqw !important;
-  padding: 0.55cqw 0.9cqw !important;
-  border-left-width: 0.28cqw !important;
-}
-
-.campo-cartao span,
-.datas-cartao span {
-  margin-bottom: 0.18cqw !important;
-  font-size: 0.86cqw !important;
-  line-height: 1 !important;
-}
-
-.campo-cartao strong {
-  font-size: 1.28cqw !important;
-  line-height: 1.08 !important;
-}
-
-.rodape-frente {
-  grid-template-columns: 1fr 35% !important;
-  gap: 3.5% !important;
-  align-items: end !important;
-  padding-top: 0.4% !important;
-}
-
-.datas-cartao {
-  gap: 2.2cqw !important;
-}
-
-.datas-cartao strong {
-  font-size: 1.12cqw !important;
-}
-
-.assinatura-cartao {
-  width: 100% !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  transform: none !important;
-}
-
-.imagem-assinatura {
-  width: 88% !important;
-  height: 4.2cqw !important;
-  object-fit: contain !important;
-}
-
-.nome-pastor-assinatura {
-  font-size: 0.95cqw !important;
-}
-
-.cargo-pastor-assinatura {
-  font-size: 0.76cqw !important;
-}
-
-/* Verso */
-.cartao-verso {
-  grid-template-rows: 18% 61% 11% 10% !important;
-  padding: 3.6% 4.4% 3.2% !important;
-}
-
-.cabecalho-verso {
-  min-height: 0 !important;
-  padding: 0 !important;
-}
-
-.cabecalho-verso strong {
-  font-size: 2.05cqw !important;
-}
-
-.cabecalho-verso span {
-  margin-top: 0.4cqw !important;
-  font-size: 1.12cqw !important;
-}
-
+/* Verso institucional: quadro mais largo e QR menor. */
 .conteudo-verso {
-  grid-template-columns: minmax(0, 1fr) 24% !important;
-  gap: 3.6% !important;
-  align-items: center !important;
-  padding: 0.8% 0 0 !important;
+  grid-template-columns: minmax(0, 1fr) 21% !important;
+  gap: 3% !important;
 }
 
-.dados-verso {
-  gap: 0.7cqw !important;
+.dados-verso-institucional {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  min-width: 0;
 }
 
-.campo-verso,
-.campo-verso-familia {
-  min-height: 4.75cqw !important;
-  padding: 0.55cqw 0.85cqw !important;
-  border-radius: 0.75cqw !important;
+.dados-verso-institucional .campo-verso {
+  min-height: 38px;
 }
 
-.campo-verso span {
-  margin-bottom: 0.18cqw !important;
-  font-size: 0.84cqw !important;
+.campo-institucional-largo {
+  grid-column: 1 / -1;
 }
 
-.campo-verso strong {
-  font-size: 1.22cqw !important;
-  line-height: 1.08 !important;
+.campo-institucional-largo strong {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  -webkit-line-clamp: 2;
 }
 
 .qrcode {
-  width: 100% !important;
-  max-width: none !important;
-  border-width: 0.55cqw !important;
-  border-radius: 0.8cqw !important;
+  width: min(100%, 94px) !important;
 }
 
 .area-qrcode {
-  gap: 0.45cqw !important;
-  font-size: 0.8cqw !important;
+  align-self: center;
+  justify-self: center;
 }
 
-.versiculo-cartao {
-  margin: 0 !important;
-  align-self: center !important;
-  font-size: 0.9cqw !important;
-}
-
-.rodape-verso {
-  margin: 0 !important;
-  padding: 0 !important;
-  align-self: end !important;
-  font-size: 0.68cqw !important;
-}
-
-/* Pré-visualização: aparência real de cartão, sem ampliar o modelo. */
-.area-cartoes:not(.area-modelo-lote),
-.galeria-carteirinhas {
-  width: min(780px, 100%) !important;
-}
-
-.area-cartoes:not(.area-modelo-lote),
-.item-preview-carteirinha {
-  grid-template-columns: repeat(2, minmax(0, 370px)) !important;
-  gap: 18px !important;
-  justify-content: center !important;
-}
-
-.area-cartoes:not(.area-modelo-lote) .cartao,
-.item-preview-carteirinha img {
-  width: 100% !important;
-  max-width: 370px !important;
-}
-
-@media (max-width: 800px) {
-  .area-cartoes:not(.area-modelo-lote),
-  .item-preview-carteirinha {
-    grid-template-columns: 1fr !important;
+/* Mantém o cartão físico no tamanho oficial durante impressão. */
+@media print {
+  .cartao {
+    width: 85.6mm !important;
+    height: 53.98mm !important;
+    max-width: none !important;
   }
 }
 
@@ -1708,7 +1533,7 @@ body.modo-captura-pdf .cartao,
 
             <div class="grade-dados-frente">
               <div class="campo-cartao">
-                <span>Nº do membro</span>
+                <span>Nº da credencial</span>
                 <strong id="numeroMembroCarteirinha">—</strong>
               </div>
 
@@ -1717,12 +1542,17 @@ body.modo-captura-pdf .cartao,
                 <strong id="batismoMembroCarteirinha">—</strong>
               </div>
 
-              <div class="campo-cartao campo-largo">
+              <div class="campo-cartao campo-cargo">
                 <span>Cargo / função</span>
                 <strong id="cargoMembroCarteirinha">Membro</strong>
               </div>
 
-              <div class="campo-cartao">
+              <div class="campo-cartao campo-congregacao-frente">
+                <span>Congregação</span>
+                <strong id="congregacaoFrenteCarteirinha">—</strong>
+              </div>
+
+              <div class="campo-cartao campo-situacao-frente">
                 <span>Situação</span>
                 <strong id="situacaoMembroCarteirinha">Ativo</strong>
               </div>
@@ -1768,30 +1598,25 @@ body.modo-captura-pdf .cartao,
         </header>
 
         <div class="conteudo-verso">
-          <div class="dados-verso">
-            <div class="campo-verso campo-verso-largo">
-              <span>Cidade da igreja</span>
-              <strong id="congregacaoCarteirinha">—</strong>
+          <div class="dados-verso dados-verso-institucional">
+            <div class="campo-verso campo-institucional-largo">
+              <span>CNPJ</span>
+              <strong>60.028.677/0001-71</strong>
             </div>
 
-            <div class="campo-verso">
-              <span>Estado civil</span>
-              <strong id="estadoCivilCarteirinha">—</strong>
+            <div class="campo-verso campo-institucional-largo">
+              <span>Sede</span>
+              <strong>Km 51 / Xerém</strong>
             </div>
 
-            <div class="campo-verso campo-verso-familia">
-              <span id="rotuloFamiliaCarteirinha">Cônjuge</span>
-              <strong id="familiaCarteirinha">—</strong>
+            <div class="campo-verso campo-institucional-largo">
+              <span>Pastor Presidente</span>
+              <strong>Rogério Lemos da Silva</strong>
             </div>
 
-            <div class="campo-verso campo-verso-documento">
-              <span>RG</span>
-              <strong id="rgCarteirinha">—</strong>
-            </div>
-
-            <div class="campo-verso campo-verso-documento">
-              <span>CPF</span>
-              <strong id="cpfCarteirinha">—</strong>
+            <div class="campo-verso campo-institucional-largo">
+              <span>Data de nascimento</span>
+              <strong id="nascimentoCarteirinha">—</strong>
             </div>
           </div>
 
@@ -2112,14 +1937,17 @@ function preencherCarteirinha(membro, idUrl) {
       "Nome não informado"
     );
 
-  const numero =
+  const numeroOriginal =
     primeiroValor(
-      membro.id,
+      membro.numeroCredencial,
       membro.numeroMembro,
       membro.matricula,
+      membro.id,
       idUrl,
       "—"
     );
+
+  const numero = formatarNumeroCredencial(numeroOriginal);
 
   const batismo =
     formatarDataCarteirinha(
@@ -2150,6 +1978,15 @@ function preencherCarteirinha(membro, idUrl) {
         membro.cidadeIgreja,
         membro.igreja,
         "Não informada"
+      )
+    );
+
+  const nascimento =
+    formatarDataCarteirinha(
+      primeiroValor(
+        membro.dataNascimento,
+        membro.nascimento,
+        membro.dataDeNascimento
       )
     );
 
@@ -2229,8 +2066,13 @@ function preencherCarteirinha(membro, idUrl) {
   );
 
   definirTexto(
-    "congregacaoCarteirinha",
+    "congregacaoFrenteCarteirinha",
     congregacao
+  );
+
+  definirTexto(
+    "nascimentoCarteirinha",
+    nascimento
   );
 
   definirTexto(
@@ -2745,6 +2587,25 @@ function primeiroValor(...valores) {
   return "";
 }
 
+function formatarNumeroCredencial(valor) {
+  const texto = String(valor || "").trim();
+
+  if (!texto || texto === "—") {
+    return "—";
+  }
+
+  const somenteNumeros = texto.replace(/\D/g, "");
+
+  if (!somenteNumeros) {
+    return texto;
+  }
+
+  const numeroSemZeros = String(Number(somenteNumeros));
+  const numeroFinal = numeroSemZeros.padStart(3, "0");
+
+  return "VR-" + numeroFinal;
+}
+
 function formatarDataCarteirinha(valor) {
   if (!valor) {
     return "—";
@@ -2974,7 +2835,7 @@ function ajustarTodosOsTextosCarteirinha() {
       maxLinhas: 2
     },
     {
-      id: "congregacaoCarteirinha",
+      id: "congregacaoFrenteCarteirinha",
       fonteMaxima: 13,
       fonteMinima: 8,
       maxLinhas: 2
