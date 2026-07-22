@@ -25,23 +25,27 @@
   width: 297mm;
   height: 210mm;
   overflow: hidden;
-  background-color: #ffffff;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background: #ffffff;
   box-shadow: 0 8px 28px rgba(15, 23, 42, 0.18);
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }
 
-.certificado-impressao[data-tipo="consagracao"] {
-  background-image: url("../certificados/modelos/certificado-consagracao.png");
+/* Arte oficial do certificado */
+.certificado-modelo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
 }
 
-.certificado-impressao[data-tipo="batismo"] {
-  background-image: url("../certificados/modelos/certificado-batismo.png");
-}
-
+/* Campos dinâmicos */
 .certificado-campo {
   position: absolute;
   z-index: 2;
@@ -97,6 +101,7 @@
   text-transform: uppercase;
 }
 
+/* QR Code */
 .certificado-qrcode {
   position: absolute;
   z-index: 3;
@@ -120,6 +125,7 @@
   object-fit: contain;
 }
 
+/* Assinatura do Pastor Presidente */
 .certificado-assinatura {
   position: absolute;
   z-index: 3;
@@ -131,10 +137,12 @@
   object-position: center bottom;
 }
 
+/* Batismo não possui cargo */
 .certificado-impressao[data-tipo="batismo"] .certificado-cargo {
   display: none;
 }
 
+/* Visualização em telas menores */
 @media screen and (max-width: 1250px) {
   .area-certificado-impressao {
     justify-content: flex-start;
@@ -145,6 +153,7 @@
   }
 }
 
+/* Configuração da página impressa */
 @page {
   size: A4 landscape;
   margin: 0;
@@ -195,6 +204,13 @@
     page-break-after: avoid !important;
     page-break-before: avoid !important;
     page-break-inside: avoid !important;
+  }
+
+  body.imprimindo-certificado .certificado-modelo {
+    display: block !important;
+    width: 297mm !important;
+    height: 210mm !important;
+    object-fit: fill !important;
   }
 
   body.imprimindo-certificado .nao-imprimir {
