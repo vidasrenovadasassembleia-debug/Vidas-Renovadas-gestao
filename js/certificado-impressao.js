@@ -186,3 +186,20 @@ window.addEventListener("resize", () => {
       );
     });
 });
+function ajustarTexto(elemento, tamanhoInicial, tamanhoMinimo) {
+
+    if (!elemento) return;
+
+    let tamanho = tamanhoInicial;
+
+    elemento.style.fontSize = `${tamanho}px`;
+
+    while (
+        elemento.scrollWidth > elemento.clientWidth &&
+        tamanho > tamanhoMinimo
+    ) {
+        tamanho -= 0.5;
+        elemento.style.fontSize = `${tamanho}px`;
+    }
+
+}
