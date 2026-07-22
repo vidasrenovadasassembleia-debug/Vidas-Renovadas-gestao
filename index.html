@@ -1,430 +1,131 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <title>Certificados | Vidas Renovadas Gestão</title>
+  <meta
+    name="description"
+    content="Sistema de gestão da Assembleia de Deus Ministério Vidas Renovadas."
+  >
 
-  <link rel="stylesheet" href="../css/estilo.css">
-  <link rel="stylesheet" href="../css/certificados.css">
+  <meta name="theme-color" content="#173f35">
+
+  <title>Entrar | Vidas Renovadas Gestão</title>
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="logo.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/estilo.css?v=20"
+  >
+
+  <script
+    src="https://accounts.google.com/gsi/client"
+    async
+    defer
+  ></script>
 </head>
 
-<body class="dashboard-page certificados-page">
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <img
-        class="sidebar-logo"
-        src="../logo.png"
-        alt="Logo da igreja"
-      >
-
-      <div>
-        <strong>Vidas Renovadas</strong>
-        <span>Projeto Neemias</span>
-      </div>
-    </div>
-
-    <nav class="sidebar-menu">
-      <a href="../dashboard.html">Dashboard</a>
-      <a href="../membros.html">Membros</a>
-      <a href="#" aria-disabled="true">Famílias</a>
-      <a href="../carteirinha.html">Carteirinhas</a>
-      <a class="active" href="index.html">Certificados</a>
-      <a href="#" aria-disabled="true">Congregações</a>
-      <a href="#" aria-disabled="true">Relatórios</a>
-      <a href="../configuracoes.html">Configurações</a>
-    </nav>
-
-    <button
-      class="logout logout-button"
-      id="botaoSair"
-      type="button"
-    >
-      Sair
-    </button>
-  </aside>
-
-  <main class="dashboard-main certificados-main">
-    <header class="dashboard-header certificados-header">
-      <div>
-        <p class="dashboard-label">Documentos e cerimônias</p>
-        <h1>Certificados</h1>
-      </div>
-
-      <div class="user-box">Usuário</div>
-    </header>
-
-    <div
-      class="mensagem-modulo"
-      id="mensagemModulo"
-      hidden
-    ></div>
-
-    <nav
-      class="abas-certificados"
-      aria-label="Tipos de certificado"
-    >
-      <button
-        class="aba-certificado active"
-        data-aba="consagracao"
-        type="button"
-      >
-        Consagração
-      </button>
-
-      <button
-        class="aba-certificado"
-        data-aba="batismo"
-        type="button"
-      >
-        Batismo
-      </button>
-
-      <button
-        class="aba-certificado"
-        data-aba="historico"
-        type="button"
-      >
-        Histórico
-      </button>
-    </nav>
-
-    <!-- CERTIFICADO DE CONSAGRAÇÃO -->
+<body class="login-page" data-page="login">
+  <main class="login-layout">
     <section
-      class="painel-certificado active"
-      data-painel="consagracao"
+      class="login-card"
+      aria-labelledby="tituloLogin"
     >
-      <div class="grade-certificado">
-        <form
-          class="cartao-formulario"
-          id="formConsagracao"
+      <div class="login-brand">
+        <img
+          class="login-logo"
+          src="logo.png"
+          alt="Logo da Assembleia de Deus Ministério Vidas Renovadas"
+          width="160"
+          height="160"
         >
-          <div class="titulo-secao">
-            <div>
-              <span>Certificado ministerial</span>
-              <h2>Consagração</h2>
-            </div>
-          </div>
 
-          <label class="campo campo-largo">
-            Pesquisar membro
+        <div class="login-brand-text">
+          <p class="login-kicker">
+            Assembleia de Deus
+          </p>
 
-            <div class="linha-pesquisa">
-              <input
-                id="pesquisaMembro"
-                type="search"
-                placeholder="Nome ou número da carteirinha"
-              >
+          <h1 id="tituloLogin">
+            Vidas Renovadas Gestão
+          </h1>
 
-              <button
-                id="botaoPesquisarMembro"
-                type="button"
-              >
-                Pesquisar
-              </button>
-            </div>
-          </label>
-
-          <div
-            class="resultados-membros"
-            id="resultadosMembros"
-            hidden
-          ></div>
-
-          <input
-            name="idMembro"
-            type="hidden"
-          >
-
-          <input
-            name="numeroCarteirinha"
-            type="hidden"
-          >
-
-          <div class="grade-campos">
-            <label class="campo campo-largo">
-              Nome do membro
-
-              <input
-                name="nome"
-                type="text"
-                readonly
-                required
-              >
-            </label>
-
-            <label class="campo">
-              Cargo da consagração
-
-              <select
-                name="cargo"
-                required
-              >
-                <option value="">Selecione</option>
-              </select>
-            </label>
-
-            <label class="campo">
-              Data da consagração
-
-              <input
-                name="dataCerimonia"
-                type="date"
-                required
-              >
-            </label>
-
-            <label class="campo">
-              Congregação
-
-              <input
-                name="congregacao"
-                type="text"
-              >
-            </label>
-
-            <label class="campo">
-              Local da cerimônia
-
-              <input
-                name="local"
-                type="text"
-                required
-              >
-            </label>
-
-            <label class="campo campo-largo">
-              Pastor responsável
-
-              <input
-                name="pastor"
-                type="text"
-                required
-              >
-            </label>
-
-            <label class="campo campo-largo">
-              Observações
-
-              <textarea
-                name="observacoes"
-                rows="3"
-              ></textarea>
-            </label>
-          </div>
-
-          <div class="acoes-formulario">
-            <button
-              class="botao-secundario"
-              data-visualizar="consagracao"
-              type="button"
-            >
-              Visualizar
-            </button>
-
-            <button
-              class="botao-principal"
-              type="submit"
-            >
-              Registrar e imprimir
-            </button>
-          </div>
-        </form>
-
-        <div class="area-preview">
-          <div
-            class="folha-certificado"
-            id="previewConsagracao"
-          ></div>
+          <p class="login-subtitle">
+            Ministério Vidas Renovadas
+          </p>
         </div>
       </div>
-    </section>
 
-    <!-- CERTIFICADO DE BATISMO -->
-    <section
-      class="painel-certificado"
-      data-painel="batismo"
-    >
-      <div class="grade-certificado">
-        <form
-          class="cartao-formulario"
-          id="formBatismo"
-        >
-          <div class="titulo-secao">
-            <div>
-              <span>Certificado cristão</span>
-              <h2>Batismo</h2>
-            </div>
-          </div>
+      <div class="login-content">
+        <h2>Acesso ao sistema</h2>
 
-          <label class="campo campo-largo">
-            Pesquisar membro
+        <p>
+          Entre com a conta Google autorizada pela administração da igreja.
+        </p>
 
-            <div class="linha-pesquisa">
-              <input
-                id="pesquisaMembroBatismo"
-                type="search"
-                placeholder="Nome ou número da carteirinha"
-              >
+        <div
+          id="googleButton"
+          class="google-login-button"
+          aria-label="Entrar com Google"
+        ></div>
 
-              <button
-                id="botaoPesquisarMembroBatismo"
-                type="button"
-              >
-                Pesquisar
-              </button>
-            </div>
-          </label>
+        <p
+          id="mensagemLogin"
+          class="mensagem-login"
+          role="status"
+          aria-live="polite"
+        ></p>
 
-          <div
-            class="resultados-membros"
-            id="resultadosMembrosBatismo"
-            hidden
-          ></div>
-
-          <input
-            name="idMembro"
-            type="hidden"
-          >
-
-          <input
-            name="numeroCarteirinha"
-            type="hidden"
-          >
-
-          <div class="grade-campos">
-            <label class="campo campo-largo">
-              Nome do membro
-
-              <input
-                name="nome"
-                type="text"
-                readonly
-                required
-              >
-            </label>
-
-            <label class="campo">
-              Data do batismo
-
-              <input
-                name="dataCerimonia"
-                type="date"
-                required
-              >
-            </label>
-
-            <label class="campo">
-              Congregação
-
-              <input
-                name="congregacao"
-                type="text"
-              >
-            </label>
-
-            <label class="campo">
-              Local do batismo
-
-              <input
-                name="local"
-                type="text"
-                required
-              >
-            </label>
-
-            <label class="campo">
-              Pastor responsável
-
-              <input
-                name="pastor"
-                type="text"
-                required
-              >
-            </label>
-
-            <label class="campo campo-largo">
-              Observações
-
-              <textarea
-                name="observacoes"
-                rows="3"
-              ></textarea>
-            </label>
-          </div>
-
-          <div class="acoes-formulario">
-            <button
-              class="botao-secundario"
-              data-visualizar="batismo"
-              type="button"
-            >
-              Visualizar
-            </button>
-
-            <button
-              class="botao-principal"
-              type="submit"
-            >
-              Registrar e imprimir
-            </button>
-          </div>
-        </form>
-
-        <div class="area-preview">
-          <div
-            class="folha-certificado"
-            id="previewBatismo"
-          ></div>
-        </div>
+        <noscript>
+          <p class="mensagem-login mensagem-erro">
+            Para acessar o sistema, habilite o JavaScript no navegador.
+          </p>
+        </noscript>
       </div>
+
+      <footer class="login-footer">
+        <blockquote>
+          “Tudo quanto fizerdes, fazei-o de todo o coração, como ao Senhor.”
+        </blockquote>
+
+        <cite>Colossenses 3:23</cite>
+
+        <p>
+          © <span id="anoAtual"></span>
+          Assembleia de Deus Ministério Vidas Renovadas
+        </p>
+      </footer>
     </section>
-
-    <!-- HISTÓRICO -->
-    <section
-      class="painel-certificado"
-      data-painel="historico"
-    >
-      <div class="cartao-formulario">
-        <div class="historico-cabecalho">
-          <div>
-            <span>Registro oficial</span>
-            <h2>Certificados emitidos</h2>
-          </div>
-
-          <input
-            id="filtroHistorico"
-            type="search"
-            placeholder="Filtrar por número ou nome"
-          >
-        </div>
-
-        <div class="tabela-responsiva">
-          <table>
-            <thead>
-              <tr>
-                <th>Número</th>
-                <th>Tipo</th>
-                <th>Nome</th>
-                <th>Data</th>
-                <th>Emitido por</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-
-            <tbody id="corpoHistorico"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <footer class="dashboard-footer">
-      Vidas Renovadas Gestão — Módulo de Certificados
-    </footer>
   </main>
 
-  <script src="../js/app.js?v=12"></script>
-  <script src="../js/certificados.js?v=2"></script>
+  <div
+    id="carregamentoGlobal"
+    class="carregamento-global"
+    role="status"
+    aria-live="polite"
+    hidden
+  >
+    <div class="carregamento-conteudo">
+      <span
+        class="carregamento-spinner"
+        aria-hidden="true"
+      ></span>
+
+      <p id="textoCarregamento">
+        Verificando acesso...
+      </p>
+    </div>
+  </div>
+
+  <script src="js/app.js?v=20" defer></script>
+  <script src="js/auth.js?v=1" defer></script>
 </body>
 </html>
