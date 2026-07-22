@@ -1,131 +1,500 @@
-/* ===================================================
-   CERTIFICADOS - VIDAS RENOVADAS GESTÃO
-   =================================================== */
+/* =========================================================
+   CERTIFICADOS — VIDAS RENOVADAS GESTÃO
+   Arquivo: css/certificados.css
+   ========================================================= */
 
-/* Layout principal */
-.certificados-main{
-    display:flex;
-    flex-direction:column;
-    gap:24px;
+.certificados-main {
+  min-width: 0;
 }
 
-.abas-certificados{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    margin-bottom:10px;
+.certificados-header {
+  margin-bottom: 16px;
 }
 
-.aba-certificado{
-    padding:10px 20px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600;
+.logout-button {
+  width: calc(100% - 32px);
+  margin: 0 16px 18px;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
 }
 
-.aba-certificado.active{
-    background:#0d6efd;
-    color:#fff;
+.mensagem-modulo {
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  font-weight: 700;
 }
 
-.painel-certificado{
-    display:none;
+.mensagem-modulo[data-tipo="success"] {
+  background: #e8f7ef;
+  color: #146c43;
 }
 
-.painel-certificado.active{
-    display:block;
+.mensagem-modulo[data-tipo="error"] {
+  background: #fdecec;
+  color: #a12b2b;
 }
 
-.grade-certificado{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:24px;
+.mensagem-modulo[data-tipo="info"] {
+  background: #eaf4fc;
+  color: #245f91;
+}
+
+/* Abas compactas em uma única linha */
+.abas-certificados {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 16px;
+  padding: 4px;
+  overflow-x: auto;
+  border: 1px solid #d8e0e5;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.aba-certificado {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #53636e;
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.aba-certificado:hover {
+  background: #edf3f6;
+  color: #082f49;
+}
+
+.aba-certificado.active {
+  background: #082f49;
+  color: #fff;
+}
+
+.painel-certificado {
+  display: none;
+}
+
+.painel-certificado.active {
+  display: block;
+}
+
+/* Formulário em cima e certificado embaixo */
+.grade-certificado {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
 }
 
 .cartao-formulario,
-.area-preview{
-    background:#fff;
-    border-radius:12px;
-    padding:24px;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
+.area-preview {
+  border: 1px solid #d8e0e5;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 25px rgba(8, 47, 73, .06);
 }
 
-.grade-campos{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:16px;
+.cartao-formulario {
+  padding: 20px;
 }
 
-.campo{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
+.area-preview {
+  position: static;
+  width: 100%;
+  padding: 18px;
+  overflow: auto;
 }
 
-.campo-largo{
-    grid-column:1/-1;
+.titulo-secao,
+.historico-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+
+.titulo-secao span,
+.historico-cabecalho span {
+  color: #b07b2b;
+  font-size: .75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.titulo-secao h2,
+.historico-cabecalho h2 {
+  margin: 3px 0 0;
+  color: #082f49;
+}
+
+/* Campos organizados em linha */
+.grade-campos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #344854;
+  font-size: .88rem;
+  font-weight: 800;
+}
+
+.campo-largo {
+  grid-column: span 2;
 }
 
 .campo input,
 .campo select,
-.campo textarea{
-    padding:10px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    font-size:14px;
+.campo textarea,
+.historico-cabecalho input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #cbd6dc;
+  border-radius: 8px;
+  padding: 10px 11px;
+  background: #fff;
+  color: #243740;
+  font: inherit;
 }
 
-.linha-pesquisa{
-    display:flex;
-    gap:10px;
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus,
+.historico-cabecalho input:focus {
+  outline: 3px solid rgba(36, 95, 145, .15);
+  border-color: #245f91;
 }
 
-.resultados-membros{
-    margin:12px 0;
+.campo textarea {
+  min-height: 72px;
+  resize: vertical;
 }
 
-.acoes-formulario{
-    display:flex;
-    gap:12px;
-    margin-top:20px;
+.linha-pesquisa {
+  display: flex;
+  gap: 8px;
 }
 
+.linha-pesquisa input {
+  flex: 1;
+}
+
+.linha-pesquisa button,
 .botao-principal,
-.botao-secundario{
-    padding:10px 18px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600;
+.botao-secundario {
+  min-height: 40px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
 }
 
-.botao-principal{
-    background:#198754;
-    color:#fff;
+.linha-pesquisa button,
+.botao-principal {
+  background: #082f49;
+  color: #fff;
 }
 
-.botao-secundario{
-    background:#6c757d;
-    color:#fff;
+.botao-secundario {
+  background: #eef3f6;
+  color: #082f49;
 }
 
-.folha-certificado{
-    min-height:700px;
-    border:2px dashed #bbb;
-    border-radius:10px;
-    padding:30px;
-    background:#fafafa;
+.acoes-formulario {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 16px;
 }
 
-@media(max-width:900px){
+.resultados-membros {
+  margin: 8px 0 15px;
+  overflow: hidden;
+  border: 1px solid #d8e0e5;
+  border-radius: 10px;
+}
 
-    .grade-certificado{
-        grid-template-columns:1fr;
-    }
+.resultado-membro {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 13px;
+  border: 0;
+  border-bottom: 1px solid #e6ecef;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
 
-    .grade-campos{
-        grid-template-columns:1fr;
-    }
+.resultado-membro:last-child {
+  border-bottom: 0;
+}
 
+.resultado-membro:hover {
+  background: #f5f8fa;
+}
+
+.resultado-membro strong {
+  color: #082f49;
+}
+
+.resultado-membro span {
+  color: #667781;
+  font-size: .84rem;
+}
+
+
+.preview-cabecalho {
+  margin-bottom: 14px;
+}
+
+.preview-cabecalho span {
+  color: #b07b2b;
+  font-size: .75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.preview-cabecalho h3 {
+  margin: 3px 0 0;
+  color: #082f49;
+  font-size: 1.05rem;
+}
+
+/* Pré-visualização A4 abaixo do formulário */
+.folha-certificado {
+  width: 297mm;
+  min-height: 210mm;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 13mm;
+  border: 1px solid #d5d5d5;
+  background: #fff;
+  color: #18313f;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, .12);
+  font-family: Georgia, "Times New Roman", serif;
+  transform-origin: top center;
+}
+
+.cert-borda {
+  position: relative;
+  min-height: 184mm;
+  box-sizing: border-box;
+  padding: 9mm 12mm;
+  border: 3px double #b98a45;
+  text-align: center;
+}
+
+.cert-topo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.cert-logo {
+  max-width: 22mm;
+  max-height: 22mm;
+}
+
+.cert-igreja {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.cert-titulo {
+  margin: 12mm 0 2mm;
+  color: #0f2f48;
+  font-size: 34px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.cert-subtitulo {
+  color: #b07b2b;
+  font: 700 16px Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+}
+
+.cert-texto {
+  max-width: 235mm;
+  margin: 11mm auto 0;
+  font-size: 19px;
+  line-height: 1.65;
+}
+
+.cert-nome {
+  display: block;
+  margin: 5mm 0 3mm;
+  border-bottom: 1px solid #b98a45;
+  color: #0f2f48;
+  font-size: 31px;
+  font-weight: 700;
+}
+
+.cert-destaque {
+  color: #0f2f48;
+  font-weight: 700;
+}
+
+.cert-rodape {
+  display: flex;
+  justify-content: center;
+  gap: 34mm;
+  margin-top: 16mm;
+}
+
+.cert-assinatura {
+  width: 72mm;
+  padding-top: 2mm;
+  border-top: 1px solid #334a56;
+  font: 12px Arial, sans-serif;
+}
+
+.cert-assinatura img {
+  display: block;
+  max-width: 60mm;
+  max-height: 20mm;
+  margin: -19mm auto 1mm;
+  object-fit: contain;
+}
+
+.cert-numero {
+  position: absolute;
+  right: 8mm;
+  bottom: 5mm;
+  color: #5b6870;
+  font: 11px Arial, sans-serif;
+}
+
+.tabela-responsiva {
+  overflow: auto;
+}
+
+.tabela-responsiva table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela-responsiva th,
+.tabela-responsiva td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e2e8eb;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tabela-responsiva th {
+  color: #53636e;
+  font-size: .78rem;
+  text-transform: uppercase;
+}
+
+.botao-reimprimir {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #eef3f6;
+  color: #082f49;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.historico-vazio {
+  padding: 32px !important;
+  color: #71818a;
+  text-align: center;
+}
+
+@media (max-width: 1180px) {
+  .grade-campos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .folha-certificado {
+    transform: scale(.76);
+    margin-bottom: -50mm;
+  }
+}
+
+@media (max-width: 760px) {
+  .abas-certificados {
+    width: 100%;
+  }
+
+  .grade-campos {
+    grid-template-columns: 1fr;
+  }
+
+  .campo-largo {
+    grid-column: auto;
+  }
+
+  .linha-pesquisa,
+  .acoes-formulario {
+    flex-direction: column;
+  }
+
+  .folha-certificado {
+    transform: scale(.42);
+    margin-bottom: -120mm;
+  }
+
+  .historico-cabecalho {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .folha-certificado,
+  .folha-certificado * {
+    visibility: visible;
+  }
+
+  .folha-certificado {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 297mm;
+    min-height: 210mm;
+    border: 0;
+    box-shadow: none;
+    transform: none !important;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
 }
