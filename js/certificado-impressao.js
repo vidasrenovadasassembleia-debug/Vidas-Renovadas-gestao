@@ -212,12 +212,4 @@ function ajustarTexto(elemento, tamanhoInicial, tamanhoMinimo) {
 
 }
 
-    while (
-        elemento.scrollWidth > elemento.clientWidth &&
-        tamanho > tamanhoMinimo
-    ) {
-        tamanho -= 0.5;
-        elemento.style.fontSize = `${tamanho}px`;
-    }
-
-}
+    
