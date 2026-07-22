@@ -3,7 +3,7 @@
 /* =========================================================
    CERTIFICADO DE IMPRESSÃO — VIDAS RENOVADAS GESTÃO
    Arquivo: js/certificado-impressao.js
-   Preview e impressão usam exatamente a mesma estrutura.
+   Correção: cobre os placeholders da arte antes de inserir os dados.
    ========================================================= */
 
 const PASTOR_PRESIDENTE_CERTIFICADO = "Rogério Lemos da Silva";
@@ -28,19 +28,19 @@ function criarEstruturaCertificado(dados = {}) {
       aria-hidden="true"
     >
 
+    <div class="certificado-mascara mascara-nome"></div>
+    <div class="certificado-mascara mascara-cargo"></div>
+    <div class="certificado-mascara mascara-local-data"></div>
+    <div class="certificado-mascara mascara-numero"></div>
+    <div class="certificado-mascara mascara-qrcode"></div>
+    <div class="certificado-mascara mascara-pastor-nome"></div>
+
     <p class="certificado-campo certificado-nome" data-cert-campo="nome"></p>
     <p class="certificado-campo certificado-cargo" data-cert-campo="cargo"></p>
-    <p class="certificado-campo certificado-congregacao" data-cert-campo="congregacao"></p>
     <p class="certificado-campo certificado-local-data" data-cert-campo="localData"></p>
     <p class="certificado-campo certificado-numero" data-cert-campo="numero"></p>
 
     <div class="certificado-qrcode" data-cert-campo="qrcode"></div>
-
-    <img
-      class="certificado-assinatura"
-      data-cert-campo="assinatura"
-      alt="Assinatura do Pastor Presidente"
-    >
 
     <p class="certificado-pastor">
       <strong>${PASTOR_PRESIDENTE_CERTIFICADO}</strong>
@@ -56,34 +56,18 @@ function preencherEstruturaCertificado(folha, dados = {}) {
   const campo = (nome) =>
     folha.querySelector(`[data-cert-campo="${nome}"]`);
 
-  campo("nome").textContent = dados.nome || "NOME DO MEMBRO";
-  campo("cargo").textContent = dados.cargo || "Cargo ministerial";
-  campo("congregacao").textContent = dados.congregacao
-    ? `Congregação: ${dados.congregacao}`
-    : "Congregação";
+  campo("nome").textContent = dados.nome || "";
+  campo("cargo").textContent = dados.cargo || "";
 
   const local = dados.cidade || dados.local || "";
   const data = dados.dataExtenso || "";
 
   campo("localData").textContent =
-    [local, data].filter(Boolean).join(", ") ||
-    "Local e data da cerimônia";
+    [local, data].filter(Boolean).join(", ");
 
   campo("numero").textContent = dados.numero
     ? `REGISTRO Nº ${dados.numero}`
     : "PRÉ-VISUALIZAÇÃO";
-
-  const assinatura = campo("assinatura");
-  const caminhoAssinatura =
-    dados.assinatura ||
-    "../certificados/assinaturas/pastor-presidente.png";
-
-  if (caminhoAssinatura) {
-    assinatura.src = caminhoAssinatura;
-    assinatura.hidden = false;
-  } else {
-    assinatura.hidden = true;
-  }
 
   gerarQRCodeCertificado(
     campo("qrcode"),
@@ -102,18 +86,11 @@ function renderizarPreviewCertificado(alvo, dados) {
   moldura.className = "preview-certificado-escala";
 
   const certificado = criarEstruturaCertificado(dados);
+
   moldura.appendChild(certificado);
   alvo.appendChild(moldura);
 
   ajustarEscalaPreview(moldura, certificado);
-
-  const imagem = certificado.querySelector(".certificado-modelo");
-
-  imagem?.addEventListener(
-    "load",
-    () => ajustarEscalaPreview(moldura, certificado),
-    { once: true }
-  );
 }
 
 function ajustarEscalaPreview(moldura, certificado) {
@@ -128,8 +105,8 @@ function ajustarEscalaPreview(moldura, certificado) {
     return;
   }
 
-  const escala = larguraDisponivel / larguraBase;
-  certificado.style.transform = `scale(${escala})`;
+  certificado.style.transform =
+    `scale(${larguraDisponivel / larguraBase})`;
 }
 
 function abrirImpressaoCertificado(dados) {
@@ -146,7 +123,7 @@ function abrirImpressaoCertificado(dados) {
   const certificado = criarEstruturaCertificado(dados);
   area.appendChild(certificado);
 
-  const imagem = certificado.querySelector(".certificado-modelo");
+  const modelo = certificado.querySelector(".certificado-modelo");
 
   const imprimir = () => {
     document.body.classList.add("imprimindo-certificado");
@@ -160,19 +137,15 @@ function abrirImpressaoCertificado(dados) {
     });
   };
 
-  if (imagem?.complete) {
+  if (modelo?.complete) {
     imprimir();
   } else {
-    imagem?.addEventListener("load", imprimir, { once: true });
-
-    imagem?.addEventListener(
+    modelo?.addEventListener("load", imprimir, { once: true });
+    modelo?.addEventListener(
       "error",
-      () => {
-        alert(
-          "Não foi possível carregar a arte do certificado. " +
-          "Confira os arquivos em certificados/modelos."
-        );
-      },
+      () => alert(
+        "Não foi possível carregar a arte do certificado."
+      ),
       { once: true }
     );
   }
@@ -193,10 +166,7 @@ function gerarQRCodeCertificado(elemento, texto) {
   new QRCode(elemento, {
     text: texto || window.location.href,
     width: 150,
-    height: 150,
-    correctLevel: QRCode.CorrectLevel
-      ? QRCode.CorrectLevel.M
-      : undefined
+    height: 150
   });
 }
 
