@@ -1,23 +1,18 @@
 "use strict";
 
-/* ===================================================
+/* =========================================================
    CERTIFICADOS — VIDAS RENOVADAS GESTÃO
-   Arquivo: js/certificados.js
-   =================================================== */
+   Arquivo oficial: js/certificados.js
+   ========================================================= */
 
 const ESTADO_CERTIFICADOS = {
   configuracoes: {},
   arquivos: {},
   cargos: [],
   historico: [],
-  certificadoAtual: null
+  certificadoAtual: null,
+  tipoEmImpressao: null
 };
-
-const PASTOR_PRESIDENTE = "Rogério Lemos da Silva";
-const CONGREGACOES_CERTIFICADOS = [
-  "Independência / Petrópolis",
-  "Km51 / Xerém"
-];
 
 const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
 const $$ = (seletor, raiz = document) =>
@@ -26,12 +21,30 @@ const $$ = (seletor, raiz = document) =>
 document.addEventListener("DOMContentLoaded", iniciarModuloCertificados);
 
 async function iniciarModuloCertificados() {
-  aplicarIdentidadeUsuario();
-  garantirOpcoesCongregacao();
+  const sessao =
+    typeof obterSessao === "function"
+      ? obterSessao()
+      : null;
+
+  if (!sessao || !sessao.credential) {
+    window.location.replace("../index.html");
+    return;
+  }
+
+  if (typeof aplicarIdentidadeUsuario === "function") {
+    aplicarIdentidadeUsuario();
+  }
+
   configurarEventos();
+
   await carregarDadosIniciais();
+
   atualizarTodasPreviews();
 }
+
+/* =========================================================
+   EVENTOS
+   ========================================================= */
 
 function configurarEventos() {
   $$(".aba-certificado").forEach((botao) => {
@@ -41,7 +54,10 @@ function configurarEventos() {
   });
 
   $("#botaoSair")?.addEventListener("click", () => {
-    sessionStorage.removeItem(CHAVE_SESSAO);
+    if (typeof CHAVE_SESSAO !== "undefined") {
+      sessionStorage.removeItem(CHAVE_SESSAO);
+    }
+
     window.location.href = "../index.html";
   });
 
@@ -61,20 +77,20 @@ function configurarEventos() {
     tipoPreview: "batismo"
   });
 
-  ["#formConsagracao", "#formBatismo"].forEach((seletor) => {
-    const formulario = $(seletor);
+  $("#formConsagracao")?.addEventListener("input", () => {
+    atualizarPreview("consagracao");
+  });
 
-    formulario?.addEventListener("input", () => {
-      atualizarPreview(
-        seletor === "#formConsagracao" ? "consagracao" : "batismo"
-      );
-    });
+  $("#formConsagracao")?.addEventListener("change", () => {
+    atualizarPreview("consagracao");
+  });
 
-    formulario?.addEventListener("change", () => {
-      atualizarPreview(
-        seletor === "#formConsagracao" ? "consagracao" : "batismo"
-      );
-    });
+  $("#formBatismo")?.addEventListener("input", () => {
+    atualizarPreview("batismo");
+  });
+
+  $("#formBatismo")?.addEventListener("change", () => {
+    atualizarPreview("batismo");
   });
 
   $("#formConsagracao")?.addEventListener("submit", (evento) => {
@@ -92,25 +108,8 @@ function configurarEventos() {
   });
 
   $("#filtroHistorico")?.addEventListener("input", renderizarHistorico);
-}
 
-function garantirOpcoesCongregacao() {
-  $$("select[name='congregacao']").forEach((select) => {
-    const valorAtual = select.value;
-
-    select.innerHTML = '<option value="">Selecione</option>';
-
-    CONGREGACOES_CERTIFICADOS.forEach((congregacao) => {
-      const opcao = document.createElement("option");
-      opcao.value = congregacao;
-      opcao.textContent = congregacao;
-      select.appendChild(opcao);
-    });
-
-    if (CONGREGACOES_CERTIFICADOS.includes(valorAtual)) {
-      select.value = valorAtual;
-    }
-  });
+  window.addEventListener("afterprint", limparEstadoImpressao);
 }
 
 function configurarPesquisaMembro(configuracao) {
@@ -129,19 +128,30 @@ function configurarPesquisaMembro(configuracao) {
   });
 }
 
+/* =========================================================
+   CARREGAMENTO INICIAL
+   ========================================================= */
+
 async function carregarDadosIniciais() {
   definirMensagem("Carregando dados do módulo...", "info");
 
   try {
     const [dados, historico] = await Promise.all([
-      chamarApi({ acao: "obterDadosCertificados" }),
-      chamarApi({ acao: "listarCertificados" })
+      chamarApi({
+        acao: "obterDadosCertificados"
+      }),
+      chamarApi({
+        acao: "listarCertificados"
+      })
     ]);
 
     ESTADO_CERTIFICADOS.configuracoes = dados.configuracoes || {};
     ESTADO_CERTIFICADOS.arquivos = dados.arquivos || {};
-    ESTADO_CERTIFICADOS.cargos = dados.cargos || [];
-    ESTADO_CERTIFICADOS.historico = historico.certificados || [];
+    ESTADO_CERTIFICADOS.cargos = Array.isArray(dados.cargos)
+      ? dados.cargos
+      : [];
+    ESTADO_CERTIFICADOS.historico =
+      historico.certificados || [];
 
     preencherCargos();
     preencherPadroes();
@@ -151,12 +161,16 @@ async function carregarDadosIniciais() {
 
     setTimeout(() => {
       const mensagem = $("#mensagemModulo");
-      if (mensagem) {
+
+      if (mensagem?.dataset.tipo === "success") {
         mensagem.hidden = true;
       }
     }, 1800);
   } catch (erro) {
-    definirMensagem(erro.message, "error");
+    definirMensagem(
+      erro?.message || "Não foi possível carregar o módulo de certificados.",
+      "error"
+    );
   }
 }
 
@@ -167,14 +181,76 @@ function preencherCargos() {
     return;
   }
 
+  const valorAtual = select.value;
+
   select.innerHTML = '<option value="">Selecione</option>';
 
-  ESTADO_CERTIFICADOS.cargos.forEach((cargo) => {
+  ESTADO_CERTIFICADOS.cargos.forEach((item) => {
+    const cargo = normalizarCargo(item);
+
+    if (!cargo.valor || !cargo.texto) {
+      return;
+    }
+
     const opcao = document.createElement("option");
-    opcao.value = cargo;
-    opcao.textContent = cargo;
+
+    opcao.value = cargo.valor;
+    opcao.textContent = cargo.texto;
+
     select.appendChild(opcao);
   });
+
+  if (
+    valorAtual &&
+    Array.from(select.options).some(
+      (opcao) => opcao.value === valorAtual
+    )
+  ) {
+    select.value = valorAtual;
+  }
+}
+
+function normalizarCargo(item) {
+  if (typeof item === "string" || typeof item === "number") {
+    const valor = String(item).trim();
+
+    return {
+      valor,
+      texto: valor
+    };
+  }
+
+  if (!item || typeof item !== "object") {
+    return {
+      valor: "",
+      texto: ""
+    };
+  }
+
+  const texto = String(
+    item.nome ||
+    item.cargo ||
+    item.descricao ||
+    item.titulo ||
+    item.label ||
+    item.valor ||
+    item.value ||
+    ""
+  ).trim();
+
+  const valor = String(
+    item.valor ||
+    item.value ||
+    item.nome ||
+    item.cargo ||
+    item.id ||
+    texto
+  ).trim();
+
+  return {
+    valor,
+    texto
+  };
 }
 
 function preencherPadroes() {
@@ -185,54 +261,67 @@ function preencherPadroes() {
       return;
     }
 
-    const localPadrao = [
+    formulario.elements.pastor.value =
+      configuracoes.pastorPresidente ||
+      configuracoes.pastorLocal ||
+      "";
+
+    formulario.elements.local.value = [
       configuracoes.cidadeIgreja,
       configuracoes.estadoIgreja
     ]
       .filter(Boolean)
       .join(" - ");
 
-    if (formulario.elements.local && !formulario.elements.local.value) {
-      formulario.elements.local.value = localPadrao;
-    }
-
-    const congregacaoPadrao = configuracoes.congregacaoPadrao || "";
-
-    if (
-      formulario.elements.congregacao &&
-      CONGREGACOES_CERTIFICADOS.includes(congregacaoPadrao)
-    ) {
-      formulario.elements.congregacao.value = congregacaoPadrao;
-    }
+    formulario.elements.congregacao.value =
+      configuracoes.congregacaoPadrao || "";
   });
 }
 
+/* =========================================================
+   ABAS
+   ========================================================= */
+
 function abrirAba(aba) {
   $$(".aba-certificado").forEach((botao) => {
-    botao.classList.toggle("active", botao.dataset.aba === aba);
+    botao.classList.toggle(
+      "active",
+      botao.dataset.aba === aba
+    );
   });
 
   $$(".painel-certificado").forEach((painel) => {
-    painel.classList.toggle("active", painel.dataset.painel === aba);
+    painel.classList.toggle(
+      "active",
+      painel.dataset.painel === aba
+    );
   });
 
   if (aba === "historico") {
     renderizarHistorico();
-  } else {
-    atualizarPreview(aba);
   }
 }
 
+/* =========================================================
+   PESQUISA E SELEÇÃO DE MEMBROS
+   ========================================================= */
+
 async function pesquisarMembro(configuracao) {
   const campo = $(configuracao.campoPesquisa);
+  const botao = $(configuracao.botaoPesquisa);
   const termo = campo?.value.trim() || "";
 
   if (termo.length < 2) {
     definirMensagem("Digite pelo menos 2 caracteres.", "error");
+    campo?.focus();
     return;
   }
 
   definirMensagem("Pesquisando membro...", "info");
+
+  if (botao) {
+    botao.disabled = true;
+  }
 
   try {
     const resposta = await chamarApi({
@@ -241,14 +330,24 @@ async function pesquisarMembro(configuracao) {
     });
 
     const membros = resposta.membros || [];
+
     mostrarResultadosMembros(membros, configuracao);
 
     definirMensagem(
-      `${membros.length} resultado(s) encontrado(s).`,
-      "success"
+      membros.length
+        ? `${membros.length} resultado(s) encontrado(s).`
+        : "Nenhum membro encontrado.",
+      membros.length ? "success" : "info"
     );
   } catch (erro) {
-    definirMensagem(erro.message, "error");
+    definirMensagem(
+      erro?.message || "Não foi possível pesquisar os membros.",
+      "error"
+    );
+  } finally {
+    if (botao) {
+      botao.disabled = false;
+    }
   }
 }
 
@@ -274,13 +373,30 @@ function mostrarResultadosMembros(membros, configuracao) {
     botao.type = "button";
     botao.className = "resultado-membro";
 
+    const nome =
+      membro.nomeCompleto ||
+      membro.nome ||
+      "Membro sem nome";
+
+    const numero =
+      membro.numeroCarteirinha ||
+      membro.numero ||
+      membro.id ||
+      "";
+
+    const congregacao =
+      membro.congregacao ||
+      membro.nomeCongregacao ||
+      "Sem congregação";
+
     botao.innerHTML = `
       <span>
-        <strong>${esc(membro.nomeCompleto)}</strong><br>
-        ${esc(membro.congregacao || "Sem congregação")}
+        <strong>${esc(nome)}</strong><br>
+        ${esc(congregacao)}
       </span>
+
       <span>
-        ${esc(membro.numeroCarteirinha || membro.id)}<br>
+        ${esc(numero)}<br>
         ${esc(membro.situacao || "")}
       </span>
     `;
@@ -302,14 +418,32 @@ function selecionarMembro(membro, configuracao) {
     return;
   }
 
-  formulario.elements.idMembro.value = membro.id || "";
+  const nome =
+    membro.nomeCompleto ||
+    membro.nome ||
+    "";
+
+  const numeroCarteirinha =
+    membro.numeroCarteirinha ||
+    membro.numero ||
+    "";
+
+  const congregacao =
+    membro.congregacao ||
+    membro.nomeCongregacao ||
+    "";
+
+  formulario.elements.idMembro.value =
+    membro.id ||
+    membro.idMembro ||
+    "";
+
   formulario.elements.numeroCarteirinha.value =
-    membro.numeroCarteirinha || "";
-  formulario.elements.nome.value = membro.nomeCompleto || "";
+    numeroCarteirinha;
 
-  const congregacao = normalizarCongregacao(membro.congregacao);
+  formulario.elements.nome.value = nome;
 
-  if (congregacao && formulario.elements.congregacao) {
+  if (congregacao) {
     formulario.elements.congregacao.value = congregacao;
   }
 
@@ -319,47 +453,48 @@ function selecionarMembro(membro, configuracao) {
 
   if (campoPesquisa) {
     campoPesquisa.value =
-      membro.nomeCompleto || membro.numeroCarteirinha || "";
+      numeroCarteirinha ||
+      nome;
   }
 
   atualizarPreview(configuracao.tipoPreview);
+
+  definirMensagem(
+    `${nome || "Membro"} selecionado com sucesso.`,
+    "success"
+  );
 }
 
-function normalizarCongregacao(valor) {
-  const texto = normalizar(valor);
-
-  if (
-    texto.includes("independencia") ||
-    texto.includes("petropolis")
-  ) {
-    return "Independência / Petrópolis";
-  }
-
-  if (
-    texto.includes("km51") ||
-    texto.includes("km 51") ||
-    texto.includes("xerem")
-  ) {
-    return "Km51 / Xerém";
-  }
-
-  return "";
-}
+/* =========================================================
+   DADOS DO FORMULÁRIO
+   ========================================================= */
 
 function obterDadosFormulario(formulario, tipo) {
   const dadosFormulario = new FormData(formulario);
   const dados = Object.fromEntries(dadosFormulario.entries());
 
   dados.tipo = tipo;
-  dados.pastor = PASTOR_PRESIDENTE;
+
+  Object.keys(dados).forEach((chave) => {
+    if (typeof dados[chave] === "string") {
+      dados[chave] = dados[chave].trim();
+    }
+  });
 
   return dados;
 }
+
+/* =========================================================
+   REGISTRO E IMPRESSÃO
+   ========================================================= */
 
 async function registrarEImprimir(evento, tipo) {
   evento.preventDefault();
 
   const formulario = evento.currentTarget;
+  const botaoEnviar = formulario.querySelector(
+    'button[type="submit"]'
+  );
 
   if (!formulario.reportValidity()) {
     return;
@@ -377,40 +512,100 @@ async function registrarEImprimir(evento, tipo) {
 
   definirMensagem("Registrando certificado...", "info");
 
+  if (botaoEnviar) {
+    botaoEnviar.disabled = true;
+  }
+
   try {
     const resposta = await chamarApi({
       acao: "emitirCertificado",
       dados
     });
 
-    dados.numero = resposta.certificado.numero;
-    dados.linkDigital =
-      resposta.certificado.linkDigital ||
-      resposta.certificado.urlDigital ||
-      resposta.certificado.link ||
-      "";
+    const certificadoRegistrado =
+      resposta.certificado || {};
 
-    ESTADO_CERTIFICADOS.certificadoAtual = dados;
+    const dadosCompletos = {
+      ...dados,
+      ...certificadoRegistrado,
+      numero:
+        certificadoRegistrado.numero ||
+        dados.numero ||
+        ""
+    };
 
-    atualizarPreview(
-      tipo === "CONSAGRACAO" ? "consagracao" : "batismo",
-      dados
-    );
+    ESTADO_CERTIFICADOS.certificadoAtual = dadosCompletos;
+
+    const tipoPreview =
+      tipo === "CONSAGRACAO"
+        ? "consagracao"
+        : "batismo";
+
+    atualizarPreview(tipoPreview, dadosCompletos);
 
     definirMensagem(
-      `${dados.numero} registrado com sucesso.`,
+      `${dadosCompletos.numero || "Certificado"} registrado com sucesso.`,
       "success"
     );
 
     await recarregarHistorico();
 
-    setTimeout(() => {
-      abrirImpressaoCertificado(montarDadosImpressao(dados));
-    }, 250);
+    imprimirCertificado(tipoPreview);
   } catch (erro) {
-    definirMensagem(erro.message, "error");
+    definirMensagem(
+      erro?.message || "Não foi possível registrar o certificado.",
+      "error"
+    );
+  } finally {
+    if (botaoEnviar) {
+      botaoEnviar.disabled = false;
+    }
   }
 }
+
+function imprimirCertificado(tipo) {
+  const alvo =
+    tipo === "consagracao"
+      ? $("#previewConsagracao")
+      : $("#previewBatismo");
+
+  if (!alvo || !alvo.innerHTML.trim()) {
+    definirMensagem(
+      "Gere a pré-visualização antes de imprimir.",
+      "error"
+    );
+    return;
+  }
+
+  ESTADO_CERTIFICADOS.tipoEmImpressao = tipo;
+
+  document.body.dataset.imprimindoCertificado = tipo;
+
+  $$(".folha-certificado").forEach((folha) => {
+    folha.classList.toggle(
+      "certificado-para-impressao",
+      folha === alvo
+    );
+  });
+
+  setTimeout(() => {
+    window.print();
+  }, 250);
+}
+
+function limparEstadoImpressao() {
+  ESTADO_CERTIFICADOS.tipoEmImpressao = null;
+
+  delete document.body.dataset.imprimindoCertificado;
+
+  $$(".folha-certificado").forEach((folha) => {
+    folha.classList.remove("certificado-para-impressao");
+  });
+}
+
+/* =========================================================
+   PRÉ-VISUALIZAÇÃO
+   ========================================================= */
 
 function atualizarTodasPreviews() {
   atualizarPreview("consagracao");
@@ -436,11 +631,133 @@ function atualizarPreview(tipo, dadosForcados) {
     dadosForcados ||
     obterDadosFormulario(
       formulario,
-      consagracao ? "CONSAGRACAO" : "BATISMO"
+      consagracao
+        ? "CONSAGRACAO"
+        : "BATISMO"
     );
 
-  renderizarPreviewCertificado(alvo, montarDadosImpressao(dados));
+  alvo.innerHTML = montarCertificado(dados);
 }
+
+function montarCertificado(dados) {
+  const configuracoes = ESTADO_CERTIFICADOS.configuracoes;
+  const arquivos = ESTADO_CERTIFICADOS.arquivos;
+
+  const igreja =
+    configuracoes.nomeIgreja ||
+    "Assembleia de Deus Ministério Vidas Renovadas";
+
+  const caminhoLogo =
+    arquivos.logo ||
+    arquivos.logoIgreja ||
+    "../logo.png";
+
+  const caminhoAssinatura =
+    arquivos.assinatura ||
+    arquivos.assinaturaPastor ||
+    "";
+
+  const logo = caminhoLogo
+    ? `<img class="cert-logo" src="${escAttr(caminhoLogo)}" alt="Logo da igreja">`
+    : "";
+
+  const assinatura = caminhoAssinatura
+    ? `<img src="${escAttr(caminhoAssinatura)}" alt="Assinatura do pastor presidente">`
+    : "";
+
+  const pastor =
+    dados.pastor ||
+    configuracoes.pastorPresidente ||
+    configuracoes.pastorLocal ||
+    "Pastor presidente";
+
+  const local =
+    dados.local ||
+    [
+      configuracoes.cidadeIgreja,
+      configuracoes.estadoIgreja
+    ]
+      .filter(Boolean)
+      .join(" - ");
+
+  const data = dataExtenso(dados.dataCerimonia);
+
+  let titulo;
+  let subtitulo;
+  let texto;
+
+  if (dados.tipo === "CONSAGRACAO") {
+    titulo = "Certificado";
+    subtitulo = "Consagração Ministerial";
+
+    texto = `
+      Certificamos que
+      <span class="cert-nome">${esc(
+        dados.nome || "Nome do membro"
+      )}</span>
+      foi consagrado(a) ao santo ministério no cargo de
+      <span class="cert-destaque">${esc(
+        dados.cargo || "cargo ministerial"
+      )}</span>,
+      para servir ao Reino de Deus com fidelidade, zelo e dedicação.
+    `;
+  } else {
+    titulo = "Certificado de Batismo";
+    subtitulo = "Batismo Cristão";
+
+    texto = `
+      Certificamos que
+      <span class="cert-nome">${esc(
+        dados.nome || "Nome do membro"
+      )}</span>
+      foi batizado(a) nas águas, em testemunho público de sua fé
+      em Jesus Cristo, conforme os princípios da Palavra de Deus.
+    `;
+  }
+
+  return `
+    <div class="cert-borda">
+      <div class="cert-topo">
+        ${logo}
+        <div class="cert-igreja">${esc(igreja)}</div>
+      </div>
+
+      <h2 class="cert-titulo">${esc(titulo)}</h2>
+      <div class="cert-subtitulo">${esc(subtitulo)}</div>
+
+      <div class="cert-texto">
+        ${texto}
+
+        <p>
+          Realizado em
+          <span class="cert-destaque">${esc(
+            local || "local da cerimônia"
+          )}</span>,
+          no dia
+          <span class="cert-destaque">${esc(
+            data || "data da cerimônia"
+          )}</span>.
+        </p>
+      </div>
+
+      <div class="cert-rodape">
+        <div class="cert-assinatura">
+          ${assinatura}
+          <strong>${esc(pastor)}</strong><br>
+          Pastor presidente
+        </div>
+      </div>
+
+      <div class="cert-numero">
+        Nº ${esc(dados.numero || "prévia")}
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   HISTÓRICO
+   ========================================================= */
 
 async function recarregarHistorico() {
   const resposta = await chamarApi({
@@ -460,11 +777,13 @@ function renderizarHistorico() {
     return;
   }
 
-  const filtro = normalizar($("#filtroHistorico")?.value || "");
+  const filtro = normalizar(
+    $("#filtroHistorico")?.value || ""
+  );
 
   const itens = ESTADO_CERTIFICADOS.historico.filter((item) => {
     return normalizar(
-      `${item.numero} ${item.nome} ${item.tipo}`
+      `${item.numero || ""} ${item.nome || ""} ${item.tipo || ""}`
     ).includes(filtro);
   });
 
@@ -485,12 +804,10 @@ function renderizarHistorico() {
     const linha = document.createElement("tr");
 
     linha.innerHTML = `
-      <td><strong>${esc(item.numero)}</strong></td>
-      <td>
-        ${item.tipo === "CONSAGRACAO" ? "Consagração" : "Batismo"}
-      </td>
-      <td>${esc(item.nome)}</td>
-      <td>${esc(dataBr(item.dataCerimonia))}</td>
+      <td><strong>${esc(item.numero || "")}</strong></td>
+      <td>${esc(nomeTipoCertificado(item.tipo))}</td>
+      <td>${esc(item.nome || "")}</td>
+      <td>${esc(dataBr(item.dataCerimonia || item.data))}</td>
       <td>${esc(item.emitidoPor || "")}</td>
       <td>
         <button class="botao-reimprimir" type="button">
@@ -507,103 +824,39 @@ function renderizarHistorico() {
   });
 }
 
+function nomeTipoCertificado(tipo) {
+  return String(tipo || "").toUpperCase() === "CONSAGRACAO"
+    ? "Consagração"
+    : "Batismo";
+}
+
 function reimprimir(item) {
   const tipo =
-    item.tipo === "CONSAGRACAO"
+    String(item.tipo || "").toUpperCase() === "CONSAGRACAO"
       ? "consagracao"
       : "batismo";
 
-  abrirAba(tipo);
-  atualizarPreview(tipo, item);
-
-  setTimeout(() => {
-    abrirImpressaoCertificado(montarDadosImpressao(item));
-  }, 200);
-}
-
-function montarDadosImpressao(dados) {
-  const configuracoes = ESTADO_CERTIFICADOS.configuracoes || {};
-  const arquivos = ESTADO_CERTIFICADOS.arquivos || {};
-  const tipoOriginal = String(dados.tipo || "").toUpperCase();
-
-  const local =
-    dados.local ||
-    dados.cidade ||
-    configuracoes.cidadeIgreja ||
-    "";
-
-  const linkDigital =
-    dados.linkDigital ||
-    dados.urlDigital ||
-    dados.link ||
-    criarLinkDigitalCertificado(dados.numero);
-
-  return {
+  const dados = {
+    ...item,
     tipo:
-      tipoOriginal === "CONSAGRACAO"
-        ? "consagracao"
-        : "batismo",
-
-    nome:
-      dados.nome ||
-      dados.nomeCompleto ||
-      "",
-
-    cargo:
-      dados.cargo ||
-      "",
-
-    congregacao:
-      dados.congregacao ||
-      "",
-
-    cidade: local,
-
-    dataExtenso:
-      dataExtenso(
-        dados.dataCerimonia ||
-        dados.data ||
-        ""
-      ),
-
-    numero:
-      dados.numero ||
-      "",
-
-    assinatura:
-      arquivos.assinaturaAzul ||
-      arquivos.assinatura ||
-      arquivos.assinaturaPastor ||
-      configuracoes.assinaturaPastor ||
-      "../certificados/assinaturas/pastor-presidente.png",
-
-    pastor: PASTOR_PRESIDENTE,
-
-    igreja:
-      configuracoes.nomeIgreja ||
-      "Assembleia de Deus Ministério Vidas Renovadas",
-
-    logo:
-      arquivos.logo ||
-      configuracoes.logo ||
-      "../logo.png",
-
-    linkValidacao: linkDigital
+      tipo === "consagracao"
+        ? "CONSAGRACAO"
+        : "BATISMO",
+    dataCerimonia:
+      item.dataCerimonia ||
+      item.data ||
+      ""
   };
+
+  abrirAba(tipo);
+  atualizarPreview(tipo, dados);
+
+  imprimirCertificado(tipo);
 }
 
-function criarLinkDigitalCertificado(numero) {
-  const url = new URL(window.location.href);
-
-  url.search = "";
-  url.hash = "";
-
-  if (numero) {
-    url.searchParams.set("certificado", numero);
-  }
-
-  return url.toString();
-}
+/* =========================================================
+   MENSAGENS E UTILITÁRIOS
+   ========================================================= */
 
 function definirMensagem(texto, tipo) {
   const elemento = $("#mensagemModulo");
@@ -629,11 +882,16 @@ function dataBr(valor) {
     return "";
   }
 
-  const partes = String(valor).split("-");
+  const texto = String(valor);
+  const dataSomente = texto.includes("T")
+    ? texto.split("T")[0]
+    : texto;
+
+  const partes = dataSomente.split("-");
 
   return partes.length === 3
     ? `${partes[2]}/${partes[1]}/${partes[0]}`
-    : valor;
+    : texto;
 }
 
 function dataExtenso(valor) {
@@ -641,10 +899,15 @@ function dataExtenso(valor) {
     return "";
   }
 
-  const data = new Date(`${valor}T12:00:00`);
+  const texto = String(valor);
+  const dataSomente = texto.includes("T")
+    ? texto.split("T")[0]
+    : texto;
+
+  const data = new Date(`${dataSomente}T12:00:00`);
 
   if (Number.isNaN(data.getTime())) {
-    return "";
+    return dataBr(valor);
   }
 
   return new Intl.DateTimeFormat("pt-BR", {
@@ -666,4 +929,8 @@ function esc(valor) {
         "'": "&#039;"
       })[caractere]
   );
+}
+
+function escAttr(valor) {
+  return esc(valor);
 }
