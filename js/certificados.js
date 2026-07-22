@@ -284,7 +284,7 @@ function selecionarMembro(membro, configuracao) {
 
   if (campoPesquisa) {
     campoPesquisa.value =
-      membro.numeroCarteirinha || membro.nomeCompleto || "";
+      membro.nomeCompleto || membro.numeroCarteirinha || "";
   }
 
   atualizarPreview(configuracao.tipoPreview);
@@ -399,8 +399,14 @@ function montarCertificado(dados) {
     ? `<img class="cert-logo" src="${escAttr(arquivos.logo)}" alt="Logo">`
     : "";
 
-  const assinatura = arquivos.assinatura
-    ? `<img src="${escAttr(arquivos.assinatura)}" alt="Assinatura">`
+  const caminhoAssinatura =
+    arquivos.assinatura ||
+    arquivos.assinaturaPastor ||
+    configuracoes.assinaturaPastor ||
+    "../certificados/assinaturas/pastor-presidente.png";
+
+  const assinatura = caminhoAssinatura
+    ? `<img src="${escAttr(caminhoAssinatura)}" alt="Assinatura do Pastor Presidente">`
     : "";
 
   const pastor =
@@ -622,7 +628,22 @@ function montarDadosImpressao(dados) {
       arquivos.assinatura ||
       arquivos.assinaturaPastor ||
       configuracoes.assinaturaPastor ||
-      "",
+      "../certificados/assinaturas/pastor-presidente.png",
+
+    pastor:
+      dados.pastor ||
+      configuracoes.pastorPresidente ||
+      configuracoes.pastorLocal ||
+      "Rogério Lemos da Silva",
+
+    igreja:
+      configuracoes.nomeIgreja ||
+      "Assembleia de Deus Ministério Vidas Renovadas",
+
+    logo:
+      arquivos.logo ||
+      configuracoes.logo ||
+      "../logo.png",
 
     linkValidacao: linkDigital
   };
