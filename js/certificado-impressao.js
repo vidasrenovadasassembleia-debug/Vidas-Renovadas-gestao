@@ -56,7 +56,10 @@ function preencherEstruturaCertificado(folha, dados = {}) {
   const campo = (nome) =>
     folha.querySelector(`[data-cert-campo="${nome}"]`);
 
-  campo("nome").textContent = dados.nome || "";
+  const nome = campo("nome");
+nome.textContent = dados.nome || "";
+
+ajustarTexto(nome, 32, 20);
   campo("cargo").textContent = dados.cargo || "";
 
   const local = dados.cidade || dados.local || "";
