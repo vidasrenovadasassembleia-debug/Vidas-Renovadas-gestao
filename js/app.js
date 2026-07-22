@@ -12,32 +12,47 @@ const CHAVE_SESSAO =
 ========================================= */
 
 function salvarSessao(credential, usuario) {
-  sessionStorage.setItem(
-    CHAVE_SESSAO,
-    JSON.stringify({
-      credential: credential,
-      usuario: usuario
-    })
-  );
+  const sessao = JSON.stringify({
+    credential: credential,
+    usuario: usuario
+  });
+
+  sessionStorage.setItem(CHAVE_SESSAO, sessao);
+  localStorage.setItem(CHAVE_SESSAO, sessao);
 }
 
 function obterSessao() {
-  const texto = sessionStorage.getItem(CHAVE_SESSAO);
+  const texto =
+    sessionStorage.getItem(CHAVE_SESSAO) ||
+    localStorage.getItem(CHAVE_SESSAO);
 
   if (!texto) {
     return null;
   }
 
   try {
-    return JSON.parse(texto);
+    const sessao = JSON.parse(texto);
+    sessionStorage.setItem(CHAVE_SESSAO, texto);
+    return sessao;
   } catch (erro) {
-    sessionStorage.removeItem(CHAVE_SESSAO);
+    removerSessaoSalva();
     return null;
   }
 }
 
-function encerrarSessao() {
+function removerSessaoSalva() {
   sessionStorage.removeItem(CHAVE_SESSAO);
+  localStorage.removeItem(CHAVE_SESSAO);
+}
+
+function caminhoPaginaInicial() {
+  return window.location.pathname.includes("/certificados/")
+    ? "../index.html"
+    : "index.html";
+}
+
+function encerrarSessao() {
+  removerSessaoSalva();
 
   if (
     window.google &&
@@ -47,7 +62,7 @@ function encerrarSessao() {
     google.accounts.id.disableAutoSelect();
   }
 
-  window.location.href = "index.html";
+  window.location.href = caminhoPaginaInicial();
 }
 
 function paginaAtual() {
@@ -66,7 +81,10 @@ function paginaProtegida() {
     "configuracoes.html"
   ];
 
-  return paginas.includes(paginaAtual());
+  const moduloCertificados =
+    window.location.pathname.includes("/certificados/");
+
+  return moduloCertificados || paginas.includes(paginaAtual());
 }
 
 function exigirSessao() {
@@ -77,7 +95,7 @@ function exigirSessao() {
   const sessao = obterSessao();
 
   if (!sessao || !sessao.credential) {
-    window.location.replace("index.html");
+    window.location.replace(caminhoPaginaInicial());
   }
 }
 
@@ -227,7 +245,7 @@ async function tratarRespostaGoogle(respostaGoogle) {
   } catch (erro) {
     console.error("Erro de autenticação:", erro);
 
-    sessionStorage.removeItem(CHAVE_SESSAO);
+    removerSessaoSalva();
 
     if (mensagem) {
       mensagem.textContent = erro.message;
@@ -292,7 +310,7 @@ async function chamarApi(
       mensagem.toLowerCase().includes("sessão") ||
       mensagem.toLowerCase().includes("token")
     ) {
-      sessionStorage.removeItem(CHAVE_SESSAO);
+      removerSessaoSalva();
     }
 
     throw new Error(mensagem);
