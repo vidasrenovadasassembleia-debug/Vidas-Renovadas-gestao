@@ -60,7 +60,10 @@ function preencherEstruturaCertificado(folha, dados = {}) {
 nome.textContent = dados.nome || "";
 
 ajustarTexto(nome, 32, 20);
-  campo("cargo").textContent = dados.cargo || "";
+  const cargo = campo("cargo");
+cargo.textContent = dados.cargo || "";
+
+ajustarTexto(cargo, 24, 15);
 
   const local = dados.cidade || dados.local || "";
   const data = dados.dataExtenso || "";
