@@ -1,11 +1,13 @@
 /* =========================================================
    CERTIFICADO DE IMPRESSÃO — VIDAS RENOVADAS GESTÃO
    Arquivo: css/certificado-impressao.css
-   Formato: A4 horizontal
+   Correção: substituição visual dos placeholders da arte.
    ========================================================= */
 
 .certificado-impressao,
-.certificado-impressao * { box-sizing: border-box; }
+.certificado-impressao * {
+  box-sizing: border-box;
+}
 
 .area-certificado-impressao {
   display: none;
@@ -23,7 +25,7 @@
   width: 297mm;
   height: 210mm;
   overflow: hidden;
-  background: #fff;
+  background: #fbf8ef;
   box-shadow: 0 8px 28px rgba(15, 23, 42, .18);
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
@@ -37,28 +39,80 @@
   width: 100%;
   height: 100%;
   object-fit: fill;
-  object-position: center;
   pointer-events: none;
   user-select: none;
 }
 
-.certificado-campo {
+/*
+ * A imagem oficial possui textos de exemplo.
+ * Cada máscara cobre somente a área variável antes de escrever o valor real.
+ */
+.certificado-mascara {
   position: absolute;
   z-index: 2;
+  background: #fbf8ef;
+}
+
+.mascara-nome {
+  top: 86.5mm;
+  left: 42mm;
+  width: 211mm;
+  height: 17mm;
+}
+
+.mascara-cargo {
+  top: 108.8mm;
+  left: 100mm;
+  width: 96mm;
+  height: 7mm;
+}
+
+.mascara-local-data {
+  top: 165.8mm;
+  left: 108mm;
+  width: 103mm;
+  height: 8mm;
+}
+
+.mascara-numero {
+  left: 45mm;
+  bottom: 8.3mm;
+  width: 86mm;
+  height: 6mm;
+}
+
+.mascara-qrcode {
+  right: 23.8mm;
+  bottom: 10.2mm;
+  width: 29mm;
+  height: 35mm;
+}
+
+/* A assinatura azul já faz parte da arte aprovada. */
+.mascara-pastor-nome {
+  left: 112mm;
+  bottom: 10.5mm;
+  width: 73mm;
+  height: 6mm;
+}
+
+.certificado-campo {
+  position: absolute;
+  z-index: 3;
   margin: 0;
-  color: #171717;
+  color: #101828;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .certificado-nome {
-  top: 74.5mm;
-  left: 35mm;
-  width: 227mm;
+  top: 89.2mm;
+  left: 42mm;
+  width: 211mm;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 7.2mm;
+  font-size: 7.1mm;
   font-weight: 700;
-  letter-spacing: .2mm;
+  letter-spacing: .08mm;
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
@@ -66,57 +120,51 @@
 }
 
 .certificado-cargo {
-  top: 96.7mm;
-  left: 91mm;
-  width: 115mm;
+  top: 110.2mm;
+  left: 100mm;
+  width: 96mm;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 4.4mm;
+  font-size: 4mm;
   font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.certificado-congregacao {
-  top: 121.8mm;
-  left: 59mm;
-  width: 179mm;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 3.7mm;
-  font-weight: 600;
-}
-
 .certificado-local-data {
-  top: 176.2mm;
-  left: 38mm;
-  width: 188mm;
-  font-family: Arial, Helvetica, sans-serif;
+  top: 167mm;
+  left: 105mm;
+  width: 111mm;
+  font-family: Georgia, "Times New Roman", serif;
   font-size: 3.4mm;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .certificado-numero {
-  top: 197.3mm;
-  left: 187mm;
-  width: 73mm;
+  left: 45mm;
+  bottom: 9.3mm;
+  width: 86mm;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 3.2mm;
+  font-size: 3mm;
   font-weight: 700;
-  letter-spacing: .12mm;
+  letter-spacing: .08mm;
+  text-align: left;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .certificado-qrcode {
   position: absolute;
-  z-index: 3;
-  right: 25.7mm;
-  bottom: 19.8mm;
+  z-index: 4;
+  right: 25.2mm;
+  bottom: 12mm;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 23mm;
-  height: 23mm;
-  padding: 1.2mm;
+  width: 25mm;
+  height: 25mm;
+  padding: 1mm;
   overflow: hidden;
   background: #fff;
 }
@@ -129,43 +177,38 @@
   object-fit: contain;
 }
 
-.certificado-assinatura {
-  position: absolute;
-  z-index: 3;
-  left: 113mm;
-  bottom: 23mm;
-  width: 70mm;
-  height: 20mm;
-  object-fit: contain;
-  object-position: center bottom;
-}
-
 .certificado-pastor {
   position: absolute;
-  z-index: 3;
-  left: 104mm;
-  bottom: 12.5mm;
-  width: 88mm;
+  z-index: 4;
+  left: 112mm;
+  bottom: 10.7mm;
+  width: 73mm;
   margin: 0;
-  color: #171717;
+  color: #101828;
   text-align: center;
   font-family: Arial, Helvetica, sans-serif;
-  line-height: 1.25;
+  line-height: 1.1;
 }
 
 .certificado-pastor strong {
   display: block;
-  font-size: 3.2mm;
-}
-
-.certificado-pastor span {
-  display: block;
   font-size: 2.8mm;
 }
 
-.certificado-impressao[data-tipo="batismo"] .certificado-cargo { display: none; }
+.certificado-pastor span {
+  display: none;
+}
 
-@page { size: A4 landscape; margin: 0; }
+/* O batismo não utiliza cargo. */
+.certificado-impressao[data-tipo="batismo"] .certificado-cargo,
+.certificado-impressao[data-tipo="batismo"] .mascara-cargo {
+  display: none;
+}
+
+@page {
+  size: A4 landscape;
+  margin: 0;
+}
 
 @media print {
   html,
@@ -178,7 +221,9 @@
     background: #fff !important;
   }
 
-  body.imprimindo-certificado > * { display: none !important; }
+  body.imprimindo-certificado > * {
+    display: none !important;
+  }
 
   body.imprimindo-certificado > .area-certificado-impressao {
     display: block !important;
@@ -201,16 +246,9 @@
     border: 0 !important;
     box-shadow: none !important;
     transform: none !important;
-    break-after: avoid !important;
-    break-before: avoid !important;
-    break-inside: avoid !important;
-    page-break-after: avoid !important;
-    page-break-before: avoid !important;
-    page-break-inside: avoid !important;
   }
 
   body.imprimindo-certificado .certificado-modelo {
-    display: block !important;
     width: 297mm !important;
     height: 210mm !important;
     object-fit: fill !important;
