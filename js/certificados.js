@@ -22,12 +22,7 @@ document.addEventListener(
 );
 
 async function iniciarModuloCertificados() {
-  const sessao = obterSessao();
-
-  if (!sessao || !sessao.credential) {
-    window.location.replace("../index.html");
-    return;
-  }
+  
 
   aplicarIdentidadeUsuario();
   configurarEventos();
