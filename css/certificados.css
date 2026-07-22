@@ -1,10 +1,15 @@
 /* =========================================================
    CERTIFICADOS — VIDAS RENOVADAS GESTÃO
-   Arquivo: css/certificados.css
+   Arquivo oficial: css/certificados.css
    ========================================================= */
 
-.certificados-main { min-width: 0; }
-.certificados-header { margin-bottom: 16px; }
+.certificados-main {
+  min-width: 0;
+}
+
+.certificados-header {
+  margin-bottom: 16px;
+}
 
 .logout-button {
   width: calc(100% - 32px);
@@ -22,17 +27,32 @@
   font-weight: 700;
 }
 
-.mensagem-modulo[data-tipo="success"] { background: #e8f7ef; color: #146c43; }
-.mensagem-modulo[data-tipo="error"] { background: #fdecec; color: #a12b2b; }
-.mensagem-modulo[data-tipo="info"] { background: #eaf4fc; color: #245f91; }
+.mensagem-modulo[data-tipo="success"] {
+  background: #e8f7ef;
+  color: #146c43;
+}
+
+.mensagem-modulo[data-tipo="error"] {
+  background: #fdecec;
+  color: #a12b2b;
+}
+
+.mensagem-modulo[data-tipo="info"] {
+  background: #eaf4fc;
+  color: #245f91;
+}
+
+/* ABAS */
 
 .abas-certificados {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 6px;
+  width: fit-content;
   max-width: 100%;
   margin-bottom: 16px;
   padding: 4px;
+  overflow-x: auto;
   border: 1px solid #d8e0e5;
   border-radius: 10px;
   background: #fff;
@@ -53,11 +73,25 @@
   cursor: pointer;
 }
 
-.aba-certificado:hover { background: #edf3f6; color: #082f49; }
-.aba-certificado.active { background: #082f49; color: #fff; }
+.aba-certificado:hover {
+  background: #edf3f6;
+  color: #082f49;
+}
 
-.painel-certificado { display: none; }
-.painel-certificado.active { display: block; }
+.aba-certificado.active {
+  background: #082f49;
+  color: #fff;
+}
+
+.painel-certificado {
+  display: none;
+}
+
+.painel-certificado.active {
+  display: block;
+}
+
+/* ESTRUTURA */
 
 .grade-certificado {
   display: grid;
@@ -74,13 +108,15 @@
   box-shadow: 0 8px 25px rgba(8, 47, 73, .06);
 }
 
-.cartao-formulario { padding: 20px; }
+.cartao-formulario {
+  padding: 20px;
+}
 
 .area-preview {
   width: 100%;
-  min-width: 0;
+  box-sizing: border-box;
   padding: 18px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .titulo-secao,
@@ -93,8 +129,7 @@
 }
 
 .titulo-secao span,
-.historico-cabecalho span,
-.preview-cabecalho span {
+.historico-cabecalho span {
   color: #b07b2b;
   font-size: .75rem;
   font-weight: 900;
@@ -107,6 +142,8 @@
   margin: 3px 0 0;
   color: #082f49;
 }
+
+/* FORMULÁRIOS */
 
 .grade-campos {
   display: grid;
@@ -123,7 +160,9 @@
   font-weight: 800;
 }
 
-.campo-largo { grid-column: span 2; }
+.campo-largo {
+  grid-column: span 2;
+}
 
 .campo input,
 .campo select,
@@ -139,6 +178,11 @@
   font: inherit;
 }
 
+.campo input[readonly] {
+  background: #f5f7f8;
+  color: #53636e;
+}
+
 .campo input:focus,
 .campo select:focus,
 .campo textarea:focus,
@@ -147,31 +191,18 @@
   border-color: #245f91;
 }
 
-.campo textarea { min-height: 72px; resize: vertical; }
-
-.campo-pastor-fixo {
-  justify-content: center;
-  min-height: 64px;
-  padding: 10px 12px;
-  border: 1px solid #d8e0e5;
-  border-radius: 8px;
-  background: #f6f9fa;
-}
-
-.campo-pastor-fixo span {
-  color: #667781;
-  font-size: .76rem;
-}
-
-.campo-pastor-fixo strong {
-  color: #082f49;
-  line-height: 1.3;
+.campo textarea {
+  min-height: 72px;
+  resize: vertical;
 }
 
 .linha-pesquisa {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
   gap: 8px;
+}
+
+.linha-pesquisa input {
+  flex: 1;
 }
 
 .linha-pesquisa button,
@@ -187,8 +218,31 @@
 }
 
 .linha-pesquisa button,
-.botao-principal { background: #082f49; color: #fff; }
-.botao-secundario { background: #eef3f6; color: #082f49; }
+.botao-principal {
+  background: #082f49;
+  color: #fff;
+}
+
+.linha-pesquisa button:hover,
+.botao-principal:hover {
+  background: #0d4264;
+}
+
+.botao-secundario {
+  background: #eef3f6;
+  color: #082f49;
+}
+
+.botao-secundario:hover {
+  background: #dde7ec;
+}
+
+.linha-pesquisa button:disabled,
+.botao-principal:disabled,
+.botao-secundario:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
 
 .acoes-formulario {
   display: flex;
@@ -196,6 +250,8 @@
   gap: 9px;
   margin-top: 16px;
 }
+
+/* RESULTADOS DA PESQUISA */
 
 .resultados-membros {
   margin: 8px 0 15px;
@@ -217,50 +273,156 @@
   cursor: pointer;
 }
 
-.resultado-membro:last-child { border-bottom: 0; }
-.resultado-membro:hover { background: #f5f8fa; }
-.resultado-membro strong { color: #082f49; }
-.resultado-membro span { color: #667781; font-size: .84rem; }
+.resultado-membro:last-child {
+  border-bottom: 0;
+}
 
-.preview-cabecalho { margin-bottom: 14px; }
-.preview-cabecalho h3 {
-  margin: 3px 0 0;
+.resultado-membro:hover {
+  background: #f5f8fa;
+}
+
+.resultado-membro strong {
   color: #082f49;
-  font-size: 1.05rem;
 }
 
-/* O conteúdo do preview usa exatamente a mesma estrutura da impressão. */
+.resultado-membro span {
+  color: #667781;
+  font-size: .84rem;
+}
+
+/* CERTIFICADO A4 HORIZONTAL */
+
 .folha-certificado {
-  position: relative;
-  width: 100%;
-  min-height: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  overflow: hidden;
-}
-
-.preview-certificado-escala {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 297 / 210;
-  overflow: hidden;
+  width: 297mm;
+  min-height: 210mm;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 13mm;
   border: 1px solid #d5d5d5;
   background: #fff;
+  color: #18313f;
   box-shadow: 0 6px 22px rgba(0, 0, 0, .12);
+  font-family: Georgia, "Times New Roman", serif;
+  transform-origin: top center;
 }
 
-.preview-certificado-escala > .certificado-impressao {
+.folha-certificado:empty::before {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 184mm;
+  border: 2px dashed #d8e0e5;
+  color: #71818a;
+  font: 700 15px Arial, sans-serif;
+  content: "A pré-visualização do certificado aparecerá aqui.";
+}
+
+.cert-borda {
+  position: relative;
+  min-height: 184mm;
+  box-sizing: border-box;
+  padding: 9mm 12mm;
+  border: 3px double #b98a45;
+  text-align: center;
+}
+
+.cert-topo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.cert-logo {
+  max-width: 22mm;
+  max-height: 22mm;
+  object-fit: contain;
+}
+
+.cert-igreja {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.cert-titulo {
+  margin: 12mm 0 2mm;
+  color: #0f2f48;
+  font-size: 34px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.cert-subtitulo {
+  color: #b07b2b;
+  font: 700 16px Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+}
+
+.cert-texto {
+  max-width: 235mm;
+  margin: 11mm auto 0;
+  font-size: 19px;
+  line-height: 1.65;
+}
+
+.cert-nome {
+  display: block;
+  margin: 5mm 0 3mm;
+  border-bottom: 1px solid #b98a45;
+  color: #0f2f48;
+  font-size: 31px;
+  font-weight: 700;
+}
+
+.cert-destaque {
+  color: #0f2f48;
+  font-weight: 700;
+}
+
+.cert-rodape {
+  display: flex;
+  justify-content: center;
+  gap: 34mm;
+  margin-top: 16mm;
+}
+
+.cert-assinatura {
+  width: 72mm;
+  padding-top: 2mm;
+  border-top: 1px solid #334a56;
+  font: 12px Arial, sans-serif;
+}
+
+.cert-assinatura img {
+  display: block;
+  max-width: 60mm;
+  max-height: 20mm;
+  margin: -19mm auto 1mm;
+  object-fit: contain;
+}
+
+.cert-numero {
   position: absolute;
-  top: 0;
-  left: 0;
-  transform-origin: top left;
+  right: 8mm;
+  bottom: 5mm;
+  color: #5b6870;
+  font: 11px Arial, sans-serif;
 }
 
-.tabela-responsiva { overflow: auto; }
-.tabela-responsiva table { width: 100%; border-collapse: collapse; }
+/* HISTÓRICO */
+
+.tabela-responsiva {
+  overflow: auto;
+}
+
+.tabela-responsiva table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
 .tabela-responsiva th,
 .tabela-responsiva td {
@@ -286,34 +448,104 @@
   cursor: pointer;
 }
 
+.botao-reimprimir:hover {
+  background: #dde7ec;
+}
+
 .historico-vazio {
   padding: 32px !important;
   color: #71818a;
-  text-align: center;
+  text-align: center !important;
 }
 
+/* RESPONSIVIDADE */
+
 @media (max-width: 1180px) {
-  .grade-campos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grade-campos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .folha-certificado {
+    transform: scale(.76);
+    margin-bottom: -50mm;
+  }
 }
 
 @media (max-width: 760px) {
   .abas-certificados {
-    display: flex;
     width: 100%;
-    overflow-x: auto;
   }
 
-  .grade-campos { grid-template-columns: 1fr; }
-  .campo-largo { grid-column: auto; }
+  .grade-campos {
+    grid-template-columns: 1fr;
+  }
+
+  .campo-largo {
+    grid-column: auto;
+  }
 
   .linha-pesquisa,
   .acoes-formulario {
-    display: flex;
     flex-direction: column;
+  }
+
+  .linha-pesquisa button,
+  .acoes-formulario button {
+    width: 100%;
+  }
+
+  .folha-certificado {
+    transform: scale(.42);
+    margin-bottom: -120mm;
   }
 
   .historico-cabecalho {
     align-items: stretch;
     flex-direction: column;
+  }
+}
+
+/* IMPRESSÃO
+   O JavaScript mantém visível somente o certificado que será impresso. */
+
+@media print {
+  html,
+  body {
+    width: 297mm;
+    height: 210mm;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .folha-certificado,
+  .folha-certificado * {
+    visibility: visible;
+  }
+
+  .folha-certificado {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 297mm;
+    min-height: 210mm;
+    margin: 0;
+    padding: 13mm;
+    border: 0;
+    box-shadow: none;
+    transform: none !important;
+  }
+
+  .folha-certificado:empty::before {
+    display: none;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 0;
   }
 }
