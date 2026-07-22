@@ -7,8 +7,7 @@
   <title>Certificados | Vidas Renovadas Gestão</title>
 
   <link rel="stylesheet" href="../css/estilo.css">
-  <link rel="stylesheet" href="../css/certificados.css?v=6">
-  <link rel="stylesheet" href="../css/certificado-impressao.css?v=5">
+  <link rel="stylesheet" href="../css/certificados.css">
 </head>
 
 <body class="dashboard-page certificados-page">
@@ -175,11 +174,10 @@
             <label class="campo">
               Congregação
 
-              <select name="congregacao" required>
-                <option value="">Selecione</option>
-                <option value="Independência / Petrópolis">Independência / Petrópolis</option>
-                <option value="Km51 / Xerém">Km51 / Xerém</option>
-              </select>
+              <input
+                name="congregacao"
+                type="text"
+              >
             </label>
 
             <label class="campo">
@@ -192,10 +190,15 @@
               >
             </label>
 
-            <div class="campo campo-pastor-fixo">
-              <span>Pastor responsável</span>
-              <strong>Pastor Presidente Rogério Lemos da Silva</strong>
-            </div>
+            <label class="campo campo-largo">
+              Pastor responsável
+
+              <input
+                name="pastor"
+                type="text"
+                required
+              >
+            </label>
 
             <label class="campo campo-largo">
               Observações
@@ -226,11 +229,6 @@
         </form>
 
         <div class="area-preview">
-          <div class="preview-cabecalho">
-            <span>Pré-visualização</span>
-            <h3>Certificado de Consagração</h3>
-          </div>
-
           <div
             class="folha-certificado"
             id="previewConsagracao"
@@ -316,11 +314,10 @@
             <label class="campo">
               Congregação
 
-              <select name="congregacao" required>
-                <option value="">Selecione</option>
-                <option value="Independência / Petrópolis">Independência / Petrópolis</option>
-                <option value="Km51 / Xerém">Km51 / Xerém</option>
-              </select>
+              <input
+                name="congregacao"
+                type="text"
+              >
             </label>
 
             <label class="campo">
@@ -333,10 +330,15 @@
               >
             </label>
 
-            <div class="campo campo-pastor-fixo">
-              <span>Pastor responsável</span>
-              <strong>Pastor Presidente Rogério Lemos da Silva</strong>
-            </div>
+            <label class="campo">
+              Pastor responsável
+
+              <input
+                name="pastor"
+                type="text"
+                required
+              >
+            </label>
 
             <label class="campo campo-largo">
               Observações
@@ -367,11 +369,6 @@
         </form>
 
         <div class="area-preview">
-          <div class="preview-cabecalho">
-            <span>Pré-visualização</span>
-            <h3>Certificado de Batismo</h3>
-          </div>
-
           <div
             class="folha-certificado"
             id="previewBatismo"
@@ -424,8 +421,6 @@
   </main>
 
   <script src="../js/app.js?v=12"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="../js/certificado-impressao.js?v=5"></script>
-  <script src="../js/certificados.js?v=6"></script>
+  <script src="../js/certificados.js?v=2"></script>
 </body>
 </html>
