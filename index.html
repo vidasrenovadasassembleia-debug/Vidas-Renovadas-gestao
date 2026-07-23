@@ -2,130 +2,103 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Vidas Renovadas Gestão</title>
 
   <meta
     name="description"
     content="Sistema de gestão da Assembleia de Deus Ministério Vidas Renovadas."
   >
+  <meta name="theme-color" content="#082847">
 
-  <meta name="theme-color" content="#173f35">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="css/estilo.css?v=21">
 
-  <title>Entrar | Vidas Renovadas Gestão</title>
-
-  <link
-    rel="icon"
-    type="image/png"
-    href="logo.png"
-  >
-
-  <link
-    rel="stylesheet"
-    href="css/estilo.css?v=20"
-  >
-
-  <script
-    src="https://accounts.google.com/gsi/client"
-    async
-    defer
-  ></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body class="login-page" data-page="login">
-  <main class="login-layout">
-    <section
-      class="login-card"
-      aria-labelledby="tituloLogin"
-    >
-      <div class="login-brand">
+
+  <main class="login-container" aria-labelledby="tituloLogin">
+    <section class="login-card">
+
+      <div class="login-conteudo">
+
         <img
           class="login-logo"
           src="logo.png"
           alt="Logo da Assembleia de Deus Ministério Vidas Renovadas"
-          width="160"
-          height="160"
         >
 
-        <div class="login-brand-text">
-          <p class="login-kicker">
-            Assembleia de Deus
-          </p>
+        <p class="login-marca">Sistema administrativo da igreja</p>
 
-          <h1 id="tituloLogin">
-            Vidas Renovadas Gestão
-          </h1>
+        <h1 class="login-titulo" id="tituloLogin">
+          Vidas Renovadas Gestão
+        </h1>
 
-          <p class="login-subtitle">
-            Ministério Vidas Renovadas
-          </p>
+        <p class="login-subtitulo">
+          Gestão de membros, carteirinhas, certificados, financeiro,
+          relatórios e administração.
+        </p>
+
+        <div class="login-separador" aria-hidden="true">
+          <span class="login-separador-icone">✦</span>
         </div>
-      </div>
 
-      <div class="login-content">
-        <h2>Acesso ao sistema</h2>
+        <h2 class="login-acesso-titulo">Acesso ao sistema</h2>
 
-        <p>
-          Entre com a conta Google autorizada pela administração da igreja.
+        <p class="login-acesso-texto">
+          Entre com uma conta Google autorizada pela administração da igreja.
         </p>
 
         <div
           id="googleButton"
-          class="google-login-button"
-          aria-label="Entrar com Google"
+          class="login-area-google"
+          aria-label="Entrar com a conta Google"
         ></div>
 
         <p
           id="mensagemLogin"
-          class="mensagem-login"
+          class="login-mensagem"
           role="status"
           aria-live="polite"
         ></p>
 
-        <noscript>
-          <p class="mensagem-login mensagem-erro">
-            Para acessar o sistema, habilite o JavaScript no navegador.
-          </p>
-        </noscript>
+        <div class="login-versiculo">
+          <blockquote>
+            “Tudo quanto fizerdes, fazei-o de todo o coração, como ao Senhor.”
+          </blockquote>
+          <cite>Colossenses 3:23</cite>
+        </div>
+
       </div>
 
-      <footer class="login-footer">
-        <blockquote>
-          “Tudo quanto fizerdes, fazei-o de todo o coração, como ao Senhor.”
-        </blockquote>
-
-        <cite>Colossenses 3:23</cite>
-
-        <p>
-          © <span id="anoAtual"></span>
-          Assembleia de Deus Ministério Vidas Renovadas
-        </p>
+      <footer class="login-rodape">
+        <strong>Assembleia de Deus Ministério Vidas Renovadas</strong><br>
+        <span>&copy; <span id="anoAtual"></span> Todos os direitos reservados.</span>
       </footer>
+
     </section>
   </main>
 
   <div
     id="carregamentoGlobal"
     class="carregamento-global"
-    role="status"
-    aria-live="polite"
-    hidden
+    aria-hidden="true"
   >
-    <div class="carregamento-conteudo">
-      <span
-        class="carregamento-spinner"
-        aria-hidden="true"
-      ></span>
-
-      <p id="textoCarregamento">
-        Verificando acesso...
-      </p>
+    <div class="carregamento-caixa" role="status" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <span>Carregando...</span>
     </div>
   </div>
 
-  <script src="js/app.js?v=20" defer></script>
-  <script src="js/auth.js?v=1" defer></script>
+  <script src="js/app.js?v=1"></script>
+  <script src="js/auth.js?v=1"></script>
+
+  <script>
+    document.getElementById("anoAtual").textContent = new Date().getFullYear();
+  </script>
+
 </body>
 </html>
