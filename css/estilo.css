@@ -589,3 +589,199 @@ body.login-page::after {
     max-height: 190px;
   }
 }
+
+
+/* ==========================================================================
+   30. REFINAMENTO FINAL DA TELA DE LOGIN
+   Mantém intactos o HTML, o Google Login e a lógica do sistema.
+   ========================================================================== */
+
+body.login-page {
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+
+.login-container,
+.login-wrapper {
+  width: min(100%, 470px);
+}
+
+.login-card {
+  border-radius: 24px;
+  box-shadow:
+    0 24px 65px rgba(3, 24, 44, 0.28),
+    0 6px 18px rgba(3, 24, 44, 0.12);
+}
+
+.login-card::before {
+  height: 6px;
+  background: linear-gradient(
+    90deg,
+    #a87513 0%,
+    #d5a62e 30%,
+    #f0ca67 50%,
+    #d5a62e 70%,
+    #a87513 100%
+  );
+}
+
+.login-conteudo {
+  padding: 27px 38px 25px;
+}
+
+.login-logo {
+  width: min(285px, 84%);
+  max-height: 235px;
+  margin: 0 auto 12px;
+}
+
+.login-marca {
+  margin-bottom: 7px;
+  color: #c28d19;
+  font-size: 0.77rem;
+  letter-spacing: 0.105em;
+}
+
+.login-titulo {
+  margin-bottom: 8px;
+  font-size: clamp(1.9rem, 4.7vw, 2.32rem);
+  line-height: 1.12;
+}
+
+.login-subtitulo {
+  max-width: 355px;
+  margin-bottom: 20px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.login-separador {
+  gap: 11px;
+  margin: 18px 0 15px;
+}
+
+.login-separador::before,
+.login-separador::after {
+  height: 1px;
+}
+
+.login-separador-icone {
+  width: 36px;
+  height: 36px;
+  border-color: rgba(213, 166, 46, 0.62);
+  background: linear-gradient(145deg, #fffdf7, #fff5d9);
+  color: #b57f10;
+  box-shadow: 0 4px 10px rgba(181, 127, 16, 0.12);
+}
+
+.login-acesso-titulo {
+  margin-bottom: 6px;
+  font-size: 1.18rem;
+}
+
+.login-acesso-texto {
+  max-width: 360px;
+  margin-bottom: 17px;
+  font-size: 0.87rem;
+  line-height: 1.5;
+}
+
+.login-area-google,
+#googleButton {
+  width: 100%;
+  min-height: 50px;
+}
+
+#googleButton > div {
+  width: 100% !important;
+  max-width: 330px !important;
+  min-height: 46px !important;
+  border-radius: 9px !important;
+  box-shadow: 0 5px 16px rgba(8, 40, 71, 0.1);
+}
+
+.login-mensagem,
+#mensagemLogin {
+  margin-top: 12px;
+}
+
+.login-versiculo {
+  margin-top: 20px;
+  padding-top: 17px;
+  font-size: 0.8rem;
+}
+
+.login-versiculo blockquote {
+  max-width: 350px;
+  margin-right: auto;
+  margin-bottom: 6px;
+  margin-left: auto;
+  line-height: 1.55;
+}
+
+.login-rodape {
+  padding: 14px 24px;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+@media (max-height: 820px) and (min-width: 521px) {
+  body.login-page {
+    align-items: start;
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+
+  .login-conteudo {
+    padding-top: 22px;
+    padding-bottom: 20px;
+  }
+
+  .login-logo {
+    width: min(245px, 76%);
+    max-height: 190px;
+    margin-bottom: 8px;
+  }
+
+  .login-subtitulo {
+    margin-bottom: 14px;
+  }
+
+  .login-separador {
+    margin-top: 14px;
+    margin-bottom: 12px;
+  }
+
+  .login-versiculo {
+    margin-top: 15px;
+    padding-top: 14px;
+  }
+}
+
+@media (max-width: 520px) {
+  body.login-page {
+    padding: 12px;
+  }
+
+  .login-conteudo {
+    padding: 24px 20px 22px;
+  }
+
+  .login-logo {
+    width: min(250px, 88%);
+    max-height: 205px;
+    margin-bottom: 10px;
+  }
+
+  .login-titulo {
+    font-size: 1.8rem;
+  }
+
+  .login-subtitulo {
+    font-size: 0.87rem;
+  }
+
+  .login-rodape {
+    padding: 13px 18px;
+  }
+}
