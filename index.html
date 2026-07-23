@@ -8,12 +8,12 @@
 
   <meta
     name="description"
-    content="Sistema de gestão da Assembleia de Deus Ministério Vidas Renovadas."
+    content="Sistema de gestão da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas."
   >
-  <meta name="theme-color" content="#082847">
+  <meta name="theme-color" content="#071f3b">
 
   <link rel="icon" type="image/png" href="logo.png">
-  <link rel="stylesheet" href="css/estilo.css?v=21">
+  <link rel="stylesheet" href="css/estilo.css?v=30">
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -28,10 +28,13 @@
         <img
           class="login-logo"
           src="logo.png"
-          alt="Logo da Assembleia de Deus Ministério Vidas Renovadas"
+          alt="Logo da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas"
         >
 
-        <p class="login-marca">Sistema administrativo da igreja</p>
+        <div class="login-identidade" aria-label="Nome da igreja">
+          <span>Igreja Evangélica</span>
+          <strong>Assembleia de Deus Ministério Vidas Renovadas</strong>
+        </div>
 
         <h1 class="login-titulo" id="tituloLogin">
           Vidas Renovadas Gestão
@@ -46,24 +49,28 @@
           <span class="login-separador-icone">✦</span>
         </div>
 
-        <h2 class="login-acesso-titulo">Acesso ao sistema</h2>
+        <section class="login-acesso" aria-labelledby="tituloAcesso">
+          <h2 class="login-acesso-titulo" id="tituloAcesso">
+            Acesso ao sistema
+          </h2>
 
-        <p class="login-acesso-texto">
-          Entre com uma conta Google autorizada pela administração da igreja.
-        </p>
+          <p class="login-acesso-texto">
+            Entre com uma conta Google autorizada pela administração da igreja.
+          </p>
 
-        <div
-          id="googleButton"
-          class="login-area-google"
-          aria-label="Entrar com a conta Google"
-        ></div>
+          <div
+            id="googleButton"
+            class="login-area-google"
+            aria-label="Entrar com uma conta Google autorizada"
+          ></div>
 
-        <p
-          id="mensagemLogin"
-          class="login-mensagem"
-          role="status"
-          aria-live="polite"
-        ></p>
+          <p
+            id="mensagemLogin"
+            class="login-mensagem"
+            role="status"
+            aria-live="polite"
+          ></p>
+        </section>
 
         <div class="login-versiculo">
           <blockquote>
@@ -72,10 +79,14 @@
           <cite>Colossenses 3:23</cite>
         </div>
 
+        <div class="login-ornamento-final" aria-hidden="true">
+          <span>♥</span>
+        </div>
+
       </div>
 
       <footer class="login-rodape">
-        <strong>Assembleia de Deus Ministério Vidas Renovadas</strong><br>
+        <strong>Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas</strong>
         <span>&copy; <span id="anoAtual"></span> Todos os direitos reservados.</span>
       </footer>
 
