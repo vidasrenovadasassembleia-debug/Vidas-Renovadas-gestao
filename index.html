@@ -13,25 +13,27 @@
   <meta name="theme-color" content="#071f3b">
 
   <link rel="icon" type="image/png" href="logo.png">
-  <link rel="stylesheet" href="css/estilo.css?v=30">
+  <link rel="stylesheet" href="css/estilo.css?v=40">
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body class="login-page" data-page="login">
 
-  <main class="login-container" aria-labelledby="tituloLogin">
+  <main class="login-shell" aria-labelledby="tituloLogin">
     <section class="login-card">
 
-      <div class="login-conteudo">
+      <div class="login-card__conteudo">
 
-        <img
-          class="login-logo"
-          src="logo.png"
-          alt="Logo da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas"
-        >
+        <div class="login-logo-box">
+          <img
+            class="login-logo"
+            src="logo.png"
+            alt="Logo da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas"
+          >
+        </div>
 
-        <div class="login-identidade" aria-label="Nome da igreja">
+        <div class="login-identidade">
           <span>Igreja Evangélica</span>
           <strong>Assembleia de Deus Ministério Vidas Renovadas</strong>
         </div>
@@ -45,22 +47,20 @@
           relatórios e administração.
         </p>
 
-        <div class="login-separador" aria-hidden="true">
-          <span class="login-separador-icone">✦</span>
+        <div class="login-divisor" aria-hidden="true">
+          <span>✦</span>
         </div>
 
         <section class="login-acesso" aria-labelledby="tituloAcesso">
-          <h2 class="login-acesso-titulo" id="tituloAcesso">
-            Acesso ao sistema
-          </h2>
+          <h2 id="tituloAcesso">Acesso ao sistema</h2>
 
-          <p class="login-acesso-texto">
+          <p>
             Entre com uma conta Google autorizada pela administração da igreja.
           </p>
 
           <div
             id="googleButton"
-            class="login-area-google"
+            class="login-google"
             aria-label="Entrar com uma conta Google autorizada"
           ></div>
 
@@ -79,7 +79,7 @@
           <cite>Colossenses 3:23</cite>
         </div>
 
-        <div class="login-ornamento-final" aria-hidden="true">
+        <div class="login-final" aria-hidden="true">
           <span>♥</span>
         </div>
 
@@ -93,11 +93,7 @@
     </section>
   </main>
 
-  <div
-    id="carregamentoGlobal"
-    class="carregamento-global"
-    aria-hidden="true"
-  >
+  <div id="carregamentoGlobal" class="carregamento-global" aria-hidden="true">
     <div class="carregamento-caixa" role="status" aria-live="polite">
       <span class="spinner" aria-hidden="true"></span>
       <span>Carregando...</span>
@@ -110,6 +106,5 @@
   <script>
     document.getElementById("anoAtual").textContent = new Date().getFullYear();
   </script>
-
 </body>
 </html>
