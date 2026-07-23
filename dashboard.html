@@ -1,145 +1,411 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Dashboard | Vidas Renovadas Gestão</title>
 
-  <link
-    rel="stylesheet"
-    href="css/estilo.css"
+  <meta
+    name="description"
+    content="Painel principal do sistema Vidas Renovadas Gestão."
   >
+  <meta name="theme-color" content="#071f3b">
+
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="css/estilo.css?v=50">
 </head>
 
-<body class="dashboard-page">
+<body class="sistema-page" data-page="dashboard">
 
-  <aside class="sidebar">
+  <div class="sistema-layout">
 
-    <div class="sidebar-brand">
-      <img
-        src="logo.png"
-        alt="Logo da igreja"
-        class="sidebar-logo"
-      >
+    <aside class="sidebar" aria-label="Menu principal">
 
-      <div>
-        <strong>Vidas Renovadas</strong>
-        <span>Projeto Neemias</span>
+      <div class="sidebar-topo">
+        <div class="sidebar-logo-box">
+          <img
+            class="sidebar-logo"
+            src="logo.png"
+            alt="Logo da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas"
+          >
+        </div>
+
+        <div class="sidebar-identidade">
+          <p class="sidebar-nome">Vidas Renovadas Gestão</p>
+          <p class="sidebar-ministerio">Ministério Vidas Renovadas</p>
+        </div>
       </div>
+
+      <nav class="menu-navegacao">
+
+        <div class="menu-grupo">
+          <p class="menu-grupo-titulo">Visão geral</p>
+
+          <a class="menu-item" href="dashboard.html" data-page="dashboard">
+            <span class="menu-item-icone" aria-hidden="true">⌂</span>
+            <span>Dashboard</span>
+          </a>
+        </div>
+
+        <div class="menu-grupo">
+          <p class="menu-grupo-titulo">Pessoas</p>
+
+          <a class="menu-item" href="membros.html" data-page="membros">
+            <span class="menu-item-icone" aria-hidden="true">♙</span>
+            <span>Membros</span>
+          </a>
+
+          <a class="menu-item" href="familias.html" data-page="familias">
+            <span class="menu-item-icone" aria-hidden="true">♧</span>
+            <span>Famílias</span>
+          </a>
+
+          <a class="menu-item" href="congregacoes.html" data-page="congregacoes">
+            <span class="menu-item-icone" aria-hidden="true">⌂</span>
+            <span>Congregações</span>
+          </a>
+        </div>
+
+        <div class="menu-grupo">
+          <p class="menu-grupo-titulo">Documentos</p>
+
+          <a class="menu-item" href="carteirinhas.html" data-page="carteirinhas">
+            <span class="menu-item-icone" aria-hidden="true">▣</span>
+            <span>Carteirinhas</span>
+          </a>
+
+          <a class="menu-item" href="certificados/index.html" data-page="certificados">
+            <span class="menu-item-icone" aria-hidden="true">◇</span>
+            <span>Certificados</span>
+          </a>
+        </div>
+
+        <div class="menu-grupo">
+          <p class="menu-grupo-titulo">Gestão</p>
+
+          <a class="menu-item" href="financeiro.html" data-page="financeiro">
+            <span class="menu-item-icone" aria-hidden="true">R$</span>
+            <span>Financeiro</span>
+          </a>
+
+          <a class="menu-item" href="relatorios.html" data-page="relatorios">
+            <span class="menu-item-icone" aria-hidden="true">▤</span>
+            <span>Relatórios</span>
+          </a>
+
+          <a
+            class="menu-item"
+            href="configuracoes.html"
+            data-page="configuracoes"
+            data-permissao="administracao"
+          >
+            <span class="menu-item-icone" aria-hidden="true">⚙</span>
+            <span>Administração</span>
+          </a>
+        </div>
+
+      </nav>
+
+      <div class="sidebar-rodape">
+        <div class="usuario-sidebar">
+
+          <div class="usuario-avatar" data-usuario-iniciais>VR</div>
+
+          <div class="usuario-sidebar-dados">
+            <div class="usuario-sidebar-nome" data-usuario-nome>Usuário</div>
+            <div class="usuario-sidebar-cargo" data-usuario-cargo>Carregando perfil...</div>
+          </div>
+
+          <button
+            type="button"
+            class="botao-sair-sidebar"
+            data-acao="logout"
+            data-confirmar-logout="true"
+            aria-label="Sair do sistema"
+            title="Sair do sistema"
+          >
+            ↪
+          </button>
+
+        </div>
+      </div>
+
+    </aside>
+
+    <div class="overlay-menu" data-acao="fechar-menu"></div>
+
+    <main class="sistema-main">
+
+      <header class="topbar">
+
+        <div class="topbar-esquerda">
+
+          <button
+            type="button"
+            class="botao-menu-mobile"
+            data-acao="alternar-menu"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+          >
+            ☰
+          </button>
+
+          <div>
+            <h1 class="topbar-titulo">Dashboard</h1>
+            <p class="topbar-subtitulo">
+              Visão geral da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas
+            </p>
+          </div>
+
+        </div>
+
+        <div class="topbar-direita">
+          <div class="topbar-data">
+            <strong id="dataAtual">—</strong><br>
+            <span id="horaAtual">—</span>
+          </div>
+
+          <div class="topbar-avatar" data-usuario-iniciais>VR</div>
+        </div>
+
+      </header>
+
+      <div class="sistema-conteudo">
+
+        <section class="dashboard-boas-vindas">
+
+          <div>
+            <h2 class="dashboard-saudacao">
+              <span id="saudacaoPeriodo">Olá</span>,
+              <span data-usuario-nome>seja bem-vindo(a)</span>!
+            </h2>
+
+            <p class="dashboard-descricao">
+              Acompanhe os principais números e atividades da igreja.
+            </p>
+          </div>
+
+          <div class="dashboard-acoes">
+            <a
+              class="btn btn-contorno"
+              href="relatorios.html"
+            >
+              ▤ Ver relatórios
+            </a>
+
+            <a
+              class="btn btn-dourado"
+              href="novo-membro.html"
+              data-permissao="membros-editar"
+            >
+              ＋ Novo membro
+            </a>
+          </div>
+
+        </section>
+
+        <section class="dashboard-resumos" aria-label="Resumo geral">
+
+          <article class="resumo-card">
+            <div class="resumo-topo">
+              <div class="resumo-icone" aria-hidden="true">♙</div>
+              <span class="resumo-status">Atualizado</span>
+            </div>
+            <p class="resumo-rotulo">Membros ativos</p>
+            <p class="resumo-valor" id="totalMembrosAtivos">—</p>
+            <p class="resumo-detalhe" id="detalheMembros">Carregando informações...</p>
+          </article>
+
+          <article class="resumo-card">
+            <div class="resumo-topo">
+              <div class="resumo-icone" aria-hidden="true">▣</div>
+              <span class="resumo-status">Carteirinhas</span>
+            </div>
+            <p class="resumo-rotulo">Vencendo em breve</p>
+            <p class="resumo-valor" id="carteirinhasVencendo">—</p>
+            <p class="resumo-detalhe">Próximos 30 dias</p>
+          </article>
+
+          <article class="resumo-card">
+            <div class="resumo-topo">
+              <div class="resumo-icone" aria-hidden="true">◇</div>
+              <span class="resumo-status">Documentos</span>
+            </div>
+            <p class="resumo-rotulo">Certificados emitidos</p>
+            <p class="resumo-valor" id="certificadosEmitidos">—</p>
+            <p class="resumo-detalhe">No mês atual</p>
+          </article>
+
+          <article class="resumo-card">
+            <div class="resumo-topo">
+              <div class="resumo-icone" aria-hidden="true">R$</div>
+              <span class="resumo-status">Financeiro</span>
+            </div>
+            <p class="resumo-rotulo">Entradas no mês</p>
+            <p class="resumo-valor" id="entradasMes">—</p>
+            <p class="resumo-detalhe" id="statusFinanceiro">Aguardando dados...</p>
+          </article>
+
+        </section>
+
+        <section class="dashboard-grid-principal">
+
+          <article class="painel">
+
+            <div class="painel-cabecalho">
+              <div>
+                <h3 class="painel-titulo">Atalhos rápidos</h3>
+                <p class="painel-subtitulo">Acesse as tarefas mais utilizadas</p>
+              </div>
+            </div>
+
+            <div class="painel-corpo">
+              <div class="atalhos-grid">
+
+                <a
+                  class="atalho-card"
+                  href="novo-membro.html"
+                  data-permissao="membros-editar"
+                >
+                  <span class="atalho-icone" aria-hidden="true">＋</span>
+                  <span class="atalho-titulo">Cadastrar membro</span>
+                </a>
+
+                <a class="atalho-card" href="membros.html">
+                  <span class="atalho-icone" aria-hidden="true">♙</span>
+                  <span class="atalho-titulo">Consultar membros</span>
+                </a>
+
+                <a class="atalho-card" href="carteirinhas.html">
+                  <span class="atalho-icone" aria-hidden="true">▣</span>
+                  <span class="atalho-titulo">Gerar carteirinha</span>
+                </a>
+
+                <a class="atalho-card" href="certificados/index.html">
+                  <span class="atalho-icone" aria-hidden="true">◇</span>
+                  <span class="atalho-titulo">Gerar certificado</span>
+                </a>
+
+                <a class="atalho-card" href="financeiro.html">
+                  <span class="atalho-icone" aria-hidden="true">R$</span>
+                  <span class="atalho-titulo">Lançar entrada</span>
+                </a>
+
+                <a class="atalho-card" href="relatorios.html">
+                  <span class="atalho-icone" aria-hidden="true">▤</span>
+                  <span class="atalho-titulo">Emitir relatório</span>
+                </a>
+
+              </div>
+            </div>
+
+          </article>
+
+          <article class="painel">
+
+            <div class="painel-cabecalho">
+              <div>
+                <h3 class="painel-titulo">Pendências</h3>
+                <p class="painel-subtitulo">Itens que precisam de atenção</p>
+              </div>
+
+              <a class="painel-link" href="relatorios.html">Ver todas</a>
+            </div>
+
+            <div class="painel-corpo" id="listaPendencias">
+              <div class="estado-vazio">
+                <div class="estado-vazio-icone" aria-hidden="true">…</div>
+                <p class="estado-vazio-titulo">Carregando pendências</p>
+                <p class="estado-vazio-texto">Aguarde alguns instantes.</p>
+              </div>
+            </div>
+
+          </article>
+
+        </section>
+
+        <section class="dashboard-grid-secundario">
+
+          <article class="painel">
+
+            <div class="painel-cabecalho">
+              <div>
+                <h3 class="painel-titulo">Membros recentes</h3>
+                <p class="painel-subtitulo">Últimos cadastros realizados</p>
+              </div>
+
+              <a class="painel-link" href="membros.html">Ver membros</a>
+            </div>
+
+            <div class="painel-corpo">
+              <ul class="lista-dashboard" id="membrosRecentes">
+                <li class="estado-vazio">
+                  <div class="estado-vazio-icone" aria-hidden="true">…</div>
+                  <p class="estado-vazio-titulo">Carregando membros</p>
+                  <p class="estado-vazio-texto">Aguarde alguns instantes.</p>
+                </li>
+              </ul>
+            </div>
+
+          </article>
+
+          <article class="painel">
+
+            <div class="painel-cabecalho">
+              <div>
+                <h3 class="painel-titulo">Resumo financeiro</h3>
+                <p class="painel-subtitulo">Movimentação do mês atual</p>
+              </div>
+
+              <a class="painel-link" href="financeiro.html">Abrir financeiro</a>
+            </div>
+
+            <div class="painel-corpo">
+              <div class="financeiro-resumo">
+
+                <div class="financeiro-item">
+                  <p class="financeiro-rotulo">Dízimos</p>
+                  <p class="financeiro-valor positivo" id="totalDizimos">—</p>
+                </div>
+
+                <div class="financeiro-item">
+                  <p class="financeiro-rotulo">Ofertas</p>
+                  <p class="financeiro-valor positivo" id="totalOfertas">—</p>
+                </div>
+
+                <div class="financeiro-item">
+                  <p class="financeiro-rotulo">Saídas</p>
+                  <p class="financeiro-valor negativo" id="totalSaidas">—</p>
+                </div>
+
+              </div>
+            </div>
+
+          </article>
+
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <div
+    id="carregamentoGlobal"
+    class="carregamento-global"
+    aria-hidden="true"
+  >
+    <div class="carregamento-caixa" role="status" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <span>Carregando...</span>
     </div>
+  </div>
 
-    <nav class="sidebar-menu">
-
-      <a href="#" class="active">
-        Dashboard
-      </a>
-
-      <a href="membros.html">
-        Membros
-      </a>
-
-      <a href="certificados/index.html">
-        Certificados
-      </a>
-
-      <a href="#">
-        Carteirinhas
-      </a>
-
-      <a href="#">
-        Famílias
-      </a>
-
-      <a href="#">
-        Congregações
-      </a>
-
-      <a href="#">
-        Relatórios
-      </a>
-
-      <a href="configuracoes.html">
-        Configurações
-      </a>
-
-    </nav>
-
-    <a href="index.html" class="logout">
-      Sair
-    </a>
-
-  </aside>
-
-  <main class="dashboard-main">
-
-    <header class="dashboard-header">
-
-      <div>
-        <p class="dashboard-label">
-          Painel administrativo
-        </p>
-
-        <h1>
-          Bem-vinda ao Vidas Renovadas Gestão
-        </h1>
-      </div>
-
-      <div class="user-box">
-        Administradora
-      </div>
-
-    </header>
-
-    <section class="dashboard-cards">
-
-      <article class="dashboard-card">
-        <span>Total de membros</span>
-        <strong>0</strong>
-      </article>
-
-      <article class="dashboard-card">
-        <span>Carteirinhas ativas</span>
-        <strong>0</strong>
-      </article>
-
-      <article class="dashboard-card">
-        <span>Aniversariantes do mês</span>
-        <strong>0</strong>
-      </article>
-
-      <article class="dashboard-card">
-        <span>Carteirinhas vencendo</span>
-        <strong>0</strong>
-      </article>
-
-    </section>
-
-    <section class="dashboard-panel">
-
-      <h2>
-        Resumo da igreja
-      </h2>
-
-      <p>
-        Os dados aparecerão aqui quando conectarmos o sistema ao Google Sheets.
-      </p>
-
-    </section>
-
-    <footer class="dashboard-footer">
-      Vidas Renovadas Gestão — Versão 1.0 “Projeto Neemias”
-    </footer>
-
-  </main>
-
-  <script src="js/app.js?v=12"></script>
+  <script src="js/app.js?v=2"></script>
+  <script src="js/auth.js?v=2"></script>
+  <script src="js/dashboard.js?v=1"></script>
 
 </body>
-
 </html>
