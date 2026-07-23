@@ -11,18 +11,23 @@
 
   <title>Membros | Vidas Renovadas Gestão</title>
 
-  <link
-    rel="stylesheet"
-    href="css/estilo.css"
+  <meta
+    name="description"
+    content="Cadastro, consulta e gerenciamento de membros da Igreja Vidas Renovadas."
   >
+
+  <meta name="theme-color" content="#071f3b">
+
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="css/estilo.css?v=50">
 
   <style>
     /* =========================================================
-       PÁGINA DE MEMBROS
-       Complementa o estilo oficial do sistema interno
+       MÓDULO DE MEMBROS
+       Complemento do padrão oficial do sistema interno
        ========================================================= */
 
-    .membros-cabecalho {
+    .membros-apresentacao {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
@@ -30,7 +35,7 @@
       margin-bottom: 22px;
     }
 
-    .membros-cabecalho-texto {
+    .membros-apresentacao-texto {
       min-width: 0;
     }
 
@@ -59,12 +64,14 @@
       line-height: 1.5;
     }
 
+    /* Filtros */
+
     .membros-filtros {
       display: grid;
       grid-template-columns:
         minmax(280px, 1fr)
-        minmax(180px, 220px)
-        minmax(180px, 240px)
+        minmax(175px, 200px)
+        minmax(190px, 225px)
         auto;
       align-items: end;
       gap: 12px;
@@ -120,6 +127,8 @@
       min-height: 44px;
       white-space: nowrap;
     }
+
+    /* Seleção e exportação */
 
     .membros-selecao {
       display: flex;
@@ -177,6 +186,8 @@
       opacity: 0.45;
     }
 
+    /* Painel e tabela */
+
     .membros-painel {
       overflow: hidden;
       border: 1px solid var(--borda-sistema);
@@ -215,7 +226,8 @@
 
     .members-table {
       width: 100%;
-      min-width: 940px;
+      min-width: 980px;
+      table-layout: fixed;
       border-collapse: collapse;
       background: #ffffff;
     }
@@ -239,8 +251,10 @@
     }
 
     .members-table td {
+      overflow: hidden;
       color: var(--texto);
       font-size: 0.77rem;
+      text-overflow: ellipsis;
     }
 
     .members-table tbody tr {
@@ -255,16 +269,52 @@
       border-bottom: 0;
     }
 
-    .coluna-selecao {
+    /* Larguras oficiais da tabela */
+
+    .members-table th:nth-child(1),
+    .members-table td:nth-child(1) {
       width: 48px;
+    }
+
+    .members-table th:nth-child(2),
+    .members-table td:nth-child(2) {
+      width: 92px;
+    }
+
+    .members-table th:nth-child(3),
+    .members-table td:nth-child(3) {
+      width: 24%;
+    }
+
+    .members-table th:nth-child(4),
+    .members-table td:nth-child(4) {
+      width: 16%;
+    }
+
+    .members-table th:nth-child(5),
+    .members-table td:nth-child(5) {
+      width: 24%;
+    }
+
+    .members-table th:nth-child(6),
+    .members-table td:nth-child(6) {
+      width: 15%;
+    }
+
+    .members-table th:nth-child(7),
+    .members-table td:nth-child(7) {
+      width: 140px;
+    }
+
+    .coluna-selecao {
       text-align: center !important;
     }
 
     .coluna-acoes {
-  width: 140px;
-  padding-right: 28px !important;
-  text-align: center !important;
-}
+      padding-right: 24px !important;
+      text-align: center !important;
+    }
+
     .coluna-selecao input,
     .seletor-carteirinha {
       width: 18px;
@@ -279,6 +329,8 @@
       text-align: center !important;
     }
 
+    /* Badges */
+
     .badge-cargo,
     .badge-congregacao,
     .badge-situacao {
@@ -288,11 +340,13 @@
       align-items: center;
       gap: 7px;
       padding: 5px 10px;
+      overflow: hidden;
       border: 1px solid transparent;
       border-radius: 999px;
       font-size: 0.7rem;
       font-weight: 850;
       line-height: 1.25;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
@@ -391,7 +445,7 @@
       color: #39444b;
     }
 
-    .dashboard-footer {
+    .membros-rodape {
       margin-top: 20px;
       padding: 13px 0 2px;
       color: var(--texto-suave-sistema);
@@ -401,7 +455,10 @@
 
     @media (max-width: 1180px) {
       .membros-filtros {
-        grid-template-columns: minmax(260px, 1fr) 190px 210px;
+        grid-template-columns:
+          minmax(260px, 1fr)
+          minmax(180px, 210px)
+          minmax(190px, 230px);
       }
 
       .botao-novo-membro {
@@ -411,7 +468,7 @@
     }
 
     @media (max-width: 760px) {
-      .membros-cabecalho {
+      .membros-apresentacao {
         flex-direction: column;
       }
 
@@ -435,48 +492,43 @@
         width: 100%;
         justify-content: center;
       }
-
-      .badge-cargo,
-      .badge-congregacao,
-      .badge-situacao {
-        white-space: normal;
-      }
     }
   </style>
 </head>
 
-<body class="sistema-page">
+<body class="sistema-page" data-page="membros">
 
   <div class="sistema-layout">
 
-    <aside class="sidebar">
+    <aside class="sidebar" aria-label="Menu principal">
 
       <div class="sidebar-topo">
 
         <div class="sidebar-logo-box">
+
           <img
-            src="logo.png"
-            alt="Logo da Igreja Vidas Renovadas"
             class="sidebar-logo"
+            src="logo.png"
+            alt="Logo da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas"
           >
+
         </div>
 
         <div class="sidebar-identidade">
+
           <p class="sidebar-nome">
-            Vidas Renovadas
+            Vidas Renovadas Gestão
           </p>
 
-          <div class="sidebar-ministerio">
-            Projeto Neemias
-          </div>
+          <p class="sidebar-ministerio">
+            Ministério Vidas Renovadas
+          </p>
+
         </div>
 
       </div>
 
-      <nav
-        class="menu-navegacao"
-        aria-label="Menu principal"
-      >
+      <nav class="menu-navegacao">
 
         <div class="menu-grupo">
 
@@ -485,13 +537,11 @@
           </p>
 
           <a
-            href="dashboard.html"
             class="menu-item"
+            href="dashboard.html"
+            data-page="dashboard"
           >
-            <span class="menu-item-icone" aria-hidden="true">
-              ⌂
-            </span>
-
+            <span class="menu-item-icone" aria-hidden="true">⌂</span>
             <span>Dashboard</span>
           </a>
 
@@ -500,52 +550,59 @@
         <div class="menu-grupo">
 
           <p class="menu-grupo-titulo">
-            Secretaria
+            Pessoas
           </p>
 
           <a
+            class="menu-item"
             href="membros.html"
-            class="menu-item ativo"
-            aria-current="page"
+            data-page="membros"
           >
-            <span class="menu-item-icone" aria-hidden="true">
-              ♟
-            </span>
-
+            <span class="menu-item-icone" aria-hidden="true">♙</span>
             <span>Membros</span>
           </a>
 
           <a
-            href="#"
             class="menu-item"
-            aria-disabled="true"
+            href="familias.html"
+            data-page="familias"
           >
-            <span class="menu-item-icone" aria-hidden="true">
-              ♡
-            </span>
-
+            <span class="menu-item-icone" aria-hidden="true">♧</span>
             <span>Famílias</span>
           </a>
 
           <a
-            href="carteirinha.html"
             class="menu-item"
+            href="congregacoes.html"
+            data-page="congregacoes"
           >
-            <span class="menu-item-icone" aria-hidden="true">
-              ▣
-            </span>
+            <span class="menu-item-icone" aria-hidden="true">⌂</span>
+            <span>Congregações</span>
+          </a>
 
+        </div>
+
+        <div class="menu-grupo">
+
+          <p class="menu-grupo-titulo">
+            Documentos
+          </p>
+
+          <a
+            class="menu-item"
+            href="carteirinhas.html"
+            data-page="carteirinhas"
+          >
+            <span class="menu-item-icone" aria-hidden="true">▣</span>
             <span>Carteirinhas</span>
           </a>
 
           <a
-            href="certificados/index.html"
             class="menu-item"
+            href="certificados/index.html"
+            data-page="certificados"
           >
-            <span class="menu-item-icone" aria-hidden="true">
-              ◇
-            </span>
-
+            <span class="menu-item-icone" aria-hidden="true">◇</span>
             <span>Certificados</span>
           </a>
 
@@ -554,42 +611,35 @@
         <div class="menu-grupo">
 
           <p class="menu-grupo-titulo">
-            Administração
+            Gestão
           </p>
 
           <a
-            href="#"
             class="menu-item"
-            aria-disabled="true"
+            href="financeiro.html"
+            data-page="financeiro"
           >
-            <span class="menu-item-icone" aria-hidden="true">
-              ⛪
-            </span>
-
-            <span>Congregações</span>
+            <span class="menu-item-icone" aria-hidden="true">R$</span>
+            <span>Financeiro</span>
           </a>
 
           <a
-            href="#"
             class="menu-item"
-            aria-disabled="true"
+            href="relatorios.html"
+            data-page="relatorios"
           >
-            <span class="menu-item-icone" aria-hidden="true">
-              ◫
-            </span>
-
+            <span class="menu-item-icone" aria-hidden="true">▤</span>
             <span>Relatórios</span>
           </a>
 
           <a
-            href="configuracoes.html"
             class="menu-item"
+            href="configuracoes.html"
+            data-page="configuracoes"
+            data-permissao="administracao"
           >
-            <span class="menu-item-icone" aria-hidden="true">
-              ⚙
-            </span>
-
-            <span>Configurações</span>
+            <span class="menu-item-icone" aria-hidden="true">⚙</span>
+            <span>Administração</span>
           </a>
 
         </div>
@@ -602,8 +652,7 @@
 
           <div
             class="usuario-avatar"
-            id="usuarioAvatar"
-            aria-hidden="true"
+            data-usuario-iniciais
           >
             VR
           </div>
@@ -612,28 +661,30 @@
 
             <div
               class="usuario-sidebar-nome"
-              id="usuarioNome"
+              data-usuario-nome
             >
               Usuário
             </div>
 
             <div
               class="usuario-sidebar-cargo"
-              id="usuarioCargo"
+              data-usuario-cargo
             >
-              Acesso ao sistema
+              Carregando perfil...
             </div>
 
           </div>
 
-          <a
-            href="index.html"
+          <button
+            type="button"
             class="botao-sair-sidebar"
-            title="Sair"
+            data-acao="logout"
+            data-confirmar-logout="true"
             aria-label="Sair do sistema"
+            title="Sair do sistema"
           >
             ↪
-          </a>
+          </button>
 
         </div>
 
@@ -643,8 +694,7 @@
 
     <div
       class="overlay-menu"
-      id="overlayMenu"
-      aria-hidden="true"
+      data-acao="fechar-menu"
     ></div>
 
     <main class="sistema-main">
@@ -656,7 +706,7 @@
           <button
             type="button"
             class="botao-menu-mobile"
-            id="botaoMenuMobile"
+            data-acao="alternar-menu"
             aria-label="Abrir menu"
             aria-expanded="false"
           >
@@ -664,30 +714,31 @@
           </button>
 
           <div>
+
             <h1 class="topbar-titulo">
               Membros
             </h1>
 
             <p class="topbar-subtitulo">
-              Cadastro, consulta e gerenciamento
+              Cadastro, consulta e gerenciamento de membros
             </p>
+
           </div>
 
         </div>
 
         <div class="topbar-direita">
 
-          <div
-            class="topbar-data"
-            id="topbarData"
-          >
-            Vidas Renovadas Gestão
+          <div class="topbar-data">
+
+            <strong id="dataAtual">—</strong><br>
+            <span id="horaAtual">—</span>
+
           </div>
 
           <div
             class="topbar-avatar"
-            id="topbarAvatar"
-            aria-hidden="true"
+            data-usuario-iniciais
           >
             VR
           </div>
@@ -698,9 +749,9 @@
 
       <div class="sistema-conteudo">
 
-        <section class="membros-cabecalho">
+        <section class="membros-apresentacao">
 
-          <div class="membros-cabecalho-texto">
+          <div class="membros-apresentacao-texto">
 
             <p class="membros-etiqueta">
               Secretaria
@@ -746,33 +797,13 @@
 
             <select id="filtroSituacao">
 
-              <option value="">
-                Todas as situações
-              </option>
-
-              <option value="Ativo">
-                Ativo
-              </option>
-
-              <option value="Congregado">
-                Congregado
-              </option>
-
-              <option value="Visitante">
-                Visitante
-              </option>
-
-              <option value="Inativo">
-                Inativo
-              </option>
-
-              <option value="Transferido">
-                Transferido
-              </option>
-
-              <option value="Falecido">
-                Falecido
-              </option>
+              <option value="">Todas as situações</option>
+              <option value="Ativo">Ativo</option>
+              <option value="Congregado">Congregado</option>
+              <option value="Visitante">Visitante</option>
+              <option value="Inativo">Inativo</option>
+              <option value="Transferido">Transferido</option>
+              <option value="Falecido">Falecido</option>
 
             </select>
 
@@ -786,9 +817,7 @@
 
             <select id="filtroCongregacao">
 
-              <option value="">
-                Todas as congregações
-              </option>
+              <option value="">Todas as congregações</option>
 
               <option value="Independência / Petrópolis">
                 Independência / Petrópolis
@@ -803,11 +832,11 @@
           </div>
 
           <a
-            href="novo-membro.html"
             class="btn btn-primario botao-novo-membro"
+            href="novo-membro.html"
+            data-permissao="membros-editar"
           >
-            <span aria-hidden="true">＋</span>
-            Novo membro
+            ＋ Novo membro
           </a>
 
         </section>
@@ -830,8 +859,7 @@
             class="botao-exportar-selecionadas"
             disabled
           >
-            <span aria-hidden="true">▣</span>
-            Exportar selecionadas
+            ▣ Exportar selecionadas
           </button>
 
         </section>
@@ -908,7 +936,7 @@
 
         </section>
 
-        <footer class="dashboard-footer">
+        <footer class="membros-rodape">
           Vidas Renovadas Gestão — Projeto Neemias
         </footer>
 
@@ -918,7 +946,26 @@
 
   </div>
 
-  <script src="js/app.js?v=13"></script>
+  <div
+    id="carregamentoGlobal"
+    class="carregamento-global"
+    aria-hidden="true"
+  >
+
+    <div
+      class="carregamento-caixa"
+      role="status"
+      aria-live="polite"
+    >
+      <span class="spinner" aria-hidden="true"></span>
+      <span>Carregando...</span>
+    </div>
+
+  </div>
+
+  <script src="js/app.js?v=2"></script>
+  <script src="js/auth.js?v=2"></script>
+  <script src="js/membros.js?v=1"></script>
 
 </body>
 
