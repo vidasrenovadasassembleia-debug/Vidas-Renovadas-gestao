@@ -179,6 +179,8 @@
     <div
       id="mensagemCarregamento"
       class="form-section"
+      role="status"
+      aria-live="polite"
     >
       Carregando dados do membro...
     </div>
@@ -193,12 +195,6 @@
         type="hidden"
         id="id"
         name="id"
-      >
-
-      <input
-        type="hidden"
-        name="acao"
-        value="atualizar"
       >
 
       <input
@@ -240,12 +236,16 @@
             <a
               id="visualizarCarteirinha"
               class="primary-link foto-carteirinha-link"
-              href="membros.html"
+              aria-disabled="true"
             >
               Visualizar Carteirinha
             </a>
 
-            <p id="statusFoto">
+            <p
+              id="statusFoto"
+              role="status"
+              aria-live="polite"
+            >
               Selecione uma foto para visualizar.
             </p>
 
@@ -316,6 +316,8 @@
               type="text"
               id="cpf"
               name="cpf"
+              inputmode="numeric"
+              autocomplete="off"
             >
           </div>
 
@@ -421,6 +423,8 @@
               type="text"
               id="telefone"
               name="telefone"
+              inputmode="tel"
+              autocomplete="tel"
             >
           </div>
 
@@ -431,6 +435,7 @@
               type="text"
               id="whatsapp"
               name="whatsapp"
+              inputmode="tel"
             >
           </div>
 
@@ -441,6 +446,7 @@
               type="email"
               id="email"
               name="email"
+              autocomplete="email"
             >
           </div>
 
@@ -451,6 +457,10 @@
               type="text"
               id="cep"
               name="cep"
+              inputmode="numeric"
+              autocomplete="postal-code"
+              maxlength="9"
+              placeholder="00000-000"
             >
           </div>
 
@@ -671,133 +681,11 @@
   </main>
 
 
-  <script>
-    (function () {
-      const campoCep = document.getElementById("cep");
-      const campoEndereco = document.getElementById("endereco");
-      const campoBairro = document.getElementById("bairro");
-      const campoCidade = document.getElementById("cidade");
-      const campoEstado = document.getElementById("estado");
-
-      if (!campoCep) {
-        return;
-      }
-
-      function somenteNumeros(valor) {
-        return String(valor || "").replace(/\D/g, "");
-      }
-
-      function formatarCep(valor) {
-        const numeros = somenteNumeros(valor).slice(0, 8);
-
-        if (numeros.length > 5) {
-          return numeros.slice(0, 5) + "-" + numeros.slice(5);
-        }
-
-        return numeros;
-      }
-
-      function preencherCampo(campo, valor) {
-        if (campo && valor) {
-          campo.value = valor;
-          campo.dispatchEvent(new Event("input", { bubbles: true }));
-          campo.dispatchEvent(new Event("change", { bubbles: true }));
-        }
-      }
-
-      function definirStatus(mensagem, tipo) {
-        let status = document.getElementById("statusCep");
-
-        if (!status) {
-          status = document.createElement("small");
-          status.id = "statusCep";
-          status.setAttribute("aria-live", "polite");
-          campoCep.insertAdjacentElement("afterend", status);
-        }
-
-        status.textContent = mensagem || "";
-        status.style.display = mensagem ? "block" : "none";
-        status.style.marginTop = "6px";
-        status.style.fontSize = "0.85rem";
-        status.style.color =
-          tipo === "erro" ? "#b42318" :
-          tipo === "sucesso" ? "#067647" :
-          "#64748b";
-      }
-
-      async function consultarCep() {
-        const cep = somenteNumeros(campoCep.value);
-
-        if (!cep) {
-          definirStatus("");
-          return;
-        }
-
-        if (cep.length !== 8) {
-          definirStatus("Digite um CEP válido com 8 números.", "erro");
-          return;
-        }
-
-        definirStatus("Buscando endereço...");
-
-        try {
-          const resposta = await fetch(
-            "https://viacep.com.br/ws/" + cep + "/json/"
-          );
-
-          if (!resposta.ok) {
-            throw new Error("Não foi possível consultar o CEP.");
-          }
-
-          const dados = await resposta.json();
-
-          if (dados.erro) {
-            definirStatus("CEP não encontrado.", "erro");
-            return;
-          }
-
-          preencherCampo(campoEndereco, dados.logradouro);
-          preencherCampo(campoBairro, dados.bairro);
-          preencherCampo(campoCidade, dados.localidade);
-          preencherCampo(campoEstado, dados.uf);
-
-          definirStatus("Endereço preenchido automaticamente.", "sucesso");
-
-          const campoNumero = document.getElementById("numero");
-
-          if (campoNumero) {
-            campoNumero.focus();
-          }
-        } catch (erro) {
-          console.error("Erro ao consultar CEP:", erro);
-          definirStatus(
-            "Não foi possível consultar o CEP agora. Preencha o endereço manualmente.",
-            "erro"
-          );
-        }
-      }
-
-      campoCep.setAttribute("maxlength", "9");
-      campoCep.setAttribute("inputmode", "numeric");
-      campoCep.setAttribute("autocomplete", "postal-code");
-      campoCep.placeholder = "00000-000";
-
-      campoCep.addEventListener("input", function () {
-        campoCep.value = formatarCep(campoCep.value);
-
-        if (somenteNumeros(campoCep.value).length === 8) {
-          consultarCep();
-        } else {
-          definirStatus("");
-        }
-      });
-
-      campoCep.addEventListener("blur", consultarCep);
-    })();
-  </script>
-
-  <script src="js/app.js?v=13"></script>
-
+  <script src="js/configuracoes.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/editar-membro.js"></script>
 
 </body>
 
