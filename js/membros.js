@@ -2,7 +2,7 @@
  * ============================================================================
  * VIDAS RENOVADAS GESTÃO 2.0
  * Arquivo: js/membros.js
- * Descrição: Listagem, pesquisa, filtros e seleção de membros
+ * Descrição: Listagem, pesquisa, filtros, ações e seleção de membros
  * ============================================================================
  *
  * Dependências obrigatórias, nesta ordem:
@@ -59,7 +59,11 @@
     for (const nome of nomes) {
       const valor = objeto?.[nome];
 
-      if (valor !== undefined && valor !== null && String(valor).trim() !== "") {
+      if (
+        valor !== undefined &&
+        valor !== null &&
+        String(valor).trim() !== ""
+      ) {
         return valor;
       }
     }
@@ -67,16 +71,44 @@
     return valorPadrao;
   }
 
+  function usuarioPodeEditar() {
+    const auth = obterAuth();
+
+    return typeof auth.usuarioAdministrador === "function"
+      ? auth.usuarioAdministrador()
+      : false;
+  }
+
   function normalizarMembro(membro) {
+    const id = obterPrimeiroValor(
+      membro,
+      ["id", "ID", "codigo", "Código"]
+    );
+
     return {
       ...membro,
-      id: obterPrimeiroValor(membro, ["id", "ID", "codigo", "Código"]),
+      id: String(id || "").trim(),
+      numeroCarteirinha: String(
+        obterPrimeiroValor(
+          membro,
+          [
+            "numeroCarteirinha",
+            "NUMERO_CARTEIRINHA",
+            "Número da Carteirinha"
+          ],
+          id
+        )
+      ).trim(),
       nome: obterPrimeiroValor(
         membro,
         ["nome", "nomeCompleto", "Nome", "Nome Completo"],
         "Nome não informado"
       ),
-      cargo: obterPrimeiroValor(membro, ["cargo", "Cargo"], "-"),
+      cargo: obterPrimeiroValor(
+        membro,
+        ["cargo", "Cargo"],
+        "-"
+      ),
       congregacao: obterPrimeiroValor(
         membro,
         ["congregacao", "congregação", "Congregação", "Congregacao"],
@@ -88,36 +120,6 @@
         "Ativo"
       )
     };
-  }
-
-  function classePorTexto(prefixo, valor) {
-    const texto = normalizarTexto(valor)
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-
-    return `${prefixo}-${texto || "padrao"}`;
-  }
-
-  function criarBadge(tipo, valor, comPonto = false) {
-    const texto = valor || "-";
-    const classe = classePorTexto(`badge-${tipo}`, texto);
-
-    return `
-      <span class="badge-${tipo} ${classe}">
-        ${comPonto ? '<span class="badge-status-dot" aria-hidden="true"></span>' : ""}
-        ${escaparHtml(texto)}
-      </span>
-    `;
-  }
-
-  function definirMensagemTabela(mensagem) {
-    elementos.lista.innerHTML = `
-      <tr>
-        <td colspan="7" class="empty-state">
-          ${escaparHtml(mensagem)}
-        </td>
-      </tr>
-    `;
   }
 
   function obterMembrosDaResposta(resultado) {
@@ -142,28 +144,107 @@
     return membros.map(normalizarMembro);
   }
 
-  function usuarioPodeEditar() {
-    const auth = obterAuth();
+  function classePorTexto(prefixo, valor) {
+    const texto = normalizarTexto(valor)
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
 
-    return typeof auth.usuarioAdministrador === "function"
-      ? auth.usuarioAdministrador()
-      : false;
+    return `${prefixo}-${texto || "padrao"}`;
   }
 
-  function criarLinhaMembro(membro) {
-    const id = String(membro.id ?? "");
-    const idCodificado = encodeURIComponent(id);
-    const selecionado = estado.idsSelecionados.has(id);
-    const linkVisualizar = `visualizar-membro.html?id=${idCodificado}`;
-    const linkEditar = `editar-membro.html?id=${idCodificado}`;
+  function criarBadge(tipo, valor, comPonto = false) {
+    const texto = valor || "-";
+    const classe = classePorTexto(`badge-${tipo}`, texto);
 
-    const editar = usuarioPodeEditar()
+    return `
+      <span class="badge-${tipo} ${classe}">
+        ${comPonto
+          ? '<span class="badge-status-dot" aria-hidden="true"></span>'
+          : ""}
+        ${escaparHtml(texto)}
+      </span>
+    `;
+  }
+
+  function membroPermiteCarteirinha(membro) {
+    const id = String(membro?.id || "").trim();
+    const situacao = normalizarTexto(membro?.situacao);
+
+    return Boolean(id) && situacao !== "excluido";
+  }
+
+  function criarAcoesMembro(membro) {
+    const id = String(membro.id || "").trim();
+    const idCodificado = encodeURIComponent(id);
+
+    const linkVisualizar =
+      `visualizar-membro.html?id=${idCodificado}`;
+
+    const linkEditar =
+      `editar-membro.html?id=${idCodificado}`;
+
+    const linkCarteirinha =
+      `carteirinha.html?membros=${idCodificado}`;
+
+    const botaoVisualizar = `
+      <a
+        class="btn-acao"
+        href="${linkVisualizar}"
+        aria-label="Visualizar ficha de ${escaparHtml(membro.nome)}"
+        title="Visualizar ficha"
+      >
+        Visualizar
+      </a>
+    `;
+
+    const botaoEditar = usuarioPodeEditar()
       ? `
-        <a class="btn-acao btn-secundario" href="${linkEditar}">
+        <a
+          class="btn-acao btn-secundario"
+          href="${linkEditar}"
+          aria-label="Editar cadastro de ${escaparHtml(membro.nome)}"
+          title="Editar cadastro"
+        >
           Editar
         </a>
       `
       : "";
+
+    const botaoCarteirinha = membroPermiteCarteirinha(membro)
+      ? `
+        <a
+          class="btn-acao btn-carteirinha"
+          href="${linkCarteirinha}"
+          aria-label="Abrir carteirinha de ${escaparHtml(membro.nome)}"
+          title="Abrir carteirinha"
+        >
+          Carteirinha
+        </a>
+      `
+      : "";
+
+    return `
+      <div class="acoes-tabela">
+        ${botaoVisualizar}
+        ${botaoEditar}
+        ${botaoCarteirinha}
+      </div>
+    `;
+  }
+
+  function definirMensagemTabela(mensagem) {
+    elementos.lista.innerHTML = `
+      <tr>
+        <td colspan="7" class="empty-state">
+          ${escaparHtml(mensagem)}
+        </td>
+      </tr>
+    `;
+  }
+
+  function criarLinhaMembro(membro) {
+    const id = String(membro.id || "").trim();
+    const selecionado = estado.idsSelecionados.has(id);
 
     return `
       <tr data-id-membro="${escaparHtml(id)}">
@@ -184,12 +265,7 @@
         <td>${criarBadge("situacao", membro.situacao, true)}</td>
 
         <td>
-          <div class="acoes-tabela">
-            <a class="btn-acao" href="${linkVisualizar}">
-              Visualizar
-            </a>
-            ${editar}
-          </div>
+          ${criarAcoesMembro(membro)}
         </td>
       </tr>
     `;
@@ -204,19 +280,24 @@
       return;
     }
 
-    elementos.lista.innerHTML = membros.map(criarLinhaMembro).join("");
+    elementos.lista.innerHTML =
+      membros.map(criarLinhaMembro).join("");
+
     atualizarSelecaoGeral();
   }
 
   function aplicarFiltros() {
     const pesquisa = normalizarTexto(elementos.pesquisa?.value);
     const situacao = normalizarTexto(elementos.filtroSituacao?.value);
-    const congregacao = normalizarTexto(elementos.filtroCongregacao?.value);
+    const congregacao = normalizarTexto(
+      elementos.filtroCongregacao?.value
+    );
 
     const filtrados = estado.membros.filter((membro) => {
       const textoPesquisavel = normalizarTexto(
         [
           membro.id,
+          membro.numeroCarteirinha,
           membro.nome,
           membro.cargo,
           membro.congregacao,
@@ -228,7 +309,8 @@
         !pesquisa || textoPesquisavel.includes(pesquisa);
 
       const correspondeSituacao =
-        !situacao || normalizarTexto(membro.situacao) === situacao;
+        !situacao ||
+        normalizarTexto(membro.situacao) === situacao;
 
       const correspondeCongregacao =
         !congregacao ||
@@ -249,18 +331,25 @@
 
     const valorAtual = elementos.filtroCongregacao.value;
 
-    const congregacoes = [...new Set(
-      estado.membros
-        .map((membro) => String(membro.congregacao || "").trim())
-        .filter((valor) => valor && valor !== "-")
-    )].sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const congregacoes = [
+      ...new Set(
+        estado.membros
+          .map((membro) =>
+            String(membro.congregacao || "").trim()
+          )
+          .filter((valor) => valor && valor !== "-")
+      )
+    ].sort((a, b) => a.localeCompare(b, "pt-BR"));
 
     elementos.filtroCongregacao.innerHTML = `
       <option value="">Todas as congregações</option>
       ${congregacoes
         .map(
-          (congregacao) =>
-            `<option value="${escaparHtml(congregacao)}">${escaparHtml(congregacao)}</option>`
+          (congregacao) => `
+            <option value="${escaparHtml(congregacao)}">
+              ${escaparHtml(congregacao)}
+            </option>
+          `
         )
         .join("")}
     `;
@@ -283,7 +372,7 @@
 
   function atualizarSelecaoGeral() {
     const idsExibidos = estado.membrosExibidos
-      .map((membro) => String(membro.id ?? ""))
+      .map((membro) => String(membro.id || "").trim())
       .filter(Boolean);
 
     const selecionadosExibidos = idsExibidos.filter((id) =>
@@ -302,11 +391,13 @@
   }
 
   function alternarSelecaoIndividual(evento) {
-    const seletor = evento.target.closest(".seletor-carteirinha");
+    const seletor = evento.target.closest(
+      ".seletor-carteirinha"
+    );
 
     if (!seletor) return;
 
-    const id = String(seletor.value || "");
+    const id = String(seletor.value || "").trim();
 
     if (!id) return;
 
@@ -323,7 +414,7 @@
     const marcar = elementos.selecionarTodos.checked;
 
     estado.membrosExibidos.forEach((membro) => {
-      const id = String(membro.id ?? "");
+      const id = String(membro.id || "").trim();
 
       if (!id) return;
 
@@ -346,7 +437,8 @@
       membros: ids.join(",")
     });
 
-    window.location.href = `carteirinha.html?${parametros.toString()}`;
+    window.location.href =
+      `carteirinha.html?${parametros.toString()}`;
   }
 
   async function carregarMembros() {
@@ -361,13 +453,18 @@
       });
 
       estado.membros = obterMembrosDaResposta(resultado);
+
       preencherFiltroCongregacoes();
       aplicarFiltros();
     } catch (erro) {
-      console.error("[MEMBROS] Erro ao carregar membros:", erro);
+      console.error(
+        "[MEMBROS] Erro ao carregar membros:",
+        erro
+      );
 
       definirMensagemTabela(
-        erro?.message || "Não foi possível carregar os membros."
+        erro?.message ||
+        "Não foi possível carregar os membros."
       );
     } finally {
       estado.carregando = false;
@@ -375,14 +472,24 @@
   }
 
   function capturarElementos() {
-    elementos.lista = document.getElementById("listaMembros");
-    elementos.pesquisa = document.getElementById("pesquisaMembro");
-    elementos.filtroSituacao = document.getElementById("filtroSituacao");
+    elementos.lista =
+      document.getElementById("listaMembros");
+
+    elementos.pesquisa =
+      document.getElementById("pesquisaMembro");
+
+    elementos.filtroSituacao =
+      document.getElementById("filtroSituacao");
+
     elementos.filtroCongregacao =
       document.getElementById("filtroCongregacao");
+
     elementos.selecionarTodos =
       document.getElementById("selecionarTodosMembros");
-    elementos.contador = document.getElementById("contadorSelecionados");
+
+    elementos.contador =
+      document.getElementById("contadorSelecionados");
+
     elementos.botaoExportar =
       document.getElementById("botaoExportarSelecionadas");
 
@@ -398,14 +505,31 @@
   }
 
   function configurarEventos() {
-    elementos.pesquisa.addEventListener("input", aplicarFiltros);
-    elementos.filtroSituacao.addEventListener("change", aplicarFiltros);
-    elementos.filtroCongregacao.addEventListener("change", aplicarFiltros);
-    elementos.lista.addEventListener("change", alternarSelecaoIndividual);
+    elementos.pesquisa.addEventListener(
+      "input",
+      aplicarFiltros
+    );
+
+    elementos.filtroSituacao.addEventListener(
+      "change",
+      aplicarFiltros
+    );
+
+    elementos.filtroCongregacao.addEventListener(
+      "change",
+      aplicarFiltros
+    );
+
+    elementos.lista.addEventListener(
+      "change",
+      alternarSelecaoIndividual
+    );
+
     elementos.selecionarTodos.addEventListener(
       "change",
       alternarTodosExibidos
     );
+
     elementos.botaoExportar.addEventListener(
       "click",
       exportarSelecionados
@@ -426,9 +550,11 @@
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", inicializar, {
-      once: true
-    });
+    document.addEventListener(
+      "DOMContentLoaded",
+      inicializar,
+      { once: true }
+    );
   } else {
     inicializar();
   }
