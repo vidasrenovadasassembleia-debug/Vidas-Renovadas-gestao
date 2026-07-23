@@ -1,1777 +1,1403 @@
-const URL_API =
-  "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec";
+/**
+ * ============================================================================
+ * VIDAS RENOVADAS GESTÃO 2.0
+ * Arquivo: js/app.js
+ * Descrição: Núcleo global da aplicação
+ * ============================================================================
+ *
+ * Este arquivo concentra funções compartilhadas por todo o sistema:
+ * - inicialização geral;
+ * - menu lateral e navegação mobile;
+ * - carregamento global;
+ * - mensagens, alertas e toasts;
+ * - modais e abas;
+ * - formatação e validação de dados;
+ * - armazenamento local;
+ * - chamadas ao Google Apps Script;
+ * - proteção contra erros globais;
+ * - utilitários reutilizáveis.
+ *
+ * Importante:
+ * - A autenticação Google ficará em js/auth.js.
+ * - Regras específicas de cada módulo ficarão em arquivos próprios.
+ * ============================================================================
+ */
 
-const CLIENT_ID_GOOGLE =
-  "18655161530-n6p9th5quno3q41sp5pvbo4mj2eo5rnv.apps.googleusercontent.com";
+(function (window, document) {
+  "use strict";
 
-const CHAVE_SESSAO =
-  "vidasRenovadasSessao";
-
-/* =========================================
-   SESSÃO E AUTENTICAÇÃO
-========================================= */
-
-function salvarSessao(credential, usuario) {
-  const sessao = JSON.stringify({
-    credential: credential,
-    usuario: usuario
+  const APP_CONFIG = Object.freeze({
+    nome: "Vidas Renovadas Gestão",
+    versao: "2.0.0",
+    igreja: "Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas",
+    idioma: "pt-BR",
+    moeda: "BRL",
+    paginaLogin: "index.html",
+    paginaInicial: "dashboard.html",
+    tempoToast: 4500,
+    tempoDebounce: 350,
+    chaveSessao: "vrg_sessao",
+    chaveUsuario: "vrg_usuario",
+    chavePreferencias: "vrg_preferencias",
+    chaveMenu: "vrg_menu_recolhido"
   });
 
-  sessionStorage.setItem(CHAVE_SESSAO, sessao);
-  localStorage.setItem(CHAVE_SESSAO, sessao);
-}
-
-function obterSessao() {
-  const texto =
-    sessionStorage.getItem(CHAVE_SESSAO) ||
-    localStorage.getItem(CHAVE_SESSAO);
-
-  if (!texto) {
-    return null;
-  }
-
-  try {
-    const sessao = JSON.parse(texto);
-    sessionStorage.setItem(CHAVE_SESSAO, texto);
-    return sessao;
-  } catch (erro) {
-    removerSessaoSalva();
-    return null;
-  }
-}
-
-function removerSessaoSalva() {
-  sessionStorage.removeItem(CHAVE_SESSAO);
-  localStorage.removeItem(CHAVE_SESSAO);
-}
-
-function caminhoPaginaInicial() {
-  return window.location.pathname.includes("/certificados/")
-    ? "../index.html"
-    : "index.html";
-}
-
-function encerrarSessao() {
-  removerSessaoSalva();
-
-  if (
-    window.google &&
-    google.accounts &&
-    google.accounts.id
-  ) {
-    google.accounts.id.disableAutoSelect();
-  }
-
-  window.location.href = caminhoPaginaInicial();
-}
-
-function paginaAtual() {
-  const caminho = window.location.pathname.split("/").pop();
-  return caminho || "index.html";
-}
-
-function paginaProtegida() {
-  const paginas = [
-    "dashboard.html",
-    "membros.html",
-    "membro.html",
-    "novo-membro.html",
-    "editar-membro.html",
-    "carteirinha.html",
-    "configuracoes.html"
-  ];
-
-  const moduloCertificados =
-    window.location.pathname.includes("/certificados/");
-
-  return moduloCertificados || paginas.includes(paginaAtual());
-}
-
-function exigirSessao() {
-  if (!paginaProtegida()) {
-    return;
-  }
-
-  const sessao = obterSessao();
-
-  if (!sessao || !sessao.credential) {
-    window.location.replace(caminhoPaginaInicial());
-  }
-}
-
-function normalizarPerfil(perfil) {
-  return String(perfil || "")
-    .trim()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
-
-function usuarioAdministrador() {
-  const sessao = obterSessao();
-  const perfil = normalizarPerfil(sessao?.usuario?.perfil);
-
-  return [
-    "administradora",
-    "administrador",
-    "pastor",
-    "pastor presidente"
-  ].includes(perfil);
-}
-
-function aplicarIdentidadeUsuario() {
-  const sessao = obterSessao();
-
-  if (!sessao || !sessao.usuario) {
-    return;
-  }
-
-  document.querySelectorAll(".user-box").forEach(function (caixa) {
-    caixa.textContent =
-      sessao.usuario.nome ||
-      sessao.usuario.email;
-  });
-
-  document.querySelectorAll("[data-nome-usuario]").forEach(function (elemento) {
-    elemento.textContent =
-      sessao.usuario.nome ||
-      sessao.usuario.email;
-  });
-
-  document.querySelectorAll("[data-perfil-usuario]").forEach(function (elemento) {
-    elemento.textContent = sessao.usuario.perfil;
-  });
-}
-
-function aplicarPermissoesDaTela() {
-  if (usuarioAdministrador()) {
-    return;
-  }
-
-  document
-    .querySelectorAll(
-      '[href="novo-membro.html"], [href^="editar-membro.html"], [href="configuracoes.html"]'
-    )
-    .forEach(function (elemento) {
-      elemento.hidden = true;
-    });
-
-  if (
-    paginaAtual() === "novo-membro.html" ||
-    paginaAtual() === "editar-membro.html" ||
-    paginaAtual() === "configuracoes.html"
-  ) {
-    alert(
-      "Seu perfil não possui permissão para alterar cadastros."
-    );
-
-    window.location.replace("membros.html");
-  }
-}
-
-function iniciarGoogleLogin() {
-  const localBotao =
-    document.getElementById("googleButton");
-
-  if (!localBotao) {
-    return;
-  }
-
-  if (
-    !window.google ||
-    !google.accounts ||
-    !google.accounts.id
-  ) {
-    setTimeout(iniciarGoogleLogin, 300);
-    return;
-  }
-
-  const sessao = obterSessao();
-
-  if (sessao && sessao.credential) {
-    window.location.replace("dashboard.html");
-    return;
-  }
-
-  google.accounts.id.initialize({
-    client_id: CLIENT_ID_GOOGLE,
-    callback: tratarRespostaGoogle,
-    auto_select: false,
-    cancel_on_tap_outside: true
-  });
-
-  google.accounts.id.renderButton(
-    localBotao,
-    {
-      theme: "outline",
-      size: "large",
-      type: "standard",
-      shape: "rectangular",
-      text: "signin_with",
-      logo_alignment: "left",
-      width: 320,
-      locale: "pt-BR"
-    }
-  );
-}
-
-async function tratarRespostaGoogle(respostaGoogle) {
-  const mensagem =
-    document.getElementById("mensagemLogin");
-
-  try {
-    if (mensagem) {
-      mensagem.textContent =
-        "Verificando sua conta...";
-    }
-
-    const resultado = await chamarApi({
-      acao: "autenticar",
-      credential: respostaGoogle.credential
-    }, false);
-
-    salvarSessao(
-      respostaGoogle.credential,
-      resultado.usuario
-    );
-
-    if (mensagem) {
-      mensagem.textContent =
-        "Acesso autorizado. Abrindo o sistema...";
-    }
-
-    window.location.replace("dashboard.html");
-
-  } catch (erro) {
-    console.error("Erro de autenticação:", erro);
-
-    removerSessaoSalva();
-
-    if (mensagem) {
-      mensagem.textContent = erro.message;
-    }
-  }
-}
-
-window.tratarRespostaGoogle = tratarRespostaGoogle;
-
-/* =========================================
-   COMUNICAÇÃO COM A API
-========================================= */
-
-async function chamarApi(
-  conteudo,
-  incluirCredencial = true
-) {
-  const requisicao = {
-    ...conteudo
+  const ESTADO = {
+    inicializado: false,
+    carregamentosAtivos: 0,
+    modalAtual: null,
+    ultimoFoco: null
   };
 
-  if (incluirCredencial) {
-    const sessao = obterSessao();
+  const seletores = {
+    carregamentoGlobal: "#carregamentoGlobal",
+    botaoMenu: "[data-acao='alternar-menu'], .botao-menu-mobile",
+    botaoFecharMenu: "[data-acao='fechar-menu']",
+    overlayMenu: ".overlay-menu",
+    linksMenu: ".menu-item",
+    botaoSair: "[data-acao='logout'], [data-acao='sair']",
+    modal: ".modal, .modal-overlay",
+    abrirModal: "[data-modal-abrir]",
+    fecharModal: "[data-modal-fechar], .modal-fechar",
+    aba: "[data-aba]",
+    painelAba: "[data-painel-aba]"
+  };
 
-    if (!sessao || !sessao.credential) {
-      throw new Error(
-        "Sua sessão terminou. Entre novamente."
+  /**
+   * Utilitários básicos
+   */
+
+  function existe(valor) {
+    return valor !== null && valor !== undefined;
+  }
+
+  function textoSeguro(valor, padrao = "") {
+    if (!existe(valor)) return padrao;
+    return String(valor).trim();
+  }
+
+  function escapeHTML(valor) {
+    const mapa = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    };
+
+    return textoSeguro(valor).replace(/[&<>"']/g, (caractere) => mapa[caractere]);
+  }
+
+  function gerarId(prefixo = "vrg") {
+    const aleatorio = Math.random().toString(36).slice(2, 10);
+    return `${prefixo}-${Date.now()}-${aleatorio}`;
+  }
+
+  function aguardar(ms) {
+    return new Promise((resolve) => window.setTimeout(resolve, ms));
+  }
+
+  function debounce(funcao, espera = APP_CONFIG.tempoDebounce) {
+    let temporizador;
+
+    return function funcaoDebounced(...argumentos) {
+      window.clearTimeout(temporizador);
+      temporizador = window.setTimeout(
+        () => funcao.apply(this, argumentos),
+        espera
       );
+    };
+  }
+
+  function throttle(funcao, limite = 250) {
+    let bloqueado = false;
+
+    return function funcaoLimitada(...argumentos) {
+      if (bloqueado) return;
+
+      bloqueado = true;
+      funcao.apply(this, argumentos);
+
+      window.setTimeout(() => {
+        bloqueado = false;
+      }, limite);
+    };
+  }
+
+  function copiarTexto(texto) {
+    const valor = textoSeguro(texto);
+
+    if (!valor) {
+      return Promise.reject(new Error("Nenhum texto informado para cópia."));
     }
 
-    requisicao.credential = sessao.credential;
-  }
-
-  const resposta = await fetch(
-    URL_API,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type":
-          "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify(requisicao),
-      cache: "no-store"
-    }
-  );
-
-  if (!resposta.ok) {
-    throw new Error(
-      "A API respondeu com o código " +
-      resposta.status
-    );
-  }
-
-  const resultado = await resposta.json();
-
-  if (!resultado.sucesso) {
-    const mensagem =
-      resultado.mensagem ||
-      "A operação não pôde ser concluída.";
-
-    if (
-      mensagem.toLowerCase().includes("sessão") ||
-      mensagem.toLowerCase().includes("token")
-    ) {
-      removerSessaoSalva();
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(valor);
     }
 
-    throw new Error(mensagem);
-  }
+    return new Promise((resolve, reject) => {
+      const textarea = document.createElement("textarea");
+      textarea.value = valor;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
 
-  return resultado;
-}
+      document.body.appendChild(textarea);
+      textarea.select();
 
-/* =========================================
-   UTILITÁRIOS
-========================================= */
-
-function escaparHtml(valor) {
-  return String(valor ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-function obterIdDaUrl() {
-  const parametros =
-    new URLSearchParams(window.location.search);
-
-  return parametros.get("id");
-}
-
-function obterIniciaisCarteirinha(nome) {
-  const partes = String(nome || "")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-
-  if (!partes.length) {
-    return "VR";
-  }
-
-  const primeiraInicial = partes[0].charAt(0);
-
-  const segundaInicial =
-    partes.length > 1
-      ? partes[partes.length - 1].charAt(0)
-      : partes[0].charAt(1);
-
-  return (
-    primeiraInicial +
-    (segundaInicial || "")
-  ).toUpperCase();
-}
-
-/* =========================================
-   SAIR
-========================================= */
-
-document
-  .querySelectorAll(".logout")
-  .forEach(function (link) {
-    link.addEventListener(
-      "click",
-      function (evento) {
-        evento.preventDefault();
-        encerrarSessao();
+      try {
+        document.execCommand("copy");
+        resolve();
+      } catch (erro) {
+        reject(erro);
+      } finally {
+        textarea.remove();
       }
-    );
-  });
-
-/* =========================================
-   FOTO DO MEMBRO
-========================================= */
-
-const TIPOS_FOTO_PERMITIDOS = [
-  "image/jpeg",
-  "image/png",
-  "image/webp"
-];
-
-const TAMANHO_MAXIMO_FOTO = 4 * 1024 * 1024;
-const FOTO_PLACEHOLDER =
-  "https://placehold.co/220x280?text=Sem+Foto";
-
-function obterCampoArquivoFoto(formulario) {
-  return formulario?.querySelector(
-    '#fotoMembro, #fotoArquivo'
-  );
-}
-
-function obterArquivoFoto(formulario) {
-  return obterCampoArquivoFoto(formulario)?.files?.[0] || null;
-}
-
-function validarArquivoFoto(arquivo) {
-  if (!arquivo) {
-    return;
+    });
   }
 
-  if (!TIPOS_FOTO_PERMITIDOS.includes(arquivo.type)) {
-    throw new Error(
-      "A foto deve estar no formato JPG, PNG ou WebP."
-    );
+  /**
+   * Armazenamento local
+   */
+
+  function lerStorage(chave, padrao = null) {
+    try {
+      const bruto = window.localStorage.getItem(chave);
+      return bruto === null ? padrao : JSON.parse(bruto);
+    } catch (erro) {
+      console.warn("[VRG] Não foi possível ler o armazenamento local.", erro);
+      return padrao;
+    }
   }
 
-  if (arquivo.size > TAMANHO_MAXIMO_FOTO) {
-    throw new Error("A foto deve ter no máximo 4 MB.");
+  function salvarStorage(chave, valor) {
+    try {
+      window.localStorage.setItem(chave, JSON.stringify(valor));
+      return true;
+    } catch (erro) {
+      console.warn("[VRG] Não foi possível salvar no armazenamento local.", erro);
+      return false;
+    }
   }
-}
 
-function lerArquivoComoDataUrl(arquivo) {
-  return new Promise(function (resolve, reject) {
-    const leitor = new FileReader();
+  function removerStorage(chave) {
+    try {
+      window.localStorage.removeItem(chave);
+      return true;
+    } catch (erro) {
+      console.warn("[VRG] Não foi possível remover do armazenamento local.", erro);
+      return false;
+    }
+  }
 
-    leitor.onload = function () {
-      resolve(String(leitor.result || ""));
+  function lerSessao(chave, padrao = null) {
+    try {
+      const bruto = window.sessionStorage.getItem(chave);
+      return bruto === null ? padrao : JSON.parse(bruto);
+    } catch (erro) {
+      console.warn("[VRG] Não foi possível ler a sessão.", erro);
+      return padrao;
+    }
+  }
+
+  function salvarSessao(chave, valor) {
+    try {
+      window.sessionStorage.setItem(chave, JSON.stringify(valor));
+      return true;
+    } catch (erro) {
+      console.warn("[VRG] Não foi possível salvar a sessão.", erro);
+      return false;
+    }
+  }
+
+  function removerSessao(chave) {
+    try {
+      window.sessionStorage.removeItem(chave);
+      return true;
+    } catch (erro) {
+      console.warn("[VRG] Não foi possível remover a sessão.", erro);
+      return false;
+    }
+  }
+
+  /**
+   * Navegação
+   */
+
+  function navegar(url, opcoes = {}) {
+    const destino = textoSeguro(url);
+
+    if (!destino) return;
+
+    const { substituir = false, atraso = 0 } = opcoes;
+
+    const executar = () => {
+      if (substituir) {
+        window.location.replace(destino);
+      } else {
+        window.location.href = destino;
+      }
     };
 
-    leitor.onerror = function () {
-      reject(new Error("Não foi possível ler a foto selecionada."));
-    };
-
-    leitor.readAsDataURL(arquivo);
-  });
-}
-
-async function enviarFotoParaDrive(arquivo) {
-  validarArquivoFoto(arquivo);
-
-  const dataUrl = await lerArquivoComoDataUrl(arquivo);
-  const separador = dataUrl.indexOf(",");
-
-  if (separador < 0) {
-    throw new Error("O conteúdo da foto é inválido.");
-  }
-
-  const resultado = await chamarApi({
-    acao: "uploadFoto",
-    foto: {
-      nome: arquivo.name,
-      tipo: arquivo.type,
-      base64: dataUrl.slice(separador + 1)
+    if (atraso > 0) {
+      window.setTimeout(executar, atraso);
+    } else {
+      executar();
     }
-  });
-
-  if (!resultado.foto || !resultado.foto.url) {
-    throw new Error("A API não retornou o endereço da foto.");
   }
 
-  return resultado.foto.url;
-}
+  function obterPaginaAtual() {
+    const dataPage = document.body?.dataset?.page;
+    if (dataPage) return dataPage;
 
-function atualizarStatusFoto(texto) {
-  const status = document.getElementById("statusFoto");
-
-  if (status) {
-    status.textContent = texto;
-  }
-}
-
-function atualizarPreviewFoto(url) {
-  const preview = document.getElementById("previewFoto");
-
-  if (!preview) {
-    return;
+    const arquivo = window.location.pathname.split("/").pop() || APP_CONFIG.paginaLogin;
+    return arquivo.replace(/\.html?$/i, "") || "index";
   }
 
-  preview.src = String(url || "").trim() || FOTO_PLACEHOLDER;
-}
+  function marcarMenuAtivo() {
+    const paginaAtual = obterPaginaAtual();
+    const links = document.querySelectorAll(seletores.linksMenu);
 
-function iniciarSelecaoFoto() {
-  const campoArquivo =
-    document.getElementById("fotoMembro") ||
-    document.getElementById("fotoArquivo");
+    links.forEach((link) => {
+      const paginaLink =
+        link.dataset.page ||
+        (link.getAttribute("href") || "")
+          .split("/")
+          .pop()
+          .replace(/\.html?$/i, "");
 
-  if (!campoArquivo) {
-    return;
+      const ativo = Boolean(paginaLink && paginaLink === paginaAtual);
+
+      link.classList.toggle("ativo", ativo);
+
+      if (ativo) {
+        link.setAttribute("aria-current", "page");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
   }
 
-  campoArquivo.addEventListener("change", async function () {
-    const arquivo = campoArquivo.files?.[0];
+  /**
+   * Menu lateral
+   */
 
-    if (!arquivo) {
-      atualizarPreviewFoto(
-        document.getElementById("foto")?.value || ""
-      );
-      atualizarStatusFoto("Nenhuma nova foto selecionada.");
-      return;
+  function abrirMenu() {
+    document.body.classList.add("menu-aberto");
+
+    const botao = document.querySelector(seletores.botaoMenu);
+    if (botao) botao.setAttribute("aria-expanded", "true");
+  }
+
+  function fecharMenu() {
+    document.body.classList.remove("menu-aberto");
+
+    const botao = document.querySelector(seletores.botaoMenu);
+    if (botao) botao.setAttribute("aria-expanded", "false");
+  }
+
+  function alternarMenu() {
+    if (document.body.classList.contains("menu-aberto")) {
+      fecharMenu();
+    } else {
+      abrirMenu();
     }
+  }
+
+  function configurarMenu() {
+    document.querySelectorAll(seletores.botaoMenu).forEach((botao) => {
+      botao.addEventListener("click", alternarMenu);
+    });
+
+    document.querySelectorAll(seletores.botaoFecharMenu).forEach((botao) => {
+      botao.addEventListener("click", fecharMenu);
+    });
+
+    const overlay = document.querySelector(seletores.overlayMenu);
+    if (overlay) overlay.addEventListener("click", fecharMenu);
+
+    document.querySelectorAll(seletores.linksMenu).forEach((link) => {
+      link.addEventListener("click", () => {
+        if (window.innerWidth <= 900) fecharMenu();
+      });
+    });
+
+    window.addEventListener(
+      "resize",
+      debounce(() => {
+        if (window.innerWidth > 900) fecharMenu();
+      }, 150)
+    );
+
+    marcarMenuAtivo();
+  }
+
+  /**
+   * Carregamento global
+   */
+
+  function obterElementoCarregamento() {
+    return document.querySelector(seletores.carregamentoGlobal);
+  }
+
+  function mostrarCarregamento(mensagem = "Carregando...") {
+    ESTADO.carregamentosAtivos += 1;
+
+    const overlay = obterElementoCarregamento();
+    if (!overlay) return;
+
+    const texto = overlay.querySelector(
+      ".carregamento-caixa span:last-child, [data-carregamento-texto]"
+    );
+
+    if (texto) texto.textContent = mensagem;
+
+    overlay.classList.add("ativo");
+    overlay.setAttribute("aria-hidden", "false");
+  }
+
+  function ocultarCarregamento(forcar = false) {
+    if (forcar) {
+      ESTADO.carregamentosAtivos = 0;
+    } else {
+      ESTADO.carregamentosAtivos = Math.max(0, ESTADO.carregamentosAtivos - 1);
+    }
+
+    if (ESTADO.carregamentosAtivos > 0) return;
+
+    const overlay = obterElementoCarregamento();
+    if (!overlay) return;
+
+    overlay.classList.remove("ativo");
+    overlay.setAttribute("aria-hidden", "true");
+  }
+
+  async function comCarregamento(funcao, mensagem = "Carregando...") {
+    mostrarCarregamento(mensagem);
 
     try {
-      validarArquivoFoto(arquivo);
-      const dataUrl = await lerArquivoComoDataUrl(arquivo);
-      atualizarPreviewFoto(dataUrl);
-      atualizarStatusFoto(
-        "Pré-visualização pronta. A foto será enviada ao salvar."
-      );
-    } catch (erro) {
-      campoArquivo.value = "";
-      atualizarStatusFoto(erro.message);
-      alert(erro.message);
+      return await funcao();
+    } finally {
+      ocultarCarregamento();
     }
-  });
-}
-
-function gerarFotoFicha(membro) {
-  const url = String(membro.foto || "").trim();
-
-  if (!url) {
-    return "";
   }
 
-  return `
-    <div style="display:flex;justify-content:center;margin-bottom:20px;">
-      <img
-        src="${escaparHtml(url)}"
-        alt="Foto de ${escaparHtml(membro.nomeCompleto || "membro")}"
-        style="width:160px;height:200px;object-fit:cover;border-radius:14px;border:2px solid #d7dee4;background:#f3f5f6;"
-        onerror="this.style.display='none'"
-      >
-    </div>
-  `;
-}
+  /**
+   * Toasts
+   */
 
-/* =========================================
-   NOVO MEMBRO
-========================================= */
+  function obterContainerToast() {
+    let container = document.querySelector(".toast-container");
 
-const formularioNovoMembro =
-  document.getElementById("formNovoMembro");
+    if (!container) {
+      container = document.createElement("div");
+      container.className = "toast-container";
+      container.setAttribute("aria-live", "polite");
+      container.setAttribute("aria-atomic", "true");
+      document.body.appendChild(container);
+    }
 
-if (formularioNovoMembro) {
-  formularioNovoMembro.addEventListener(
-    "submit",
-    async function (evento) {
+    return container;
+  }
+
+  function toast(mensagem, tipo = "info", opcoes = {}) {
+    const {
+      titulo = "",
+      duracao = APP_CONFIG.tempoToast,
+      persistente = false
+    } = opcoes;
+
+    const container = obterContainerToast();
+    const item = document.createElement("div");
+    const id = gerarId("toast");
+
+    item.id = id;
+    item.className = `toast toast-${tipo}`;
+    item.setAttribute("role", tipo === "erro" ? "alert" : "status");
+
+    item.innerHTML = `
+      <div class="toast-conteudo">
+        ${titulo ? `<p class="toast-titulo">${escapeHTML(titulo)}</p>` : ""}
+        <p class="toast-texto">${escapeHTML(mensagem)}</p>
+      </div>
+      <button
+        type="button"
+        class="modal-fechar"
+        aria-label="Fechar mensagem"
+        data-toast-fechar
+      >×</button>
+    `;
+
+    const remover = () => {
+      if (!item.isConnected) return;
+      item.classList.add("saindo");
+      window.setTimeout(() => item.remove(), 180);
+    };
+
+    item.querySelector("[data-toast-fechar]")?.addEventListener("click", remover);
+    container.appendChild(item);
+
+    if (!persistente && duracao > 0) {
+      window.setTimeout(remover, duracao);
+    }
+
+    return {
+      id,
+      fechar: remover,
+      elemento: item
+    };
+  }
+
+  function sucesso(mensagem, titulo = "Sucesso") {
+    return toast(mensagem, "sucesso", { titulo });
+  }
+
+  function erro(mensagem, titulo = "Não foi possível concluir") {
+    return toast(mensagem, "erro", { titulo, duracao: 6500 });
+  }
+
+  function alerta(mensagem, titulo = "Atenção") {
+    return toast(mensagem, "alerta", { titulo, duracao: 5500 });
+  }
+
+  function info(mensagem, titulo = "Informação") {
+    return toast(mensagem, "info", { titulo });
+  }
+
+  /**
+   * Mensagem dentro de um elemento
+   */
+
+  function definirMensagem(alvo, mensagem = "", tipo = "") {
+    const elemento =
+      typeof alvo === "string" ? document.querySelector(alvo) : alvo;
+
+    if (!elemento) return;
+
+    elemento.textContent = mensagem;
+    elemento.classList.remove("sucesso", "erro", "alerta", "info");
+
+    if (tipo) elemento.classList.add(tipo);
+  }
+
+  /**
+   * Modais
+   */
+
+  function obterModal(alvo) {
+    if (!alvo) return null;
+
+    if (alvo instanceof Element) return alvo;
+
+    const seletor = alvo.startsWith("#") ? alvo : `#${alvo}`;
+    return document.querySelector(seletor);
+  }
+
+  function abrirModal(alvo) {
+    const modal = obterModal(alvo);
+    if (!modal) return false;
+
+    ESTADO.ultimoFoco = document.activeElement;
+    ESTADO.modalAtual = modal;
+
+    modal.classList.add("ativo");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-aberto");
+
+    const focoInicial = modal.querySelector(
+      "[autofocus], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled])"
+    );
+
+    window.setTimeout(() => focoInicial?.focus(), 30);
+    return true;
+  }
+
+  function fecharModal(alvo = ESTADO.modalAtual) {
+    const modal = obterModal(alvo);
+    if (!modal) return false;
+
+    modal.classList.remove("ativo");
+    modal.setAttribute("aria-hidden", "true");
+
+    if (!document.querySelector(".modal.ativo, .modal-overlay.ativo")) {
+      document.body.classList.remove("modal-aberto");
+    }
+
+    if (ESTADO.modalAtual === modal) ESTADO.modalAtual = null;
+
+    if (ESTADO.ultimoFoco instanceof HTMLElement) {
+      ESTADO.ultimoFoco.focus();
+    }
+
+    return true;
+  }
+
+  function configurarModais() {
+    document.addEventListener("click", (evento) => {
+      const abrir = evento.target.closest(seletores.abrirModal);
+      if (abrir) {
+        evento.preventDefault();
+        abrirModal(abrir.dataset.modalAbrir);
+        return;
+      }
+
+      const fechar = evento.target.closest(seletores.fecharModal);
+      if (fechar) {
+        evento.preventDefault();
+        fecharModal(fechar.closest(".modal, .modal-overlay"));
+        return;
+      }
+
+      const modal = evento.target.closest(".modal, .modal-overlay");
+      if (
+        modal &&
+        evento.target === modal &&
+        modal.dataset.fecharOverlay !== "false"
+      ) {
+        fecharModal(modal);
+      }
+    });
+
+    document.addEventListener("keydown", (evento) => {
+      if (evento.key === "Escape" && ESTADO.modalAtual) {
+        fecharModal(ESTADO.modalAtual);
+      }
+    });
+  }
+
+  /**
+   * Abas
+   */
+
+  function ativarAba(grupo, nomeAba) {
+    if (!grupo || !nomeAba) return;
+
+    const seletorGrupo = `[data-grupo-abas="${CSS.escape(grupo)}"]`;
+    const contexto = document.querySelector(seletorGrupo) || document;
+
+    contexto.querySelectorAll(seletores.aba).forEach((aba) => {
+      const ativa = aba.dataset.aba === nomeAba;
+      aba.classList.toggle("ativa", ativa);
+      aba.setAttribute("aria-selected", String(ativa));
+      aba.tabIndex = ativa ? 0 : -1;
+    });
+
+    contexto.querySelectorAll(seletores.painelAba).forEach((painel) => {
+      const ativo = painel.dataset.painelAba === nomeAba;
+      painel.classList.toggle("ativo", ativo);
+      painel.hidden = !ativo;
+    });
+  }
+
+  function configurarAbas() {
+    document.addEventListener("click", (evento) => {
+      const aba = evento.target.closest(seletores.aba);
+      if (!aba) return;
+
       evento.preventDefault();
 
-      const botaoSalvar =
-        formularioNovoMembro.querySelector(
-          'button[type="submit"]'
-        );
+      const grupo =
+        aba.dataset.grupo ||
+        aba.closest("[data-grupo-abas]")?.dataset.grupoAbas ||
+        "principal";
 
-      const textoOriginal =
-        botaoSalvar.textContent;
-
-      botaoSalvar.disabled = true;
-      botaoSalvar.textContent = "Salvando...";
-
-      const dados =
-        Object.fromEntries(
-          new FormData(formularioNovoMembro).entries()
-        );
-
-      try {
-        const arquivoFoto =
-          obterArquivoFoto(formularioNovoMembro);
-
-        if (arquivoFoto) {
-          botaoSalvar.textContent = "Enviando foto...";
-          atualizarStatusFoto("Enviando foto ao Google Drive...");
-          dados.foto = await enviarFotoParaDrive(arquivoFoto);
-          atualizarStatusFoto("Foto enviada com sucesso.");
-          botaoSalvar.textContent = "Salvando cadastro...";
-        }
-
-        const resultado = await chamarApi({
-          acao: "cadastrar",
-          dados: dados
-        });
-
-        alert(
-          "Membro cadastrado com sucesso!\nID: " +
-          resultado.id
-        );
-
-        window.location.href = "membros.html";
-
-      } catch (erro) {
-        console.error(
-          "Erro ao salvar membro:",
-          erro
-        );
-
-        alert(
-          "Não foi possível salvar o membro.\n\n" +
-          erro.message
-        );
-
-      } finally {
-        botaoSalvar.disabled = false;
-        botaoSalvar.textContent =
-          textoOriginal;
-      }
-    }
-  );
-}
-
-/* =========================================
-   LISTAGEM DE MEMBROS
-========================================= */
-
-const tabelaMembros =
-  document.getElementById("listaMembros");
-
-let membrosCarregados = [];
-let membrosExibidos = [];
-const idsCarteirinhasSelecionadas = new Set();
-
-const selecionarTodosMembros =
-  document.getElementById("selecionarTodosMembros");
-
-const botaoExportarSelecionadas =
-  document.getElementById("botaoExportarSelecionadas");
-
-const contadorSelecionados =
-  document.getElementById("contadorSelecionados");
-
-if (tabelaMembros) {
-  carregarMembros();
-}
-
-async function carregarMembros() {
-  tabelaMembros.innerHTML = `
-    <tr>
-      <td colspan="7" class="empty-state">
-        Carregando membros...
-      </td>
-    </tr>
-  `;
-
-  try {
-    const resultado = await chamarApi({
-      acao: "listar"
+      ativarAba(grupo, aba.dataset.aba);
     });
-
-    let membros = resultado.membros;
-
-    if (typeof membros === "string") {
-      membros = JSON.parse(membros);
-    }
-
-    if (!Array.isArray(membros)) {
-      throw new Error(
-        "A lista de membros possui formato inválido."
-      );
-    }
-
-    membrosCarregados = membros;
-    mostrarMembros(membrosCarregados);
-
-  } catch (erro) {
-    console.error(
-      "Erro ao listar membros:",
-      erro
-    );
-
-    tabelaMembros.innerHTML = `
-      <tr>
-        <td colspan="7" class="empty-state">
-          ${escaparHtml(erro.message)}
-        </td>
-      </tr>
-    `;
-  }
-}
-
-function mostrarMembros(membros) {
-  tabelaMembros.innerHTML = "";
-  membrosExibidos = Array.isArray(membros) ? membros : [];
-
-  if (!membrosExibidos.length) {
-    tabelaMembros.innerHTML = `
-      <tr>
-        <td colspan="7" class="empty-state">
-          Nenhum membro cadastrado.
-        </td>
-      </tr>
-    `;
-
-    atualizarControlesCarteirinhas();
-    return;
   }
 
-  membrosExibidos.forEach(function (membro) {
-    const linha =
-      document.createElement("tr");
+  /**
+   * Confirmação
+   */
 
-    const botaoEditar =
-      usuarioAdministrador()
-        ? `
-          <a
-            class="btn-acao btn-secundario"
-            href="editar-membro.html?id=${encodeURIComponent(
-              membro.id
-            )}"
-          >
-            Editar
-          </a>
-        `
-        : "";
+  function confirmar(mensagem, opcoes = {}) {
+    const {
+      titulo = "Confirmar ação",
+      textoConfirmar = "Confirmar",
+      textoCancelar = "Cancelar",
+      tipo = "alerta"
+    } = opcoes;
 
-    const botaoExcluir =
-      usuarioAdministrador()
-        ? `
-          <button
-            type="button"
-            class="btn-acao btn-secundario botao-excluir-membro"
-            style="width: auto; display: inline-flex; flex: 0 0 auto;"
-            data-id="${escaparHtml(String(membro.id || ""))}"
-            data-nome="${escaparHtml(String(membro.nome || ""))}"
-          >
-            Excluir
-          </button>
-        `
-        : "";
+    return new Promise((resolve) => {
+      const modal = document.createElement("div");
+      const id = gerarId("confirmacao");
 
-    const idMembro = String(membro.id || "").trim();
-    const marcado = idsCarteirinhasSelecionadas.has(idMembro);
+      modal.id = id;
+      modal.className = "modal modal-overlay ativo";
+      modal.setAttribute("aria-hidden", "false");
 
-    linha.innerHTML = `
-      <td class="coluna-selecao">
-        <input
-          type="checkbox"
-          class="seletor-carteirinha"
-          value="${escaparHtml(idMembro)}"
-          aria-label="Selecionar carteirinha de ${escaparHtml(membro.nome || idMembro)}"
-          ${marcado ? "checked" : ""}
-        >
-      </td>
+      modal.innerHTML = `
+        <div class="modal-dialogo" role="dialog" aria-modal="true">
+          <div class="modal-cabecalho">
+            <h2 class="modal-titulo">${escapeHTML(titulo)}</h2>
+            <button type="button" class="modal-fechar" aria-label="Fechar">×</button>
+          </div>
+          <div class="modal-corpo">
+            <div class="alerta alerta-${escapeHTML(tipo)}">
+              <span>${escapeHTML(mensagem)}</span>
+            </div>
+          </div>
+          <div class="modal-rodape">
+            <button type="button" class="btn btn-contorno" data-cancelar>
+              ${escapeHTML(textoCancelar)}
+            </button>
+            <button type="button" class="btn btn-primario" data-confirmar>
+              ${escapeHTML(textoConfirmar)}
+            </button>
+          </div>
+        </div>
+      `;
 
-      <td>${escaparHtml(membro.id)}</td>
-      <td>${escaparHtml(membro.nome)}</td>
-      <td>${escaparHtml(membro.cargo || "-")}</td>
-      <td>${escaparHtml(membro.congregacao || "-")}</td>
-      <td>${escaparHtml(membro.situacao || "Ativo")}</td>
-      <td class="acoes-tabela">
-        <a
-          class="btn-acao"
-          href="membro.html?id=${encodeURIComponent(
-            membro.id
-          )}"
-        >
-          Visualizar
-        </a>
+      const finalizar = (resultado) => {
+        modal.remove();
+        document.body.classList.remove("modal-aberto");
+        resolve(resultado);
+      };
 
-        <a
-          class="btn-acao"
-          href="carteirinha.html?id=${encodeURIComponent(
-            membro.id
-          )}"
-        >
-          Carteirinha
-        </a>
-
-        ${botaoEditar}
-        ${botaoExcluir}
-      </td>
-    `;
-
-    tabelaMembros.appendChild(linha);
-  });
-
-  atualizarControlesCarteirinhas();
-}
-
-if (tabelaMembros) {
-  tabelaMembros.addEventListener("click", async function (evento) {
-    const elementoClicado = evento.target;
-
-    if (!(elementoClicado instanceof Element)) {
-      return;
-    }
-
-    const botaoExcluir = elementoClicado.closest(
-      ".botao-excluir-membro"
-    );
-
-    if (!botaoExcluir) {
-      return;
-    }
-
-    const idMembro = String(
-      botaoExcluir.dataset.id || ""
-    ).trim();
-
-    const nomeMembro = String(
-      botaoExcluir.dataset.nome || ""
-    ).trim();
-
-    if (!idMembro) {
-      alert("Não foi possível identificar o membro.");
-      return;
-    }
-
-    const confirmou = window.confirm(
-      "Deseja realmente excluir este membro?\n\n" +
-      (nomeMembro ? "Nome: " + nomeMembro + "\n" : "") +
-      "ID: " + idMembro +
-      "\n\nEsta ação não poderá ser desfeita."
-    );
-
-    if (!confirmou) {
-      return;
-    }
-
-    botaoExcluir.disabled = true;
-    botaoExcluir.textContent = "Excluindo...";
-
-    try {
-      const resultado = await chamarApi({
-        acao: "excluir",
-        id: idMembro
+      modal.querySelector("[data-confirmar]").addEventListener("click", () => {
+        finalizar(true);
       });
 
-      alert(
-        resultado.mensagem ||
-        "Membro excluído com sucesso."
+      modal.querySelector("[data-cancelar]").addEventListener("click", () => {
+        finalizar(false);
+      });
+
+      modal.querySelector(".modal-fechar").addEventListener("click", () => {
+        finalizar(false);
+      });
+
+      modal.addEventListener("click", (evento) => {
+        if (evento.target === modal) finalizar(false);
+      });
+
+      document.body.appendChild(modal);
+      document.body.classList.add("modal-aberto");
+      modal.querySelector("[data-confirmar]")?.focus();
+    });
+  }
+
+  /**
+   * Datas, números e textos
+   */
+
+  function normalizarData(valor) {
+    if (!valor) return null;
+    if (valor instanceof Date && !Number.isNaN(valor.getTime())) return valor;
+
+    if (typeof valor === "string") {
+      const iso = /^\d{4}-\d{2}-\d{2}/.test(valor);
+      const brasileiro = /^\d{2}\/\d{2}\/\d{4}$/.test(valor);
+
+      if (brasileiro) {
+        const [dia, mes, ano] = valor.split("/").map(Number);
+        const data = new Date(ano, mes - 1, dia);
+        return Number.isNaN(data.getTime()) ? null : data;
+      }
+
+      if (iso) {
+        const data = new Date(`${valor.slice(0, 10)}T12:00:00`);
+        return Number.isNaN(data.getTime()) ? null : data;
+      }
+    }
+
+    const data = new Date(valor);
+    return Number.isNaN(data.getTime()) ? null : data;
+  }
+
+  function formatarData(valor, opcoes = {}) {
+    const data = normalizarData(valor);
+    if (!data) return "";
+
+    return new Intl.DateTimeFormat(APP_CONFIG.idioma, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      ...opcoes
+    }).format(data);
+  }
+
+  function formatarDataHora(valor) {
+    const data = normalizarData(valor);
+    if (!data) return "";
+
+    return new Intl.DateTimeFormat(APP_CONFIG.idioma, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(data);
+  }
+
+  function dataParaISO(valor) {
+    const data = normalizarData(valor);
+    if (!data) return "";
+
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, "0");
+    const dia = String(data.getDate()).padStart(2, "0");
+
+    return `${ano}-${mes}-${dia}`;
+  }
+
+  function formatarMoeda(valor, moeda = APP_CONFIG.moeda) {
+    const numero = Number(valor);
+
+    if (!Number.isFinite(numero)) {
+      return new Intl.NumberFormat(APP_CONFIG.idioma, {
+        style: "currency",
+        currency: moeda
+      }).format(0);
+    }
+
+    return new Intl.NumberFormat(APP_CONFIG.idioma, {
+      style: "currency",
+      currency: moeda
+    }).format(numero);
+  }
+
+  function formatarNumero(valor, casas = 0) {
+    const numero = Number(valor);
+    if (!Number.isFinite(numero)) return "0";
+
+    return new Intl.NumberFormat(APP_CONFIG.idioma, {
+      minimumFractionDigits: casas,
+      maximumFractionDigits: casas
+    }).format(numero);
+  }
+
+  function apenasNumeros(valor) {
+    return textoSeguro(valor).replace(/\D/g, "");
+  }
+
+  function formatarCPF(valor) {
+    const numeros = apenasNumeros(valor).slice(0, 11);
+
+    return numeros
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  }
+
+  function formatarTelefone(valor) {
+    const numeros = apenasNumeros(valor).slice(0, 11);
+
+    if (numeros.length <= 10) {
+      return numeros
+        .replace(/(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{4})(\d)/, "$1-$2");
+    }
+
+    return numeros
+      .replace(/(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{5})(\d)/, "$1-$2");
+  }
+
+  function formatarCEP(valor) {
+    return apenasNumeros(valor)
+      .slice(0, 8)
+      .replace(/(\d{5})(\d)/, "$1-$2");
+  }
+
+  function formatarCodigoMembro(numero) {
+    const valor = Number(numero);
+    if (!Number.isFinite(valor) || valor < 1) return "";
+
+    return `ADVR${String(Math.trunc(valor)).padStart(2, "0")}`;
+  }
+
+  function formatarCodigoBatismo(numero) {
+    const valor = Number(numero);
+    if (!Number.isFinite(valor) || valor < 1) return "";
+
+    return `ADVRBAT${String(Math.trunc(valor)).padStart(2, "0")}`;
+  }
+
+  function formatarCodigoConsagracao(numero) {
+    const valor = Number(numero);
+    if (!Number.isFinite(valor) || valor < 1) return "";
+
+    return `ADVRCONS${String(Math.trunc(valor)).padStart(2, "0")}`;
+  }
+
+  function capitalizar(valor) {
+    return textoSeguro(valor)
+      .toLocaleLowerCase(APP_CONFIG.idioma)
+      .replace(/(^|\s|[-'])\p{L}/gu, (letra) =>
+        letra.toLocaleUpperCase(APP_CONFIG.idioma)
       );
-
-      await carregarMembros();
-
-    } catch (erro) {
-      console.error("Erro ao excluir membro:", erro);
-      alert(erro.message);
-
-      botaoExcluir.disabled = false;
-      botaoExcluir.textContent = "Excluir";
-    }
-  });
-
-  tabelaMembros.addEventListener("change", function (evento) {
-    const seletor = evento.target.closest(".seletor-carteirinha");
-
-    if (!seletor) {
-      return;
-    }
-
-    const id = String(seletor.value || "").trim();
-
-    if (seletor.checked) {
-      idsCarteirinhasSelecionadas.add(id);
-    } else {
-      idsCarteirinhasSelecionadas.delete(id);
-    }
-
-    atualizarControlesCarteirinhas();
-  });
-}
-
-selecionarTodosMembros?.addEventListener("change", function () {
-  membrosExibidos.forEach(function (membro) {
-    const id = String(membro.id || "").trim();
-
-    if (!id) {
-      return;
-    }
-
-    if (selecionarTodosMembros.checked) {
-      idsCarteirinhasSelecionadas.add(id);
-    } else {
-      idsCarteirinhasSelecionadas.delete(id);
-    }
-  });
-
-  mostrarMembros(membrosExibidos);
-});
-
-botaoExportarSelecionadas?.addEventListener("click", function () {
-  const ids = Array.from(idsCarteirinhasSelecionadas);
-
-  if (!ids.length) {
-    alert("Selecione pelo menos uma carteirinha.");
-    return;
   }
 
-  const parametros = new URLSearchParams();
-  parametros.set("ids", ids.join(","));
-  parametros.set("lote", "1");
-
-  window.location.href = "carteirinha.html?" + parametros.toString();
-});
-
-function atualizarControlesCarteirinhas() {
-  const quantidade = idsCarteirinhasSelecionadas.size;
-
-  if (contadorSelecionados) {
-    contadorSelecionados.textContent =
-      quantidade === 1
-        ? "1 selecionado"
-        : quantidade + " selecionados";
-  }
-
-  if (botaoExportarSelecionadas) {
-    botaoExportarSelecionadas.disabled = quantidade === 0;
-  }
-
-  if (selecionarTodosMembros) {
-    const idsVisiveis = membrosExibidos
-      .map(function (membro) {
-        return String(membro.id || "").trim();
-      })
+  function iniciais(nome, limite = 2) {
+    const partes = textoSeguro(nome)
+      .split(/\s+/)
       .filter(Boolean);
 
-    const selecionadosVisiveis = idsVisiveis.filter(function (id) {
-      return idsCarteirinhasSelecionadas.has(id);
-    }).length;
+    if (!partes.length) return "?";
 
-    selecionarTodosMembros.checked =
-      idsVisiveis.length > 0 && selecionadosVisiveis === idsVisiveis.length;
+    if (partes.length === 1) {
+      return partes[0].slice(0, limite).toUpperCase();
+    }
 
-    selecionarTodosMembros.indeterminate =
-      selecionadosVisiveis > 0 && selecionadosVisiveis < idsVisiveis.length;
+    return `${partes[0][0]}${partes[partes.length - 1][0]}`
+      .slice(0, limite)
+      .toUpperCase();
   }
-}
 
-/* =========================================
-   PESQUISA E FILTRO
-========================================= */
+  function calcularIdade(dataNascimento, referencia = new Date()) {
+    const nascimento = normalizarData(dataNascimento);
+    const hoje = normalizarData(referencia);
 
-const pesquisaMembro =
-  document.getElementById("pesquisaMembro");
+    if (!nascimento || !hoje) return null;
 
-const filtroSituacao =
-  document.getElementById("filtroSituacao");
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+    const mes = hoje.getMonth() - nascimento.getMonth();
 
-const filtroCongregacao =
-  document.getElementById("filtroCongregacao");
+    if (
+      mes < 0 ||
+      (mes === 0 && hoje.getDate() < nascimento.getDate())
+    ) {
+      idade -= 1;
+    }
 
-pesquisaMembro?.addEventListener("input", aplicarFiltros);
-filtroSituacao?.addEventListener("change", aplicarFiltros);
-filtroCongregacao?.addEventListener("change", aplicarFiltros);
+    return idade >= 0 ? idade : null;
+  }
 
-function aplicarFiltros() {
-  const texto = String(
-    pesquisaMembro?.value || ""
-  )
-    .trim()
-    .toLowerCase();
+  /**
+   * Validações
+   */
 
-  const situacao = String(
-    filtroSituacao?.value || ""
-  ).trim();
+  function validarEmail(email) {
+    const valor = textoSeguro(email);
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
+  }
 
-  const congregacao = String(
-    filtroCongregacao?.value || ""
-  )
-    .trim()
-    .toLowerCase();
+  function validarCPF(cpf) {
+    const numeros = apenasNumeros(cpf);
 
-  const filtrados =
-    membrosCarregados.filter(
-      function (membro) {
-        const correspondeTexto =
-          !texto ||
-          String(membro.id || "")
-            .toLowerCase()
-            .includes(texto) ||
-          String(membro.nome || "")
-            .toLowerCase()
-            .includes(texto) ||
-          String(membro.cargo || "")
-            .toLowerCase()
-            .includes(texto) ||
-          String(membro.congregacao || "")
-            .toLowerCase()
-            .includes(texto);
+    if (numeros.length !== 11 || /^(\d)\1{10}$/.test(numeros)) {
+      return false;
+    }
 
-        const correspondeSituacao =
-          !situacao ||
-          String(membro.situacao || "").trim() === situacao;
-
-        const correspondeCongregacao =
-          !congregacao ||
-          String(membro.congregacao || "")
-            .trim()
-            .toLowerCase() === congregacao;
-
-        return (
-          correspondeTexto &&
-          correspondeSituacao &&
-          correspondeCongregacao
+    const calcularDigito = (base, pesoInicial) => {
+      const soma = base
+        .split("")
+        .reduce(
+          (total, digito, indice) =>
+            total + Number(digito) * (pesoInicial - indice),
+          0
         );
-      }
-    );
 
-  mostrarMembros(filtrados);
-}
+      const resto = (soma * 10) % 11;
+      return resto === 10 ? 0 : resto;
+    };
 
-/* =========================================
-   FICHA DO MEMBRO
-========================================= */
+    const primeiro = calcularDigito(numeros.slice(0, 9), 10);
+    const segundo = calcularDigito(numeros.slice(0, 10), 11);
 
-const fichaMembro =
-  document.getElementById("fichaMembro");
-
-if (fichaMembro) {
-  carregarFichaMembro();
-}
-
-async function carregarFichaMembro() {
-  const idMembro = obterIdDaUrl();
-
-  if (!idMembro) {
-    mostrarErroFicha(
-      "ID do membro não informado."
-    );
-
-    return;
+    return primeiro === Number(numeros[9]) && segundo === Number(numeros[10]);
   }
 
-  try {
-    const resultado = await chamarApi({
-      acao: "buscar",
-      id: idMembro
+  function validarData(valor) {
+    return normalizarData(valor) !== null;
+  }
+
+  function validarFormulario(formulario) {
+    if (!(formulario instanceof HTMLFormElement)) return false;
+
+    let valido = true;
+    const campos = formulario.querySelectorAll(
+      "input, select, textarea"
+    );
+
+    campos.forEach((campo) => {
+      campo.classList.remove("input-invalido");
+      campo.closest(".campo")?.classList.remove("invalido");
+
+      if (!campo.checkValidity()) {
+        valido = false;
+        campo.classList.add("input-invalido");
+        campo.closest(".campo")?.classList.add("invalido");
+      }
     });
 
-    let membro = resultado.membro;
-
-    if (typeof membro === "string") {
-      membro = JSON.parse(membro);
+    if (!valido) {
+      const primeiro = formulario.querySelector(":invalid");
+      primeiro?.focus();
+      primeiro?.reportValidity();
     }
 
-    mostrarFichaMembro(membro);
-
-  } catch (erro) {
-    console.error(
-      "Erro ao carregar ficha:",
-      erro
-    );
-
-    mostrarErroFicha(erro.message);
-  }
-}
-
-function mostrarFichaMembro(membro) {
-  const titulo =
-    document.getElementById("tituloMembro");
-
-  if (titulo) {
-    titulo.textContent =
-      membro.nomeCompleto ||
-      "Ficha do membro";
+    return valido;
   }
 
-  const botaoEditar =
-    usuarioAdministrador()
-      ? `
-        <a
-          class="primary-link"
-          href="editar-membro.html?id=${encodeURIComponent(
-            membro.id
-          )}"
-        >
-          Editar cadastro
-        </a>
-      `
-      : "";
+  /**
+   * Máscaras automáticas
+   */
 
-  const nomeMembro =
-    membro.nomeCompleto ||
-    "Nome não informado";
-
-  const urlFoto =
-    String(membro.foto || "").trim();
-
-  const iniciais =
-    obterIniciaisCarteirinha(nomeMembro);
-
-  const fotoPerfil = urlFoto
-    ? `
-      <img
-        class="member-profile-photo"
-        src="${escaparHtml(urlFoto)}"
-        alt="Foto de ${escaparHtml(nomeMembro)}"
-        onerror="
-          this.hidden = true;
-          this.nextElementSibling.hidden = false;
-        "
-      >
-      <div
-        class="member-profile-photo-placeholder"
-        hidden
-      >
-        ${escaparHtml(iniciais)}
-      </div>
-    `
-    : `
-      <div class="member-profile-photo-placeholder">
-        ${escaparHtml(iniciais)}
-      </div>
-    `;
-
-  fichaMembro.innerHTML = `
-    <section class="member-profile-hero">
-      <div class="member-profile-photo-box">
-        ${fotoPerfil}
-      </div>
-
-      <div class="member-profile-summary">
-        <p class="dashboard-label">
-          Cadastro ministerial
-        </p>
-
-        <h2>${escaparHtml(nomeMembro)}</h2>
-
-        <div class="member-profile-badges">
-          <span>
-            ID ${escaparHtml(membro.id || "—")}
-          </span>
-
-          <span>
-            ${escaparHtml(membro.situacao || "Ativo")}
-          </span>
-        </div>
-
-        <div class="member-profile-meta">
-          <div>
-            <span>Cargo</span>
-            <strong>${escaparHtml(membro.cargo || "Membro")}</strong>
-          </div>
-
-          <div>
-            <span>Congregação</span>
-            <strong>${escaparHtml(membro.congregacao || "Não informada")}</strong>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="form-section">
-      <h2>Dados pessoais</h2>
-      <div class="profile-grid">
-        ${campoFicha("Nome completo", membro.nomeCompleto)}
-        ${campoFicha("CPF", membro.cpf)}
-        ${campoFicha("RG", membro.rg)}
-        ${campoFicha("Data de nascimento", membro.dataNascimento)}
-        ${campoFicha("Estado civil", membro.estadoCivil)}
-        ${campoFicha("Cônjuge", membro.conjuge)}
-        ${campoFicha("Pai", membro.pai)}
-        ${campoFicha("Mãe", membro.mae)}
-      </div>
-    </section>
-
-    <section class="form-section">
-      <h2>Contato e endereço</h2>
-      <div class="profile-grid">
-        ${campoFicha("Telefone", membro.telefone)}
-        ${campoFicha("WhatsApp", membro.whatsapp)}
-        ${campoFicha("E-mail", membro.email)}
-        ${campoFicha("CEP", membro.cep)}
-        ${campoFicha("Endereço", membro.endereco)}
-        ${campoFicha("Número", membro.numero)}
-        ${campoFicha("Complemento", membro.complemento)}
-        ${campoFicha("Bairro", membro.bairro)}
-        ${campoFicha("Cidade", membro.cidade)}
-        ${campoFicha("Estado", membro.estado)}
-      </div>
-    </section>
-
-    <section class="form-section">
-      <h2>Vida cristã</h2>
-      <div class="profile-grid">
-        ${campoFicha("Data da conversão", membro.dataConversao)}
-        ${campoFicha("Data do batismo", membro.dataBatismo)}
-        ${campoFicha("Cargo", membro.cargo)}
-        ${campoFicha("Congregação", membro.congregacao)}
-        ${campoFicha("Situação", membro.situacao)}
-        ${campoFicha("Validade da carteirinha", membro.validadeCarteirinha)}
-      </div>
-    </section>
-
-    <section class="form-section">
-      <h2>Controle do cadastro</h2>
-      <div class="profile-grid">
-        ${campoFicha("Data de cadastro", membro.dataCadastro)}
-        ${campoFicha("Última atualização", membro.ultimaAtualizacao)}
-      </div>
-    </section>
-
-    <div class="form-actions member-profile-actions">
-      <a
-        class="secondary-link"
-        href="membros.html"
-      >
-        Voltar
-      </a>
-
-      <a
-        class="secondary-link"
-        href="carteirinha.html?id=${encodeURIComponent(
-          membro.id
-        )}"
-      >
-        Visualizar carteirinha
-      </a>
-
-      ${botaoEditar}
-    </div>
-  `;
-}
-
-function campoFicha(rotulo, valor) {
-  return `
-    <div class="profile-field">
-      <span>${escaparHtml(rotulo)}</span>
-      <strong>${escaparHtml(valor || "-")}</strong>
-    </div>
-  `;
-}
-
-function mostrarErroFicha(mensagem) {
-  fichaMembro.innerHTML = `
-    <p class="empty-state">
-      ${escaparHtml(mensagem)}
-    </p>
-  `;
-}
-
-/* =========================================
-   EDIÇÃO DE MEMBRO
-========================================= */
-
-const formularioEditarMembro =
-  document.getElementById("formEditarMembro");
-
-if (formularioEditarMembro) {
-  carregarFormularioEdicao();
-}
-
-async function carregarFormularioEdicao() {
-  const idMembro = obterIdDaUrl();
-
-  const mensagemCarregamento =
-    document.getElementById("mensagemCarregamento");
-
-  if (!idMembro) {
-    if (mensagemCarregamento) {
-      mensagemCarregamento.textContent =
-        "ID do membro não informado.";
-    }
-
-    return;
-  }
-
-  try {
-    const resultado = await chamarApi({
-      acao: "buscar",
-      id: idMembro
-    });
-
-    let membro = resultado.membro;
-
-    if (typeof membro === "string") {
-      membro = JSON.parse(membro);
-    }
-
-    preencherFormularioEdicao(membro);
-
-    if (mensagemCarregamento) {
-      mensagemCarregamento.hidden = true;
-    }
-
-    formularioEditarMembro.hidden = false;
-
-  } catch (erro) {
-    console.error(
-      "Erro ao carregar edição:",
-      erro
-    );
-
-    if (mensagemCarregamento) {
-      mensagemCarregamento.textContent =
-        erro.message;
-    }
-  }
-}
-
-function preencherFormularioEdicao(membro) {
-  Object.entries(membro).forEach(
-    function ([campo, valor]) {
-      const elemento =
-        formularioEditarMembro.elements[campo];
-
-      if (elemento) {
-        elemento.value = valor || "";
-      }
-    }
-  );
-
-  const titulo =
-    document.getElementById("tituloEditarMembro");
-
-  if (titulo) {
-    titulo.textContent =
-      "Editar " +
-      (membro.nomeCompleto || "Membro");
-  }
-
-  atualizarPreviewFoto(membro.foto || "");
-  atualizarStatusFoto(
-    membro.foto
-      ? "Foto atual do cadastro."
-      : "Selecione uma foto para o cadastro."
-  );
-}
-
-formularioEditarMembro?.addEventListener(
-  "submit",
-  async function (evento) {
-    evento.preventDefault();
-
-    const botaoSalvar =
-      formularioEditarMembro.querySelector(
-        'button[type="submit"]'
-      );
-
-    const textoOriginal =
-      botaoSalvar.textContent;
-
-    botaoSalvar.disabled = true;
-    botaoSalvar.textContent =
-      "Salvando alterações...";
-
-    const dados =
-      Object.fromEntries(
-        new FormData(formularioEditarMembro).entries()
-      );
-
-    try {
-      const arquivoFoto =
-        obterArquivoFoto(formularioEditarMembro);
-
-      if (arquivoFoto) {
-        botaoSalvar.textContent = "Enviando foto...";
-        atualizarStatusFoto("Enviando foto ao Google Drive...");
-        dados.foto = await enviarFotoParaDrive(arquivoFoto);
-        atualizarStatusFoto("Foto enviada com sucesso.");
-        botaoSalvar.textContent = "Salvando alterações...";
-      }
-
-      const resultado = await chamarApi({
-        acao: "atualizar",
-        dados: dados
+  function aplicarMascaras(contexto = document) {
+    contexto.querySelectorAll("[data-mascara='cpf']").forEach((campo) => {
+      campo.addEventListener("input", () => {
+        campo.value = formatarCPF(campo.value);
       });
-
-      alert(
-        "Cadastro atualizado com sucesso!"
-      );
-
-      window.location.href =
-        "membro.html?id=" +
-        encodeURIComponent(resultado.id);
-
-    } catch (erro) {
-      console.error(
-        "Erro ao atualizar membro:",
-        erro
-      );
-
-      alert(
-        "Não foi possível atualizar o cadastro.\n\n" +
-        erro.message
-      );
-
-    } finally {
-      botaoSalvar.disabled = false;
-      botaoSalvar.textContent =
-        textoOriginal;
-    }
-  }
-);
-
-/* =========================================
-   CONFIGURAÇÕES GERAIS
-========================================= */
-
-const formularioConfiguracoes =
-  document.getElementById("formConfiguracoes");
-
-const mensagemConfiguracoes =
-  document.getElementById("mensagemConfiguracoes");
-
-const TIPOS_ARQUIVO_SISTEMA = [
-  "image/jpeg",
-  "image/png",
-  "image/webp"
-];
-
-const TAMANHO_MAXIMO_ARQUIVO_SISTEMA =
-  4 * 1024 * 1024;
-
-if (formularioConfiguracoes) {
-  carregarConfiguracoes();
-  carregarListasSistema();
-  iniciarCamposDeCor();
-  iniciarUploadsConfiguracoes();
-
-  formularioConfiguracoes.addEventListener(
-    "submit",
-    salvarConfiguracoes
-  );
-}
-
-async function carregarConfiguracoes() {
-  try {
-    definirMensagemConfiguracoes(
-      "Carregando configurações...",
-      "info"
-    );
-
-    const resultado = await chamarApi({
-      acao: "obterConfiguracoes"
     });
 
-    preencherConfiguracoes(
-      resultado.configuracoes || {},
-      resultado.arquivos || {}
-    );
+    contexto.querySelectorAll("[data-mascara='telefone']").forEach((campo) => {
+      campo.addEventListener("input", () => {
+        campo.value = formatarTelefone(campo.value);
+      });
+    });
 
-    formularioConfiguracoes.hidden = false;
-    definirMensagemConfiguracoes(
-      "Configurações carregadas.",
-      "success"
-    );
-  } catch (erro) {
-    console.error("Erro ao carregar configurações:", erro);
-    definirMensagemConfiguracoes(erro.message, "error");
-  }
-}
+    contexto.querySelectorAll("[data-mascara='cep']").forEach((campo) => {
+      campo.addEventListener("input", () => {
+        campo.value = formatarCEP(campo.value);
+      });
+    });
 
-function preencherConfiguracoes(configuracoes, arquivos) {
-  Object.entries(configuracoes).forEach(
-    function ([chave, valor]) {
-      const campo = formularioConfiguracoes.elements[chave];
-
-      if (!campo) {
-        return;
-      }
-
-      if (campo.type === "checkbox") {
-        campo.checked = valor === true ||
-          String(valor).toLowerCase() === "true";
-      } else {
-        campo.value = valor ?? "";
-      }
-    }
-  );
-
-  preencherArquivoConfiguracao("Logo", arquivos.logo || "");
-  preencherArquivoConfiguracao(
-    "Assinatura",
-    arquivos.assinatura || ""
-  );
-  preencherArquivoConfiguracao(
-    "Favicon",
-    arquivos.favicon || ""
-  );
-
-  sincronizarCamposDeCor();
-}
-
-function preencherArquivoConfiguracao(tipo, url) {
-  const campoUrl = document.getElementById("url" + tipo);
-  const preview = document.getElementById("preview" + tipo);
-  const placeholder = document.getElementById("placeholder" + tipo);
-
-  if (campoUrl) {
-    campoUrl.value = url;
+    contexto.querySelectorAll("[data-mascara='inteiro']").forEach((campo) => {
+      campo.addEventListener("input", () => {
+        campo.value = apenasNumeros(campo.value);
+      });
+    });
   }
 
-  if (!preview || !placeholder) {
-    return;
-  }
+  /**
+   * Formulários e objetos
+   */
 
-  if (url) {
-    preview.src = url;
-    preview.hidden = false;
-    placeholder.hidden = true;
-  } else {
-    preview.removeAttribute("src");
-    preview.hidden = true;
-    placeholder.hidden = false;
-  }
-}
+  function formularioParaObjeto(formulario) {
+    if (!(formulario instanceof HTMLFormElement)) return {};
 
-async function salvarConfiguracoes(evento) {
-  evento.preventDefault();
+    const dados = new FormData(formulario);
+    const objeto = {};
 
-  const botao = document.getElementById(
-    "botaoSalvarConfiguracoes"
-  );
-  const textoOriginal = botao.textContent;
-
-  try {
-    botao.disabled = true;
-    botao.textContent = "Salvando...";
-    definirMensagemConfiguracoes(
-      "Salvando configurações...",
-      "info"
-    );
-
-    const dados = {};
-
-    formularioConfiguracoes
-      .querySelectorAll("[name]")
-      .forEach(function (campo) {
-        if (["logo", "assinatura", "favicon"].includes(campo.name)) {
-          return;
+    for (const [chave, valor] of dados.entries()) {
+      if (Object.prototype.hasOwnProperty.call(objeto, chave)) {
+        if (!Array.isArray(objeto[chave])) {
+          objeto[chave] = [objeto[chave]];
         }
 
-        dados[campo.name] = campo.type === "checkbox"
-          ? campo.checked
-          : String(campo.value || "").trim();
+        objeto[chave].push(valor);
+      } else {
+        objeto[chave] = valor;
+      }
+    }
+
+    formulario
+      .querySelectorAll("input[type='checkbox'][name]")
+      .forEach((campo) => {
+        if (!dados.has(campo.name)) {
+          objeto[campo.name] = false;
+        } else if (dados.getAll(campo.name).length === 1) {
+          objeto[campo.name] = campo.checked;
+        }
       });
 
-    const resultado = await chamarApi({
-      acao: "salvarConfiguracoes",
-      dados: dados
-    });
-
-    definirMensagemConfiguracoes(
-      resultado.mensagem ||
-        "Configurações salvas com sucesso.",
-      "success"
-    );
-  } catch (erro) {
-    console.error("Erro ao salvar configurações:", erro);
-    definirMensagemConfiguracoes(erro.message, "error");
-    alert(
-      "Não foi possível salvar as configurações.\n\n" +
-      erro.message
-    );
-  } finally {
-    botao.disabled = false;
-    botao.textContent = textoOriginal;
+    return objeto;
   }
-}
 
-function iniciarUploadsConfiguracoes() {
-  [
-    ["arquivoLogo", "logo", "Logo"],
-    ["arquivoAssinatura", "assinatura", "Assinatura"],
-    ["arquivoFavicon", "favicon", "Favicon"]
-  ].forEach(function ([idCampo, chave, tipoVisual]) {
-    const campo = document.getElementById(idCampo);
+  function preencherFormulario(formulario, dados = {}) {
+    if (!(formulario instanceof HTMLFormElement)) return;
 
-    campo?.addEventListener("change", async function () {
-      const arquivo = campo.files?.[0];
+    Object.entries(dados).forEach(([nome, valor]) => {
+      const campos = formulario.querySelectorAll(`[name="${CSS.escape(nome)}"]`);
 
-      if (!arquivo) {
+      campos.forEach((campo) => {
+        if (campo.type === "checkbox") {
+          if (Array.isArray(valor)) {
+            campo.checked = valor.includes(campo.value);
+          } else {
+            campo.checked = Boolean(valor);
+          }
+        } else if (campo.type === "radio") {
+          campo.checked = String(campo.value) === String(valor);
+        } else {
+          campo.value = existe(valor) ? valor : "";
+        }
+      });
+    });
+  }
+
+  function limparFormulario(formulario) {
+    if (!(formulario instanceof HTMLFormElement)) return;
+
+    formulario.reset();
+    formulario
+      .querySelectorAll(".input-invalido")
+      .forEach((campo) => campo.classList.remove("input-invalido"));
+
+    formulario
+      .querySelectorAll(".campo.invalido")
+      .forEach((campo) => campo.classList.remove("invalido"));
+  }
+
+  /**
+   * Google Apps Script
+   */
+
+  function googleScriptDisponivel() {
+    return Boolean(
+      window.google &&
+      window.google.script &&
+      window.google.script.run
+    );
+  }
+
+  function chamarAppsScript(funcao, ...argumentos) {
+    return new Promise((resolve, reject) => {
+      if (!googleScriptDisponivel()) {
+        reject(
+          new Error(
+            "O serviço do Google Apps Script não está disponível neste ambiente."
+          )
+        );
         return;
       }
 
-      try {
-        validarArquivoSistema(arquivo);
-        definirMensagemConfiguracoes(
-          "Enviando " + chave + "...",
-          "info"
-        );
+      const executor = window.google.script.run
+        .withSuccessHandler(resolve)
+        .withFailureHandler((falha) => {
+          const mensagem =
+            falha?.message ||
+            falha?.toString?.() ||
+            "Ocorreu um erro ao executar a solicitação.";
 
-        const url = await enviarArquivoSistema(
-          arquivo,
-          chave
-        );
+          reject(new Error(mensagem));
+        });
 
-        preencherArquivoConfiguracao(tipoVisual, url);
-        definirMensagemConfiguracoes(
-          "Arquivo enviado com sucesso.",
-          "success"
+      if (typeof executor[funcao] !== "function") {
+        reject(
+          new Error(`A função "${funcao}" não existe no Google Apps Script.`)
         );
-      } catch (erro) {
-        campo.value = "";
-        definirMensagemConfiguracoes(erro.message, "error");
-        alert(erro.message);
+        return;
       }
+
+      executor[funcao](...argumentos);
     });
-  });
-}
-
-function validarArquivoSistema(arquivo) {
-  if (!TIPOS_ARQUIVO_SISTEMA.includes(arquivo.type)) {
-    throw new Error(
-      "O arquivo deve estar no formato JPG, PNG ou WebP."
-    );
   }
 
-  if (arquivo.size > TAMANHO_MAXIMO_ARQUIVO_SISTEMA) {
-    throw new Error("O arquivo deve ter no máximo 4 MB.");
-  }
-}
+  async function executarAcaoServidor(
+    funcao,
+    argumentos = [],
+    opcoes = {}
+  ) {
+    const {
+      mensagemCarregamento = "Processando...",
+      mensagemSucesso = "",
+      exibirErro = true
+    } = opcoes;
 
-async function enviarArquivoSistema(arquivo, chave) {
-  const dataUrl = await lerArquivoComoDataUrl(arquivo);
-  const separador = dataUrl.indexOf(",");
+    try {
+      const resposta = await comCarregamento(
+        () => chamarAppsScript(funcao, ...argumentos),
+        mensagemCarregamento
+      );
 
-  if (separador < 0) {
-    throw new Error("O conteúdo do arquivo é inválido.");
-  }
+      if (mensagemSucesso) sucesso(mensagemSucesso);
+      return resposta;
+    } catch (falha) {
+      console.error(`[VRG] Erro em ${funcao}:`, falha);
 
-  const resultado = await chamarApi({
-    acao: "uploadArquivoSistema",
-    chave: chave,
-    arquivo: {
-      nome: arquivo.name,
-      tipo: arquivo.type,
-      base64: dataUrl.slice(separador + 1)
+      if (exibirErro) {
+        erro(falha.message || "Não foi possível concluir a operação.");
+      }
+
+      throw falha;
     }
-  });
+  }
 
-  if (!resultado.arquivo || !resultado.arquivo.url) {
-    throw new Error(
-      "A API não retornou o endereço do arquivo."
+  /**
+   * Estado do usuário
+   */
+
+  function obterUsuarioLocal() {
+    return (
+      lerStorage(APP_CONFIG.chaveUsuario) ||
+      lerSessao(APP_CONFIG.chaveUsuario) ||
+      null
     );
   }
 
-  return resultado.arquivo.url;
-}
+  function salvarUsuarioLocal(usuario, persistir = true) {
+    if (persistir) {
+      salvarStorage(APP_CONFIG.chaveUsuario, usuario);
+    } else {
+      salvarSessao(APP_CONFIG.chaveUsuario, usuario);
+    }
 
-function iniciarCamposDeCor() {
-  [
-    ["corPrincipal", "corPrincipalTexto"],
-    ["corSecundaria", "corSecundariaTexto"]
-  ].forEach(function ([idCor, idTexto]) {
-    const cor = document.getElementById(idCor);
-    const texto = document.getElementById(idTexto);
+    atualizarUsuarioNaInterface(usuario);
+  }
 
-    cor?.addEventListener("input", function () {
-      texto.value = cor.value;
-    });
+  function removerUsuarioLocal() {
+    removerStorage(APP_CONFIG.chaveUsuario);
+    removerSessao(APP_CONFIG.chaveUsuario);
+  }
 
-    texto?.addEventListener("change", function () {
-      const valor = texto.value.trim();
+  function atualizarUsuarioNaInterface(usuario = obterUsuarioLocal()) {
+    if (!usuario) return;
 
-      if (/^#[0-9a-f]{6}$/i.test(valor)) {
-        cor.value = valor;
+    document
+      .querySelectorAll("[data-usuario-nome]")
+      .forEach((elemento) => {
+        elemento.textContent =
+          usuario.nome || usuario.name || usuario.email || "Usuário";
+      });
+
+    document
+      .querySelectorAll("[data-usuario-email]")
+      .forEach((elemento) => {
+        elemento.textContent = usuario.email || "";
+      });
+
+    document
+      .querySelectorAll("[data-usuario-cargo]")
+      .forEach((elemento) => {
+        elemento.textContent =
+          usuario.cargo || usuario.perfil || usuario.funcao || "";
+      });
+
+    document
+      .querySelectorAll("[data-usuario-iniciais]")
+      .forEach((elemento) => {
+        elemento.textContent = iniciais(
+          usuario.nome || usuario.name || usuario.email
+        );
+      });
+
+    document
+      .querySelectorAll("[data-usuario-foto]")
+      .forEach((imagem) => {
+        const foto = usuario.foto || usuario.picture || usuario.avatar;
+
+        if (foto && imagem instanceof HTMLImageElement) {
+          imagem.src = foto;
+          imagem.alt = `Foto de ${usuario.nome || usuario.name || "usuário"}`;
+        }
+      });
+  }
+
+  /**
+   * Parâmetros de URL
+   */
+
+  function obterParametro(nome) {
+    return new URLSearchParams(window.location.search).get(nome);
+  }
+
+  function definirParametros(parametros = {}, substituir = true) {
+    const url = new URL(window.location.href);
+
+    Object.entries(parametros).forEach(([chave, valor]) => {
+      if (!existe(valor) || valor === "") {
+        url.searchParams.delete(chave);
       } else {
-        texto.value = cor.value;
+        url.searchParams.set(chave, valor);
       }
     });
-  });
-}
 
-function sincronizarCamposDeCor() {
-  [
-    ["corPrincipal", "corPrincipalTexto"],
-    ["corSecundaria", "corSecundariaTexto"]
-  ].forEach(function ([idCor, idTexto]) {
-    const cor = document.getElementById(idCor);
-    const texto = document.getElementById(idTexto);
-
-    if (cor && texto) {
-      texto.value = cor.value;
-    }
-  });
-}
-
-function definirMensagemConfiguracoes(texto, tipo) {
-  if (!mensagemConfiguracoes) {
-    return;
+    const metodo = substituir ? "replaceState" : "pushState";
+    window.history[metodo]({}, "", url);
   }
 
-  mensagemConfiguracoes.textContent = texto;
-  mensagemConfiguracoes.dataset.tipo = tipo || "info";
-}
+  /**
+   * Downloads
+   */
 
-/* =========================================
-   LISTAS DO SISTEMA
-========================================= */
+  function baixarBlob(blob, nomeArquivo) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
 
-async function carregarListasSistema() {
-  const mensagem = document.getElementById("mensagemListas");
-  const painel = document.getElementById("listasSistema");
+    link.href = url;
+    link.download = nomeArquivo || "arquivo";
+    link.style.display = "none";
 
-  if (!mensagem || !painel) {
-    return;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  try {
-    mensagem.hidden = false;
-    mensagem.textContent = "Carregando listas...";
-    mensagem.dataset.tipo = "info";
-    painel.hidden = true;
+  function baixarTexto(conteudo, nomeArquivo, tipo = "text/plain;charset=utf-8") {
+    const blob = new Blob([conteudo], { type: tipo });
+    baixarBlob(blob, nomeArquivo);
+  }
 
-    const resultado = await chamarApi({
-      acao: "listarListas"
+  /**
+   * Erros globais
+   */
+
+  function configurarErrosGlobais() {
+    window.addEventListener("error", (evento) => {
+      console.error("[VRG] Erro global:", evento.error || evento.message);
     });
 
-    preencherListasSistema(resultado.listas || {});
-
-    painel.hidden = false;
-    mensagem.textContent = "Listas carregadas com sucesso.";
-    mensagem.dataset.tipo = "success";
-  } catch (erro) {
-    console.error("Erro ao carregar listas do sistema:", erro);
-    painel.hidden = true;
-    mensagem.hidden = false;
-    mensagem.textContent = erro.message;
-    mensagem.dataset.tipo = "error";
-  }
-}
-
-function preencherListasSistema(listas) {
-  preencherListaSistema(
-    "listaUnidades",
-    listas.UNIDADE || []
-  );
-
-  preencherListaSistema(
-    "listaCargos",
-    listas.CARGO || []
-  );
-
-  preencherListaSistema(
-    "listaEstadoCivil",
-    listas["ESTADO CIVIL"] || []
-  );
-
-  preencherListaSistema(
-    "listaSituacoes",
-    listas["SITUAÇÃO"] || listas.SITUACAO || []
-  );
-}
-
-function preencherListaSistema(idElemento, valores) {
-  const lista = document.getElementById(idElemento);
-
-  if (!lista) {
-    return;
+    window.addEventListener("unhandledrejection", (evento) => {
+      console.error("[VRG] Promessa rejeitada:", evento.reason);
+    });
   }
 
-  lista.innerHTML = "";
+  /**
+   * Eventos globais por data-attributes
+   */
 
-  const itens = Array.isArray(valores)
-    ? valores.filter(function (valor) {
-        return String(valor || "").trim();
+  function configurarAcoesGlobais() {
+    document.addEventListener("click", async (evento) => {
+      const copiar = evento.target.closest("[data-copiar]");
+      if (copiar) {
+        evento.preventDefault();
+
+        try {
+          await copiarTexto(copiar.dataset.copiar);
+          sucesso("Conteúdo copiado.");
+        } catch (falha) {
+          erro("Não foi possível copiar o conteúdo.");
+        }
+
+        return;
+      }
+
+      const navegarPara = evento.target.closest("[data-navegar]");
+      if (navegarPara) {
+        evento.preventDefault();
+        navegar(navegarPara.dataset.navegar);
+      }
+    });
+  }
+
+  /**
+   * Inicialização
+   */
+
+  function inicializarAnoAtual() {
+    document.querySelectorAll("[data-ano-atual], #anoAtual").forEach((elemento) => {
+      elemento.textContent = String(new Date().getFullYear());
+    });
+  }
+
+  function inicializar() {
+    if (ESTADO.inicializado) return;
+
+    configurarErrosGlobais();
+    configurarMenu();
+    configurarModais();
+    configurarAbas();
+    configurarAcoesGlobais();
+    aplicarMascaras(document);
+    atualizarUsuarioNaInterface();
+    inicializarAnoAtual();
+
+    ESTADO.inicializado = true;
+
+    document.dispatchEvent(
+      new CustomEvent("vrg:pronto", {
+        detail: {
+          pagina: obterPaginaAtual(),
+          versao: APP_CONFIG.versao
+        }
       })
-    : [];
+    );
 
-  if (!itens.length) {
-    const itemVazio = document.createElement("li");
-    itemVazio.textContent = "Nenhum valor cadastrado.";
-    lista.appendChild(itemVazio);
-    return;
+    console.info(
+      `%c${APP_CONFIG.nome} ${APP_CONFIG.versao}`,
+      "color:#d5a62e;background:#071f3b;padding:5px 9px;border-radius:5px;font-weight:bold;"
+    );
   }
 
-  itens.forEach(function (valor) {
-    const item = document.createElement("li");
-    item.textContent = String(valor).trim();
-    lista.appendChild(item);
+  /**
+   * API pública
+   */
+
+  const APP = Object.freeze({
+    config: APP_CONFIG,
+    estado: ESTADO,
+
+    inicializar,
+    navegar,
+    obterPaginaAtual,
+    marcarMenuAtivo,
+
+    abrirMenu,
+    fecharMenu,
+    alternarMenu,
+
+    mostrarCarregamento,
+    ocultarCarregamento,
+    comCarregamento,
+
+    toast,
+    sucesso,
+    erro,
+    alerta,
+    info,
+    definirMensagem,
+
+    abrirModal,
+    fecharModal,
+    confirmar,
+    ativarAba,
+
+    escapeHTML,
+    gerarId,
+    aguardar,
+    debounce,
+    throttle,
+    copiarTexto,
+
+    lerStorage,
+    salvarStorage,
+    removerStorage,
+    lerSessao,
+    salvarSessao,
+    removerSessao,
+
+    normalizarData,
+    formatarData,
+    formatarDataHora,
+    dataParaISO,
+    formatarMoeda,
+    formatarNumero,
+    apenasNumeros,
+    formatarCPF,
+    formatarTelefone,
+    formatarCEP,
+    formatarCodigoMembro,
+    formatarCodigoBatismo,
+    formatarCodigoConsagracao,
+    capitalizar,
+    iniciais,
+    calcularIdade,
+
+    validarEmail,
+    validarCPF,
+    validarData,
+    validarFormulario,
+    aplicarMascaras,
+
+    formularioParaObjeto,
+    preencherFormulario,
+    limparFormulario,
+
+    googleScriptDisponivel,
+    chamarAppsScript,
+    executarAcaoServidor,
+
+    obterUsuarioLocal,
+    salvarUsuarioLocal,
+    removerUsuarioLocal,
+    atualizarUsuarioNaInterface,
+
+    obterParametro,
+    definirParametros,
+
+    baixarBlob,
+    baixarTexto
   });
-}
 
-/* =========================================
-   INICIALIZAÇÃO
-========================================= */
+  window.VRG = APP;
+  window.App = APP;
 
-exigirSessao();
-
-window.addEventListener(
-  "load",
-  function () {
-    iniciarGoogleLogin();
-    aplicarIdentidadeUsuario();
-    aplicarPermissoesDaTela();
-    iniciarSelecaoFoto();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", inicializar, { once: true });
+  } else {
+    inicializar();
   }
-);
+})(window, document);
