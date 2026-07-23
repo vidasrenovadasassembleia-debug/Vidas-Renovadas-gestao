@@ -1,1 +1,1347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
 
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Visualizar membro | Vidas Renovadas Gestão</title>
+
+  <meta
+    name="description"
+    content="Ficha digital completa do membro da Igreja Vidas Renovadas."
+  >
+
+  <meta name="theme-color" content="#071f3b">
+
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="css/estilo.css?v=50">
+
+  <style>
+    /* =========================================================
+       VISUALIZAR MEMBRO
+       Ficha digital oficial do membro
+       ========================================================= */
+
+    :root {
+      --ficha-azul: var(--azul-900, #071f3b);
+      --ficha-azul-medio: var(--azul-700, #144b7f);
+      --ficha-dourado: var(--dourado-700, #9f7620);
+      --ficha-fundo: var(--superficie-suave, #f5f7f9);
+      --ficha-superficie: var(--superficie, #ffffff);
+      --ficha-borda: var(--borda-sistema, #dce3e8);
+      --ficha-texto: var(--texto, #263442);
+      --ficha-texto-suave: var(--texto-suave-sistema, #687785);
+      --ficha-raio: var(--raio-card, 16px);
+      --ficha-sombra: var(--sombra-card, 0 10px 28px rgba(7, 31, 59, 0.08));
+    }
+
+    .visualizar-apresentacao {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 18px;
+    }
+
+    .visualizar-etiqueta {
+      margin: 0 0 5px;
+      color: var(--ficha-dourado);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.085em;
+      text-transform: uppercase;
+    }
+
+    .visualizar-titulo {
+      margin: 0;
+      color: var(--ficha-azul);
+      font-size: clamp(1.6rem, 3vw, 2.15rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+    }
+
+    .visualizar-descricao {
+      margin: 7px 0 0;
+      color: var(--ficha-texto-suave);
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    .visualizar-acoes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 9px;
+    }
+
+    .ficha-botao {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 14px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: 10px;
+      background: #ffffff;
+      color: var(--ficha-azul);
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 850;
+      text-decoration: none;
+      transition:
+        border-color 180ms ease,
+        background 180ms ease,
+        color 180ms ease,
+        opacity 180ms ease,
+        transform 180ms ease;
+    }
+
+    .ficha-botao:hover {
+      border-color: var(--ficha-azul-medio);
+      background: #f8fbfd;
+      transform: translateY(-1px);
+    }
+
+    .ficha-botao-primario {
+      border-color: var(--ficha-azul);
+      background: var(--ficha-azul);
+      color: #ffffff;
+    }
+
+    .ficha-botao-primario:hover {
+      border-color: var(--ficha-azul-medio);
+      background: var(--ficha-azul-medio);
+      color: #ffffff;
+    }
+
+    .ficha-botao-dourado {
+      border-color: var(--ficha-dourado);
+      background: var(--ficha-dourado);
+      color: #ffffff;
+    }
+
+    .ficha-botao-dourado:hover {
+      border-color: #7f5e17;
+      background: #7f5e17;
+      color: #ffffff;
+    }
+
+    .ficha-botao:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+      transform: none;
+    }
+
+    /* Resumo principal */
+
+    .membro-resumo {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 22px;
+      margin-bottom: 18px;
+      padding: 24px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: var(--ficha-raio);
+      background:
+        linear-gradient(135deg, rgba(7, 31, 59, 0.035), transparent 45%),
+        #ffffff;
+      box-shadow: var(--ficha-sombra);
+    }
+
+    .membro-foto-box {
+      position: relative;
+      width: 138px;
+      height: 168px;
+      overflow: hidden;
+      border: 5px solid #ffffff;
+      border-radius: 18px;
+      background: #eaf0f4;
+      box-shadow:
+        0 0 0 1px var(--ficha-borda),
+        0 10px 22px rgba(7, 31, 59, 0.12);
+    }
+
+    .membro-foto {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .membro-foto-placeholder {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 50% 32%, #bccbd5 0 19%, transparent 20%),
+        radial-gradient(circle at 50% 105%, #bccbd5 0 42%, transparent 43%),
+        #eaf0f4;
+      color: var(--ficha-texto-suave);
+      font-size: 0.7rem;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .membro-resumo-conteudo {
+      min-width: 0;
+    }
+
+    .membro-resumo-etiqueta {
+      margin: 0 0 7px;
+      color: var(--ficha-dourado);
+      font-size: 0.67rem;
+      font-weight: 900;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .membro-nome {
+      margin: 0;
+      color: var(--ficha-azul);
+      font-size: clamp(1.45rem, 3vw, 2.05rem);
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+    }
+
+    .membro-congregacao {
+      margin: 8px 0 0;
+      color: var(--ficha-texto-suave);
+      font-size: 0.83rem;
+      font-weight: 700;
+    }
+
+    .membro-identificadores {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .ficha-badge {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 11px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font-size: 0.71rem;
+      font-weight: 850;
+      line-height: 1.2;
+    }
+
+    .ficha-badge-codigo {
+      border-color: #c7d6e2;
+      background: #edf4f8;
+      color: #245f91;
+    }
+
+    .ficha-badge-cargo {
+      border-color: #d8c6f0;
+      background: #f3ecfb;
+      color: #6941a5;
+    }
+
+    .ficha-badge-situacao {
+      border-color: #b9dfca;
+      background: #e7f6ee;
+      color: #16794f;
+    }
+
+    .ficha-badge-ponto {
+      width: 8px;
+      height: 8px;
+      flex: 0 0 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .membro-resumo-lateral {
+      display: grid;
+      min-width: 180px;
+      gap: 10px;
+    }
+
+    .resumo-dado {
+      padding: 12px 14px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: 12px;
+      background: var(--ficha-fundo);
+    }
+
+    .resumo-dado-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ficha-texto-suave);
+      font-size: 0.64rem;
+      font-weight: 850;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+    }
+
+    .resumo-dado-valor {
+      display: block;
+      color: var(--ficha-azul);
+      font-size: 0.78rem;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    /* Conteúdo da ficha */
+
+    .ficha-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .ficha-card {
+      grid-column: span 6;
+      overflow: hidden;
+      border: 1px solid var(--ficha-borda);
+      border-radius: var(--ficha-raio);
+      background: var(--ficha-superficie);
+      box-shadow: 0 6px 20px rgba(7, 31, 59, 0.055);
+    }
+
+    .ficha-card-largo {
+      grid-column: 1 / -1;
+    }
+
+    .ficha-card-cabecalho {
+      display: flex;
+      min-height: 55px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--ficha-borda);
+      background:
+        linear-gradient(90deg, rgba(7, 31, 59, 0.035), transparent),
+        #ffffff;
+    }
+
+    .ficha-card-titulo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ficha-card-icone {
+      display: inline-flex;
+      width: 31px;
+      height: 31px;
+      flex: 0 0 31px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9px;
+      background: #eef3f7;
+      color: var(--ficha-azul);
+      font-size: 0.88rem;
+      font-weight: 900;
+    }
+
+    .ficha-card-titulo {
+      margin: 0;
+      color: var(--ficha-azul);
+      font-size: 0.86rem;
+      font-weight: 900;
+    }
+
+    .ficha-card-subtitulo {
+      margin: 3px 0 0;
+      color: var(--ficha-texto-suave);
+      font-size: 0.66rem;
+    }
+
+    .ficha-card-corpo {
+      padding: 17px 18px 19px;
+    }
+
+    .dados-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 20px;
+    }
+
+    .dados-grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .dado-item {
+      min-width: 0;
+    }
+
+    .dado-item-largo {
+      grid-column: 1 / -1;
+    }
+
+    .dado-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ficha-texto-suave);
+      font-size: 0.66rem;
+      font-weight: 850;
+      letter-spacing: 0.025em;
+    }
+
+    .dado-valor {
+      display: block;
+      min-height: 21px;
+      color: var(--ficha-texto);
+      font-size: 0.79rem;
+      font-weight: 750;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .dado-valor-vazio {
+      color: #98a3ab;
+      font-weight: 650;
+    }
+
+    .observacoes-texto {
+      min-height: 90px;
+      margin: 0;
+      color: var(--ficha-texto);
+      font-size: 0.79rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    /* Carteirinha */
+
+    .carteirinha-area {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 130px;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .carteirinha-dados {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .qr-box {
+      display: flex;
+      width: 120px;
+      height: 120px;
+      align-items: center;
+      justify-content: center;
+      justify-self: end;
+      border: 1px dashed #aebbc5;
+      border-radius: 14px;
+      background:
+        linear-gradient(45deg, #e6ebef 25%, transparent 25%) 0 0 / 14px 14px,
+        linear-gradient(-45deg, #e6ebef 25%, transparent 25%) 0 7px / 14px 14px,
+        linear-gradient(45deg, transparent 75%, #e6ebef 75%) 7px -7px / 14px 14px,
+        linear-gradient(-45deg, transparent 75%, #e6ebef 75%) -7px 0 / 14px 14px,
+        #ffffff;
+      color: var(--ficha-azul);
+      font-size: 0.64rem;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    /* Estado de carregamento/erro */
+
+    .ficha-aviso {
+      display: none;
+      margin-bottom: 16px;
+      padding: 13px 15px;
+      border: 1px solid #ead79a;
+      border-radius: 12px;
+      background: #fff8df;
+      color: #735815;
+      font-size: 0.76rem;
+      font-weight: 750;
+      line-height: 1.45;
+    }
+
+    .ficha-aviso.ativo {
+      display: block;
+    }
+
+    .visualizar-rodape {
+      margin-top: 20px;
+      padding: 13px 0 2px;
+      color: var(--ficha-texto-suave);
+      font-size: 0.68rem;
+      text-align: center;
+    }
+
+    /* Impressão */
+
+    @media print {
+      .sidebar,
+      .overlay-menu,
+      .topbar,
+      .visualizar-apresentacao,
+      .carregamento-global,
+      .visualizar-rodape {
+        display: none !important;
+      }
+
+      body,
+      .sistema-page,
+      .sistema-layout,
+      .sistema-main,
+      .sistema-conteudo {
+        width: 100% !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+      }
+
+      .membro-resumo,
+      .ficha-card {
+        break-inside: avoid;
+        box-shadow: none !important;
+      }
+
+      .ficha-grid {
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .membro-resumo {
+        grid-template-columns: 135px minmax(0, 1fr);
+      }
+
+      .membro-resumo-lateral {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .visualizar-apresentacao {
+        flex-direction: column;
+      }
+
+      .visualizar-acoes {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .ficha-card {
+        grid-column: 1 / -1;
+      }
+
+      .dados-grid-3,
+      .carteirinha-dados {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 650px) {
+      .membro-resumo {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .membro-resumo-conteudo {
+        width: 100%;
+      }
+
+      .membro-identificadores {
+        justify-content: center;
+      }
+
+      .membro-resumo-lateral {
+        width: 100%;
+        grid-template-columns: 1fr;
+        text-align: left;
+      }
+
+      .dados-grid,
+      .dados-grid-3,
+      .carteirinha-dados,
+      .carteirinha-area {
+        grid-template-columns: 1fr;
+      }
+
+      .qr-box {
+        justify-self: start;
+      }
+
+      .visualizar-acoes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .ficha-botao {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .visualizar-acoes {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body class="sistema-page" data-page="membros">
+
+  <div class="sistema-layout">
+
+    <aside class="sidebar" aria-label="Menu principal">
+
+      <div class="sidebar-topo">
+
+        <div class="sidebar-logo-box">
+          <img
+            class="sidebar-logo"
+            src="logo.png"
+            alt="Logo da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas"
+          >
+        </div>
+
+        <div class="sidebar-identidade">
+          <p class="sidebar-nome">Vidas Renovadas Gestão</p>
+          <p class="sidebar-ministerio">Ministério Vidas Renovadas</p>
+        </div>
+
+      </div>
+
+      <nav class="menu-navegacao">
+
+        <div class="menu-grupo">
+          <p class="menu-grupo-titulo">Visão geral</p>
+
+          <a class="menu-item" href="dashboard.html" data-page="dashboard">
+            <span class="menu-item-icone" aria-hidden="true">⌂</span>
+            <span>Dashboard</span>
+          </a>
+        </div>
+
+        <div class="menu-grupo">
+          <p class="menu-grupo-titulo">Pessoas</p>
+
+          <a class="menu-item" href="membros.html" data-page="membros">
+            <span class="menu-item-icone" aria-hidden="true">♙</span>
+            <span>Membros</span>
+          </a>
+
+          <a class="menu-item" href="familias.html" data-page="familias">
+            <span class="menu-item-icone" aria-hidden="true">♧</span>
+            <span>Famílias</span>
+          </a>
+
+          <a class="menu-item" href="congregacoes.html" data-page="congregacoes">
+            <span class="menu-item-icone" aria-hidden="true">⌂</span>
+            <span>Congregações</span>
+          </a>
+        </div>
+
+        <div class="menu-grupo">
+          <p class="menu-grupo-titulo">Documentos</p>
+
+          <a class="menu-item" href="carteirinhas.html" data-page="carteirinhas">
+            <span class="menu-item-icone" aria-hidden="true">▣</span>
+            <span>Carteirinhas</span>
+          </a>
+
+          <a class="menu-item" href="certificados/index.html" data-page="certificados">
+            <span class="menu-item-icone" aria-hidden="true">◇</span>
+            <span>Certificados</span>
+          </a>
+        </div>
+
+        <div class="menu-grupo">
+          <p class="menu-grupo-titulo">Gestão</p>
+
+          <a class="menu-item" href="financeiro.html" data-page="financeiro">
+            <span class="menu-item-icone" aria-hidden="true">R$</span>
+            <span>Financeiro</span>
+          </a>
+
+          <a class="menu-item" href="relatorios.html" data-page="relatorios">
+            <span class="menu-item-icone" aria-hidden="true">▤</span>
+            <span>Relatórios</span>
+          </a>
+
+          <a
+            class="menu-item"
+            href="configuracoes.html"
+            data-page="configuracoes"
+            data-permissao="administracao"
+          >
+            <span class="menu-item-icone" aria-hidden="true">⚙</span>
+            <span>Administração</span>
+          </a>
+        </div>
+
+      </nav>
+
+      <div class="sidebar-rodape">
+        <div class="usuario-sidebar">
+
+          <div class="usuario-avatar" data-usuario-iniciais>VR</div>
+
+          <div class="usuario-sidebar-dados">
+            <div class="usuario-sidebar-nome" data-usuario-nome>Usuário</div>
+            <div class="usuario-sidebar-cargo" data-usuario-cargo>Carregando perfil...</div>
+          </div>
+
+          <button
+            type="button"
+            class="botao-sair-sidebar"
+            data-acao="logout"
+            data-confirmar-logout="true"
+            aria-label="Sair do sistema"
+            title="Sair do sistema"
+          >
+            ↪
+          </button>
+
+        </div>
+      </div>
+
+    </aside>
+
+    <div class="overlay-menu" data-acao="fechar-menu"></div>
+
+    <main class="sistema-main">
+
+      <header class="topbar">
+
+        <div class="topbar-esquerda">
+
+          <button
+            type="button"
+            class="botao-menu-mobile"
+            data-acao="alternar-menu"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+          >
+            ☰
+          </button>
+
+          <div>
+            <h1 class="topbar-titulo">Ficha do membro</h1>
+            <p class="topbar-subtitulo">Consulta completa do cadastro ministerial</p>
+          </div>
+
+        </div>
+
+        <div class="topbar-direita">
+
+          <div class="topbar-data">
+            <strong id="dataAtual">—</strong><br>
+            <span id="horaAtual">—</span>
+          </div>
+
+          <div class="topbar-avatar" data-usuario-iniciais>VR</div>
+
+        </div>
+
+      </header>
+
+      <div class="sistema-conteudo">
+
+        <section class="visualizar-apresentacao">
+
+          <div>
+            <p class="visualizar-etiqueta">Secretaria</p>
+            <h2 class="visualizar-titulo">Ficha digital do membro</h2>
+            <p class="visualizar-descricao">
+              Consulte os dados pessoais, familiares, eclesiásticos e documentais do membro.
+            </p>
+          </div>
+
+          <div class="visualizar-acoes">
+
+            <a class="ficha-botao" href="membros.html">
+              ← Voltar
+            </a>
+
+            <button
+              type="button"
+              class="ficha-botao"
+              id="botaoEditarMembro"
+              data-permissao="membros-editar"
+              disabled
+              title="A integração será feita na próxima etapa"
+            >
+              ✎ Editar
+            </button>
+
+            <button
+              type="button"
+              class="ficha-botao"
+              id="botaoImprimirFicha"
+              onclick="window.print()"
+            >
+              ▤ Imprimir
+            </button>
+
+            <button
+              type="button"
+              class="ficha-botao ficha-botao-dourado"
+              id="botaoAbrirCarteirinha"
+              disabled
+              title="A integração será feita na próxima etapa"
+            >
+              ▣ Carteirinha
+            </button>
+
+          </div>
+
+        </section>
+
+        <div class="ficha-aviso ativo" id="avisoFicha">
+          Estrutura visual pronta. Os dados reais serão conectados ao sistema na próxima etapa.
+        </div>
+
+        <section class="membro-resumo" aria-label="Resumo do membro">
+
+          <div class="membro-foto-box">
+            <div class="membro-foto-placeholder" id="fotoMembroPlaceholder">
+              FOTO DO<br>MEMBRO
+            </div>
+
+            <img
+              class="membro-foto"
+              id="fotoMembro"
+              alt="Foto do membro"
+              hidden
+            >
+          </div>
+
+          <div class="membro-resumo-conteudo">
+
+            <p class="membro-resumo-etiqueta">Identificação ministerial</p>
+
+            <h3 class="membro-nome" data-campo="NOME_COMPLETO">
+              Nome completo do membro
+            </h3>
+
+            <p class="membro-congregacao" data-campo="CONGREGACAO">
+              Congregação não informada
+            </p>
+
+            <div class="membro-identificadores">
+
+              <span class="ficha-badge ficha-badge-codigo">
+                ID:
+                <strong data-campo="CODIGO">—</strong>
+              </span>
+
+              <span class="ficha-badge ficha-badge-cargo">
+                <span class="ficha-badge-ponto" aria-hidden="true"></span>
+                <span data-campo="CARGO">Cargo não informado</span>
+              </span>
+
+              <span class="ficha-badge ficha-badge-situacao">
+                <span class="ficha-badge-ponto" aria-hidden="true"></span>
+                <span data-campo="SITUACAO">Situação não informada</span>
+              </span>
+
+            </div>
+
+          </div>
+
+          <div class="membro-resumo-lateral">
+
+            <div class="resumo-dado">
+              <span class="resumo-dado-label">Carteirinha</span>
+              <span class="resumo-dado-valor" data-campo="NUMERO_CARTEIRINHA">—</span>
+            </div>
+
+            <div class="resumo-dado">
+              <span class="resumo-dado-label">Data de cadastro</span>
+              <span class="resumo-dado-valor" data-campo="DATA_CADASTRO">—</span>
+            </div>
+
+            <div class="resumo-dado">
+              <span class="resumo-dado-label">Família vinculada</span>
+              <span class="resumo-dado-valor" data-campo="ID_FAMILIA">—</span>
+            </div>
+
+          </div>
+
+        </section>
+
+        <div class="ficha-grid">
+
+          <!-- DADOS PESSOAIS -->
+
+          <section class="ficha-card">
+
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">♙</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Dados pessoais</h3>
+                  <p class="ficha-card-subtitulo">Identificação civil do membro</p>
+                </div>
+              </div>
+            </header>
+
+            <div class="ficha-card-corpo">
+              <div class="dados-grid">
+
+                <div class="dado-item dado-item-largo">
+                  <span class="dado-label">Nome completo</span>
+                  <span class="dado-valor" data-campo="NOME_COMPLETO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Data de nascimento</span>
+                  <span class="dado-valor" data-campo="DATA_NASCIMENTO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Sexo</span>
+                  <span class="dado-valor" data-campo="SEXO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Estado civil</span>
+                  <span class="dado-valor" data-campo="ESTADO_CIVIL">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Profissão</span>
+                  <span class="dado-valor" data-campo="PROFISSAO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Naturalidade</span>
+                  <span class="dado-valor" data-campo="NATURALIDADE">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Nacionalidade</span>
+                  <span class="dado-valor" data-campo="NACIONALIDADE">—</span>
+                </div>
+
+              </div>
+            </div>
+
+          </section>
+
+          <!-- DOCUMENTOS -->
+
+          <section class="ficha-card">
+
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">▤</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Documentos</h3>
+                  <p class="ficha-card-subtitulo">Registros e identificação oficial</p>
+                </div>
+              </div>
+            </header>
+
+            <div class="ficha-card-corpo">
+              <div class="dados-grid">
+
+                <div class="dado-item">
+                  <span class="dado-label">CPF</span>
+                  <span class="dado-valor" data-campo="CPF">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">RG</span>
+                  <span class="dado-valor" data-campo="RG">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Órgão emissor</span>
+                  <span class="dado-valor" data-campo="ORGAO_EMISSOR">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Data de emissão</span>
+                  <span class="dado-valor" data-campo="DATA_EMISSAO_RG">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Título de eleitor</span>
+                  <span class="dado-valor" data-campo="TITULO_ELEITOR">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Certidão</span>
+                  <span class="dado-valor" data-campo="CERTIDAO">—</span>
+                </div>
+
+              </div>
+            </div>
+
+          </section>
+
+          <!-- CONTATOS -->
+
+          <section class="ficha-card">
+
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">☎</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Contatos</h3>
+                  <p class="ficha-card-subtitulo">Canais de comunicação</p>
+                </div>
+              </div>
+            </header>
+
+            <div class="ficha-card-corpo">
+              <div class="dados-grid">
+
+                <div class="dado-item">
+                  <span class="dado-label">Telefone</span>
+                  <span class="dado-valor" data-campo="TELEFONE">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">WhatsApp</span>
+                  <span class="dado-valor" data-campo="WHATSAPP">—</span>
+                </div>
+
+                <div class="dado-item dado-item-largo">
+                  <span class="dado-label">E-mail</span>
+                  <span class="dado-valor" data-campo="EMAIL">—</span>
+                </div>
+
+              </div>
+            </div>
+
+          </section>
+
+          <!-- ENDEREÇO -->
+
+          <section class="ficha-card">
+
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">⌂</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Endereço</h3>
+                  <p class="ficha-card-subtitulo">Residência e localização</p>
+                </div>
+              </div>
+            </header>
+
+            <div class="ficha-card-corpo">
+              <div class="dados-grid">
+
+                <div class="dado-item">
+                  <span class="dado-label">CEP</span>
+                  <span class="dado-valor" data-campo="CEP">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Número</span>
+                  <span class="dado-valor" data-campo="NUMERO">—</span>
+                </div>
+
+                <div class="dado-item dado-item-largo">
+                  <span class="dado-label">Endereço</span>
+                  <span class="dado-valor" data-campo="ENDERECO">—</span>
+                </div>
+
+                <div class="dado-item dado-item-largo">
+                  <span class="dado-label">Complemento</span>
+                  <span class="dado-valor" data-campo="COMPLEMENTO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Bairro</span>
+                  <span class="dado-valor" data-campo="BAIRRO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Cidade</span>
+                  <span class="dado-valor" data-campo="CIDADE">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Estado</span>
+                  <span class="dado-valor" data-campo="ESTADO">—</span>
+                </div>
+
+              </div>
+            </div>
+
+          </section>
+
+          <!-- VIDA CRISTÃ -->
+
+          <section class="ficha-card ficha-card-largo">
+
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">◇</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Vida cristã e ministerial</h3>
+                  <p class="ficha-card-subtitulo">Histórico e vínculo eclesiástico</p>
+                </div>
+              </div>
+            </header>
+
+            <div class="ficha-card-corpo">
+              <div class="dados-grid dados-grid-3">
+
+                <div class="dado-item">
+                  <span class="dado-label">Data da conversão</span>
+                  <span class="dado-valor" data-campo="DATA_CONVERSAO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Batismo nas águas</span>
+                  <span class="dado-valor" data-campo="DATA_BATISMO_AGUAS">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Batismo no Espírito Santo</span>
+                  <span class="dado-valor" data-campo="DATA_BATISMO_ESPIRITO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Cargo</span>
+                  <span class="dado-valor" data-campo="CARGO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Congregação</span>
+                  <span class="dado-valor" data-campo="CONGREGACAO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Situação</span>
+                  <span class="dado-valor" data-campo="SITUACAO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Departamento</span>
+                  <span class="dado-valor" data-campo="DEPARTAMENTO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Data de admissão</span>
+                  <span class="dado-valor" data-campo="DATA_ADMISSAO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Forma de recebimento</span>
+                  <span class="dado-valor" data-campo="FORMA_RECEBIMENTO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Igreja de origem</span>
+                  <span class="dado-valor" data-campo="IGREJA_ORIGEM">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Data de consagração</span>
+                  <span class="dado-valor" data-campo="DATA_CONSAGRACAO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Ministério</span>
+                  <span class="dado-valor" data-campo="MINISTERIO">—</span>
+                </div>
+
+              </div>
+            </div>
+
+          </section>
+
+          <!-- FAMÍLIA -->
+
+          <section class="ficha-card ficha-card-largo">
+
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">♧</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Família</h3>
+                  <p class="ficha-card-subtitulo">Vínculos e informações familiares</p>
+                </div>
+              </div>
+            </header>
+
+            <div class="ficha-card-corpo">
+              <div class="dados-grid dados-grid-3">
+
+                <div class="dado-item">
+                  <span class="dado-label">Nome do pai</span>
+                  <span class="dado-valor" data-campo="NOME_PAI">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Nome da mãe</span>
+                  <span class="dado-valor" data-campo="NOME_MAE">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Cônjuge</span>
+                  <span class="dado-valor" data-campo="CONJUGE">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Data do casamento</span>
+                  <span class="dado-valor" data-campo="DATA_CASAMENTO">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">Quantidade de filhos</span>
+                  <span class="dado-valor" data-campo="QUANTIDADE_FILHOS">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">ID da família</span>
+                  <span class="dado-valor" data-campo="ID_FAMILIA">—</span>
+                </div>
+
+                <div class="dado-item dado-item-largo">
+                  <span class="dado-label">Filhos</span>
+                  <span class="dado-valor" data-campo="FILHOS">—</span>
+                </div>
+
+              </div>
+            </div>
+
+          </section>
+
+          <!-- CARTEIRINHA -->
+
+          <section class="ficha-card ficha-card-largo">
+
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">▣</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Carteirinha</h3>
+                  <p class="ficha-card-subtitulo">Dados do documento de identificação ministerial</p>
+                </div>
+              </div>
+            </header>
+
+            <div class="ficha-card-corpo">
+
+              <div class="carteirinha-area">
+
+                <div class="carteirinha-dados">
+
+                  <div class="dado-item">
+                    <span class="dado-label">Número</span>
+                    <span class="dado-valor" data-campo="NUMERO_CARTEIRINHA">—</span>
+                  </div>
+
+                  <div class="dado-item">
+                    <span class="dado-label">Data de emissão</span>
+                    <span class="dado-valor" data-campo="DATA_EMISSAO_CARTEIRINHA">—</span>
+                  </div>
+
+                  <div class="dado-item">
+                    <span class="dado-label">Validade</span>
+                    <span class="dado-valor" data-campo="VALIDADE_CARTEIRINHA">—</span>
+                  </div>
+
+                  <div class="dado-item">
+                    <span class="dado-label">Status</span>
+                    <span class="dado-valor" data-campo="STATUS_CARTEIRINHA">—</span>
+                  </div>
+
+                  <div class="dado-item">
+                    <span class="dado-label">Código digital</span>
+                    <span class="dado-valor" data-campo="CODIGO_DIGITAL">—</span>
+                  </div>
+
+                  <div class="dado-item">
+                    <span class="dado-label">Última atualização</span>
+                    <span class="dado-valor" data-campo="ATUALIZADO_EM">—</span>
+                  </div>
+
+                </div>
+
+                <div class="qr-box" id="qrCodeMembro" aria-label="Área do QR Code">
+                  QR CODE
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+          <!-- OBSERVAÇÕES -->
+
+          <section class="ficha-card ficha-card-largo">
+
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">✎</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Observações</h3>
+                  <p class="ficha-card-subtitulo">Anotações gerais sobre o cadastro</p>
+                </div>
+              </div>
+            </header>
+
+            <div class="ficha-card-corpo">
+              <p class="observacoes-texto" data-campo="OBSERVACOES">
+                Nenhuma observação cadastrada.
+              </p>
+            </div>
+
+          </section>
+
+        </div>
+
+        <footer class="visualizar-rodape">
+          Vidas Renovadas Gestão — Projeto Neemias
+        </footer>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <div
+    id="carregamentoGlobal"
+    class="carregamento-global"
+    aria-hidden="true"
+  >
+    <div
+      class="carregamento-caixa"
+      role="status"
+      aria-live="polite"
+    >
+      <span class="spinner" aria-hidden="true"></span>
+      <span>Carregando...</span>
+    </div>
+  </div>
+
+  <script src="js/configuracoes.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
+  <script src="js/auth.js?v=2"></script>
+
+</body>
+</html>
