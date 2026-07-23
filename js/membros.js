@@ -346,7 +346,7 @@
       membros: ids.join(",")
     });
 
-    window.location.href = `carteirinhas.html?${parametros.toString()}`;
+    window.location.href = `carteirinha.html?${parametros.toString()}`;
   }
 
   async function carregarMembros() {
