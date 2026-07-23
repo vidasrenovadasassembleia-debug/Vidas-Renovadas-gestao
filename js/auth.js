@@ -2,101 +2,99 @@
  * ============================================================================
  * VIDAS RENOVADAS GESTÃO 2.0
  * Arquivo: js/auth.js
- * Descrição: Login Google, sessão, proteção de páginas e logout
+ * Descrição: Login Google, sessão, proteção de páginas, permissões e logout
  * ============================================================================
  *
- * Este arquivo deve ficar em:
- *   /js/auth.js
- *
- * Ele trabalha junto com:
- *   /js/app.js
- *
- * A autenticação no servidor usa a API do Google Apps Script já configurada
- * no projeto.
+ * Ordem obrigatória:
+ *   1. js/configuracoes.js
+ *   2. js/api.js
+ *   3. js/auth.js
+ *   4. js/app.js
  * ============================================================================
  */
 
+"use strict";
+
 (function (window, document) {
-  "use strict";
-
-  const AUTH_CONFIG = Object.freeze({
-    clientId:
-      "18655161530-n6p9th5quno3q41sp5pvbo4mj2eo5rnv.apps.googleusercontent.com",
-
-    apiUrl:
-      "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec",
-
-    paginaLogin: "index.html",
-    paginaInicial: "dashboard.html",
-
-    chaveSessao: "vidasRenovadasSessao",
-    chaveSessaoNova: "vrg_sessao",
-    chaveUsuarioNova: "vrg_usuario",
-
-    intervaloGoogle: 250,
-    limiteTentativasGoogle: 80,
-
-    paginasPublicas: [
-      "",
-      "index.html",
-      "validar.html"
-    ],
-
-    paginasProtegidas: [
-      "dashboard.html",
-      "membros.html",
-      "membro.html",
-      "novo-membro.html",
-      "editar-membro.html",
-      "familias.html",
-      "congregacoes.html",
-      "carteirinhas.html",
-      "configuracoes.html",
-      "financeiro.html",
-      "relatorios.html",
-      "administracao.html"
-    ]
-  });
-
   const estado = {
     inicializado: false,
     googleRenderizado: false,
+    autenticando: false,
     tentativasGoogle: 0,
-    autenticando: false
+    temporizadorRedimensionamento: null
   };
 
-  function appDisponivel() {
-    return Boolean(window.VRG || window.App);
+  function obterConfig() {
+    if (!window.VR_CONFIG) {
+      throw new Error(
+        "VR_CONFIG não foi carregado. Inclua configuracoes.js antes de auth.js."
+      );
+    }
+
+    return window.VR_CONFIG;
   }
 
-  function app() {
+  function obterApi() {
+    if (!window.VR_API || typeof window.VR_API.enviar !== "function") {
+      throw new Error(
+        "VR_API não foi carregado. Inclua api.js antes de auth.js."
+      );
+    }
+
+    return window.VR_API;
+  }
+
+  function obterApp() {
     return window.VRG || window.App || null;
+  }
+
+  function normalizarTexto(valor) {
+    return String(valor ?? "")
+      .trim()
+      .toLocaleLowerCase("pt-BR");
   }
 
   function paginaAtual() {
     const arquivo = window.location.pathname.split("/").pop();
-    return arquivo || AUTH_CONFIG.paginaLogin;
+    return arquivo || obterConfig().PAGINAS.LOGIN;
   }
 
   function paginaPublica() {
-    return AUTH_CONFIG.paginasPublicas.includes(paginaAtual());
+    return obterConfig().PAGINAS.PUBLICAS.includes(paginaAtual());
   }
 
   function paginaProtegida() {
     const atual = paginaAtual();
+    const config = obterConfig();
 
-    if (AUTH_CONFIG.paginasProtegidas.includes(atual)) {
+    if (config.PAGINAS.PROTEGIDAS.includes(atual)) {
       return true;
     }
 
     return !paginaPublica() && /\.html?$/i.test(atual);
   }
 
+  function navegar(url, substituir = true) {
+    const app = obterApp();
+
+    if (app && typeof app.navegar === "function") {
+      app.navegar(url, { substituir });
+      return;
+    }
+
+    if (substituir) {
+      window.location.replace(url);
+    } else {
+      window.location.href = url;
+    }
+  }
+
   function definirMensagem(mensagem = "", tipo = "") {
     const alvo = document.getElementById("mensagemLogin");
+    const app = obterApp();
 
-    if (appDisponivel() && app().definirMensagem) {
-      app().definirMensagem(alvo, mensagem, tipo);
+    if (app && typeof app.definirMensagem === "function") {
+      app.definirMensagem(alvo, mensagem, tipo);
       return;
     }
 
@@ -108,17 +106,23 @@
     if (tipo) {
       alvo.classList.add(tipo);
     }
+
+    alvo.hidden = !mensagem;
   }
 
-  function mostrarCarregamento(mensagem) {
-    if (appDisponivel() && app().mostrarCarregamento) {
-      app().mostrarCarregamento(mensagem);
+  function mostrarCarregamento(mensagem = "Carregando...") {
+    const app = obterApp();
+
+    if (app && typeof app.mostrarCarregamento === "function") {
+      app.mostrarCarregamento(mensagem);
     }
   }
 
   function ocultarCarregamento(forcar = false) {
-    if (appDisponivel() && app().ocultarCarregamento) {
-      app().ocultarCarregamento(forcar);
+    const app = obterApp();
+
+    if (app && typeof app.ocultarCarregamento === "function") {
+      app.ocultarCarregamento(forcar);
     }
   }
 
@@ -127,7 +131,7 @@
       storage.setItem(chave, JSON.stringify(valor));
       return true;
     } catch (erro) {
-      console.warn(`[AUTH] Não foi possível salvar ${chave}.`, erro);
+      console.warn(`[AUTH] Não foi possível salvar "${chave}".`, erro);
       return false;
     }
   }
@@ -135,114 +139,114 @@
   function lerJSON(storage, chave) {
     try {
       const bruto = storage.getItem(chave);
-
-      if (!bruto) return null;
-
-      return JSON.parse(bruto);
-    } catch (erro) {
-      storage.removeItem(chave);
+      return bruto ? JSON.parse(bruto) : null;
+    } catch (_) {
+      removerChave(storage, chave);
       return null;
     }
   }
 
   function removerChave(storage, chave) {
+    if (!chave) return;
+
     try {
       storage.removeItem(chave);
     } catch (erro) {
-      console.warn(`[AUTH] Não foi possível remover ${chave}.`, erro);
+      console.warn(`[AUTH] Não foi possível remover "${chave}".`, erro);
     }
   }
 
-  function salvarSessao(credential, usuario) {
-    const agora = new Date().toISOString();
+  function salvarSessao(credential, usuario = {}) {
+    if (!credential) {
+      throw new Error("Não é possível salvar uma sessão sem credencial.");
+    }
 
+    const config = obterConfig();
     const sessao = {
       credential,
-      usuario: usuario || {},
-      criadaEm: agora
+      usuario,
+      criadaEm: new Date().toISOString()
     };
 
-    /*
-     * Mantém a chave antiga para compatibilidade com páginas já existentes.
-     */
     salvarJSON(
       window.sessionStorage,
-      AUTH_CONFIG.chaveSessao,
-      sessao
-    );
-
-    /*
-     * Mantém também as chaves novas usadas pelo app.js.
-     */
-    salvarJSON(
-      window.sessionStorage,
-      AUTH_CONFIG.chaveSessaoNova,
+      config.ARMAZENAMENTO.SESSAO,
       sessao
     );
 
     salvarJSON(
       window.sessionStorage,
-      AUTH_CONFIG.chaveUsuarioNova,
-      usuario || {}
+      config.ARMAZENAMENTO.USUARIO,
+      usuario
     );
 
-    if (appDisponivel() && app().salvarUsuarioLocal) {
-      app().salvarUsuarioLocal(usuario || {}, false);
+    window.sessionStorage.setItem(
+      config.ARMAZENAMENTO.CREDENCIAL_GOOGLE,
+      credential
+    );
+
+    const app = obterApp();
+
+    if (app && typeof app.salvarUsuarioLocal === "function") {
+      app.salvarUsuarioLocal(usuario, false);
     }
 
     return sessao;
   }
 
-  function obterSessao() {
-    const antiga = lerJSON(
-      window.sessionStorage,
-      AUTH_CONFIG.chaveSessao
-    );
+  function migrarSessaoAntiga() {
+    const chavesAntigas = [
+      "vidasRenovadasSessao",
+      "vrg_sessao"
+    ];
 
-    if (antiga?.credential) {
-      return antiga;
-    }
+    for (const chave of chavesAntigas) {
+      const sessaoAntiga = lerJSON(window.sessionStorage, chave);
 
-    const nova = lerJSON(
-      window.sessionStorage,
-      AUTH_CONFIG.chaveSessaoNova
-    );
-
-    if (nova?.credential) {
-      return nova;
+      if (sessaoAntiga?.credential) {
+        salvarSessao(
+          sessaoAntiga.credential,
+          sessaoAntiga.usuario || {}
+        );
+        removerChave(window.sessionStorage, chave);
+        return sessaoAntiga;
+      }
     }
 
     return null;
   }
 
+  function obterSessao() {
+    const config = obterConfig();
+    const sessao = lerJSON(
+      window.sessionStorage,
+      config.ARMAZENAMENTO.SESSAO
+    );
+
+    return sessao?.credential
+      ? sessao
+      : migrarSessaoAntiga();
+  }
+
   function removerSessao() {
-    removerChave(
-      window.sessionStorage,
-      AUTH_CONFIG.chaveSessao
-    );
+    const config = obterConfig();
 
-    removerChave(
-      window.sessionStorage,
-      AUTH_CONFIG.chaveSessaoNova
-    );
+    [
+      config.ARMAZENAMENTO.SESSAO,
+      config.ARMAZENAMENTO.USUARIO,
+      config.ARMAZENAMENTO.CREDENCIAL_GOOGLE,
+      "vidasRenovadasSessao",
+      "vrg_sessao",
+      "vrg_usuario"
+    ].forEach((chave) => {
+      removerChave(window.sessionStorage, chave);
+      removerChave(window.localStorage, chave);
+    });
 
-    removerChave(
-      window.sessionStorage,
-      AUTH_CONFIG.chaveUsuarioNova
-    );
+    const app = obterApp();
 
-    removerChave(
-      window.localStorage,
-      AUTH_CONFIG.chaveSessaoNova
-    );
-
-    removerChave(
-      window.localStorage,
-      AUTH_CONFIG.chaveUsuarioNova
-    );
-
-    if (appDisponivel() && app().removerUsuarioLocal) {
-      app().removerUsuarioLocal();
+    if (app && typeof app.removerUsuarioLocal === "function") {
+      app.removerUsuarioLocal();
     }
   }
 
@@ -255,44 +259,38 @@
 
     if (!usuario) return false;
 
-    const perfil = String(
+    const perfil = normalizarTexto(
       usuario.perfil ||
       usuario.cargo ||
-      usuario.funcao ||
-      ""
-    )
-      .trim()
-      .toLocaleLowerCase("pt-BR");
+      usuario.funcao
+    );
 
-    return [
-      "administradora",
-      "administrador",
-      "admin",
-      "superadministrador",
-      "superadministradora"
-    ].includes(perfil);
+    return obterConfig().PERFIS_ADMINISTRATIVOS.includes(perfil);
   }
 
-  function navegar(url, substituir = true) {
-    if (appDisponivel() && app().navegar) {
-      app().navegar(url, { substituir });
-      return;
-    }
+  function usuarioTemPermissao(permissao) {
+    const usuario = usuarioAtual();
 
-    if (substituir) {
-      window.location.replace(url);
-    } else {
-      window.location.href = url;
-    }
+    if (!usuario) return false;
+    if (usuarioAdministrador()) return true;
+
+    const procurada = normalizarTexto(permissao);
+
+    if (!procurada) return true;
+
+    const permissoes = Array.isArray(usuario.permissoes)
+      ? usuario.permissoes.map(normalizarTexto)
+      : [];
+
+    return permissoes.includes(procurada);
   }
 
   function exigirSessao() {
     if (!paginaProtegida()) return true;
 
-    const sessao = obterSessao();
-
-    if (!sessao?.credential) {
-      navegar(AUTH_CONFIG.paginaLogin, true);
+    if (!obterSessao()?.credential) {
+      removerSessao();
+      navegar(obterConfig().PAGINAS.LOGIN, true);
       return false;
     }
 
@@ -300,17 +298,17 @@
   }
 
   function redirecionarUsuarioLogado() {
-    if (paginaAtual() !== AUTH_CONFIG.paginaLogin) {
+    const config = obterConfig();
+
+    if (paginaAtual() !== config.PAGINAS.LOGIN) {
       return false;
     }
 
-    const sessao = obterSessao();
-
-    if (!sessao?.credential) {
+    if (!obterSessao()?.credential) {
       return false;
     }
 
-    navegar(AUTH_CONFIG.paginaInicial, true);
+    navegar(config.PAGINAS.DASHBOARD, true);
     return true;
   }
 
@@ -319,8 +317,10 @@
 
     if (!usuario) return;
 
-    if (appDisponivel() && app().atualizarUsuarioNaInterface) {
-      app().atualizarUsuarioNaInterface(usuario);
+    const app = obterApp();
+
+    if (app && typeof app.atualizarUsuarioNaInterface === "function") {
+      app.atualizarUsuarioNaInterface(usuario);
     }
 
     const nome =
@@ -359,39 +359,23 @@
   }
 
   function aplicarPermissoes() {
-    const usuario = usuarioAtual();
+    if (!usuarioAtual()) return;
 
-    if (!usuario) return;
+    document
+      .querySelectorAll("[data-permissao]")
+      .forEach((elemento) => {
+        elemento.hidden = !usuarioTemPermissao(
+          elemento.dataset.permissao || ""
+        );
+      });
 
-    const permissoes = Array.isArray(usuario.permissoes)
-      ? usuario.permissoes.map((item) =>
-          String(item).trim().toLocaleLowerCase("pt-BR")
-        )
-      : [];
-
-    document.querySelectorAll("[data-permissao]").forEach((elemento) => {
-      const permissao = String(elemento.dataset.permissao || "")
-        .trim()
-        .toLocaleLowerCase("pt-BR");
-
-      if (!permissao) return;
-
-      const permitido =
-        usuarioAdministrador() ||
-        permissoes.includes(permissao);
-
-      elemento.hidden = !permitido;
-    });
-
-    /*
-     * Compatibilidade temporária com as páginas antigas.
-     */
     if (!usuarioAdministrador()) {
       document
         .querySelectorAll(
           '[href="novo-membro.html"], ' +
           '[href^="editar-membro.html"], ' +
-          '[href="configuracoes.html"]'
+          '[href="configuracoes.html"], ' +
+          '[href="administracao.html"]'
         )
         .forEach((elemento) => {
           elemento.hidden = true;
@@ -400,77 +384,45 @@
   }
 
   async function chamarApi(conteudo, incluirCredencial = true) {
-    const requisicao = {
-      ...conteudo
-    };
+    if (!conteudo || typeof conteudo !== "object") {
+      throw new TypeError("A requisição da API precisa ser um objeto.");
+    }
+
+    const { acao, ...dados } = conteudo;
+
+    if (!acao) {
+      throw new Error("A ação da API não foi informada.");
+    }
 
     if (incluirCredencial) {
       const sessao = obterSessao();
 
       if (!sessao?.credential) {
         removerSessao();
-        throw new Error(
-          "Sua sessão terminou. Entre novamente."
-        );
+        throw new Error("Sua sessão terminou. Entre novamente.");
       }
 
-      requisicao.credential = sessao.credential;
+      dados.credential = sessao.credential;
     }
-
-    let resposta;
 
     try {
-      resposta = await window.fetch(AUTH_CONFIG.apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
-        },
-        body: JSON.stringify(requisicao),
-        cache: "no-store",
-        redirect: "follow"
-      });
+      return await obterApi().enviar(acao, dados);
     } catch (erro) {
-      throw new Error(
-        "Não foi possível conectar ao servidor. Verifique sua internet e tente novamente."
-      );
-    }
-
-    if (!resposta.ok) {
-      throw new Error(
-        `O servidor respondeu com o código ${resposta.status}.`
-      );
-    }
-
-    let resultado;
-
-    try {
-      resultado = await resposta.json();
-    } catch (erro) {
-      throw new Error(
-        "O servidor retornou uma resposta inválida."
-      );
-    }
-
-    if (!resultado?.sucesso) {
-      const mensagem =
-        resultado?.mensagem ||
-        "A operação não pôde ser concluída.";
-
-      const mensagemNormalizada = mensagem
-        .toLocaleLowerCase("pt-BR");
+      const mensagem = normalizarTexto(erro?.message);
 
       if (
-        mensagemNormalizada.includes("sessão") ||
-        mensagemNormalizada.includes("token") ||
-        mensagemNormalizada.includes("credencial")
+        mensagem.includes("sessao") ||
+        mensagem.includes("sessão") ||
+        mensagem.includes("token") ||
+        mensagem.includes("credencial") ||
+        mensagem.includes("nao autorizado") ||
+        mensagem.includes("não autorizado")
       ) {
         removerSessao();
       }
 
-      throw new Error(mensagem);
+      throw erro;
     }
-
-    return resultado;
   }
 
   async function tratarRespostaGoogle(respostaGoogle) {
@@ -505,34 +457,28 @@
         );
       }
 
-      salvarSessao(
-        credential,
-        resultado.usuario
-      );
+      salvarSessao(credential, resultado.usuario);
 
       definirMensagem(
         "Acesso autorizado. Abrindo o sistema...",
         "sucesso"
       );
 
-      navegar(AUTH_CONFIG.paginaInicial, true);
+      navegar(obterConfig().PAGINAS.DASHBOARD, true);
     } catch (erro) {
       console.error("[AUTH] Erro de autenticação:", erro);
-
       removerSessao();
 
-      definirMensagem(
-        erro.message ||
-        "Não foi possível autorizar esta conta.",
-        "erro"
-      );
+      const mensagem =
+        erro?.message ||
+        "Não foi possível autorizar esta conta.";
 
-      if (appDisponivel() && app().erro) {
-        app().erro(
-          erro.message ||
-          "Não foi possível autorizar esta conta.",
-          "Acesso não autorizado"
-        );
+      definirMensagem(mensagem, "erro");
+
+      const app = obterApp();
+
+      if (app && typeof app.erro === "function") {
+        app.erro(mensagem, "Acesso não autorizado");
       }
     } finally {
       estado.autenticando = false;
@@ -542,9 +488,7 @@
 
   function googleDisponivel() {
     return Boolean(
-      window.google &&
-      window.google.accounts &&
-      window.google.accounts.id
+      window.google?.accounts?.id
     );
   }
 
@@ -557,14 +501,12 @@
       container.getBoundingClientRect().width
     );
 
-    return Math.max(
-      240,
-      Math.min(largura || 320, 430)
-    );
+    return Math.max(240, Math.min(largura || 320, 430));
   }
 
   function renderizarBotaoGoogle() {
     const container = document.getElementById("googleButton");
+    const config = obterConfig();
 
     if (!container || estado.googleRenderizado) {
       return;
@@ -575,7 +517,7 @@
 
       if (
         estado.tentativasGoogle >=
-        AUTH_CONFIG.limiteTentativasGoogle
+        config.GOOGLE.LIMITE_TENTATIVAS_CARREGAMENTO
       ) {
         definirMensagem(
           "Não foi possível carregar o acesso pelo Google. Atualize a página e tente novamente.",
@@ -586,9 +528,8 @@
 
       window.setTimeout(
         renderizarBotaoGoogle,
-        AUTH_CONFIG.intervaloGoogle
+        config.GOOGLE.INTERVALO_CARREGAMENTO_MS
       );
-
       return;
     }
 
@@ -598,7 +539,7 @@
 
     try {
       window.google.accounts.id.initialize({
-        client_id: AUTH_CONFIG.clientId,
+        client_id: config.GOOGLE.CLIENT_ID,
         callback: tratarRespostaGoogle,
         auto_select: false,
         cancel_on_tap_outside: true,
@@ -608,21 +549,19 @@
 
       container.innerHTML = "";
 
-      window.google.accounts.id.renderButton(
-        container,
-        {
-          theme: "outline",
-          size: "large",
-          type: "standard",
-          shape: "rectangular",
-          text: "signin_with",
-          logo_alignment: "left",
-          width: larguraBotaoGoogle(),
-          locale: "pt-BR"
-        }
-      );
+      window.google.accounts.id.renderButton(container, {
+        theme: "outline",
+        size: "large",
+        type: "standard",
+        shape: "rectangular",
+        text: "signin_with",
+        logo_alignment: "left",
+        width: larguraBotaoGoogle(),
+        locale: "pt-BR"
+      });
 
       estado.googleRenderizado = true;
+      estado.tentativasGoogle = 0;
       definirMensagem("");
     } catch (erro) {
       console.error(
@@ -651,33 +590,32 @@
     }
   }
 
-  function logout(opcoes = {}) {
+  async function logout(opcoes = {}) {
     const {
       confirmar = false,
       mensagem = "Deseja realmente sair do sistema?"
     } = opcoes;
 
-    const executar = async () => {
+    const executar = () => {
       desconectarGoogle();
       removerSessao();
-      navegar(AUTH_CONFIG.paginaLogin, true);
+      navegar(obterConfig().PAGINAS.LOGIN, true);
     };
+
+    const app = obterApp();
 
     if (
       confirmar &&
-      appDisponivel() &&
-      app().confirmar
+      app &&
+      typeof app.confirmar === "function"
     ) {
-      app()
-        .confirmar(mensagem, {
-          titulo: "Sair do sistema",
-          textoConfirmar: "Sair",
-          textoCancelar: "Cancelar"
-        })
-        .then((confirmado) => {
-          if (confirmado) executar();
-        });
+      const confirmado = await app.confirmar(mensagem, {
+        titulo: "Sair do sistema",
+        textoConfirmar: "Sair",
+        textoCancelar: "Cancelar"
+      });
 
+      if (confirmado) executar();
       return;
     }
 
@@ -701,39 +639,22 @@
   }
 
   function configurarRedimensionamentoGoogle() {
-    let temporizador;
-
     window.addEventListener("resize", () => {
       if (!estado.googleRenderizado) return;
 
-      window.clearTimeout(temporizador);
+      window.clearTimeout(
+        estado.temporizadorRedimensionamento
+      );
 
-      temporizador = window.setTimeout(() => {
-        estado.googleRenderizado = false;
-        renderizarBotaoGoogle();
-      }, 250);
+      estado.temporizadorRedimensionamento =
+        window.setTimeout(() => {
+          estado.googleRenderizado = false;
+          renderizarBotaoGoogle();
+        }, 250);
     });
   }
 
-  function inicializar() {
-    if (estado.inicializado) return;
-
-    if (!exigirSessao()) {
-      estado.inicializado = true;
-      return;
-    }
-
-    configurarLogout();
-    aplicarUsuarioNaInterface();
-    aplicarPermissoes();
-    configurarRedimensionamentoGoogle();
-
-    if (paginaAtual() === AUTH_CONFIG.paginaLogin) {
-      renderizarBotaoGoogle();
-    }
-
-    estado.inicializado = true;
-
+  function emitirEventoPronto() {
     document.dispatchEvent(
       new CustomEvent("vrg:auth-pronto", {
         detail: {
@@ -744,13 +665,50 @@
     );
   }
 
-  const Auth = Object.freeze({
-    config: AUTH_CONFIG,
+  function inicializar() {
+    if (estado.inicializado) return;
 
+    try {
+      obterConfig();
+      obterApi();
+
+      if (!exigirSessao()) {
+        estado.inicializado = true;
+        emitirEventoPronto();
+        return;
+      }
+
+      configurarLogout();
+      aplicarUsuarioNaInterface();
+      aplicarPermissoes();
+      configurarRedimensionamentoGoogle();
+
+      if (paginaAtual() === obterConfig().PAGINAS.LOGIN) {
+        renderizarBotaoGoogle();
+      }
+
+      estado.inicializado = true;
+      emitirEventoPronto();
+    } catch (erro) {
+      estado.inicializado = true;
+
+      console.error(
+        "[AUTH] Falha ao inicializar a autenticação:",
+        erro
+      );
+
+      definirMensagem(
+        erro?.message ||
+        "Não foi possível iniciar a autenticação.",
+        "erro"
+      );
+    }
+  }
+
+  const Auth = Object.freeze({
     inicializar,
     renderizarBotaoGoogle,
     tratarRespostaGoogle,
-
     chamarApi,
 
     salvarSessao,
@@ -759,6 +717,7 @@
 
     usuarioAtual,
     usuarioAdministrador,
+    usuarioTemPermissao,
 
     exigirSessao,
     aplicarUsuarioNaInterface,
@@ -772,7 +731,7 @@
   window.Auth = Auth;
 
   /*
-   * Compatibilidade com chamadas existentes no projeto antigo.
+   * Compatibilidade temporária com páginas ainda não migradas.
    */
   window.tratarRespostaGoogle = tratarRespostaGoogle;
   window.iniciarGoogleLogin = renderizarBotaoGoogle;
