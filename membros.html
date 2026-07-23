@@ -13,7 +13,7 @@
 
   <link
     rel="stylesheet"
-    href="css/estilo.css"
+    href="css/estilo.css?v=2"
   >
 
   <style>
@@ -75,6 +75,7 @@
     }
 
     .botao-exportar-selecionadas {
+      width: auto;
       min-height: 40px;
       padding: 0 18px;
       border: 0;
@@ -101,6 +102,7 @@
     .seletor-carteirinha {
       width: 18px;
       height: 18px;
+      margin: 0;
       cursor: pointer;
       accent-color: #082f49;
     }
@@ -131,19 +133,23 @@
       box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
     }
 
+    .badge-cargo-pastor,
+    .badge-cargo-pastora,
     .badge-cargo-pastoral {
       border-color: #d8c6f0;
       background: #f3ecfb;
       color: #6941a5;
     }
 
-    .badge-cargo-presbitero {
+    .badge-cargo-presbitero,
+    .badge-cargo-presbitera {
       border-color: #bfd6ed;
       background: #eaf4fc;
       color: #245f91;
     }
 
-    .badge-cargo-diacono {
+    .badge-cargo-diacono,
+    .badge-cargo-diaconisa {
       border-color: #bfe2d1;
       background: #e9f7f0;
       color: #16704a;
@@ -155,7 +161,8 @@
       color: #9a5a13;
     }
 
-    .badge-cargo-missionario {
+    .badge-cargo-missionario,
+    .badge-cargo-missionaria {
       border-color: #e8c7d9;
       background: #fbedf5;
       color: #913c6c;
@@ -169,13 +176,13 @@
       color: #53636e;
     }
 
-    .badge-congregacao-independencia {
+    .badge-congregacao-independencia-petropolis {
       border-color: #bfd6ed;
       background: #eaf4fc;
       color: #245f91;
     }
 
-    .badge-congregacao-xerem {
+    .badge-congregacao-km-51-xerem {
       border-color: #ead79a;
       background: #fff8df;
       color: #866518;
@@ -279,7 +286,6 @@
     </div>
 
     <nav class="sidebar-menu">
-
       <a href="dashboard.html">
         Dashboard
       </a>
@@ -311,10 +317,13 @@
       <a href="configuracoes.html">
         Configurações
       </a>
-
     </nav>
 
-    <a href="index.html" class="logout">
+    <a
+      href="index.html"
+      class="logout"
+      data-acao="logout"
+    >
       Sair
     </a>
 
@@ -323,7 +332,6 @@
   <main class="dashboard-main">
 
     <header class="members-header">
-
       <div>
         <p class="dashboard-label">
           Cadastro e consulta
@@ -331,19 +339,24 @@
 
         <h1>Membros</h1>
       </div>
-
     </header>
 
-    <section class="members-toolbar" aria-label="Filtros de membros">
-
+    <section
+      class="members-toolbar"
+      aria-label="Filtros de membros"
+    >
       <input
         type="search"
         id="pesquisaMembro"
         placeholder="Pesquisar por nome, ID, cargo ou congregação"
         aria-label="Pesquisar membros"
+        autocomplete="off"
       >
 
-      <select id="filtroSituacao" aria-label="Filtrar por situação">
+      <select
+        id="filtroSituacao"
+        aria-label="Filtrar por situação"
+      >
         <option value="">
           Todas as situações
         </option>
@@ -356,17 +369,12 @@
         <option value="Falecido">Falecido</option>
       </select>
 
-      <select id="filtroCongregacao" aria-label="Filtrar por congregação">
+      <select
+        id="filtroCongregacao"
+        aria-label="Filtrar por congregação"
+      >
         <option value="">
           Todas as congregações
-        </option>
-
-        <option value="Independência / Petrópolis">
-          Independência / Petrópolis
-        </option>
-
-        <option value="Km 51 / Xerém">
-          Km 51 / Xerém
         </option>
       </select>
 
@@ -376,13 +384,16 @@
       >
         + Novo Membro
       </a>
-
     </section>
 
-    <section class="toolbar-carteirinhas" aria-label="Exportação de carteirinhas">
-
+    <section
+      class="toolbar-carteirinhas"
+      aria-label="Exportação de carteirinhas"
+    >
       <div class="selecao-carteirinhas-resumo">
-        <span id="contadorSelecionados">0 selecionados</span>
+        <span id="contadorSelecionados">
+          0 selecionados
+        </span>
       </div>
 
       <button
@@ -391,9 +402,8 @@
         class="botao-exportar-selecionadas"
         disabled
       >
-        📄 Exportar selecionadas
+        Exportar selecionadas
       </button>
-
     </section>
 
     <section class="members-panel">
@@ -412,6 +422,7 @@
                   title="Selecionar todos os membros exibidos"
                 >
               </th>
+
               <th>ID</th>
               <th>Nome</th>
               <th>Cargo</th>
@@ -441,7 +452,11 @@
 
   </main>
 
-  <script src="js/app.js?v=13"></script>
+  <script src="js/configuracoes.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
+  <script src="js/auth.js?v=2"></script>
+  <script src="js/membros.js?v=1"></script>
 
 </body>
 
