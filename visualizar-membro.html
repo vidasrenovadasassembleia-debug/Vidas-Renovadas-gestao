@@ -388,6 +388,12 @@
       grid-column: 1 / -1;
     }
 
+    .dados-pessoais-divisor {
+      height: 1px;
+      margin: 18px 0;
+      background: var(--ficha-borda);
+    }
+
     .dado-label {
       display: block;
       margin-bottom: 5px;
@@ -551,6 +557,10 @@
     }
 
     @media (max-width: 650px) {
+      .ficha-card-dados-pessoais .dados-grid-3 {
+        grid-template-columns: 1fr;
+      }
+
       .membro-resumo {
         grid-template-columns: 1fr;
         justify-items: center;
@@ -887,20 +897,21 @@
 
           <!-- DADOS PESSOAIS -->
 
-          <section class="ficha-card">
+          <section class="ficha-card ficha-card-largo ficha-card-dados-pessoais">
 
             <header class="ficha-card-cabecalho">
               <div class="ficha-card-titulo-area">
                 <span class="ficha-card-icone" aria-hidden="true">♙</span>
                 <div>
                   <h3 class="ficha-card-titulo">Dados pessoais</h3>
-                  <p class="ficha-card-subtitulo">Identificação civil do membro</p>
+                  <p class="ficha-card-subtitulo">Identificação civil e contatos do membro</p>
                 </div>
               </div>
             </header>
 
             <div class="ficha-card-corpo">
-              <div class="dados-grid">
+
+              <div class="dados-grid dados-grid-3">
 
                 <div class="dado-item dado-item-largo">
                   <span class="dado-label">Nome completo</span>
@@ -938,6 +949,28 @@
                 </div>
 
               </div>
+
+              <div class="dados-pessoais-divisor" aria-hidden="true"></div>
+
+              <div class="dados-grid dados-grid-3">
+
+                <div class="dado-item">
+                  <span class="dado-label">Telefone</span>
+                  <span class="dado-valor" data-campo="TELEFONE">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">WhatsApp</span>
+                  <span class="dado-valor" data-campo="WHATSAPP">—</span>
+                </div>
+
+                <div class="dado-item">
+                  <span class="dado-label">E-mail</span>
+                  <span class="dado-valor" data-campo="EMAIL">—</span>
+                </div>
+
+              </div>
+
             </div>
 
           </section>
@@ -987,43 +1020,6 @@
                 <div class="dado-item">
                   <span class="dado-label">Certidão</span>
                   <span class="dado-valor" data-campo="CERTIDAO">—</span>
-                </div>
-
-              </div>
-            </div>
-
-          </section>
-
-          <!-- CONTATOS -->
-
-          <section class="ficha-card">
-
-            <header class="ficha-card-cabecalho">
-              <div class="ficha-card-titulo-area">
-                <span class="ficha-card-icone" aria-hidden="true">☎</span>
-                <div>
-                  <h3 class="ficha-card-titulo">Contatos</h3>
-                  <p class="ficha-card-subtitulo">Canais de comunicação</p>
-                </div>
-              </div>
-            </header>
-
-            <div class="ficha-card-corpo">
-              <div class="dados-grid">
-
-                <div class="dado-item">
-                  <span class="dado-label">Telefone</span>
-                  <span class="dado-valor" data-campo="TELEFONE">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">WhatsApp</span>
-                  <span class="dado-valor" data-campo="WHATSAPP">—</span>
-                </div>
-
-                <div class="dado-item dado-item-largo">
-                  <span class="dado-label">E-mail</span>
-                  <span class="dado-valor" data-campo="EMAIL">—</span>
                 </div>
 
               </div>
