@@ -227,13 +227,34 @@
     };
   }
 
+  function normalizarDataExibicao(valor) {
+    const texto = String(valor ?? "").trim();
+    if (!texto) return "";
+
+    const brasileira = texto.match(/^(\d{2}\/\d{2}\/\d{4})/);
+    if (brasileira) {
+      return brasileira[1];
+    }
+
+    const iso = texto.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (iso) {
+      return `${iso[3]}/${iso[2]}/${iso[1]}`;
+    }
+
+    if (window.VRG && typeof window.VRG.formatarData === "function") {
+      return window.VRG.formatarData(valor) || texto;
+    }
+
+    return texto;
+  }
+
   function formatarValor(campo, valor) {
     if (valor === null || valor === undefined || String(valor).trim() === "") {
       return "—";
     }
 
     if (CAMPOS_DATA.has(campo)) {
-      return window.VRG.formatarData(valor) || "—";
+      return normalizarDataExibicao(valor) || "—";
     }
 
     if (CAMPOS_FORMATADOS[campo]) {
@@ -281,6 +302,93 @@
     foto.alt = `Foto de ${membro.NOME_COMPLETO || "membro"}`;
   }
 
+  function carregarBibliotecaQrCode() {
+    if (typeof window.QRCode === "function") {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve, reject) => {
+      const existente = document.querySelector(
+        'script[data-biblioteca="qrcodejs"]'
+      );
+
+      if (existente) {
+        existente.addEventListener("load", resolve, { once: true });
+        existente.addEventListener(
+          "error",
+          () => reject(new Error("Não foi possível carregar o gerador de QR Code.")),
+          { once: true }
+        );
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://davidshimjs.github.io/qrcodejs/qrcode.min.js";
+      script.async = true;
+      script.dataset.biblioteca = "qrcodejs";
+
+      script.addEventListener("load", resolve, { once: true });
+      script.addEventListener(
+        "error",
+        () => reject(new Error("Não foi possível carregar o gerador de QR Code.")),
+        { once: true }
+      );
+
+      document.head.appendChild(script);
+    });
+  }
+
+  function criarUrlValidacao(token) {
+    const url = new URL("validar.html", window.location.href);
+    url.searchParams.set("token", token);
+    return url.href;
+  }
+
+  async function gerarQrCode(token) {
+    const { qrCode } = obterElementos();
+    const valor = String(token || "").trim();
+
+    if (!qrCode) return;
+
+    qrCode.replaceChildren();
+
+    if (!valor) {
+      qrCode.textContent = "QR CODE";
+      return;
+    }
+
+    try {
+      await carregarBibliotecaQrCode();
+
+      qrCode.style.display = "flex";
+      qrCode.style.alignItems = "center";
+      qrCode.style.justifyContent = "center";
+      qrCode.style.overflow = "hidden";
+
+      new window.QRCode(qrCode, {
+        text: criarUrlValidacao(valor),
+        width: 112,
+        height: 112,
+        colorDark: "#071f3b",
+        colorLight: "#ffffff",
+        correctLevel: window.QRCode.CorrectLevel.M
+      });
+
+      const imagem = qrCode.querySelector("img");
+      const canvas = qrCode.querySelector("canvas");
+
+      [imagem, canvas].forEach((elemento) => {
+        if (!elemento) return;
+        elemento.style.maxWidth = "100%";
+        elemento.style.height = "auto";
+      });
+    } catch (falha) {
+      console.error("[Visualizar membro] QR Code:", falha);
+      qrCode.textContent = "QR indisponível";
+      qrCode.title = falha.message || "Não foi possível gerar o QR Code.";
+    }
+  }
+
   function configurarAcoes(id, membro) {
     const { botaoEditar, botaoCarteirinha, qrCode } = obterElementos();
 
@@ -308,9 +416,7 @@
     }
 
     if (qrCode) {
-      qrCode.textContent = membro.CODIGO_DIGITAL
-        ? String(membro.CODIGO_DIGITAL)
-        : "QR CODE";
+      gerarQrCode(membro.CODIGO_DIGITAL);
     }
   }
 
