@@ -1,7 +1,7 @@
 /* ==========================================================================
    VIDAS RENOVADAS GESTÃO 2.0
    Arquivo: js/validar.js
-   Descrição: Validação pública da carteirinha por token
+   Finalidade: validação pública de credencial por token
    ========================================================================== */
 
 "use strict";
@@ -12,6 +12,7 @@
   const elementos = {
     carregando: document.getElementById("estadoCarregando"),
     erro: document.getElementById("estadoErro"),
+    tituloErro: document.getElementById("tituloErro"),
     mensagemErro: document.getElementById("mensagemErro"),
     ficha: document.getElementById("fichaPublica"),
 
@@ -28,15 +29,6 @@
     emissao: document.getElementById("emissaoCarteirinha"),
     validade: document.getElementById("validadeCarteirinha"),
 
-    blocoConjuge: document.getElementById("blocoConjuge"),
-    conjuge: document.getElementById("conjugeMembro"),
-
-    blocoPai: document.getElementById("blocoPai"),
-    pai: document.getElementById("paiMembro"),
-
-    blocoMae: document.getElementById("blocoMae"),
-    mae: document.getElementById("maeMembro"),
-
     blocoObservacao: document.getElementById("blocoObservacao"),
     observacao: document.getElementById("observacaoCarteirinha"),
 
@@ -52,6 +44,14 @@
     return Boolean(String(valor ?? "").trim());
   }
 
+  function normalizarTexto(valor) {
+    return String(valor ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLowerCase();
+  }
+
   function primeiroValor(objeto, nomes) {
     for (const nome of nomes) {
       const valor = objeto?.[nome];
@@ -64,119 +64,186 @@
     return "";
   }
 
-  function mostrarErro(mensagem) {
-    if (elementos.carregando) elementos.carregando.hidden = true;
-    if (elementos.ficha) elementos.ficha.hidden = true;
+  function formatarData(valor) {
+    const data = String(valor ?? "").trim();
+
+    if (!data) {
+      return "";
+    }
+
+    const formatoBrasileiro = data.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+
+    if (formatoBrasileiro) {
+      return `${formatoBrasileiro[1]}/${formatoBrasileiro[2]}/${formatoBrasileiro[3]}`;
+    }
+
+    const formatoIso = data.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+    if (formatoIso) {
+      return `${formatoIso[3]}/${formatoIso[2]}/${formatoIso[1]}`;
+    }
+
+    const objetoData = new Date(data);
+
+    if (!Number.isNaN(objetoData.getTime())) {
+      return new Intl.DateTimeFormat("pt-BR").format(objetoData);
+    }
+
+    return data;
+  }
+
+  function converterData(valor) {
+    const dataFormatada = formatarData(valor);
+
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dataFormatada)) {
+      return null;
+    }
+
+    const [dia, mes, ano] = dataFormatada.split("/").map(Number);
+    const data = new Date(ano, mes - 1, dia, 23, 59, 59);
+
+    return Number.isNaN(data.getTime()) ? null : data;
+  }
+
+  function normalizarMembro(membro) {
+    return {
+      nome: primeiroValor(membro, [
+        "nome",
+        "nomeCompleto",
+        "NOME_COMPLETO"
+      ]),
+
+      cargo: primeiroValor(membro, [
+        "cargo",
+        "funcao",
+        "CARGO"
+      ]),
+
+      congregacao: primeiroValor(membro, [
+        "congregacao",
+        "CONGREGACAO"
+      ]),
+
+      situacao: primeiroValor(membro, [
+        "situacao",
+        "status",
+        "SITUACAO"
+      ]),
+
+      emissao: primeiroValor(membro, [
+        "emissao",
+        "dataEmissao",
+        "dataEmissaoCarteirinha",
+        "DATA_EMISSAO_CARTEIRINHA"
+      ]),
+
+      validade: primeiroValor(membro, [
+        "validade",
+        "validadeCarteirinha",
+        "VALIDADE_CARTEIRINHA"
+      ]),
+
+      observacao: primeiroValor(membro, [
+        "observacaoCarteirinha",
+        "observacao",
+        "observacoes",
+        "OBSERVACAO_CARTEIRINHA",
+        "OBSERVACOES"
+      ]),
+
+      foto: primeiroValor(membro, [
+        "foto",
+        "fotoUrl",
+        "FOTO_URL",
+        "FOTO"
+      ])
+    };
+  }
+
+  function cadastroEstaAtivo(situacao) {
+    const valor = normalizarTexto(situacao);
+
+    return valor === "ativo" || valor === "ativa";
+  }
+
+  function credencialEstaVencida(validade) {
+    const dataValidade = converterData(validade);
+
+    if (!dataValidade) {
+      return false;
+    }
+
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    return dataValidade < hoje;
+  }
+
+  function ocultarFicha() {
+    if (elementos.ficha) {
+      elementos.ficha.hidden = true;
+    }
+
+    if (elementos.foto) {
+      elementos.foto.hidden = true;
+      elementos.foto.removeAttribute("src");
+    }
+
+    if (elementos.fotoPlaceholder) {
+      elementos.fotoPlaceholder.hidden = false;
+    }
+  }
+
+  function mostrarMensagemInstitucional(titulo, mensagem) {
+    if (elementos.carregando) {
+      elementos.carregando.hidden = true;
+    }
+
+    ocultarFicha();
 
     if (elementos.erro) {
       elementos.erro.hidden = false;
     }
 
+    if (elementos.tituloErro) {
+      elementos.tituloErro.textContent = titulo;
+    }
+
     if (elementos.mensagemErro) {
       elementos.mensagemErro.textContent = mensagem;
     }
+
+    document.title =
+      titulo + " | Ministério Vidas Renovadas";
+  }
+
+  function mostrarCredencialInvalida() {
+    mostrarMensagemInstitucional(
+      "Credencial não válida",
+      "Esta credencial não está ativa no cadastro oficial da " +
+      "Assembleia de Deus Ministério Vidas Renovadas."
+    );
   }
 
   function preencherCampoOpcional(bloco, campo, valor) {
-    if (!bloco || !campo) return;
+    if (!bloco || !campo) {
+      return;
+    }
 
     const existe = possuiValor(valor);
     bloco.hidden = !existe;
 
     if (existe) {
       campo.textContent = String(valor).trim();
+    } else {
+      campo.textContent = "—";
     }
-  }
-
-  function somenteData(valor) {
-    const textoData = String(valor ?? "").trim();
-    if (!textoData) return "";
-
-    const brasileira = textoData.match(/^(\d{2}\/\d{2}\/\d{4})/);
-    if (brasileira) return brasileira[1];
-
-    const iso = textoData.match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if (iso) return `${iso[3]}/${iso[2]}/${iso[1]}`;
-
-    return textoData;
-  }
-
-  function converterDataBrasileira(data) {
-    const valor = somenteData(data);
-
-    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(valor)) {
-      return null;
-    }
-
-    const [dia, mes, ano] = valor.split("/").map(Number);
-    const objetoData = new Date(ano, mes - 1, dia, 23, 59, 59);
-
-    return Number.isNaN(objetoData.getTime())
-      ? null
-      : objetoData;
-  }
-
-  function normalizarMembro(membro) {
-    return {
-      nome: primeiroValor(membro, ["nome", "nomeCompleto", "NOME_COMPLETO"]),
-      cargo: primeiroValor(membro, ["cargo", "CARGO"]),
-      congregacao: primeiroValor(membro, ["congregacao", "CONGREGACAO"]),
-      situacao: primeiroValor(membro, ["situacao", "SITUACAO"]),
-      emissao: somenteData(
-        primeiroValor(membro, [
-          "emissao",
-          "dataEmissaoCarteirinha",
-          "DATA_EMISSAO_CARTEIRINHA"
-        ])
-      ),
-      validade: somenteData(
-        primeiroValor(membro, [
-          "validade",
-          "validadeCarteirinha",
-          "VALIDADE_CARTEIRINHA"
-        ])
-      ),
-      conjuge: primeiroValor(membro, ["conjuge", "CONJUGE"]),
-      pai: primeiroValor(membro, ["pai", "nomePai", "NOME_PAI"]),
-      mae: primeiroValor(membro, ["mae", "nomeMae", "NOME_MAE"]),
-      observacao: primeiroValor(membro, [
-        "observacao",
-        "observacaoCarteirinha",
-        "observacoes",
-        "OBSERVACOES"
-      ]),
-      foto: primeiroValor(membro, ["foto", "fotoUrl", "FOTO_URL", "FOTO"])
-    };
-  }
-
-  function avaliarValidade(membro) {
-    if (!elementos.selo) return;
-
-    const situacao = texto(membro.situacao, "").toLowerCase();
-    const validade = converterDataBrasileira(membro.validade);
-    const hoje = new Date();
-
-    hoje.setHours(0, 0, 0, 0);
-    elementos.selo.className = "validation-badge";
-
-    if (validade && validade < hoje) {
-      elementos.selo.textContent = "Carteirinha vencida";
-      elementos.selo.classList.add("is-expired");
-      return;
-    }
-
-    if (situacao && situacao !== "ativo" && situacao !== "ativa") {
-      elementos.selo.textContent =
-        "Cadastro " + texto(membro.situacao, "inativo");
-      elementos.selo.classList.add("is-inactive");
-      return;
-    }
-
-    elementos.selo.textContent = "Carteirinha validada";
   }
 
   function preencherFoto(url, nome) {
-    if (!elementos.foto || !elementos.fotoPlaceholder) return;
+    if (!elementos.foto || !elementos.fotoPlaceholder) {
+      return;
+    }
 
     if (!possuiValor(url)) {
       elementos.foto.hidden = true;
@@ -185,14 +252,15 @@
       return;
     }
 
-    elementos.foto.alt = "Foto de " + texto(nome, "membro");
+    elementos.foto.alt =
+      "Foto de " + texto(nome, "titular da credencial");
 
-    elementos.foto.onload = () => {
+    elementos.foto.onload = function () {
       elementos.fotoPlaceholder.hidden = true;
       elementos.foto.hidden = false;
     };
 
-    elementos.foto.onerror = () => {
+    elementos.foto.onerror = function () {
       elementos.foto.hidden = true;
       elementos.foto.removeAttribute("src");
       elementos.fotoPlaceholder.hidden = false;
@@ -201,49 +269,78 @@
     elementos.foto.src = String(url).trim();
   }
 
-  function exibirMembro(membroRecebido) {
+  function definirSelo(validade) {
+    if (!elementos.selo) {
+      return;
+    }
+
+    elementos.selo.className = "validation-badge";
+
+    if (credencialEstaVencida(validade)) {
+      elementos.selo.textContent = "CREDENCIAL VENCIDA";
+      elementos.selo.classList.add("is-expired");
+      return;
+    }
+
+    elementos.selo.textContent = "CREDENCIAL ATIVA";
+  }
+
+  function exibirFichaPublica(membroRecebido) {
     const membro = normalizarMembro(membroRecebido);
 
-    if (elementos.nome) elementos.nome.textContent = texto(membro.nome);
-    if (elementos.cargo) elementos.cargo.textContent = texto(membro.cargo);
+    /*
+     * Regra de segurança:
+     * a ficha pública somente é exibida quando a situação cadastral
+     * for exatamente ATIVO ou ATIVA.
+     *
+     * Situação ausente, inativa, excluída, transferida, falecida,
+     * suspensa, bloqueada ou qualquer outra condição não libera dados.
+     */
+    if (!cadastroEstaAtivo(membro.situacao)) {
+      mostrarCredencialInvalida();
+      return;
+    }
+
+    if (elementos.nome) {
+      elementos.nome.textContent = texto(membro.nome);
+    }
+
+    if (elementos.cargo) {
+      elementos.cargo.textContent = texto(membro.cargo);
+    }
+
     if (elementos.congregacao) {
       elementos.congregacao.textContent = texto(membro.congregacao);
     }
+
     if (elementos.situacao) {
-      elementos.situacao.textContent = texto(membro.situacao);
-    }
-    if (elementos.emissao) {
-      elementos.emissao.textContent = texto(membro.emissao);
-    }
-    if (elementos.validade) {
-      elementos.validade.textContent = texto(membro.validade);
+      elementos.situacao.textContent = "ATIVO";
     }
 
-    const resumo = [membro.cargo, membro.congregacao].filter(possuiValor);
+    if (elementos.emissao) {
+      elementos.emissao.textContent =
+        texto(formatarData(membro.emissao));
+    }
+
+    if (elementos.validade) {
+      elementos.validade.textContent =
+        texto(formatarData(membro.validade));
+    }
+
+    const resumo = [
+      possuiValor(membro.cargo)
+        ? String(membro.cargo).trim()
+        : "",
+      possuiValor(membro.congregacao)
+        ? String(membro.congregacao).trim()
+        : ""
+    ].filter(Boolean);
 
     if (elementos.resumo) {
       elementos.resumo.textContent = resumo.length
         ? resumo.join(" • ")
-        : "Membro cadastrado";
+        : "Credencial ministerial";
     }
-
-    preencherCampoOpcional(
-      elementos.blocoConjuge,
-      elementos.conjuge,
-      membro.conjuge
-    );
-
-    preencherCampoOpcional(
-      elementos.blocoPai,
-      elementos.pai,
-      membro.pai
-    );
-
-    preencherCampoOpcional(
-      elementos.blocoMae,
-      elementos.mae,
-      membro.mae
-    );
 
     preencherCampoOpcional(
       elementos.blocoObservacao,
@@ -252,7 +349,7 @@
     );
 
     preencherFoto(membro.foto, membro.nome);
-    avaliarValidade(membro);
+    definirSelo(membro.validade);
 
     if (elementos.dataConsulta) {
       elementos.dataConsulta.textContent =
@@ -262,21 +359,31 @@
         }).format(new Date());
     }
 
-    if (elementos.carregando) elementos.carregando.hidden = true;
-    if (elementos.erro) elementos.erro.hidden = true;
-    if (elementos.ficha) elementos.ficha.hidden = false;
+    if (elementos.carregando) {
+      elementos.carregando.hidden = true;
+    }
+
+    if (elementos.erro) {
+      elementos.erro.hidden = true;
+    }
+
+    if (elementos.ficha) {
+      elementos.ficha.hidden = false;
+    }
 
     document.title =
-      texto(membro.nome, "Carteirinha") +
-      " | Validação de Carteirinha";
+      texto(membro.nome, "Credencial") +
+      " | Validação Oficial";
   }
 
-  async function consultarCarteirinha() {
-    const token = new URLSearchParams(window.location.search).get("token");
+  async function consultarCredencial() {
+    const token =
+      new URLSearchParams(window.location.search).get("token");
 
     if (!possuiValor(token)) {
-      mostrarErro(
-        "O endereço acessado não contém um token de validação."
+      mostrarMensagemInstitucional(
+        "Credencial não localizada",
+        "O endereço acessado não contém um token de validação válido."
       );
       return;
     }
@@ -303,26 +410,24 @@
       const dados = await resposta.json();
 
       if (!dados.sucesso || !dados.membro) {
-        mostrarErro(
-          dados.mensagem ||
-          "Carteirinha inválida ou não encontrada."
-        );
+        mostrarCredencialInvalida();
         return;
       }
 
-      exibirMembro(dados.membro);
+      exibirFichaPublica(dados.membro);
     } catch (erro) {
-      console.error("[Validar carteirinha]", erro);
+      console.error("[Validação pública]", erro);
 
-      mostrarErro(
-        erro.message ||
-        "Não foi possível consultar a carteirinha agora."
+      mostrarMensagemInstitucional(
+        "Consulta temporariamente indisponível",
+        "Não foi possível consultar esta credencial agora. " +
+        "Tente novamente em alguns instantes."
       );
     }
   }
 
   function inicializar() {
-    consultarCarteirinha();
+    consultarCredencial();
   }
 
   if (document.readyState === "loading") {
