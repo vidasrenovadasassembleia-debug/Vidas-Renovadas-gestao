@@ -378,7 +378,8 @@
   }
 
   async function buscarMembro() {
-    const resposta = await window.VR_API.enviar("buscarMembro", {
+    const resposta = await window.VRGAuth.chamarApi({
+      acao: "buscarMembro",
       id: idMembro
     });
 
@@ -439,7 +440,8 @@
     try {
       await window.VRG.comCarregamento(
         async () => {
-          await window.VR_API.enviar("atualizarMembro", {
+          await window.VRGAuth.chamarApi({
+            acao: "atualizarMembro",
             dados
           });
         },
@@ -467,7 +469,13 @@
   function inicializar() {
     formulario = document.getElementById("formEditarMembro");
 
-    if (!formulario || !window.VRG || !window.VR_API) {
+    if (
+      !formulario ||
+      !window.VRG ||
+      !window.VR_API ||
+      !window.VRGAuth ||
+      typeof window.VRGAuth.chamarApi !== "function"
+    ) {
       definirAviso(
         "Os recursos necessários da página não foram carregados corretamente."
       );
