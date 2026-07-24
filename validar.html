@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Validação Oficial de Credencial | Ministério Vidas Renovadas</title>
+  <title>Credencial Digital Oficial | Ministério Vidas Renovadas</title>
 
   <link rel="stylesheet" href="css/estilo.css?v=14">
   <link rel="stylesheet" href="css/validar.css?v=2">
@@ -22,16 +22,14 @@
       >
 
       <div>
-        <p class="validation-kicker">
-          Assembleia de Deus
-        </p>
+        <p class="validation-kicker">Assembleia de Deus</p>
 
         <h1>
           Assembleia de Deus Ministério Vidas Renovadas
         </h1>
 
         <p class="validation-subtitle">
-          Sistema Oficial de Validação de Credenciais
+          Portal Oficial de Credenciais Digitais
         </p>
       </div>
     </header>
@@ -59,9 +57,7 @@
     >
       <div class="validation-icon" aria-hidden="true">!</div>
 
-      <h2 id="tituloErro">
-        Credencial não válida
-      </h2>
+      <h2 id="tituloErro">Credencial não válida</h2>
 
       <p id="mensagemErro">
         Esta credencial não está ativa no cadastro oficial da
@@ -78,7 +74,7 @@
       id="fichaPublica"
       class="public-member-card"
       hidden
-      aria-label="Dados públicos da credencial"
+      aria-label="Credencial Digital Oficial"
     >
       <div class="public-member-top">
 
@@ -106,7 +102,7 @@
             id="seloValidacao"
             class="validation-badge"
           >
-            CREDENCIAL ATIVA
+            CREDENCIAL OFICIAL VALIDADA
           </span>
 
           <p class="validation-kicker">
@@ -127,8 +123,13 @@
 
       <div class="public-data-grid">
 
+        <article class="public-data-item public-data-item-full">
+          <span class="public-data-label">Dados ministeriais</span>
+          <strong>Informações oficiais da credencial</strong>
+        </article>
+
         <article class="public-data-item">
-          <span class="public-data-label">Cargo ou função</span>
+          <span class="public-data-label">Função ministerial</span>
           <strong id="cargoMembro">—</strong>
         </article>
 
@@ -150,6 +151,51 @@
         <article class="public-data-item">
           <span class="public-data-label">Validade</span>
           <strong id="validadeCarteirinha">—</strong>
+        </article>
+
+        <article class="public-data-item public-data-item-full">
+          <span class="public-data-label">Identificação</span>
+          <strong>Dados pessoais complementares</strong>
+        </article>
+
+        <article class="public-data-item">
+          <span class="public-data-label">Data de nascimento</span>
+          <strong id="dataNascimentoMembro">—</strong>
+        </article>
+
+        <article class="public-data-item">
+          <span class="public-data-label">Estado civil</span>
+          <strong id="estadoCivilMembro">—</strong>
+        </article>
+
+        <article
+          id="blocoFamilia"
+          class="public-data-item public-data-item-full"
+          hidden
+        >
+          <span
+            id="rotuloFamilia"
+            class="public-data-label"
+          >
+            Informações familiares
+          </span>
+
+          <strong id="informacaoFamilia">—</strong>
+        </article>
+
+        <article
+          id="blocoContato"
+          class="public-data-item public-data-item-full"
+          hidden
+        >
+          <span class="public-data-label">Contato</span>
+
+          <strong id="telefoneMembro">—</strong>
+
+          <p>
+            Caso esta credencial seja encontrada, entre em contato
+            com o titular utilizando o telefone informado acima.
+          </p>
         </article>
 
         <article
@@ -188,6 +234,6 @@
 
   </main>
 
-  <script src="js/validar.js?v=3"></script>
+  <script src="js/validar.js?v=4"></script>
 </body>
 </html>
