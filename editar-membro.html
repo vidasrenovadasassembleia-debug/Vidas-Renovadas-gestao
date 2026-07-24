@@ -3,690 +3,1390 @@
 
 <head>
   <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Editar Membro | Vidas Renovadas Gestão</title>
+  <title>Editar membro | Vidas Renovadas Gestão</title>
 
-  <link
-    rel="stylesheet"
-    href="css/estilo.css"
+  <meta
+    name="description"
+    content="Edição completa da ficha digital do membro da Igreja Vidas Renovadas."
   >
 
+  <meta name="theme-color" content="#071f3b">
+
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="css/estilo.css?v=50">
+
   <style>
-    .member-photo-section {
-      padding: 26px;
+    /* =========================================================
+       VISUALIZAR MEMBRO
+       Ficha digital oficial do membro
+       ========================================================= */
+
+    :root {
+      --ficha-azul: var(--azul-900, #071f3b);
+      --ficha-azul-medio: var(--azul-700, #144b7f);
+      --ficha-dourado: var(--dourado-700, #9f7620);
+      --ficha-fundo: var(--superficie-suave, #f5f7f9);
+      --ficha-superficie: var(--superficie, #ffffff);
+      --ficha-borda: var(--borda-sistema, #dce3e8);
+      --ficha-texto: var(--texto, #263442);
+      --ficha-texto-suave: var(--texto-suave-sistema, #687785);
+      --ficha-raio: var(--raio-card, 16px);
+      --ficha-sombra: var(--sombra-card, 0 10px 28px rgba(7, 31, 59, 0.08));
     }
 
-    .member-photo-layout {
-      display: grid;
-      grid-template-columns: 240px minmax(0, 1fr);
-      gap: 34px;
-      align-items: start;
-    }
-
-    .foto-upload {
+    .visualizar-apresentacao {
       display: flex;
-      flex-direction: column;
-      gap: 14px;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 18px;
     }
 
-    .foto-upload h2 {
+    .visualizar-etiqueta {
+      margin: 0 0 5px;
+      color: var(--ficha-dourado);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.085em;
+      text-transform: uppercase;
+    }
+
+    .visualizar-titulo {
       margin: 0;
+      color: var(--ficha-azul);
+      font-size: clamp(1.6rem, 3vw, 2.15rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
     }
 
-    .foto-preview {
-      width: 220px;
+    .visualizar-descricao {
+      margin: 7px 0 0;
+      color: var(--ficha-texto-suave);
+      font-size: 0.86rem;
+      line-height: 1.5;
     }
 
-    .foto-preview img {
-      display: block;
-      width: 220px;
-      height: 280px;
-      object-fit: cover;
-      border: 2px solid #d7dee4;
-      border-radius: 14px;
-      background: #f3f5f6;
+    .visualizar-acoes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 9px;
     }
 
-    .foto-escolher {
-      width: 220px;
+    .ficha-botao {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
       justify-content: center;
-      text-align: center;
+      gap: 7px;
+      padding: 0 14px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: 10px;
+      background: #ffffff;
+      color: var(--ficha-azul);
       cursor: pointer;
-    }
-
-    .foto-carteirinha-link {
-      width: 220px;
-      justify-content: center;
-      text-align: center;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 850;
       text-decoration: none;
+      transition:
+        border-color 180ms ease,
+        background 180ms ease,
+        color 180ms ease,
+        opacity 180ms ease,
+        transform 180ms ease;
     }
 
-    #statusFoto {
-      width: 220px;
-      min-height: 20px;
-      margin: 0;
-      color: #63737d;
-      font-size: 13px;
-      line-height: 1.45;
+    .ficha-botao:hover {
+      border-color: var(--ficha-azul-medio);
+      background: #f8fbfd;
+      transform: translateY(-1px);
     }
 
-    .member-photo-info {
-      padding-top: 34px;
+    .ficha-botao-primario {
+      border-color: var(--ficha-azul);
+      background: var(--ficha-azul);
+      color: #ffffff;
     }
 
-    .member-photo-info h2 {
-      margin: 6px 0 12px;
+    .ficha-botao-primario:hover {
+      border-color: var(--ficha-azul-medio);
+      background: var(--ficha-azul-medio);
+      color: #ffffff;
     }
 
-    .member-photo-info > p:not(.dashboard-label) {
-      max-width: 560px;
-      color: #667680;
-      line-height: 1.65;
+    .ficha-botao-dourado {
+      border-color: var(--ficha-dourado);
+      background: var(--ficha-dourado);
+      color: #ffffff;
     }
 
-    .photo-guidelines {
-      max-width: 560px;
-      margin-top: 20px;
-      padding: 18px;
-      border-radius: 12px;
-      background: #f4f7f9;
+    .ficha-botao-dourado:hover {
+      border-color: #7f5e17;
+      background: #7f5e17;
+      color: #ffffff;
+    }
+
+    .ficha-botao:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+      transform: none;
+    }
+
+    /* Resumo principal */
+
+    .membro-resumo {
       display: grid;
-      gap: 8px;
-      color: #53636d;
+      grid-template-columns: 150px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 22px;
+      margin-bottom: 18px;
+      padding: 24px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: var(--ficha-raio);
+      background:
+        linear-gradient(135deg, rgba(7, 31, 59, 0.035), transparent 45%),
+        #ffffff;
+      box-shadow: var(--ficha-sombra);
     }
 
-    .photo-guidelines strong {
-      color: #0f2f48;
+    .membro-foto-box {
+      position: relative;
+      width: 138px;
+      height: 168px;
+      overflow: hidden;
+      border: 5px solid #ffffff;
+      border-radius: 18px;
+      background: #eaf0f4;
+      box-shadow:
+        0 0 0 1px var(--ficha-borda),
+        0 10px 22px rgba(7, 31, 59, 0.12);
     }
 
-    .photo-guidelines span::before {
-      content: "✓";
-      margin-right: 8px;
-      color: #b98a45;
+    .membro-foto {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .membro-foto-placeholder {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 50% 32%, #bccbd5 0 19%, transparent 20%),
+        radial-gradient(circle at 50% 105%, #bccbd5 0 42%, transparent 43%),
+        #eaf0f4;
+      color: var(--ficha-texto-suave);
+      font-size: 0.7rem;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .membro-resumo-conteudo {
+      min-width: 0;
+    }
+
+    .membro-resumo-etiqueta {
+      margin: 0 0 7px;
+      color: var(--ficha-dourado);
+      font-size: 0.67rem;
+      font-weight: 900;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .membro-nome {
+      margin: 0;
+      color: var(--ficha-azul);
+      font-size: clamp(1.45rem, 3vw, 2.05rem);
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+    }
+
+    .membro-congregacao {
+      margin: 8px 0 0;
+      color: var(--ficha-texto-suave);
+      font-size: 0.83rem;
       font-weight: 700;
     }
 
-    @media (max-width: 760px) {
-      .member-photo-layout {
+    .membro-identificadores {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .ficha-badge {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 11px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font-size: 0.71rem;
+      font-weight: 850;
+      line-height: 1.2;
+    }
+
+    .ficha-badge-codigo {
+      border-color: #c7d6e2;
+      background: #edf4f8;
+      color: #245f91;
+    }
+
+    .ficha-badge-cargo {
+      border-color: #d8c6f0;
+      background: #f3ecfb;
+      color: #6941a5;
+    }
+
+    .ficha-badge-situacao {
+      border-color: #b9dfca;
+      background: #e7f6ee;
+      color: #16794f;
+    }
+
+    .ficha-badge-ponto {
+      width: 8px;
+      height: 8px;
+      flex: 0 0 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .membro-resumo-lateral {
+      display: grid;
+      min-width: 180px;
+      gap: 10px;
+    }
+
+    .resumo-dado {
+      padding: 12px 14px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: 12px;
+      background: var(--ficha-fundo);
+    }
+
+    .resumo-dado-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ficha-texto-suave);
+      font-size: 0.64rem;
+      font-weight: 850;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+    }
+
+    .resumo-dado-valor {
+      display: block;
+      color: var(--ficha-azul);
+      font-size: 0.78rem;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    /* Conteúdo da ficha */
+
+    .ficha-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .ficha-card {
+      grid-column: span 6;
+      overflow: hidden;
+      border: 1px solid var(--ficha-borda);
+      border-radius: var(--ficha-raio);
+      background: var(--ficha-superficie);
+      box-shadow: 0 6px 20px rgba(7, 31, 59, 0.055);
+    }
+
+    .ficha-card-largo {
+      grid-column: 1 / -1;
+    }
+
+    .ficha-card-cabecalho {
+      display: flex;
+      min-height: 55px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--ficha-borda);
+      background:
+        linear-gradient(90deg, rgba(7, 31, 59, 0.035), transparent),
+        #ffffff;
+    }
+
+    .ficha-card-titulo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ficha-card-icone {
+      display: inline-flex;
+      width: 31px;
+      height: 31px;
+      flex: 0 0 31px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9px;
+      background: #eef3f7;
+      color: var(--ficha-azul);
+      font-size: 0.88rem;
+      font-weight: 900;
+    }
+
+    .ficha-card-titulo {
+      margin: 0;
+      color: var(--ficha-azul);
+      font-size: 0.86rem;
+      font-weight: 900;
+    }
+
+    .ficha-card-subtitulo {
+      margin: 3px 0 0;
+      color: var(--ficha-texto-suave);
+      font-size: 0.66rem;
+    }
+
+    .ficha-card-corpo {
+      padding: 17px 18px 19px;
+    }
+
+    .dados-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 20px;
+    }
+
+    .dados-grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .dado-item {
+      min-width: 0;
+    }
+
+    .dado-item-largo {
+      grid-column: 1 / -1;
+    }
+
+    .dado-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ficha-texto-suave);
+      font-size: 0.66rem;
+      font-weight: 850;
+      letter-spacing: 0.025em;
+    }
+
+    .dado-valor {
+      display: block;
+      min-height: 21px;
+      color: var(--ficha-texto);
+      font-size: 0.79rem;
+      font-weight: 750;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .dado-valor-vazio {
+      color: #98a3ab;
+      font-weight: 650;
+    }
+
+    .observacoes-texto {
+      min-height: 90px;
+      margin: 0;
+      color: var(--ficha-texto);
+      font-size: 0.79rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    /* Carteirinha */
+
+    .carteirinha-area {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 130px;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .carteirinha-dados {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .qr-box {
+      display: flex;
+      width: 120px;
+      height: 120px;
+      align-items: center;
+      justify-content: center;
+      justify-self: end;
+      border: 1px dashed #aebbc5;
+      border-radius: 14px;
+      background:
+        linear-gradient(45deg, #e6ebef 25%, transparent 25%) 0 0 / 14px 14px,
+        linear-gradient(-45deg, #e6ebef 25%, transparent 25%) 0 7px / 14px 14px,
+        linear-gradient(45deg, transparent 75%, #e6ebef 75%) 7px -7px / 14px 14px,
+        linear-gradient(-45deg, transparent 75%, #e6ebef 75%) -7px 0 / 14px 14px,
+        #ffffff;
+      color: var(--ficha-azul);
+      font-size: 0.64rem;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    /* Estado de carregamento/erro */
+
+    .ficha-aviso {
+      display: none;
+      margin-bottom: 16px;
+      padding: 13px 15px;
+      border: 1px solid #ead79a;
+      border-radius: 12px;
+      background: #fff8df;
+      color: #735815;
+      font-size: 0.76rem;
+      font-weight: 750;
+      line-height: 1.45;
+    }
+
+    .ficha-aviso.ativo {
+      display: block;
+    }
+
+    .visualizar-rodape {
+      margin-top: 20px;
+      padding: 13px 0 2px;
+      color: var(--ficha-texto-suave);
+      font-size: 0.68rem;
+      text-align: center;
+    }
+
+    /* Impressão */
+
+    @media print {
+      .sidebar,
+      .overlay-menu,
+      .topbar,
+      .visualizar-apresentacao,
+      .carregamento-global,
+      .visualizar-rodape {
+        display: none !important;
+      }
+
+      body,
+      .sistema-page,
+      .sistema-layout,
+      .sistema-main,
+      .sistema-conteudo {
+        width: 100% !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+      }
+
+      .membro-resumo,
+      .ficha-card {
+        break-inside: avoid;
+        box-shadow: none !important;
+      }
+
+      .ficha-grid {
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .membro-resumo {
+        grid-template-columns: 135px minmax(0, 1fr);
+      }
+
+      .membro-resumo-lateral {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .visualizar-apresentacao {
+        flex-direction: column;
+      }
+
+      .visualizar-acoes {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .ficha-card {
+        grid-column: 1 / -1;
+      }
+
+      .dados-grid-3,
+      .carteirinha-dados {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 650px) {
+      .membro-resumo {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .membro-resumo-conteudo {
+        width: 100%;
+      }
+
+      .membro-identificadores {
+        justify-content: center;
+      }
+
+      .membro-resumo-lateral {
+        width: 100%;
+        grid-template-columns: 1fr;
+        text-align: left;
+      }
+
+      .dados-grid,
+      .dados-grid-3,
+      .carteirinha-dados,
+      .carteirinha-area {
         grid-template-columns: 1fr;
       }
 
-      .member-photo-info {
-        padding-top: 0;
+      .qr-box {
+        justify-self: start;
+      }
+
+      .visualizar-acoes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .ficha-botao {
+        width: 100%;
       }
     }
+
+    @media (max-width: 420px) {
+      .visualizar-acoes {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* =========================================================
+       EDITAR MEMBRO
+       Modo de edição da ficha digital oficial
+       ========================================================= */
+
+    .edicao-formulario {
+      display: contents;
+    }
+
+    .edicao-campo {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      min-height: 42px;
+      padding: 9px 11px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: 10px;
+      background: #ffffff;
+      color: var(--ficha-texto);
+      font: inherit;
+      font-size: 0.79rem;
+      font-weight: 700;
+      line-height: 1.35;
+      transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        background 160ms ease;
+    }
+
+    .edicao-campo:focus {
+      border-color: var(--ficha-azul-medio);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(20, 75, 127, 0.12);
+    }
+
+    .edicao-campo:disabled,
+    .edicao-campo[readonly] {
+      background: #eef2f5;
+      color: #65727c;
+      cursor: not-allowed;
+    }
+
+    textarea.edicao-campo {
+      min-height: 104px;
+      resize: vertical;
+    }
+
+    .edicao-foto-acoes {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      left: 8px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .edicao-foto-botao {
+      display: inline-flex;
+      min-height: 34px;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 9px;
+      background: rgba(7, 31, 59, 0.9);
+      color: #ffffff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.68rem;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .edicao-foto-status {
+      margin: 8px 0 0;
+      color: var(--ficha-texto-suave);
+      font-size: 0.68rem;
+      line-height: 1.4;
+    }
+
+    .edicao-resumo {
+      display: grid;
+      gap: 12px;
+    }
+
+    .edicao-resumo .edicao-campo {
+      max-width: 560px;
+    }
+
+    .edicao-resumo-linha {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .edicao-acoes-rodape {
+      position: sticky;
+      z-index: 8;
+      bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+      padding: 14px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 10px 30px rgba(7, 31, 59, 0.12);
+      backdrop-filter: blur(8px);
+    }
+
+    .campo-ajuda {
+      display: block;
+      margin-top: 5px;
+      color: var(--ficha-texto-suave);
+      font-size: 0.64rem;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 650px) {
+      .edicao-resumo-linha {
+        grid-template-columns: 1fr;
+      }
+
+      .edicao-acoes-rodape {
+        position: static;
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 
-<body class="dashboard-page">
+<body class="sistema-page" data-page="membros">
 
-  <aside class="sidebar">
+  <div class="sistema-layout">
 
-    <div class="sidebar-brand">
-      <img
-        src="logo.png"
-        alt="Logo da igreja"
-        class="sidebar-logo"
-      >
+    <aside class="sidebar" aria-label="Menu principal">
 
-      <div>
-        <strong>Vidas Renovadas</strong>
-        <span>Projeto Neemias</span>
-      </div>
-    </div>
+      <div class="sidebar-topo">
 
-    <nav class="sidebar-menu">
-      <a href="dashboard.html">Dashboard</a>
-      <a href="membros.html" class="active">Membros</a>
-      <a href="#">Famílias</a>
-      <a href="#">Carteirinhas</a>
-      <a href="#">Congregações</a>
-      <a href="#">Relatórios</a>
-      <a href="#">Configurações</a>
-    </nav>
+        <div class="sidebar-logo-box">
+          <img
+            class="sidebar-logo"
+            src="logo.png"
+            alt="Logo da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas"
+          >
+        </div>
 
-    <a href="index.html" class="logout">
-      Sair
-    </a>
+        <div class="sidebar-identidade">
+          <p class="sidebar-nome">Vidas Renovadas Gestão</p>
+          <p class="sidebar-ministerio">Ministério Vidas Renovadas</p>
+        </div>
 
-  </aside>
-
-  <main class="dashboard-main">
-
-    <header class="members-header">
-      <div>
-        <p class="dashboard-label">
-          Atualização cadastral
-        </p>
-
-        <h1 id="tituloEditarMembro">
-          Editar Membro
-        </h1>
       </div>
 
-      <a
-        href="membros.html"
-        class="secondary-link"
-      >
-        Voltar
-      </a>
-    </header>
+      <nav class="menu-navegacao">
 
+        <div class="menu-grupo">
+          <p class="menu-grupo-titulo">Visão geral</p>
+
+          <a class="menu-item" href="dashboard.html" data-page="dashboard">
+            <span class="menu-item-icone" aria-hidden="true">⌂</span>
+            <span>Dashboard</span>
+          </a>
+        </div>
+
+        <div class="menu-grupo">
+          <p class="menu-grupo-titulo">Pessoas</p>
+
+          <a class="menu-item" href="membros.html" data-page="membros">
+            <span class="menu-item-icone" aria-hidden="true">♙</span>
+            <span>Membros</span>
+          </a>
+
+          <a class="menu-item" href="familias.html" data-page="familias">
+            <span class="menu-item-icone" aria-hidden="true">♧</span>
+            <span>Famílias</span>
+          </a>
+
+          <a class="menu-item" href="congregacoes.html" data-page="congregacoes">
+            <span class="menu-item-icone" aria-hidden="true">⌂</span>
+            <span>Congregações</span>
+          </a>
+        </div>
+
+        <div class="menu-grupo">
+          <p class="menu-grupo-titulo">Documentos</p>
+
+          <a class="menu-item" href="carteirinhas.html" data-page="carteirinhas">
+            <span class="menu-item-icone" aria-hidden="true">▣</span>
+            <span>Carteirinhas</span>
+          </a>
+
+          <a class="menu-item" href="certificados/index.html" data-page="certificados">
+            <span class="menu-item-icone" aria-hidden="true">◇</span>
+            <span>Certificados</span>
+          </a>
+        </div>
+
+        <div class="menu-grupo">
+          <p class="menu-grupo-titulo">Gestão</p>
+
+          <a class="menu-item" href="financeiro.html" data-page="financeiro">
+            <span class="menu-item-icone" aria-hidden="true">R$</span>
+            <span>Financeiro</span>
+          </a>
+
+          <a class="menu-item" href="relatorios.html" data-page="relatorios">
+            <span class="menu-item-icone" aria-hidden="true">▤</span>
+            <span>Relatórios</span>
+          </a>
+
+          <a
+            class="menu-item"
+            href="configuracoes.html"
+            data-page="configuracoes"
+            data-permissao="administracao"
+          >
+            <span class="menu-item-icone" aria-hidden="true">⚙</span>
+            <span>Administração</span>
+          </a>
+        </div>
+
+      </nav>
+
+      <div class="sidebar-rodape">
+        <div class="usuario-sidebar">
+
+          <div class="usuario-avatar" data-usuario-iniciais>VR</div>
+
+          <div class="usuario-sidebar-dados">
+            <div class="usuario-sidebar-nome" data-usuario-nome>Usuário</div>
+            <div class="usuario-sidebar-cargo" data-usuario-cargo>Carregando perfil...</div>
+          </div>
+
+          <button
+            type="button"
+            class="botao-sair-sidebar"
+            data-acao="logout"
+            data-confirmar-logout="true"
+            aria-label="Sair do sistema"
+            title="Sair do sistema"
+          >
+            ↪
+          </button>
+
+        </div>
+      </div>
+
+    </aside>
+
+    <div class="overlay-menu" data-acao="fechar-menu"></div>
+
+    <main class="sistema-main">
+
+      <header class="topbar">
+
+        <div class="topbar-esquerda">
+
+          <button
+            type="button"
+            class="botao-menu-mobile"
+            data-acao="alternar-menu"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+          >
+            ☰
+          </button>
+
+          <div>
+            <h1 class="topbar-titulo">Editar membro</h1>
+            <p class="topbar-subtitulo">Atualização completa do cadastro ministerial</p>
+          </div>
+
+        </div>
+
+        <div class="topbar-direita">
+
+          <div class="topbar-data">
+            <strong id="dataAtual">—</strong><br>
+            <span id="horaAtual">—</span>
+          </div>
+
+          <div class="topbar-avatar" data-usuario-iniciais>VR</div>
+
+        </div>
+
+      </header>
+
+      <div class="sistema-conteudo">
+
+        <form id="formEditarMembro" class="edicao-formulario" novalidate>
+          <input type="hidden" id="id" name="id">
+          <input type="hidden" id="FOTO_URL" name="FOTO_URL">
+
+          <section class="visualizar-apresentacao">
+            <div>
+              <p class="visualizar-etiqueta">Secretaria</p>
+              <h2 class="visualizar-titulo">Editar ficha digital</h2>
+              <p class="visualizar-descricao">
+                Atualize os dados pessoais, familiares, eclesiásticos e documentais do membro.
+              </p>
+            </div>
+
+            <div class="visualizar-acoes">
+              <a class="ficha-botao" id="botaoCancelarTopo" href="membros.html">
+                ← Cancelar
+              </a>
+              <button
+                type="submit"
+                class="ficha-botao ficha-botao-primario"
+                id="botaoSalvarTopo"
+                data-permissao="membros-editar"
+              >
+                ✓ Salvar alterações
+              </button>
+            </div>
+          </section>
+
+          <div class="ficha-aviso ativo" id="avisoFicha" role="status" aria-live="polite">
+            Preparando a ficha para edição...
+          </div>
+
+          <section class="membro-resumo" aria-label="Resumo do membro em edição">
+            <div>
+              <div class="membro-foto-box">
+                <div class="membro-foto-placeholder" id="fotoMembroPlaceholder">
+                  FOTO DO<br>MEMBRO
+                </div>
+                <img class="membro-foto" id="fotoMembro" alt="Foto do membro" hidden>
+
+                <div class="edicao-foto-acoes">
+                  <label class="edicao-foto-botao" for="arquivoFotoMembro">
+                    Alterar foto
+                  </label>
+                  <input
+                    type="file"
+                    id="arquivoFotoMembro"
+                    accept="image/jpeg,image/png,image/webp"
+                    hidden
+                  >
+                </div>
+              </div>
+              <p class="edicao-foto-status" id="statusFoto" aria-live="polite">
+                A foto atual será mantida até que uma nova seja selecionada.
+              </p>
+            </div>
+
+            <div class="membro-resumo-conteudo edicao-resumo">
+              <p class="membro-resumo-etiqueta">Identificação ministerial</p>
+
+              <div>
+                <label class="dado-label" for="resumoNomeCompleto">Nome completo</label>
+                <input
+                  class="edicao-campo"
+                  id="resumoNomeCompleto"
+                  type="text"
+                  data-espelho-campo="NOME_COMPLETO"
+                  placeholder="Nome completo do membro"
+                >
+              </div>
+
+              <div class="edicao-resumo-linha">
+                <div>
+                  <label class="dado-label" for="resumoCongregacao">Congregação</label>
+                  <input
+                    class="edicao-campo"
+                    id="resumoCongregacao"
+                    type="text"
+                    data-espelho-campo="CONGREGACAO"
+                    placeholder="Congregação"
+                  >
+                </div>
+                <div>
+                  <label class="dado-label" for="resumoCargo">Cargo</label>
+                  <input
+                    class="edicao-campo"
+                    id="resumoCargo"
+                    type="text"
+                    data-espelho-campo="CARGO"
+                    placeholder="Cargo"
+                  >
+                </div>
+              </div>
+
+              <div class="membro-identificadores">
+                <span class="ficha-badge ficha-badge-codigo">
+                  ID: <strong id="resumoCodigo">—</strong>
+                </span>
+                <span class="ficha-badge ficha-badge-situacao">
+                  <span class="ficha-badge-ponto" aria-hidden="true"></span>
+                  <span id="resumoSituacao">Situação não informada</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="membro-resumo-lateral">
+              <div class="resumo-dado">
+                <span class="resumo-dado-label">Carteirinha</span>
+                <span class="resumo-dado-valor" id="resumoCarteirinha">—</span>
+              </div>
+              <div class="resumo-dado">
+                <span class="resumo-dado-label">Data de cadastro</span>
+                <span class="resumo-dado-valor" id="resumoDataCadastro">—</span>
+              </div>
+              <div class="resumo-dado">
+                <span class="resumo-dado-label">Família vinculada</span>
+                <span class="resumo-dado-valor" id="resumoFamilia">—</span>
+              </div>
+            </div>
+          </section>
+
+          <div class="ficha-grid">
+
+          <section class="ficha-card ficha-card-largo">
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">♙</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Dados pessoais</h3>
+                  <p class="ficha-card-subtitulo">Identificação civil do membro</p>
+                </div>
+              </div>
+            </header>
+            <div class="ficha-card-corpo">
+              <div class="dados-grid dados-grid-3">
+
+                <div class="dado-item dado-item-largo">
+                  <label class="dado-label" for="NOME_COMPLETO">Nome completo</label>
+                  <input class="edicao-campo" type="text" id="NOME_COMPLETO" name="NOME_COMPLETO" required>
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="DATA_NASCIMENTO">Data de nascimento</label>
+                  <input class="edicao-campo" type="date" id="DATA_NASCIMENTO" name="DATA_NASCIMENTO">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="SEXO">Sexo</label>
+                  <select class="edicao-campo" id="SEXO" name="SEXO"><option value="">Selecione</option><option value="MASCULINO">Masculino</option><option value="FEMININO">Feminino</option></select>
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="ESTADO_CIVIL">Estado civil</label>
+                  <select class="edicao-campo" id="ESTADO_CIVIL" name="ESTADO_CIVIL"><option value="">Selecione</option><option value="SOLTEIRO(A)">Solteiro(a)</option><option value="CASADO(A)">Casado(a)</option><option value="DIVORCIADO(A)">Divorciado(a)</option><option value="VIÚVO(A)">Viúvo(a)</option></select>
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="PROFISSAO">Profissão</label>
+                  <input class="edicao-campo" type="text" id="PROFISSAO" name="PROFISSAO">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="NATURALIDADE">Naturalidade</label>
+                  <input class="edicao-campo" type="text" id="NATURALIDADE" name="NATURALIDADE">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="NACIONALIDADE">Nacionalidade</label>
+                  <input class="edicao-campo" type="text" id="NACIONALIDADE" name="NACIONALIDADE">
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="ficha-card">
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">▤</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Documentos</h3>
+                  <p class="ficha-card-subtitulo">Registros e identificação oficial</p>
+                </div>
+              </div>
+            </header>
+            <div class="ficha-card-corpo">
+              <div class="dados-grid">
+
+                <div class="dado-item">
+                  <label class="dado-label" for="CPF">CPF</label>
+                  <input class="edicao-campo" type="text" id="CPF" name="CPF" placeholder="000.000.000-00">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="RG">RG</label>
+                  <input class="edicao-campo" type="text" id="RG" name="RG">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="ORGAO_EMISSOR">Órgão emissor</label>
+                  <input class="edicao-campo" type="text" id="ORGAO_EMISSOR" name="ORGAO_EMISSOR">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="DATA_EMISSAO_RG">Data de emissão do RG</label>
+                  <input class="edicao-campo" type="date" id="DATA_EMISSAO_RG" name="DATA_EMISSAO_RG">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="TITULO_ELEITOR">Título de eleitor</label>
+                  <input class="edicao-campo" type="text" id="TITULO_ELEITOR" name="TITULO_ELEITOR">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="CERTIDAO">Certidão</label>
+                  <input class="edicao-campo" type="text" id="CERTIDAO" name="CERTIDAO">
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="ficha-card">
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">☎</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Contatos</h3>
+                  <p class="ficha-card-subtitulo">Canais de comunicação</p>
+                </div>
+              </div>
+            </header>
+            <div class="ficha-card-corpo">
+              <div class="dados-grid">
+
+                <div class="dado-item">
+                  <label class="dado-label" for="TELEFONE">Telefone</label>
+                  <input class="edicao-campo" type="tel" id="TELEFONE" name="TELEFONE">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="WHATSAPP">WhatsApp</label>
+                  <input class="edicao-campo" type="tel" id="WHATSAPP" name="WHATSAPP">
+                </div>
+                <div class="dado-item dado-item-largo">
+                  <label class="dado-label" for="EMAIL">E-mail</label>
+                  <input class="edicao-campo" type="email" id="EMAIL" name="EMAIL">
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="ficha-card">
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">⌂</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Endereço</h3>
+                  <p class="ficha-card-subtitulo">Localização residencial</p>
+                </div>
+              </div>
+            </header>
+            <div class="ficha-card-corpo">
+              <div class="dados-grid">
+
+                <div class="dado-item">
+                  <label class="dado-label" for="CEP">CEP</label>
+                  <input class="edicao-campo" type="text" id="CEP" name="CEP" placeholder="00000-000">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="NUMERO">Número</label>
+                  <input class="edicao-campo" type="text" id="NUMERO" name="NUMERO">
+                </div>
+                <div class="dado-item dado-item-largo">
+                  <label class="dado-label" for="ENDERECO">Endereço</label>
+                  <input class="edicao-campo" type="text" id="ENDERECO" name="ENDERECO">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="COMPLEMENTO">Complemento</label>
+                  <input class="edicao-campo" type="text" id="COMPLEMENTO" name="COMPLEMENTO">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="BAIRRO">Bairro</label>
+                  <input class="edicao-campo" type="text" id="BAIRRO" name="BAIRRO">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="CIDADE">Cidade</label>
+                  <input class="edicao-campo" type="text" id="CIDADE" name="CIDADE">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="ESTADO">Estado</label>
+                  <input class="edicao-campo" type="text" id="ESTADO" name="ESTADO">
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="ficha-card ficha-card-largo">
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">◇</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Vida cristã e ministerial</h3>
+                  <p class="ficha-card-subtitulo">Histórico e situação eclesiástica</p>
+                </div>
+              </div>
+            </header>
+            <div class="ficha-card-corpo">
+              <div class="dados-grid dados-grid-3">
+
+                <div class="dado-item">
+                  <label class="dado-label" for="DATA_CONVERSAO">Data da conversão</label>
+                  <input class="edicao-campo" type="date" id="DATA_CONVERSAO" name="DATA_CONVERSAO">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="DATA_BATISMO_AGUAS">Batismo nas águas</label>
+                  <input class="edicao-campo" type="date" id="DATA_BATISMO_AGUAS" name="DATA_BATISMO_AGUAS">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="DATA_BATISMO_ESPIRITO">Batismo no Espírito Santo</label>
+                  <input class="edicao-campo" type="date" id="DATA_BATISMO_ESPIRITO" name="DATA_BATISMO_ESPIRITO">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="CARGO">Cargo</label>
+                  <select class="edicao-campo" id="CARGO" name="CARGO"><option value="">Selecione</option><option value="PASTOR">PASTOR</option><option value="PASTORA">PASTORA</option><option value="PRESBÍTERO">PRESBÍTERO</option><option value="EVANGELISTA">EVANGELISTA</option><option value="DIÁCONO">DIÁCONO</option><option value="DIACONISA">DIACONISA</option><option value="MISSIONÁRIO">MISSIONÁRIO</option><option value="MISSIONÁRIA">MISSIONÁRIA</option><option value="OBREIRO">OBREIRO</option><option value="OBREIRA">OBREIRA</option><option value="AUXILIAR DE TRABALHO">AUXILIAR DE TRABALHO</option><option value="MEMBRO">MEMBRO</option><option value="MEMBRA">MEMBRA</option></select>
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="CONGREGACAO">Congregação</label>
+                  <input class="edicao-campo" type="text" id="CONGREGACAO" name="CONGREGACAO" required>
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="SITUACAO">Situação</label>
+                  <select class="edicao-campo" id="SITUACAO" name="SITUACAO"><option value="">Selecione</option><option value="ATIVO">Ativo</option><option value="CONGREGADO">Congregado</option><option value="VISITANTE">Visitante</option><option value="INATIVO">Inativo</option><option value="TRANSFERIDO">Transferido</option><option value="FALECIDO">Falecido</option></select>
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="DEPARTAMENTO">Departamento</label>
+                  <input class="edicao-campo" type="text" id="DEPARTAMENTO" name="DEPARTAMENTO">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="DATA_ADMISSAO">Data de admissão</label>
+                  <input class="edicao-campo" type="date" id="DATA_ADMISSAO" name="DATA_ADMISSAO">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="FORMA_RECEBIMENTO">Forma de recebimento</label>
+                  <input class="edicao-campo" type="text" id="FORMA_RECEBIMENTO" name="FORMA_RECEBIMENTO">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="IGREJA_ORIGEM">Igreja de origem</label>
+                  <input class="edicao-campo" type="text" id="IGREJA_ORIGEM" name="IGREJA_ORIGEM">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="DATA_CONSAGRACAO">Data de consagração</label>
+                  <input class="edicao-campo" type="date" id="DATA_CONSAGRACAO" name="DATA_CONSAGRACAO">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="MINISTERIO">Ministério</label>
+                  <input class="edicao-campo" type="text" id="MINISTERIO" name="MINISTERIO">
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="ficha-card">
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">♧</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Família</h3>
+                  <p class="ficha-card-subtitulo">Vínculos e composição familiar</p>
+                </div>
+              </div>
+            </header>
+            <div class="ficha-card-corpo">
+              <div class="dados-grid">
+
+                <div class="dado-item dado-item-largo">
+                  <label class="dado-label" for="NOME_PAI">Nome do pai</label>
+                  <input class="edicao-campo" type="text" id="NOME_PAI" name="NOME_PAI">
+                </div>
+                <div class="dado-item dado-item-largo">
+                  <label class="dado-label" for="NOME_MAE">Nome da mãe</label>
+                  <input class="edicao-campo" type="text" id="NOME_MAE" name="NOME_MAE">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="CONJUGE">Nome do cônjuge</label>
+                  <input class="edicao-campo" type="text" id="CONJUGE" name="CONJUGE">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="DATA_CASAMENTO">Data do casamento</label>
+                  <input class="edicao-campo" type="date" id="DATA_CASAMENTO" name="DATA_CASAMENTO">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="QUANTIDADE_FILHOS">Quantidade de filhos</label>
+                  <input class="edicao-campo" type="number" id="QUANTIDADE_FILHOS" name="QUANTIDADE_FILHOS" min="0">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="ID_FAMILIA">ID da família</label>
+                  <input class="edicao-campo" type="text" id="ID_FAMILIA" name="ID_FAMILIA">
+                </div>
+                <div class="dado-item dado-item-largo">
+                  <label class="dado-label" for="FILHOS">Filhos</label>
+                  <textarea class="edicao-campo" id="FILHOS" name="FILHOS" rows="4" placeholder="Informe os nomes dos filhos, quando aplicável."></textarea>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="ficha-card ficha-card-largo">
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">▣</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Carteirinha</h3>
+                  <p class="ficha-card-subtitulo">Dados de emissão e identificação digital</p>
+                </div>
+              </div>
+            </header>
+            <div class="ficha-card-corpo">
+              <div class="dados-grid dados-grid-3">
+
+                <div class="dado-item">
+                  <label class="dado-label" for="NUMERO_CARTEIRINHA">Número da carteirinha</label>
+                  <input class="edicao-campo" type="text" id="NUMERO_CARTEIRINHA" name="NUMERO_CARTEIRINHA">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="DATA_EMISSAO_CARTEIRINHA">Data de emissão</label>
+                  <input class="edicao-campo" type="date" id="DATA_EMISSAO_CARTEIRINHA" name="DATA_EMISSAO_CARTEIRINHA">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="VALIDADE_CARTEIRINHA">Validade</label>
+                  <input class="edicao-campo" type="date" id="VALIDADE_CARTEIRINHA" name="VALIDADE_CARTEIRINHA">
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="STATUS_CARTEIRINHA">Status</label>
+                  <select class="edicao-campo" id="STATUS_CARTEIRINHA" name="STATUS_CARTEIRINHA"><option value="">Selecione</option><option value="ATIVA">Ativa</option><option value="VENCIDA">Vencida</option><option value="CANCELADA">Cancelada</option><option value="BLOQUEADA">Bloqueada</option></select>
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="CODIGO_DIGITAL">Código digital</label>
+                  <input class="edicao-campo" type="text" id="CODIGO_DIGITAL" name="CODIGO_DIGITAL" readonly>
+                </div>
+                <div class="dado-item">
+                  <label class="dado-label" for="ATUALIZADO_EM">Última atualização</label>
+                  <input class="edicao-campo" type="text" id="ATUALIZADO_EM" name="ATUALIZADO_EM" readonly>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="ficha-card ficha-card-largo">
+            <header class="ficha-card-cabecalho">
+              <div class="ficha-card-titulo-area">
+                <span class="ficha-card-icone" aria-hidden="true">✎</span>
+                <div>
+                  <h3 class="ficha-card-titulo">Observações</h3>
+                  <p class="ficha-card-subtitulo">Anotações gerais sobre o cadastro</p>
+                </div>
+              </div>
+            </header>
+            <div class="ficha-card-corpo">
+              <div class="dados-grid">
+
+                <div class="dado-item dado-item-largo">
+                  <label class="dado-label" for="OBSERVACOES">Observações</label>
+                  <textarea class="edicao-campo" id="OBSERVACOES" name="OBSERVACOES" rows="4" placeholder="Digite observações importantes sobre o cadastro."></textarea>
+                </div>
+              </div>
+            </div>
+          </section>
+          </div>
+
+          <div class="edicao-acoes-rodape">
+            <a class="ficha-botao" id="botaoCancelarRodape" href="membros.html">
+              ← Cancelar
+            </a>
+            <button
+              type="submit"
+              class="ficha-botao ficha-botao-primario"
+              id="botaoSalvarRodape"
+              data-permissao="membros-editar"
+            >
+              ✓ Salvar alterações
+            </button>
+          </div>
+        </form>
+
+        <footer class="visualizar-rodape">
+          Vidas Renovadas Gestão — Projeto Neemias
+        </footer>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <div
+    id="carregamentoGlobal"
+    class="carregamento-global"
+    aria-hidden="true"
+  >
     <div
-      id="mensagemCarregamento"
-      class="form-section"
+      class="carregamento-caixa"
       role="status"
       aria-live="polite"
     >
-      Carregando dados do membro...
+      <span class="spinner" aria-hidden="true"></span>
+      <span>Carregando...</span>
     </div>
-
-    <form
-      id="formEditarMembro"
-      class="member-form"
-      hidden
-    >
-
-      <input
-        type="hidden"
-        id="id"
-        name="id"
-      >
-
-      <input
-        type="hidden"
-        id="foto"
-        name="foto"
-      >
-
-      <section class="form-section member-photo-section">
-
-        <div class="member-photo-layout">
-
-          <div class="foto-upload">
-
-            <h2>Foto do Membro</h2>
-
-            <div class="foto-preview">
-              <img
-                id="previewFoto"
-                src="https://placehold.co/220x280?text=Sem+Foto"
-                alt="Foto do membro"
-              >
-            </div>
-
-            <label
-              for="fotoMembro"
-              class="secondary-link foto-escolher"
-            >
-              Escolher foto
-            </label>
-
-            <input
-              type="file"
-              id="fotoMembro"
-              accept="image/jpeg,image/png,image/webp"
-              hidden
-            >
-
-            <a
-              id="visualizarCarteirinha"
-              class="primary-link foto-carteirinha-link"
-              aria-disabled="true"
-            >
-              Visualizar Carteirinha
-            </a>
-
-            <p
-              id="statusFoto"
-              role="status"
-              aria-live="polite"
-            >
-              Selecione uma foto para visualizar.
-            </p>
-
-          </div>
-
-          <div class="member-photo-info">
-
-            <p class="dashboard-label">
-              Identificação visual
-            </p>
-
-            <h2>Atualização cadastral</h2>
-
-            <p>
-              Use uma foto de frente, com boa iluminação,
-              fundo claro e o rosto centralizado. A imagem
-              será usada na ficha e na carteirinha.
-            </p>
-
-            <div class="photo-guidelines">
-              <strong>Recomendações</strong>
-              <span>Formato vertical</span>
-              <span>Arquivo JPG, PNG ou WebP</span>
-              <span>Evite fotos escuras ou desfocadas</span>
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-      <section class="form-section">
-
-        <h2>Identificação</h2>
-
-        <div class="form-grid">
-
-          <div class="form-field">
-            <label for="numeroCarteirinha">
-              Número da carteirinha
-            </label>
-
-            <input
-              type="text"
-              id="numeroCarteirinha"
-              name="numeroCarteirinha"
-            >
-          </div>
-
-          <div class="form-field full-width">
-            <label for="nomeCompleto">
-              Nome completo
-            </label>
-
-            <input
-              type="text"
-              id="nomeCompleto"
-              name="nomeCompleto"
-              required
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="cpf">CPF</label>
-
-            <input
-              type="text"
-              id="cpf"
-              name="cpf"
-              inputmode="numeric"
-              autocomplete="off"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="rg">RG</label>
-
-            <input
-              type="text"
-              id="rg"
-              name="rg"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="dataNascimento">
-              Data de nascimento
-            </label>
-
-            <input
-              type="date"
-              id="dataNascimento"
-              name="dataNascimento"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="estadoCivil">
-              Estado civil
-            </label>
-
-            <select
-              id="estadoCivil"
-              name="estadoCivil"
-            >
-              <option value="">Selecione</option>
-              <option value="Solteiro(a)">Solteiro(a)</option>
-              <option value="Casado(a)">Casado(a)</option>
-              <option value="Divorciado(a)">Divorciado(a)</option>
-              <option value="Viúvo(a)">Viúvo(a)</option>
-            </select>
-          </div>
-
-          <div class="form-field full-width">
-            <label for="conjuge">
-              Nome do cônjuge
-            </label>
-
-            <input
-              type="text"
-              id="conjuge"
-              name="conjuge"
-            >
-          </div>
-
-        </div>
-
-      </section>
-
-      <section class="form-section">
-
-        <h2>Família</h2>
-
-        <div class="form-grid">
-
-          <div class="form-field">
-            <label for="pai">
-              Nome do pai
-            </label>
-
-            <input
-              type="text"
-              id="pai"
-              name="pai"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="mae">
-              Nome da mãe
-            </label>
-
-            <input
-              type="text"
-              id="mae"
-              name="mae"
-            >
-          </div>
-
-        </div>
-
-      </section>
-
-      <section class="form-section">
-
-        <h2>Contato e endereço</h2>
-
-        <div class="form-grid">
-
-          <div class="form-field">
-            <label for="telefone">Telefone</label>
-
-            <input
-              type="text"
-              id="telefone"
-              name="telefone"
-              inputmode="tel"
-              autocomplete="tel"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="whatsapp">WhatsApp</label>
-
-            <input
-              type="text"
-              id="whatsapp"
-              name="whatsapp"
-              inputmode="tel"
-            >
-          </div>
-
-          <div class="form-field full-width">
-            <label for="email">E-mail</label>
-
-            <input
-              type="email"
-              id="email"
-              name="email"
-              autocomplete="email"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="cep">CEP</label>
-
-            <input
-              type="text"
-              id="cep"
-              name="cep"
-              inputmode="numeric"
-              autocomplete="postal-code"
-              maxlength="9"
-              placeholder="00000-000"
-            >
-          </div>
-
-          <div class="form-field full-width">
-            <label for="endereco">Endereço</label>
-
-            <input
-              type="text"
-              id="endereco"
-              name="endereco"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="numero">Número</label>
-
-            <input
-              type="text"
-              id="numero"
-              name="numero"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="complemento">
-              Complemento
-            </label>
-
-            <input
-              type="text"
-              id="complemento"
-              name="complemento"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="bairro">Bairro</label>
-
-            <input
-              type="text"
-              id="bairro"
-              name="bairro"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="cidade">Cidade</label>
-
-            <input
-              type="text"
-              id="cidade"
-              name="cidade"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="estado">Estado</label>
-
-            <input
-              type="text"
-              id="estado"
-              name="estado"
-            >
-          </div>
-
-        </div>
-
-      </section>
-
-      <section class="form-section">
-
-        <h2>Vida cristã</h2>
-
-        <div class="form-grid">
-
-          <div class="form-field">
-            <label for="dataConversao">
-              Data da conversão
-            </label>
-
-            <input
-              type="date"
-              id="dataConversao"
-              name="dataConversao"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="dataBatismo">
-              Data do batismo
-            </label>
-
-            <input
-              type="date"
-              id="dataBatismo"
-              name="dataBatismo"
-            >
-          </div>
-
-          <div class="form-field">
-            <label for="cargo">Cargo</label>
-
-            <select
-              id="cargo"
-              name="cargo"
-            >
-              <option value="">Selecione</option>
-              <option value="PASTOR">PASTOR</option>
-              <option value="PASTORA">PASTORA</option>
-              <option value="PRESBÍTERO">PRESBÍTERO</option>
-              <option value="EVANGELISTA">EVANGELISTA</option>
-              <option value="DIÁCONO">DIÁCONO</option>
-              <option value="DIACONISA">DIACONISA</option>
-              <option value="MISSIONÁRIO">MISSIONÁRIO</option>
-              <option value="MISSIONÁRIA">MISSIONÁRIA</option>
-              <option value="OBREIRO">OBREIRO</option>
-              <option value="OBREIRA">OBREIRA</option>
-              <option value="AUXILIAR DE TRABALHO">AUXILIAR DE TRABALHO</option>
-              <option value="MEMBRO">MEMBRO</option>
-              <option value="MEMBRA">MEMBRA</option>
-            </select>
-          </div>
-
-          <div class="form-field">
-
-            <label for="congregacao">
-              Congregação
-            </label>
-
-            <select
-              id="congregacao"
-              name="congregacao"
-              required
-            >
-              <option value="">
-                Selecione
-              </option>
-
-              <option value="Independência / Petrópolis">
-                Independência / Petrópolis
-              </option>
-
-              <option value="Km 51 / Xerém">
-                Km 51 / Xerém
-              </option>
-            </select>
-
-          </div>
-
-          <div class="form-field">
-            <label for="situacao">
-              Situação
-            </label>
-
-            <select
-              id="situacao"
-              name="situacao"
-            >
-              <option value="Ativo">Ativo</option>
-              <option value="Congregado">Congregado</option>
-              <option value="Visitante">Visitante</option>
-              <option value="Inativo">Inativo</option>
-              <option value="Transferido">Transferido</option>
-              <option value="Falecido">Falecido</option>
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label for="validadeCarteirinha">
-              Validade da carteirinha
-            </label>
-
-            <input
-              type="date"
-              id="validadeCarteirinha"
-              name="validadeCarteirinha"
-            >
-          </div>
-
-          <div class="form-field full-width">
-            <label for="observacaoCarteirinha">
-              Observação da carteirinha
-            </label>
-
-            <textarea
-              id="observacaoCarteirinha"
-              name="observacaoCarteirinha"
-              rows="4"
-              placeholder="Ex.: Pastor Capelão, Capelania Hospitalar, registro especial..."
-            ></textarea>
-          </div>
-
-        </div>
-
-      </section>
-
-      <div class="form-actions">
-
-        <a
-          href="membros.html"
-          class="secondary-link"
-        >
-          Cancelar
-        </a>
-
-        <button type="submit">
-          Salvar Alterações
-        </button>
-
-      </div>
-
-    </form>
-
-    <footer class="dashboard-footer">
-      Vidas Renovadas Gestão — Projeto Neemias
-    </footer>
-
-  </main>
-
-
-  <script src="js/configuracoes.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/editar-membro.js"></script>
+  </div>
+
+  <script src="js/configuracoes.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
+  <script src="js/auth.js?v=2"></script>
+  <script src="js/editar-membro.js?v=1"></script>
 
 </body>
-
 </html>
