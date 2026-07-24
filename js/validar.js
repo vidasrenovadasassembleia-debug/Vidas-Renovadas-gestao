@@ -1,7 +1,7 @@
 /* ==========================================================================
    VIDAS RENOVADAS GESTÃO 2.0
    Arquivo: js/validar.js
-   Finalidade: validação pública de credencial por token
+   Finalidade: Credencial Digital Oficial por token público
    ========================================================================== */
 
 "use strict";
@@ -29,19 +29,29 @@
     emissao: document.getElementById("emissaoCarteirinha"),
     validade: document.getElementById("validadeCarteirinha"),
 
+    dataNascimento: document.getElementById("dataNascimentoMembro"),
+    estadoCivil: document.getElementById("estadoCivilMembro"),
+
+    blocoFamilia: document.getElementById("blocoFamilia"),
+    rotuloFamilia: document.getElementById("rotuloFamilia"),
+    informacaoFamilia: document.getElementById("informacaoFamilia"),
+
+    blocoContato: document.getElementById("blocoContato"),
+    telefone: document.getElementById("telefoneMembro"),
+
     blocoObservacao: document.getElementById("blocoObservacao"),
     observacao: document.getElementById("observacaoCarteirinha"),
 
     dataConsulta: document.getElementById("dataConsulta")
   };
 
+  function possuiValor(valor) {
+    return Boolean(String(valor ?? "").trim());
+  }
+
   function texto(valor, fallback = "Não informado") {
     const resultado = String(valor ?? "").trim();
     return resultado || fallback;
-  }
-
-  function possuiValor(valor) {
-    return Boolean(String(valor ?? "").trim());
   }
 
   function normalizarTexto(valor) {
@@ -71,16 +81,16 @@
       return "";
     }
 
-    const formatoBrasileiro = data.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    const brasileira = data.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
 
-    if (formatoBrasileiro) {
-      return `${formatoBrasileiro[1]}/${formatoBrasileiro[2]}/${formatoBrasileiro[3]}`;
+    if (brasileira) {
+      return `${brasileira[1]}/${brasileira[2]}/${brasileira[3]}`;
     }
 
-    const formatoIso = data.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    const iso = data.match(/^(\d{4})-(\d{2})-(\d{2})/);
 
-    if (formatoIso) {
-      return `${formatoIso[3]}/${formatoIso[2]}/${formatoIso[1]}`;
+    if (iso) {
+      return `${iso[3]}/${iso[2]}/${iso[1]}`;
     }
 
     const objetoData = new Date(data);
@@ -93,16 +103,39 @@
   }
 
   function converterData(valor) {
-    const dataFormatada = formatarData(valor);
+    const data = formatarData(valor);
 
-    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dataFormatada)) {
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(data)) {
       return null;
     }
 
-    const [dia, mes, ano] = dataFormatada.split("/").map(Number);
-    const data = new Date(ano, mes - 1, dia, 23, 59, 59);
+    const [dia, mes, ano] = data.split("/").map(Number);
+    const resultado = new Date(ano, mes - 1, dia, 23, 59, 59);
 
-    return Number.isNaN(data.getTime()) ? null : data;
+    return Number.isNaN(resultado.getTime())
+      ? null
+      : resultado;
+  }
+
+  function formatarTelefone(valor) {
+    const original = String(valor ?? "").trim();
+    const numeros = original.replace(/\D/g, "");
+
+    if (numeros.length === 11) {
+      return numeros.replace(
+        /^(\d{2})(\d{5})(\d{4})$/,
+        "($1) $2-$3"
+      );
+    }
+
+    if (numeros.length === 10) {
+      return numeros.replace(
+        /^(\d{2})(\d{4})(\d{4})$/,
+        "($1) $2-$3"
+      );
+    }
+
+    return original;
   }
 
   function normalizarMembro(membro) {
@@ -116,7 +149,8 @@
       cargo: primeiroValor(membro, [
         "cargo",
         "funcao",
-        "CARGO"
+        "CARGO",
+        "FUNCAO"
       ]),
 
       congregacao: primeiroValor(membro, [
@@ -127,7 +161,8 @@
       situacao: primeiroValor(membro, [
         "situacao",
         "status",
-        "SITUACAO"
+        "SITUACAO",
+        "STATUS"
       ]),
 
       emissao: primeiroValor(membro, [
@@ -141,6 +176,50 @@
         "validade",
         "validadeCarteirinha",
         "VALIDADE_CARTEIRINHA"
+      ]),
+
+      dataNascimento: primeiroValor(membro, [
+        "dataNascimento",
+        "nascimento",
+        "DATA_NASCIMENTO"
+      ]),
+
+      estadoCivil: primeiroValor(membro, [
+        "estadoCivil",
+        "ESTADO_CIVIL"
+      ]),
+
+      telefone: primeiroValor(membro, [
+        "telefone",
+        "celular",
+        "TELEFONE",
+        "CELULAR"
+      ]),
+
+      conjuge: primeiroValor(membro, [
+        "nomeConjuge",
+        "conjuge",
+        "NOME_CONJUGE",
+        "CONJUGE"
+      ]),
+
+      pai: primeiroValor(membro, [
+        "nomePai",
+        "pai",
+        "NOME_PAI",
+        "PAI"
+      ]),
+
+      mae: primeiroValor(membro, [
+        "nomeMae",
+        "mae",
+        "NOME_MAE",
+        "MAE"
+      ]),
+
+      filiacao: primeiroValor(membro, [
+        "filiacao",
+        "FILIACAO"
       ]),
 
       observacao: primeiroValor(membro, [
@@ -162,7 +241,6 @@
 
   function cadastroEstaAtivo(situacao) {
     const valor = normalizarTexto(situacao);
-
     return valor === "ativo" || valor === "ativa";
   }
 
@@ -213,8 +291,7 @@
       elementos.mensagemErro.textContent = mensagem;
     }
 
-    document.title =
-      titulo + " | Ministério Vidas Renovadas";
+    document.title = titulo + " | Ministério Vidas Renovadas";
   }
 
   function mostrarCredencialInvalida() {
@@ -225,19 +302,60 @@
     );
   }
 
-  function preencherCampoOpcional(bloco, campo, valor) {
+  function preencherBlocoOpcional(bloco, campo, valor) {
     if (!bloco || !campo) {
       return;
     }
 
     const existe = possuiValor(valor);
     bloco.hidden = !existe;
+    campo.textContent = existe ? String(valor).trim() : "—";
+  }
 
-    if (existe) {
-      campo.textContent = String(valor).trim();
-    } else {
-      campo.textContent = "—";
+  function preencherFamilia(membro) {
+    if (
+      !elementos.blocoFamilia ||
+      !elementos.rotuloFamilia ||
+      !elementos.informacaoFamilia
+    ) {
+      return;
     }
+
+    if (possuiValor(membro.conjuge)) {
+      elementos.blocoFamilia.hidden = false;
+      elementos.rotuloFamilia.textContent = "Cônjuge";
+      elementos.informacaoFamilia.textContent =
+        String(membro.conjuge).trim();
+      return;
+    }
+
+    let filiacao = "";
+
+    if (possuiValor(membro.filiacao)) {
+      filiacao = String(membro.filiacao).trim();
+    } else {
+      const nomes = [];
+
+      if (possuiValor(membro.pai)) {
+        nomes.push("Pai: " + String(membro.pai).trim());
+      }
+
+      if (possuiValor(membro.mae)) {
+        nomes.push("Mãe: " + String(membro.mae).trim());
+      }
+
+      filiacao = nomes.join(" | ");
+    }
+
+    if (possuiValor(filiacao)) {
+      elementos.blocoFamilia.hidden = false;
+      elementos.rotuloFamilia.textContent = "Filiação";
+      elementos.informacaoFamilia.textContent = filiacao;
+      return;
+    }
+
+    elementos.blocoFamilia.hidden = true;
+    elementos.informacaoFamilia.textContent = "—";
   }
 
   function preencherFoto(url, nome) {
@@ -282,7 +400,7 @@
       return;
     }
 
-    elementos.selo.textContent = "CREDENCIAL ATIVA";
+    elementos.selo.textContent = "CREDENCIAL OFICIAL VALIDADA";
   }
 
   function exibirFichaPublica(membroRecebido) {
@@ -290,11 +408,8 @@
 
     /*
      * Regra de segurança:
-     * a ficha pública somente é exibida quando a situação cadastral
-     * for exatamente ATIVO ou ATIVA.
-     *
-     * Situação ausente, inativa, excluída, transferida, falecida,
-     * suspensa, bloqueada ou qualquer outra condição não libera dados.
+     * somente ATIVO ou ATIVA libera a Credencial Digital.
+     * Qualquer outra situação oculta todos os dados pessoais.
      */
     if (!cadastroEstaAtivo(membro.situacao)) {
       mostrarCredencialInvalida();
@@ -310,7 +425,8 @@
     }
 
     if (elementos.congregacao) {
-      elementos.congregacao.textContent = texto(membro.congregacao);
+      elementos.congregacao.textContent =
+        texto(membro.congregacao);
     }
 
     if (elementos.situacao) {
@@ -325,6 +441,16 @@
     if (elementos.validade) {
       elementos.validade.textContent =
         texto(formatarData(membro.validade));
+    }
+
+    if (elementos.dataNascimento) {
+      elementos.dataNascimento.textContent =
+        texto(formatarData(membro.dataNascimento));
+    }
+
+    if (elementos.estadoCivil) {
+      elementos.estadoCivil.textContent =
+        texto(membro.estadoCivil);
     }
 
     const resumo = [
@@ -342,7 +468,15 @@
         : "Credencial ministerial";
     }
 
-    preencherCampoOpcional(
+    preencherFamilia(membro);
+
+    preencherBlocoOpcional(
+      elementos.blocoContato,
+      elementos.telefone,
+      formatarTelefone(membro.telefone)
+    );
+
+    preencherBlocoOpcional(
       elementos.blocoObservacao,
       elementos.observacao,
       membro.observacao
@@ -373,7 +507,7 @@
 
     document.title =
       texto(membro.nome, "Credencial") +
-      " | Validação Oficial";
+      " | Credencial Digital Oficial";
   }
 
   async function consultarCredencial() {
@@ -416,7 +550,7 @@
 
       exibirFichaPublica(dados.membro);
     } catch (erro) {
-      console.error("[Validação pública]", erro);
+      console.error("[Credencial Digital]", erro);
 
       mostrarMensagemInstitucional(
         "Consulta temporariamente indisponível",
