@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Validação de Carteirinha | Vidas Renovadas</title>
+  <title>Validação Oficial de Credencial | Vidas Renovadas</title>
 
   <link rel="stylesheet" href="css/estilo.css?v=14">
-  <link rel="stylesheet" href="css/validar.css?v=4">
+  <link rel="stylesheet" href="css/validar.css?v=1">
 </head>
 
 <body class="validation-page">
@@ -15,21 +15,25 @@
   <main class="validation-shell">
 
     <header class="validation-header">
-      <div class="validation-brand">
-        <img
-          src="logo.png"
-          alt="Logo da Assembleia de Deus - Ministério Vidas Renovadas"
-          class="validation-logo"
-        >
+      <img
+        src="logo.png"
+        alt="Logo da Assembleia de Deus Ministério Vidas Renovadas"
+        class="validation-logo"
+      >
 
-        <p class="validation-church-name">
-          ASSEMBLEIA DE DEUS MINISTÉRIO VIDAS RENOVADAS
+      <div>
+        <p class="validation-kicker">
+          Assembleia de Deus
+        </p>
+
+        <h1>
+          Ministério Vidas Renovadas
+        </h1>
+
+        <p class="validation-subtitle">
+          Validação Oficial de Credencial
         </p>
       </div>
-
-      <h1 class="validation-document-title">
-        CREDENCIAL DE MEMBROS
-      </h1>
     </header>
 
     <section
@@ -38,7 +42,13 @@
       aria-live="polite"
     >
       <div class="validation-spinner" aria-hidden="true"></div>
-      <p>Consultando a carteirinha...</p>
+
+      <h2>Consultando a credencial</h2>
+
+      <p>
+        Aguarde enquanto verificamos a autenticidade deste documento
+        no cadastro oficial da igreja.
+      </p>
     </section>
 
     <section
@@ -48,9 +58,19 @@
       aria-live="assertive"
     >
       <div class="validation-icon" aria-hidden="true">!</div>
-      <h2>Carteirinha não validada</h2>
+
+      <h2 id="tituloErro">
+        Credencial não válida
+      </h2>
+
       <p id="mensagemErro">
-        Não foi possível localizar este documento.
+        Esta credencial não está ativa no cadastro oficial da
+        Assembleia de Deus Ministério Vidas Renovadas.
+      </p>
+
+      <p>
+        Para informações adicionais, entre em contato com a
+        Secretaria da Igreja.
       </p>
     </section>
 
@@ -58,13 +78,15 @@
       id="fichaPublica"
       class="public-member-card"
       hidden
+      aria-label="Dados públicos da credencial"
     >
       <div class="public-member-top">
+
         <div class="public-photo-wrap">
           <img
             id="fotoMembro"
             src=""
-            alt="Foto do membro"
+            alt="Foto do titular da credencial"
             class="public-member-photo"
             hidden
           >
@@ -79,25 +101,34 @@
         </div>
 
         <div class="public-member-heading">
+
           <span
             id="seloValidacao"
             class="validation-badge"
           >
-            🟡 CARTEIRINHA VALIDADA
+            CREDENCIAL ATIVA
           </span>
+
+          <p class="validation-kicker">
+            Titular da credencial
+          </p>
 
           <h2 id="nomeMembro">—</h2>
 
-          <p id="resumoMinisterial" class="public-member-summary">
+          <p
+            id="resumoMinisterial"
+            class="public-member-summary"
+          >
             —
           </p>
         </div>
+
       </div>
 
       <div class="public-data-grid">
 
         <article class="public-data-item">
-          <span class="public-data-label">Cargo</span>
+          <span class="public-data-label">Cargo ou função</span>
           <strong id="cargoMembro">—</strong>
         </article>
 
@@ -107,12 +138,12 @@
         </article>
 
         <article class="public-data-item">
-          <span class="public-data-label">Situação</span>
-          <strong id="situacaoMembro">—</strong>
+          <span class="public-data-label">Situação cadastral</span>
+          <strong id="situacaoMembro">ATIVO</strong>
         </article>
 
         <article class="public-data-item">
-          <span class="public-data-label">Emissão</span>
+          <span class="public-data-label">Data de emissão</span>
           <strong id="emissaoCarteirinha">—</strong>
         </article>
 
@@ -122,59 +153,36 @@
         </article>
 
         <article
-          id="blocoConjuge"
-          class="public-data-item"
-          hidden
-        >
-          <span class="public-data-label">Cônjuge</span>
-          <strong id="conjugeMembro">—</strong>
-        </article>
-
-        <article
-          id="blocoPai"
-          class="public-data-item"
-          hidden
-        >
-          <span class="public-data-label">Pai</span>
-          <strong id="paiMembro">—</strong>
-        </article>
-
-        <article
-          id="blocoMae"
-          class="public-data-item"
-          hidden
-        >
-          <span class="public-data-label">Mãe</span>
-          <strong id="maeMembro">—</strong>
-        </article>
-
-        <article
           id="blocoObservacao"
           class="public-data-item public-data-item-full"
           hidden
         >
           <span class="public-data-label">
-            Observação da carteirinha
+            Informações complementares
           </span>
+
           <strong id="observacaoCarteirinha">—</strong>
         </article>
 
       </div>
 
       <footer class="public-card-footer">
+
         <p>
-          Documento consultado em
-          <strong id="dataConsulta">—</strong>
+          Esta consulta confirma a situação da credencial no cadastro
+          oficial da Assembleia de Deus Ministério Vidas Renovadas.
         </p>
 
         <p>
-          Projeto Neemias • Vidas Renovadas Gestão
+          Consulta realizada em
+          <strong id="dataConsulta">—</strong>
         </p>
+
       </footer>
     </section>
 
   </main>
 
-  <script src="js/validar.js?v=2"></script>
+  <script src="js/validar.js?v=3"></script>
 </body>
 </html>
