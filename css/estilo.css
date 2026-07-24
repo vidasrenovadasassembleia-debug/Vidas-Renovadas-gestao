@@ -184,7 +184,7 @@ body.login-page::after {
     height: 100%;
     object-fit: contain;
     object-position: center;
-    transform: scale(1.08);
+    transform: scale(1.18);
 }
 
 /* ==========================================================================
