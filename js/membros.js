@@ -188,7 +188,7 @@
 
     const botaoVisualizar = `
       <a
-        class="btn-acao"
+        class="btn-acao btn-visualizar"
         href="${linkVisualizar}"
         aria-label="Visualizar ficha de ${escaparHtml(membro.nome)}"
         title="Visualizar ficha"
@@ -200,7 +200,7 @@
     const botaoEditar = usuarioPodeEditar()
       ? `
         <a
-          class="btn-acao btn-secundario"
+          class="btn-acao btn-editar"
           href="${linkEditar}"
           aria-label="Editar cadastro de ${escaparHtml(membro.nome)}"
           title="Editar cadastro"
