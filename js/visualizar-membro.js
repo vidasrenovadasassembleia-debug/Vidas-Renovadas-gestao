@@ -138,28 +138,26 @@
   }
 
   async function buscarMembro(id) {
-  if (
-    !window.VRGAuth ||
-    typeof window.VRGAuth.chamarApi !== "function"
-  ) {
-    throw new Error(
-      "O recurso de autenticação não foi carregado corretamente."
-    );
-  }
+    if (
+      !window.VRGAuth ||
+      typeof window.VRGAuth.chamarApi !== "function"
+    ) {
+      throw new Error(
+        "O recurso de autenticação não foi carregado corretamente."
+      );
+    }
 
-  const resposta = await window.VRGAuth.chamarApi({
-    acao: "buscarMembro",
-    id
-  });
+    const resposta = await window.VRGAuth.chamarApi({
+      acao: "buscarMembro",
+      id
+    });
 
-  if (!resposta.membro || typeof resposta.membro !== "object") {
-    throw new Error(
-      "O cadastro do membro não foi retornado pela API."
-    );
-  }
+    if (!resposta.membro || typeof resposta.membro !== "object") {
+      throw new Error(
+        "O cadastro do membro não foi retornado pela API."
+      );
+    }
 
-  return resposta.membro;
-}
     return resposta.membro;
   }
 
@@ -194,7 +192,12 @@
   }
 
   function inicializar() {
-    if (!window.VRG || !window.VR_API) {
+    if (
+      !window.VRG ||
+      !window.VR_API ||
+      !window.VRGAuth ||
+      typeof window.VRGAuth.chamarApi !== "function"
+    ) {
       definirAviso("Os recursos necessários da página não foram carregados.");
       return;
     }
