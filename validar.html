@@ -6,234 +6,810 @@
 
   <title>Credencial Digital Oficial | Ministério Vidas Renovadas</title>
 
-  <link rel="stylesheet" href="css/estilo.css?v=14">
-  <link rel="stylesheet" href="css/validar.css?v=2">
+  <link rel="stylesheet" href="css/estilo.css?v=15">
+
+  <style>
+    :root {
+      --vr-azul-900: #0f2f4d;
+      --vr-azul-800: #143b5e;
+      --vr-azul-700: #1b4c76;
+      --vr-dourado-700: #b87517;
+      --vr-dourado-600: #d28b24;
+      --vr-dourado-500: #e3a13a;
+      --vr-branco: #ffffff;
+      --vr-fundo: #f3f6f9;
+      --vr-fundo-azulado: #eef3f7;
+      --vr-texto: #22313f;
+      --vr-texto-suave: #667684;
+      --vr-borda: #d8e1e8;
+      --vr-verde: #1f7a50;
+      --vr-verde-fundo: #e9f7f0;
+      --vr-amarelo: #8a6300;
+      --vr-amarelo-fundo: #fff4d6;
+      --vr-vermelho: #a1343b;
+      --vr-vermelho-fundo: #fdebed;
+      --vr-sombra: 0 22px 60px rgba(15, 47, 77, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--vr-fundo);
+    }
+
+    body.validation-page {
+      min-height: 100vh;
+      margin: 0;
+      padding: 30px 16px 36px;
+      color: var(--vr-texto);
+      background:
+        radial-gradient(circle at top left, rgba(227, 161, 58, 0.15), transparent 360px),
+        radial-gradient(circle at top right, rgba(20, 59, 94, 0.12), transparent 420px),
+        linear-gradient(180deg, #ffffff 0, var(--vr-fundo-azulado) 460px, var(--vr-fundo) 100%);
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .validation-shell {
+      width: min(100%, 880px);
+      margin: 0 auto;
+    }
+
+    .validation-header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      padding: 28px 34px;
+      background: linear-gradient(135deg, rgba(255,255,255,.98), rgba(247,250,252,.98));
+      border: 1px solid rgba(20, 59, 94, 0.14);
+      border-top: 5px solid var(--vr-dourado-600);
+      border-radius: 20px;
+      box-shadow: var(--vr-sombra);
+    }
+
+    .validation-header::after {
+      position: absolute;
+      right: -55px;
+      bottom: -75px;
+      width: 235px;
+      height: 235px;
+      background: radial-gradient(circle, rgba(227, 161, 58, 0.18), transparent 68%);
+      content: "";
+      pointer-events: none;
+    }
+
+    .validation-logo {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 155px;
+      max-width: 34%;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 7px 12px rgba(15, 47, 77, 0.12));
+    }
+
+    .validation-header-copy {
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+    }
+
+    .validation-kicker {
+      margin: 0 0 6px;
+      color: var(--vr-dourado-700);
+      font-size: .76rem;
+      font-weight: 900;
+      letter-spacing: .18em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    .validation-header h1 {
+      margin: 0;
+      color: var(--vr-azul-900);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.65rem, 4vw, 2.4rem);
+      line-height: 1.08;
+    }
+
+    .validation-subtitle {
+      margin: 8px 0 0;
+      color: var(--vr-azul-700);
+      font-size: .98rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+
+    .validation-state,
+    .public-member-card {
+      overflow: hidden;
+      background: var(--vr-branco);
+      border: 1px solid rgba(20, 59, 94, 0.14);
+      border-radius: 20px;
+      box-shadow: var(--vr-sombra);
+    }
+
+    .validation-state {
+      padding: 54px 32px;
+      text-align: center;
+    }
+
+    .validation-state h2 {
+      margin: 18px 0 8px;
+      color: var(--vr-azul-900);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+    }
+
+    .validation-state p {
+      max-width: 580px;
+      margin: 8px auto 0;
+      color: var(--vr-texto-suave);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .validation-spinner {
+      width: 46px;
+      height: 46px;
+      margin: 0 auto;
+      border: 4px solid #dce6ee;
+      border-top-color: var(--vr-dourado-600);
+      border-radius: 50%;
+      animation: vr-spin .8s linear infinite;
+    }
+
+    @keyframes vr-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .validation-state-error {
+      border-top: 5px solid var(--vr-vermelho);
+    }
+
+    .validation-icon {
+      display: grid;
+      place-items: center;
+      width: 62px;
+      height: 62px;
+      margin: 0 auto;
+      color: var(--vr-vermelho);
+      background: var(--vr-vermelho-fundo);
+      border: 2px solid rgba(161, 52, 59, .25);
+      border-radius: 50%;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.1rem;
+      font-weight: 700;
+    }
+
+    .public-member-card {
+      position: relative;
+      border-top: 5px solid var(--vr-dourado-600);
+    }
+
+    .public-member-card::before {
+      position: absolute;
+      top: 42px;
+      right: -115px;
+      z-index: 0;
+      width: 430px;
+      height: 430px;
+      background: url("logo.png") center / contain no-repeat;
+      opacity: .045;
+      content: "";
+      pointer-events: none;
+    }
+
+    .public-member-top {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 176px minmax(0, 1fr);
+      gap: 30px;
+      align-items: center;
+      padding: 34px;
+      background: linear-gradient(135deg, rgba(15,47,77,.075), rgba(227,161,58,.10));
+      border-bottom: 1px solid var(--vr-borda);
+    }
+
+    .public-photo-wrap {
+      position: relative;
+      width: 176px;
+      height: 222px;
+      overflow: hidden;
+      background: #edf2f6;
+      border: 5px solid var(--vr-branco);
+      border-radius: 16px;
+      box-shadow:
+        0 0 0 2px rgba(227, 161, 58, .75),
+        0 12px 28px rgba(15, 47, 77, .20);
+    }
+
+    .public-member-photo,
+    .public-photo-placeholder {
+      width: 100%;
+      height: 100%;
+    }
+
+    .public-member-photo {
+      display: block;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .public-photo-placeholder {
+      display: grid;
+      place-items: center;
+      color: var(--vr-texto-suave);
+      background: linear-gradient(135deg, #eef3f7, #dde6ed);
+      font-size: .85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .public-member-heading {
+      min-width: 0;
+    }
+
+    .validation-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      margin-bottom: 18px;
+      padding: 7px 15px;
+      color: var(--vr-verde);
+      background: var(--vr-verde-fundo);
+      border: 1px solid rgba(31, 122, 80, .22);
+      border-radius: 999px;
+      box-shadow: 0 5px 12px rgba(31, 122, 80, .08);
+      font-size: .73rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .validation-badge::before {
+      width: 8px;
+      height: 8px;
+      margin-right: 8px;
+      background: currentColor;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(31, 122, 80, .12);
+      content: "";
+    }
+
+    .validation-badge.is-expired {
+      color: var(--vr-amarelo);
+      background: var(--vr-amarelo-fundo);
+      border-color: rgba(138, 99, 0, .22);
+    }
+
+    #nomeMembro {
+      max-width: 100%;
+      margin: 4px 0 10px;
+      overflow: hidden;
+      color: var(--vr-azul-900);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.45rem, 3.7vw, 2.25rem);
+      font-weight: 700;
+      line-height: 1.12;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .public-member-role {
+      margin: 0;
+      color: var(--vr-dourado-700);
+      font-size: clamp(1.25rem, 3.2vw, 1.75rem);
+      font-weight: 900;
+      letter-spacing: .055em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .public-member-caption {
+      margin: 10px 0 0;
+      color: var(--vr-texto-suave);
+      font-size: .9rem;
+      font-weight: 600;
+    }
+
+    .public-card-content {
+      position: relative;
+      z-index: 1;
+      padding: 6px 34px 34px;
+    }
+
+    .credential-section {
+      margin-top: 30px;
+    }
+
+    .credential-section-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 0 0 17px;
+      color: var(--vr-azul-800);
+      font-size: .77rem;
+      font-weight: 900;
+      letter-spacing: .17em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .credential-section-title::before,
+    .credential-section-title::after {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(20,59,94,.30));
+      content: "";
+    }
+
+    .credential-section-title::after {
+      background: linear-gradient(90deg, rgba(20,59,94,.30), transparent);
+    }
+
+    .public-data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .public-data-grid.three-columns {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .public-data-item {
+      min-width: 0;
+      padding: 16px 18px;
+      background: rgba(247, 250, 252, .78);
+      border: 1px solid var(--vr-borda);
+      border-radius: 13px;
+    }
+
+    .public-data-item-full {
+      grid-column: 1 / -1;
+    }
+
+    .public-data-label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--vr-texto-suave);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .public-data-item strong {
+      display: block;
+      overflow-wrap: anywhere;
+      color: var(--vr-azul-900);
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    .status-value {
+      display: inline-flex !important;
+      align-items: center;
+      width: fit-content;
+      padding: 5px 10px;
+      color: var(--vr-verde) !important;
+      background: var(--vr-verde-fundo);
+      border: 1px solid rgba(31, 122, 80, .18);
+      border-radius: 999px;
+      font-size: .83rem !important;
+      letter-spacing: .05em;
+    }
+
+    .validity-value.is-expired {
+      color: var(--vr-amarelo) !important;
+    }
+
+    .contact-note {
+      margin: 12px 2px 0;
+      color: var(--vr-texto-suave);
+      font-size: .86rem;
+      line-height: 1.55;
+    }
+
+    .credential-footer {
+      position: relative;
+      z-index: 1;
+      padding: 25px 34px 28px;
+      color: rgba(255,255,255,.88);
+      background: linear-gradient(135deg, var(--vr-azul-900), var(--vr-azul-700));
+      text-align: center;
+    }
+
+    .credential-footer strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--vr-branco);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.12rem;
+    }
+
+    .credential-footer p {
+      max-width: 620px;
+      margin: 5px auto;
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+
+    .credential-footer .consultation-date {
+      margin-top: 12px;
+      color: #f2c471;
+      font-weight: 800;
+    }
+
+    /* Tablet */
+    @media (max-width: 760px) {
+      body.validation-page {
+        padding: 18px 12px 28px;
+      }
+
+      .validation-header {
+        gap: 18px;
+        padding: 22px;
+      }
+
+      .validation-logo {
+        width: 120px;
+      }
+
+      .public-member-top {
+        grid-template-columns: 145px minmax(0, 1fr);
+        gap: 22px;
+        padding: 26px;
+      }
+
+      .public-photo-wrap {
+        width: 145px;
+        height: 185px;
+      }
+
+      .public-card-content {
+        padding: 4px 24px 28px;
+      }
+
+      .public-data-grid.three-columns {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .credential-footer {
+        padding-inline: 24px;
+      }
+    }
+
+    /* Celular */
+    @media (max-width: 560px) {
+      body.validation-page {
+        padding: 10px 8px 20px;
+      }
+
+      .validation-shell {
+        width: 100%;
+      }
+
+      .validation-header {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 14px;
+        padding: 20px 16px;
+        border-radius: 15px;
+        text-align: center;
+      }
+
+      .validation-logo {
+        width: 118px;
+        max-width: 55%;
+      }
+
+      .validation-kicker {
+        font-size: .65rem;
+        letter-spacing: .13em;
+      }
+
+      .validation-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .validation-subtitle {
+        font-size: .84rem;
+      }
+
+      .validation-state,
+      .public-member-card {
+        border-radius: 15px;
+      }
+
+      .validation-state {
+        padding: 42px 20px;
+      }
+
+      .public-member-card::before {
+        top: 130px;
+        right: -105px;
+        width: 310px;
+        height: 310px;
+      }
+
+      .public-member-top {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 26px 18px;
+        text-align: center;
+      }
+
+      .public-photo-wrap {
+        width: 142px;
+        height: 181px;
+        margin: 0 auto;
+      }
+
+      .public-member-heading {
+        width: 100%;
+      }
+
+      .validation-badge {
+        margin-bottom: 14px;
+        padding-inline: 12px;
+        font-size: .64rem;
+      }
+
+      #nomeMembro {
+        font-size: clamp(1.15rem, 6vw, 1.52rem);
+        text-overflow: clip;
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+
+      .public-member-role {
+        font-size: 1.32rem;
+      }
+
+      .public-card-content {
+        padding: 3px 15px 23px;
+      }
+
+      .credential-section {
+        margin-top: 25px;
+      }
+
+      .credential-section-title {
+        gap: 9px;
+        font-size: .69rem;
+        letter-spacing: .11em;
+      }
+
+      .public-data-grid,
+      .public-data-grid.three-columns {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .public-data-item {
+        padding: 14px 15px;
+      }
+
+      .public-data-item-full {
+        grid-column: auto;
+      }
+
+      .credential-footer {
+        padding: 22px 17px 24px;
+      }
+
+      .credential-footer p {
+        font-size: .78rem;
+      }
+    }
+
+    /* Celulares muito estreitos */
+    @media (max-width: 360px) {
+      .validation-header h1 {
+        font-size: 1.32rem;
+      }
+
+      .validation-badge {
+        max-width: 100%;
+        letter-spacing: .045em;
+      }
+
+      #nomeMembro {
+        font-size: 1.18rem;
+      }
+
+      .public-member-role {
+        font-size: 1.18rem;
+      }
+    }
+
+    @media print {
+      body.validation-page {
+        padding: 0;
+        background: #fff;
+      }
+
+      .validation-shell {
+        width: 100%;
+        max-width: none;
+      }
+
+      .validation-header,
+      .public-member-card,
+      .validation-state {
+        box-shadow: none;
+      }
+    }
+  </style>
 </head>
 
 <body class="validation-page">
-
   <main class="validation-shell">
 
     <header class="validation-header">
       <img
-        src="logo.png"
-        alt="Logo da Assembleia de Deus Ministério Vidas Renovadas"
         class="validation-logo"
+        src="logo.png"
+        alt="Assembleia de Deus Ministério Vidas Renovadas"
       >
 
-      <div>
+      <div class="validation-header-copy">
         <p class="validation-kicker">Assembleia de Deus</p>
-
-        <h1>
-          Assembleia de Deus Ministério Vidas Renovadas
-        </h1>
-
-        <p class="validation-subtitle">
-          Portal Oficial de Credenciais Digitais
-        </p>
+        <h1>Ministério Vidas Renovadas</h1>
+        <p class="validation-subtitle">Portal Oficial de Credenciais Digitais</p>
       </div>
     </header>
 
-    <section
-      id="estadoCarregando"
-      class="validation-state"
-      aria-live="polite"
-    >
+    <section id="estadoCarregando" class="validation-state" aria-live="polite">
       <div class="validation-spinner" aria-hidden="true"></div>
-
-      <h2>Consultando a credencial</h2>
-
-      <p>
-        Aguarde enquanto verificamos a autenticidade deste documento
-        no cadastro oficial da igreja.
-      </p>
+      <h2>Consultando credencial</h2>
+      <p>Aguarde enquanto confirmamos os dados oficiais.</p>
     </section>
 
-    <section
-      id="estadoErro"
-      class="validation-state validation-state-error"
-      hidden
-      aria-live="assertive"
-    >
+    <section id="estadoErro" class="validation-state validation-state-error" hidden aria-live="assertive">
       <div class="validation-icon" aria-hidden="true">!</div>
-
-      <h2 id="tituloErro">Credencial não válida</h2>
-
+      <h2 id="tituloErro">Credencial não localizada</h2>
       <p id="mensagemErro">
-        Esta credencial não está ativa no cadastro oficial da
-        Assembleia de Deus Ministério Vidas Renovadas.
-      </p>
-
-      <p>
-        Para informações adicionais, entre em contato com a
-        Secretaria da Igreja.
+        Não foi possível confirmar esta credencial.
       </p>
     </section>
 
-    <section
-      id="fichaPublica"
-      class="public-member-card"
-      hidden
-      aria-label="Credencial Digital Oficial"
-    >
+    <article id="credencialDigital" class="public-member-card" hidden>
       <div class="public-member-top">
-
         <div class="public-photo-wrap">
           <img
             id="fotoMembro"
-            src=""
-            alt="Foto do titular da credencial"
             class="public-member-photo"
+            alt="Foto do titular da credencial"
             hidden
           >
-
-          <div
-            id="fotoPlaceholder"
-            class="public-photo-placeholder"
-            aria-hidden="true"
-          >
-            <span>Sem foto</span>
+          <div id="fotoPlaceholder" class="public-photo-placeholder">
+            Sem foto
           </div>
         </div>
 
         <div class="public-member-heading">
-
-          <span
-            id="seloValidacao"
-            class="validation-badge"
-          >
-            CREDENCIAL OFICIAL VALIDADA
+          <span id="seloCredencial" class="validation-badge">
+            Credencial Digital Oficial
           </span>
 
-          <p class="validation-kicker">
-            Titular da credencial
-          </p>
-
-          <h2 id="nomeMembro">—</h2>
-
-          <p
-            id="resumoMinisterial"
-            class="public-member-summary"
-          >
-            —
+          <h2 id="nomeMembro">Nome do membro</h2>
+          <p id="cargoMembro" class="public-member-role">Cargo ministerial</p>
+          <p class="public-member-caption">
+            Titular identificado eletronicamente pelo Ministério Vidas Renovadas
           </p>
         </div>
-
       </div>
 
-      <div class="public-data-grid">
+      <div class="public-card-content">
 
-        <article class="public-data-item public-data-item-full">
-          <span class="public-data-label">Dados ministeriais</span>
-          <strong>Informações oficiais da credencial</strong>
-        </article>
+        <section class="credential-section">
+          <h3 class="credential-section-title">Dados Ministeriais</h3>
 
-        <article class="public-data-item">
-          <span class="public-data-label">Função ministerial</span>
-          <strong id="cargoMembro">—</strong>
-        </article>
+          <div class="public-data-grid three-columns">
+            <div class="public-data-item public-data-item-full">
+              <span class="public-data-label">Congregação</span>
+              <strong id="congregacaoMembro">—</strong>
+            </div>
 
-        <article class="public-data-item">
-          <span class="public-data-label">Congregação</span>
-          <strong id="congregacaoMembro">—</strong>
-        </article>
+            <div class="public-data-item">
+              <span class="public-data-label">Situação</span>
+              <strong id="situacaoMembro" class="status-value">Ativo</strong>
+            </div>
 
-        <article class="public-data-item">
-          <span class="public-data-label">Situação cadastral</span>
-          <strong id="situacaoMembro">ATIVO</strong>
-        </article>
+            <div class="public-data-item">
+              <span class="public-data-label">Emissão</span>
+              <strong id="dataEmissao">—</strong>
+            </div>
 
-        <article class="public-data-item">
-          <span class="public-data-label">Data de emissão</span>
-          <strong id="emissaoCarteirinha">—</strong>
-        </article>
+            <div class="public-data-item">
+              <span class="public-data-label">Validade</span>
+              <strong id="dataValidade" class="validity-value">—</strong>
+            </div>
+          </div>
+        </section>
 
-        <article class="public-data-item">
-          <span class="public-data-label">Validade</span>
-          <strong id="validadeCarteirinha">—</strong>
-        </article>
+        <section class="credential-section">
+          <h3 class="credential-section-title">Identificação</h3>
 
-        <article class="public-data-item public-data-item-full">
-          <span class="public-data-label">Identificação</span>
-          <strong>Dados pessoais complementares</strong>
-        </article>
+          <div class="public-data-grid">
+            <div class="public-data-item">
+              <span class="public-data-label">Data de nascimento</span>
+              <strong id="dataNascimento">—</strong>
+            </div>
 
-        <article class="public-data-item">
-          <span class="public-data-label">Data de nascimento</span>
-          <strong id="dataNascimentoMembro">—</strong>
-        </article>
+            <div class="public-data-item">
+              <span class="public-data-label">Estado civil</span>
+              <strong id="estadoCivil">—</strong>
+            </div>
 
-        <article class="public-data-item">
-          <span class="public-data-label">Estado civil</span>
-          <strong id="estadoCivilMembro">—</strong>
-        </article>
+            <div id="campoConjuge" class="public-data-item public-data-item-full" hidden>
+              <span class="public-data-label">Cônjuge</span>
+              <strong id="nomeConjuge">—</strong>
+            </div>
+          </div>
+        </section>
 
-        <article
-          id="blocoFamilia"
-          class="public-data-item public-data-item-full"
-          hidden
-        >
-          <span
-            id="rotuloFamilia"
-            class="public-data-label"
-          >
-            Informações familiares
-          </span>
+        <section id="secaoContato" class="credential-section" hidden>
+          <h3 class="credential-section-title">Contato</h3>
 
-          <strong id="informacaoFamilia">—</strong>
-        </article>
+          <div class="public-data-grid">
+            <div class="public-data-item public-data-item-full">
+              <span class="public-data-label">Telefone</span>
+              <strong id="telefoneMembro">—</strong>
+            </div>
+          </div>
 
-        <article
-          id="blocoContato"
-          class="public-data-item public-data-item-full"
-          hidden
-        >
-          <span class="public-data-label">Contato</span>
-
-          <strong id="telefoneMembro">—</strong>
-
-          <p>
-            Caso esta credencial seja encontrada, entre em contato
-            com o titular utilizando o telefone informado acima.
+          <p class="contact-note">
+            Caso esta credencial seja encontrada, entre em contato com o titular
+            utilizando o telefone informado acima.
           </p>
-        </article>
+        </section>
 
-        <article
-          id="blocoObservacao"
-          class="public-data-item public-data-item-full"
-          hidden
-        >
-          <span class="public-data-label">
-            Informações complementares
-          </span>
+        <section id="secaoObservacoes" class="credential-section" hidden>
+          <h3 class="credential-section-title">Observações</h3>
 
-          <strong id="observacaoCarteirinha">—</strong>
-        </article>
-
+          <div class="public-data-grid">
+            <div class="public-data-item public-data-item-full">
+              <strong id="observacoesMembro">—</strong>
+            </div>
+          </div>
+        </section>
       </div>
 
-      <footer class="public-card-footer">
+      <footer class="credential-footer">
+        <strong>Documento Oficial</strong>
 
         <p>
-          Esta consulta confirma a situação da credencial no cadastro
-          oficial da Assembleia de Deus Ministério Vidas Renovadas.
+          Esta credencial digital foi emitida pelo Sistema Vidas Renovadas Gestão.
         </p>
 
-        <p class="public-system-signature">
-          Documento validado eletronicamente pelo
-          <strong>Sistema Vidas Renovadas Gestão</strong>.
-        </p>
+        <p>Autenticidade confirmada eletronicamente.</p>
 
-        <p>
-          Consulta realizada em
-          <strong id="dataConsulta">—</strong>
+        <p id="dataConsulta" class="consultation-date">
+          Consulta realizada em —
         </p>
-
       </footer>
-    </section>
+    </article>
 
   </main>
 
-  <script src="js/validar.js?v=4"></script>
+  <script src="js/api.js?v=15"></script>
+  <script src="js/validar.js?v=15"></script>
 </body>
 </html>
