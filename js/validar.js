@@ -1,124 +1,432 @@
-/* ==========================================================================
-   VIDAS RENOVADAS GESTÃO 2.0
-   Arquivo: js/validar.js
-   Finalidade: Credencial Digital Oficial por token público
-   ========================================================================== */
+(() => {
+  "use strict";
 
-"use strict";
+  const elementos = {};
 
-(function (window, document) {
-  const API_URL = "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec";
+  document.addEventListener("DOMContentLoaded", iniciar);
 
-  const elementos = {
-    carregando: document.getElementById("estadoCarregando"),
-    erro: document.getElementById("estadoErro"),
-    tituloErro: document.getElementById("tituloErro"),
-    mensagemErro: document.getElementById("mensagemErro"),
-    ficha: document.getElementById("fichaPublica"),
+  async function iniciar() {
+    mapearElementos();
 
-    foto: document.getElementById("fotoMembro"),
-    fotoPlaceholder: document.getElementById("fotoPlaceholder"),
+    const token = obterToken();
 
-    selo: document.getElementById("seloValidacao"),
-    nome: document.getElementById("nomeMembro"),
-    resumo: document.getElementById("resumoMinisterial"),
+    if (!token) {
+      exibirErro(
+        "Credencial não localizada",
+        "O endereço acessado não possui um código de credencial válido."
+      );
+      return;
+    }
 
-    cargo: document.getElementById("cargoMembro"),
-    congregacao: document.getElementById("congregacaoMembro"),
-    situacao: document.getElementById("situacaoMembro"),
-    emissao: document.getElementById("emissaoCarteirinha"),
-    validade: document.getElementById("validadeCarteirinha"),
+    try {
+      const resposta = await consultarCredencial(token);
+      const dados = normalizarResposta(resposta);
 
-    dataNascimento: document.getElementById("dataNascimentoMembro"),
-    estadoCivil: document.getElementById("estadoCivilMembro"),
-
-    blocoFamilia: document.getElementById("blocoFamilia"),
-    rotuloFamilia: document.getElementById("rotuloFamilia"),
-    informacaoFamilia: document.getElementById("informacaoFamilia"),
-
-    blocoContato: document.getElementById("blocoContato"),
-    telefone: document.getElementById("telefoneMembro"),
-
-    blocoObservacao: document.getElementById("blocoObservacao"),
-    observacao: document.getElementById("observacaoCarteirinha"),
-
-    dataConsulta: document.getElementById("dataConsulta")
-  };
-
-  function possuiValor(valor) {
-    return Boolean(String(valor ?? "").trim());
-  }
-
-  function texto(valor, fallback = "Não informado") {
-    const resultado = String(valor ?? "").trim();
-    return resultado || fallback;
-  }
-
-  function normalizarTexto(valor) {
-    return String(valor ?? "")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .trim()
-      .toLowerCase();
-  }
-
-  function primeiroValor(objeto, nomes) {
-    for (const nome of nomes) {
-      const valor = objeto?.[nome];
-
-      if (possuiValor(valor)) {
-        return valor;
+      if (!dados) {
+        throw new Error("Os dados da credencial não foram retornados.");
       }
-    }
 
-    return "";
+      const situacao = normalizarTexto(
+        primeiroValor(dados.situacao, dados.status, dados.situacaoMembro)
+      );
+
+      if (situacao !== "ativo") {
+        exibirErro(
+          "Credencial indisponível",
+          "Esta credencial não está disponível para consulta pública. Procure a secretaria do Ministério Vidas Renovadas para mais informações."
+        );
+        return;
+      }
+
+      preencherCredencial(dados);
+      exibirCredencial();
+    } catch (erro) {
+      console.error("Erro ao validar credencial:", erro);
+
+      exibirErro(
+        "Não foi possível consultar a credencial",
+        obterMensagemErro(erro)
+      );
+    }
   }
 
-  function formatarData(valor) {
-    const data = String(valor ?? "").trim();
+  function mapearElementos() {
+    const ids = [
+      "estadoCarregando",
+      "estadoErro",
+      "tituloErro",
+      "mensagemErro",
+      "credencialDigital",
+      "fotoMembro",
+      "fotoPlaceholder",
+      "seloCredencial",
+      "nomeMembro",
+      "cargoMembro",
+      "congregacaoMembro",
+      "situacaoMembro",
+      "dataEmissao",
+      "dataValidade",
+      "dataNascimento",
+      "estadoCivil",
+      "campoConjuge",
+      "nomeConjuge",
+      "secaoContato",
+      "telefoneMembro",
+      "secaoObservacoes",
+      "observacoesMembro",
+      "dataConsulta"
+    ];
 
-    if (!data) {
-      return "";
-    }
-
-    const brasileira = data.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
-
-    if (brasileira) {
-      return `${brasileira[1]}/${brasileira[2]}/${brasileira[3]}`;
-    }
-
-    const iso = data.match(/^(\d{4})-(\d{2})-(\d{2})/);
-
-    if (iso) {
-      return `${iso[3]}/${iso[2]}/${iso[1]}`;
-    }
-
-    const objetoData = new Date(data);
-
-    if (!Number.isNaN(objetoData.getTime())) {
-      return new Intl.DateTimeFormat("pt-BR").format(objetoData);
-    }
-
-    return data;
+    ids.forEach((id) => {
+      elementos[id] = document.getElementById(id);
+    });
   }
 
-  function converterData(valor) {
-    const data = formatarData(valor);
+  function obterToken() {
+    const parametros = new URLSearchParams(window.location.search);
 
-    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(data)) {
+    return limparValor(
+      parametros.get("token") ||
+      parametros.get("id") ||
+      parametros.get("codigo")
+    );
+  }
+
+  async function consultarCredencial(token) {
+    if (!window.VR_API || typeof window.VR_API.enviar !== "function") {
+      throw new Error(
+        "O serviço de consulta não está disponível. Verifique o carregamento do arquivo js/api.js."
+      );
+    }
+
+    return window.VR_API.enviar("validarCarteirinha", { token });
+  }
+
+  function normalizarResposta(resposta) {
+    if (!resposta) {
       return null;
     }
 
-    const [dia, mes, ano] = data.split("/").map(Number);
-    const resultado = new Date(ano, mes - 1, dia, 23, 59, 59);
+    if (resposta.sucesso === false) {
+      throw new Error(
+        resposta.mensagem ||
+        resposta.erro ||
+        "A credencial não pôde ser validada."
+      );
+    }
 
-    return Number.isNaN(resultado.getTime())
-      ? null
-      : resultado;
+    return (
+      resposta.dados ||
+      resposta.credencial ||
+      resposta.carteirinha ||
+      resposta.membro ||
+      resposta.data ||
+      resposta
+    );
+  }
+
+  function preencherCredencial(dados) {
+    const membro = dados.membro || dados.titular || {};
+    const credencial = dados.credencial || dados.carteirinha || dados;
+
+    const nome = primeiroValor(
+      membro.nome,
+      membro.nomeCompleto,
+      dados.nome,
+      dados.nomeCompleto,
+      credencial.nome,
+      "Nome não informado"
+    );
+
+    const cargo = primeiroValor(
+      membro.cargo,
+      membro.funcaoMinisterial,
+      membro.funcao,
+      dados.cargo,
+      dados.funcaoMinisterial,
+      dados.funcao,
+      credencial.cargo,
+      credencial.funcaoMinisterial,
+      "Membro"
+    );
+
+    const congregacao = primeiroValor(
+      membro.congregacao,
+      dados.congregacao,
+      credencial.congregacao,
+      "Não informada"
+    );
+
+    const situacao = primeiroValor(
+      membro.situacao,
+      dados.situacao,
+      dados.status,
+      credencial.situacao,
+      "Ativo"
+    );
+
+    const emissao = primeiroValor(
+      credencial.dataEmissao,
+      credencial.emissao,
+      dados.dataEmissao,
+      dados.emissao
+    );
+
+    const validade = primeiroValor(
+      credencial.dataValidade,
+      credencial.validade,
+      dados.dataValidade,
+      dados.validade
+    );
+
+    const nascimento = primeiroValor(
+      membro.dataNascimento,
+      membro.nascimento,
+      dados.dataNascimento,
+      dados.nascimento
+    );
+
+    const estadoCivil = primeiroValor(
+      membro.estadoCivil,
+      dados.estadoCivil
+    );
+
+    const conjuge = primeiroValor(
+      membro.nomeConjuge,
+      membro.conjuge,
+      dados.nomeConjuge,
+      dados.conjuge
+    );
+
+    const telefone = primeiroValor(
+      membro.telefone,
+      membro.celular,
+      membro.whatsapp,
+      dados.telefone,
+      dados.celular,
+      dados.whatsapp
+    );
+
+    const observacoes = primeiroValor(
+      credencial.observacoes,
+      membro.observacoes,
+      dados.observacoes
+    );
+
+    const foto = primeiroValor(
+      membro.fotoUrl,
+      membro.foto,
+      membro.urlFoto,
+      dados.fotoUrl,
+      dados.foto,
+      dados.urlFoto,
+      credencial.fotoUrl,
+      credencial.foto
+    );
+
+    definirTexto(elementos.nomeMembro, nome);
+    definirTexto(elementos.cargoMembro, cargo);
+    definirTexto(elementos.congregacaoMembro, congregacao);
+    definirTexto(elementos.situacaoMembro, formatarSituacao(situacao));
+    definirTexto(elementos.dataEmissao, formatarData(emissao));
+    definirTexto(elementos.dataValidade, formatarData(validade));
+    definirTexto(elementos.dataNascimento, formatarData(nascimento));
+    definirTexto(elementos.estadoCivil, estadoCivil || "Não informado");
+
+    configurarFoto(foto, nome);
+    configurarConjuge(estadoCivil, conjuge);
+    configurarContato(telefone);
+    configurarObservacoes(observacoes);
+    configurarValidade(validade);
+
+    definirTexto(
+      elementos.dataConsulta,
+      `Consulta realizada em ${formatarDataHora(new Date())}`
+    );
+  }
+
+  function configurarFoto(url, nome) {
+    const foto = limparValor(url);
+
+    if (!foto) {
+      elementos.fotoMembro.hidden = true;
+      elementos.fotoPlaceholder.hidden = false;
+      return;
+    }
+
+    elementos.fotoMembro.alt = `Foto de ${nome}`;
+    elementos.fotoMembro.onload = () => {
+      elementos.fotoPlaceholder.hidden = true;
+      elementos.fotoMembro.hidden = false;
+    };
+
+    elementos.fotoMembro.onerror = () => {
+      elementos.fotoMembro.hidden = true;
+      elementos.fotoPlaceholder.hidden = false;
+    };
+
+    elementos.fotoMembro.src = foto;
+  }
+
+  function configurarConjuge(estadoCivil, conjuge) {
+    const estado = normalizarTexto(estadoCivil);
+    const nome = limparValor(conjuge);
+
+    const casado =
+      estado.includes("casad") ||
+      estado.includes("uniao estavel") ||
+      estado.includes("união estável");
+
+    if (casado && nome) {
+      definirTexto(elementos.nomeConjuge, nome);
+      elementos.campoConjuge.hidden = false;
+      return;
+    }
+
+    elementos.campoConjuge.hidden = true;
+  }
+
+  function configurarContato(telefone) {
+    const valor = limparValor(telefone);
+
+    if (!valor) {
+      elementos.secaoContato.hidden = true;
+      return;
+    }
+
+    definirTexto(elementos.telefoneMembro, formatarTelefone(valor));
+    elementos.secaoContato.hidden = false;
+  }
+
+  function configurarObservacoes(observacoes) {
+    const valor = limparValor(observacoes);
+
+    if (!valor) {
+      elementos.secaoObservacoes.hidden = true;
+      return;
+    }
+
+    definirTexto(elementos.observacoesMembro, valor);
+    elementos.secaoObservacoes.hidden = false;
+  }
+
+  function configurarValidade(validade) {
+    const data = converterParaData(validade);
+    const expirada = data && fimDoDia(data) < fimDoDia(new Date());
+
+    elementos.dataValidade.classList.toggle("is-expired", Boolean(expirada));
+    elementos.seloCredencial.classList.toggle("is-expired", Boolean(expirada));
+
+    elementos.seloCredencial.textContent = expirada
+      ? "Credencial Digital Expirada"
+      : "Credencial Digital Oficial";
+  }
+
+  function exibirCredencial() {
+    elementos.estadoCarregando.hidden = true;
+    elementos.estadoErro.hidden = true;
+    elementos.credencialDigital.hidden = false;
+  }
+
+  function exibirErro(titulo, mensagem) {
+    elementos.estadoCarregando.hidden = true;
+    elementos.credencialDigital.hidden = true;
+
+    definirTexto(elementos.tituloErro, titulo);
+    definirTexto(elementos.mensagemErro, mensagem);
+
+    elementos.estadoErro.hidden = false;
+  }
+
+  function definirTexto(elemento, valor) {
+    if (elemento) {
+      elemento.textContent = limparValor(valor) || "—";
+    }
+  }
+
+  function primeiroValor(...valores) {
+    return valores.find((valor) => limparValor(valor)) || "";
+  }
+
+  function limparValor(valor) {
+    if (valor === null || valor === undefined) {
+      return "";
+    }
+
+    return String(valor).trim();
+  }
+
+  function normalizarTexto(valor) {
+    return limparValor(valor)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  }
+
+  function formatarSituacao(valor) {
+    const texto = limparValor(valor);
+
+    if (!texto) {
+      return "Ativo";
+    }
+
+    return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
+  }
+
+  function converterParaData(valor) {
+    const texto = limparValor(valor);
+
+    if (!texto) {
+      return null;
+    }
+
+    if (/^\d{4}-\d{2}-\d{2}/.test(texto)) {
+      const [ano, mes, dia] = texto.slice(0, 10).split("-").map(Number);
+      return new Date(ano, mes - 1, dia);
+    }
+
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) {
+      const [dia, mes, ano] = texto.split("/").map(Number);
+      return new Date(ano, mes - 1, dia);
+    }
+
+    const data = new Date(texto);
+
+    return Number.isNaN(data.getTime()) ? null : data;
+  }
+
+  function formatarData(valor) {
+    const data = converterParaData(valor);
+
+    if (!data) {
+      return limparValor(valor) || "—";
+    }
+
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }).format(data);
+  }
+
+  function formatarDataHora(data) {
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(data);
+  }
+
+  function fimDoDia(data) {
+    const copia = new Date(data);
+    copia.setHours(23, 59, 59, 999);
+    return copia;
   }
 
   function formatarTelefone(valor) {
-    const original = String(valor ?? "").trim();
+    const original = limparValor(valor);
     const numeros = original.replace(/\D/g, "");
 
     if (numeros.length === 11) {
@@ -138,439 +446,17 @@
     return original;
   }
 
-  function normalizarMembro(membro) {
-    return {
-      nome: primeiroValor(membro, [
-        "nome",
-        "nomeCompleto",
-        "NOME_COMPLETO"
-      ]),
+  function obterMensagemErro(erro) {
+    const mensagem = limparValor(erro && erro.message);
 
-      cargo: primeiroValor(membro, [
-        "cargo",
-        "funcao",
-        "CARGO",
-        "FUNCAO"
-      ]),
-
-      congregacao: primeiroValor(membro, [
-        "congregacao",
-        "CONGREGACAO"
-      ]),
-
-      situacao: primeiroValor(membro, [
-        "situacao",
-        "status",
-        "SITUACAO",
-        "STATUS"
-      ]),
-
-      emissao: primeiroValor(membro, [
-        "emissao",
-        "dataEmissao",
-        "dataEmissaoCarteirinha",
-        "DATA_EMISSAO_CARTEIRINHA"
-      ]),
-
-      validade: primeiroValor(membro, [
-        "validade",
-        "validadeCarteirinha",
-        "VALIDADE_CARTEIRINHA"
-      ]),
-
-      dataNascimento: primeiroValor(membro, [
-        "dataNascimento",
-        "nascimento",
-        "DATA_NASCIMENTO"
-      ]),
-
-      estadoCivil: primeiroValor(membro, [
-        "estadoCivil",
-        "ESTADO_CIVIL"
-      ]),
-
-      telefone: primeiroValor(membro, [
-        "telefone",
-        "celular",
-        "TELEFONE",
-        "CELULAR"
-      ]),
-
-      conjuge: primeiroValor(membro, [
-        "nomeConjuge",
-        "conjuge",
-        "NOME_CONJUGE",
-        "CONJUGE"
-      ]),
-
-      pai: primeiroValor(membro, [
-        "nomePai",
-        "pai",
-        "NOME_PAI",
-        "PAI"
-      ]),
-
-      mae: primeiroValor(membro, [
-        "nomeMae",
-        "mae",
-        "NOME_MAE",
-        "MAE"
-      ]),
-
-      filiacao: primeiroValor(membro, [
-        "filiacao",
-        "FILIACAO"
-      ]),
-
-      observacao: primeiroValor(membro, [
-        "observacaoCarteirinha",
-        "observacao",
-        "observacoes",
-        "OBSERVACAO_CARTEIRINHA",
-        "OBSERVACOES"
-      ]),
-
-      foto: primeiroValor(membro, [
-        "foto",
-        "fotoUrl",
-        "FOTO_URL",
-        "FOTO"
-      ])
-    };
-  }
-
-  function cadastroEstaAtivo(situacao) {
-    const valor = normalizarTexto(situacao);
-    return valor === "ativo" || valor === "ativa";
-  }
-
-  function credencialEstaVencida(validade) {
-    const dataValidade = converterData(validade);
-
-    if (!dataValidade) {
-      return false;
-    }
-
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-
-    return dataValidade < hoje;
-  }
-
-  function ocultarFicha() {
-    if (elementos.ficha) {
-      elementos.ficha.hidden = true;
-    }
-
-    if (elementos.foto) {
-      elementos.foto.hidden = true;
-      elementos.foto.removeAttribute("src");
-    }
-
-    if (elementos.fotoPlaceholder) {
-      elementos.fotoPlaceholder.hidden = false;
-    }
-  }
-
-  function mostrarMensagemInstitucional(titulo, mensagem) {
-    if (elementos.carregando) {
-      elementos.carregando.hidden = true;
-    }
-
-    ocultarFicha();
-
-    if (elementos.erro) {
-      elementos.erro.hidden = false;
-    }
-
-    if (elementos.tituloErro) {
-      elementos.tituloErro.textContent = titulo;
-    }
-
-    if (elementos.mensagemErro) {
-      elementos.mensagemErro.textContent = mensagem;
-    }
-
-    document.title = titulo + " | Ministério Vidas Renovadas";
-  }
-
-  function mostrarCredencialInvalida() {
-    mostrarMensagemInstitucional(
-      "Credencial não válida",
-      "Esta credencial não está ativa no cadastro oficial da " +
-      "Assembleia de Deus Ministério Vidas Renovadas."
-    );
-  }
-
-  function preencherBlocoOpcional(bloco, campo, valor) {
-    if (!bloco || !campo) {
-      return;
-    }
-
-    const existe = possuiValor(valor);
-    bloco.hidden = !existe;
-    campo.textContent = existe ? String(valor).trim() : "—";
-  }
-
-  function preencherFamilia(membro) {
     if (
-      !elementos.blocoFamilia ||
-      !elementos.rotuloFamilia ||
-      !elementos.informacaoFamilia
+      mensagem &&
+      !mensagem.toLowerCase().includes("failed to fetch") &&
+      !mensagem.toLowerCase().includes("networkerror")
     ) {
-      return;
+      return mensagem;
     }
 
-    if (possuiValor(membro.conjuge)) {
-      elementos.blocoFamilia.hidden = false;
-      elementos.rotuloFamilia.textContent = "Cônjuge";
-      elementos.informacaoFamilia.textContent =
-        String(membro.conjuge).trim();
-      return;
-    }
-
-    let filiacao = "";
-
-    if (possuiValor(membro.filiacao)) {
-      filiacao = String(membro.filiacao).trim();
-    } else {
-      const nomes = [];
-
-      if (possuiValor(membro.pai)) {
-        nomes.push("Pai: " + String(membro.pai).trim());
-      }
-
-      if (possuiValor(membro.mae)) {
-        nomes.push("Mãe: " + String(membro.mae).trim());
-      }
-
-      filiacao = nomes.join(" | ");
-    }
-
-    if (possuiValor(filiacao)) {
-      elementos.blocoFamilia.hidden = false;
-      elementos.rotuloFamilia.textContent = "Filiação";
-      elementos.informacaoFamilia.textContent = filiacao;
-      return;
-    }
-
-    elementos.blocoFamilia.hidden = true;
-    elementos.informacaoFamilia.textContent = "—";
+    return "Não foi possível confirmar esta credencial no momento. Verifique sua conexão e tente novamente.";
   }
-
-  function preencherFoto(url, nome) {
-    if (!elementos.foto || !elementos.fotoPlaceholder) {
-      return;
-    }
-
-    if (!possuiValor(url)) {
-      elementos.foto.hidden = true;
-      elementos.foto.removeAttribute("src");
-      elementos.fotoPlaceholder.hidden = false;
-      return;
-    }
-
-    elementos.foto.alt =
-      "Foto de " + texto(nome, "titular da credencial");
-
-    elementos.foto.onload = function () {
-      elementos.fotoPlaceholder.hidden = true;
-      elementos.foto.hidden = false;
-    };
-
-    elementos.foto.onerror = function () {
-      elementos.foto.hidden = true;
-      elementos.foto.removeAttribute("src");
-      elementos.fotoPlaceholder.hidden = false;
-    };
-
-    elementos.foto.src = String(url).trim();
-  }
-
-  function definirSelo(validade) {
-    if (!elementos.selo) {
-      return;
-    }
-
-    elementos.selo.className = "validation-badge";
-
-    if (credencialEstaVencida(validade)) {
-      elementos.selo.textContent = "CREDENCIAL VENCIDA";
-      elementos.selo.classList.add("is-expired");
-      return;
-    }
-
-    elementos.selo.textContent = "CREDENCIAL OFICIAL VALIDADA";
-  }
-
-  function exibirFichaPublica(membroRecebido) {
-    const membro = normalizarMembro(membroRecebido);
-
-    /*
-     * Regra de segurança:
-     * somente ATIVO ou ATIVA libera a Credencial Digital.
-     * Qualquer outra situação oculta todos os dados pessoais.
-     */
-    if (!cadastroEstaAtivo(membro.situacao)) {
-      mostrarCredencialInvalida();
-      return;
-    }
-
-    if (elementos.nome) {
-      elementos.nome.textContent = texto(membro.nome);
-    }
-
-    if (elementos.cargo) {
-      elementos.cargo.textContent = texto(membro.cargo);
-    }
-
-    if (elementos.congregacao) {
-      elementos.congregacao.textContent =
-        texto(membro.congregacao);
-    }
-
-    if (elementos.situacao) {
-      elementos.situacao.textContent = "ATIVO";
-    }
-
-    if (elementos.emissao) {
-      elementos.emissao.textContent =
-        texto(formatarData(membro.emissao));
-    }
-
-    if (elementos.validade) {
-      elementos.validade.textContent =
-        texto(formatarData(membro.validade));
-    }
-
-    if (elementos.dataNascimento) {
-      elementos.dataNascimento.textContent =
-        texto(formatarData(membro.dataNascimento));
-    }
-
-    if (elementos.estadoCivil) {
-      elementos.estadoCivil.textContent =
-        texto(membro.estadoCivil);
-    }
-
-    const resumo = [
-      possuiValor(membro.cargo)
-        ? String(membro.cargo).trim()
-        : "",
-      possuiValor(membro.congregacao)
-        ? String(membro.congregacao).trim()
-        : ""
-    ].filter(Boolean);
-
-    if (elementos.resumo) {
-      elementos.resumo.textContent = resumo.length
-        ? resumo.join(" • ")
-        : "Credencial ministerial";
-    }
-
-    preencherFamilia(membro);
-
-    preencherBlocoOpcional(
-      elementos.blocoContato,
-      elementos.telefone,
-      formatarTelefone(membro.telefone)
-    );
-
-    preencherBlocoOpcional(
-      elementos.blocoObservacao,
-      elementos.observacao,
-      membro.observacao
-    );
-
-    preencherFoto(membro.foto, membro.nome);
-    definirSelo(membro.validade);
-
-    if (elementos.dataConsulta) {
-      elementos.dataConsulta.textContent =
-        new Intl.DateTimeFormat("pt-BR", {
-          dateStyle: "short",
-          timeStyle: "short"
-        }).format(new Date());
-    }
-
-    if (elementos.carregando) {
-      elementos.carregando.hidden = true;
-    }
-
-    if (elementos.erro) {
-      elementos.erro.hidden = true;
-    }
-
-    if (elementos.ficha) {
-      elementos.ficha.hidden = false;
-    }
-
-    document.title =
-      texto(membro.nome, "Credencial") +
-      " | Credencial Digital Oficial";
-  }
-
-  async function consultarCredencial() {
-    const token =
-      new URLSearchParams(window.location.search).get("token");
-
-    if (!possuiValor(token)) {
-      mostrarMensagemInstitucional(
-        "Credencial não localizada",
-        "O endereço acessado não contém um token de validação válido."
-      );
-      return;
-    }
-
-    try {
-      const resposta = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
-        },
-        body: JSON.stringify({
-          acao: "validarCarteirinha",
-          token: token.trim()
-        }),
-        cache: "no-store"
-      });
-
-      if (!resposta.ok) {
-        throw new Error(
-          "A API respondeu com o código " + resposta.status + "."
-        );
-      }
-
-      const dados = await resposta.json();
-
-      if (!dados.sucesso || !dados.membro) {
-        mostrarCredencialInvalida();
-        return;
-      }
-
-      exibirFichaPublica(dados.membro);
-    } catch (erro) {
-      console.error("[Credencial Digital]", erro);
-
-      mostrarMensagemInstitucional(
-        "Consulta temporariamente indisponível",
-        "Não foi possível consultar esta credencial agora. " +
-        "Tente novamente em alguns instantes."
-      );
-    }
-  }
-
-  function inicializar() {
-    consultarCredencial();
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener(
-      "DOMContentLoaded",
-      inicializar,
-      { once: true }
-    );
-  } else {
-    inicializar();
-  }
-})(window, document);
+})();
