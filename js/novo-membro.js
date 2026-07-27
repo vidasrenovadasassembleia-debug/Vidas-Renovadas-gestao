@@ -59,9 +59,14 @@
 
     const fotoUrl = await modulo.enviarFoto(arquivo);
 
+    const campoFoto = document.getElementById("FOTO_URL");
+    if (campoFoto) {
+      campoFoto.value = fotoUrl;
+    }
+
     return {
       ...dados,
-      FOTO_URL: fotoUrl
+      foto: fotoUrl
     };
   }
 
@@ -88,13 +93,12 @@
       let dados = modulo.obterDados(formulario);
 
       dados = modulo.prepararDadosApi(dados);
-
       dados = await prepararFoto(dados);
 
       const resultado = tratarRespostaCadastro(
         await modulo.obterAuth().chamarApi({
           acao: "cadastrarMembro",
-          dados: dados
+          dados
         })
       );
 
@@ -105,16 +109,15 @@
         "sucesso"
       );
 
-      if (idCriado) {
-        window.setTimeout(function () {
+      window.setTimeout(function () {
+        if (idCriado) {
           window.location.href =
             "visualizar-membro.html?id=" + encodeURIComponent(idCriado);
-        }, 900);
-      } else {
-        window.setTimeout(function () {
-          window.location.href = "membros.html";
-        }, 900);
-      }
+          return;
+        }
+
+        window.location.href = "membros.html";
+      }, 900);
     } catch (erro) {
       console.error("[NOVO MEMBRO] Erro ao cadastrar:", erro);
 
@@ -128,20 +131,28 @@
     }
   }
 
+  function formularioPossuiDados() {
+    return Array.from(
+      formulario.querySelectorAll(
+        "input[name]:not([type='hidden']):not([type='file']), " +
+          "select[name], textarea[name]"
+      )
+    ).some((campo) => {
+      if (campo.type === "checkbox" || campo.type === "radio") {
+        return campo.checked;
+      }
+
+      return String(campo.value || "").trim();
+    });
+  }
+
   function configurarCancelamento() {
     document
       .querySelectorAll("#botaoCancelarTopo, #botaoCancelarRodape")
       .forEach((botao) => {
         botao.addEventListener("click", function (evento) {
-          const possuiDados = Array.from(
-            formulario.querySelectorAll(
-              "input[name]:not([type='hidden']):not([type='file']), " +
-              "select[name], textarea[name]"
-            )
-          ).some((campo) => String(campo.value || "").trim());
-
           if (
-            possuiDados &&
+            formularioPossuiDados() &&
             !window.confirm(
               "Os dados preenchidos ainda não foram salvos. Deseja sair?"
             )
