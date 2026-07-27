@@ -419,7 +419,6 @@
       let dados = prepararDadosCompletos(dadosFormulario);
       dados = await prepararFoto(dados);
 
-      const resultado = validarResposta(
         const resultado = validarResposta(
   await modulo.obterAuth().chamarApi({
     acao: "atualizar",
