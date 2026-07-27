@@ -420,12 +420,13 @@
       dados = await prepararFoto(dados);
 
       const resultado = validarResposta(
-        await modulo.obterAuth().chamarApi({
-          acao: "atualizarMembro",
-          id: idMembro,
-          dados
-        })
-      );
+        const resultado = validarResposta(
+  await modulo.obterAuth().chamarApi({
+    acao: "atualizar",
+    id: idMembro,
+    dados
+  })
+);
 
       alteracoesSalvas = true;
       modulo.mostrarAviso(
