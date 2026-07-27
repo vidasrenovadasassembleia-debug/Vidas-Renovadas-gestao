@@ -128,7 +128,21 @@
 
     return dados;
   }
+function prepararDadosApi(dadosOriginais) {
+  const dados = { ...dadosOriginais };
 
+  Object.entries(dadosOriginais || {}).forEach(([chave, valor]) => {
+    const chaveCamelCase = chave
+      .toLowerCase()
+      .replace(/_([a-z])/g, function (_, letra) {
+        return letra.toUpperCase();
+      });
+
+    dados[chaveCamelCase] = valor;
+  });
+
+  return dados;
+}
   function validarCPFBasico(cpf) {
     const numeros = somenteNumeros(cpf);
 
