@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Novo membro | Vidas Renovadas Gestão</title>
+<title>Editar membro | Vidas Renovadas Gestão</title>
 <meta content="Cadastro completo da ficha digital de um novo membro da Igreja Vidas Renovadas." name="description"/>
 <meta content="#071f3b" name="theme-color"/>
 <link href="logo.png" rel="icon" type="image/png"/>
@@ -762,8 +762,8 @@
             ☰
           </button>
 <div>
-<h1 class="topbar-titulo">Novo membro</h1>
-<p class="topbar-subtitulo">Cadastro completo da ficha ministerial</p>
+<h1 class="topbar-titulo">Editar membro</h1>
+<p class="topbar-subtitulo">Atualização completa da ficha ministerial</p>
 </div>
 </div>
 <div class="topbar-direita">
@@ -775,27 +775,28 @@
 </div>
 </header>
 <div class="sistema-conteudo">
-<form class="edicao-formulario" id="formNovoMembro" novalidate="">
+<form class="edicao-formulario" id="formEditarMembro" novalidate="">
+<input id="id" name="id" type="hidden"/>
 <input id="FOTO_URL" name="FOTO_URL" type="hidden"/>
 <section class="visualizar-apresentacao">
 <div>
 <p class="visualizar-etiqueta">Secretaria</p>
-<h2 class="visualizar-titulo">Cadastrar nova ficha digital</h2>
-<p class="visualizar-descricao">Preencha os dados pessoais, de contato, endereço, filiação, casamento e vida cristã do novo membro.</p>
+<h2 class="visualizar-titulo">Editar ficha digital</h2>
+<p class="visualizar-descricao">Atualize os dados pessoais, de contato, endereço, filiação, casamento e vida cristã do membro.</p>
 </div>
 <div class="visualizar-acoes">
 <a class="ficha-botao" href="membros.html" id="botaoCancelarTopo">
                 ← Cancelar
               </a>
-<button class="ficha-botao ficha-botao-primario" data-permissao="membros-criar" id="botaoCadastrarTopo" type="submit">
-                ✓ Cadastrar membro
+<button class="ficha-botao ficha-botao-primario" data-permissao="membros-editar" id="botaoSalvarTopo" type="submit">
+                ✓ Salvar alterações
               </button>
 </div>
 </section>
 <div aria-live="polite" class="ficha-aviso ativo" id="avisoFicha" role="status">
-            Preencha os dados do novo membro para realizar o cadastro.
+            Carregando os dados do membro para edição...
           </div>
-<section aria-label="Resumo do novo membro" class="membro-resumo">
+<section aria-label="Resumo do membro em edição" class="membro-resumo">
 <div>
 <div class="membro-foto-box">
 <div class="membro-foto-placeholder" id="fotoMembroPlaceholder">
@@ -804,17 +805,21 @@
 <img alt="Foto do membro" class="membro-foto" hidden="" id="fotoMembro"/>
 <div class="edicao-foto-acoes">
 <label class="edicao-foto-botao" for="arquivoFotoMembro">
-                    Selecionar foto
+                    Alterar foto
                   </label>
 <input accept="image/jpeg,image/png,image/webp" data-campo-foto="true" hidden="" id="arquivoFotoMembro" name="arquivoFotoMembro" type="file"/>
 </div>
 </div>
 <p aria-live="polite" class="edicao-foto-status" id="statusFoto">
-                Selecione uma foto JPG, PNG ou WebP para o novo cadastro.
+                A foto atual será mantida até que uma nova seja selecionada.
               </p>
 </div>
 <div class="membro-resumo-conteudo edicao-resumo">
-<p class="membro-resumo-etiqueta">Novo cadastro ministerial</p>
+<p class="membro-resumo-etiqueta">Identificação ministerial</p>
+<div>
+<label class="dado-label" for="NOME_COMPLETO">Nome completo</label>
+<input class="edicao-campo" id="NOME_COMPLETO" name="NOME_COMPLETO" placeholder="Nome completo do membro" required="" type="text"/>
+</div>
 <div class="edicao-resumo-linha">
 <div>
 <label class="dado-label" for="resumoCongregacao">Congregação</label>
@@ -827,7 +832,7 @@
 </div>
 <div class="membro-identificadores">
 <span class="ficha-badge ficha-badge-codigo">
-                  ID: <strong id="resumoCodigo">Será gerado</strong>
+                  ID: <strong id="resumoCodigo">—</strong>
 </span>
 <span class="ficha-badge ficha-badge-situacao">
 <span aria-hidden="true" class="ficha-badge-ponto"></span>
@@ -838,7 +843,7 @@
 <div class="membro-resumo-lateral">
 <div class="resumo-dado">
 <span class="resumo-dado-label">Data de cadastro</span>
-<span class="resumo-dado-valor" id="resumoDataCadastro">Será registrada</span>
+<span class="resumo-dado-valor" id="resumoDataCadastro">—</span>
 </div>
 
 </div>
@@ -856,10 +861,6 @@
 </header>
 <div class="ficha-card-corpo">
 <div class="dados-grid dados-grid-3">
-<div class="dado-item dado-item-largo">
-<label class="dado-label" for="NOME_COMPLETO">Nome completo</label>
-<input class="edicao-campo" id="NOME_COMPLETO" name="NOME_COMPLETO" required="" type="text"/>
-</div>
 <div class="dado-item">
 <label class="dado-label" for="DATA_NASCIMENTO">Data de nascimento</label>
 <input class="edicao-campo" id="DATA_NASCIMENTO" name="DATA_NASCIMENTO" type="date"/>
@@ -947,7 +948,7 @@
 </div>
 </div>
 </section>
-<section class="ficha-card">
+<section class="ficha-card ficha-card-largo">
 <header class="ficha-card-cabecalho">
 <div class="ficha-card-titulo-area">
 <span aria-hidden="true" class="ficha-card-icone">⌂</span>
@@ -1099,8 +1100,8 @@
 <a class="ficha-botao" href="membros.html" id="botaoCancelarRodape">
               ← Cancelar
             </a>
-<button class="ficha-botao ficha-botao-primario" data-permissao="membros-criar" id="botaoCadastrarRodape" type="submit">
-              ✓ Cadastrar membro
+<button class="ficha-botao ficha-botao-primario" data-permissao="membros-editar" id="botaoSalvarRodape" type="submit">
+              ✓ Salvar alterações
             </button>
 </div>
 </form>
@@ -1116,11 +1117,162 @@
 <span>Carregando...</span>
 </div>
 </div>
+
+<script>
+(function () {
+  "use strict";
+
+  function somenteNumeros(valor) {
+    return String(valor || "").replace(/\D/g, "");
+  }
+
+  function formatarCPF(valor) {
+    const numeros = somenteNumeros(valor).slice(0, 11);
+    return numeros
+      .replace(/^(\d{3})(\d)/, "$1.$2")
+      .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+      .replace(/\.(\d{3})(\d)/, ".$1-$2");
+  }
+
+  function formatarTelefone(valor) {
+    const numeros = somenteNumeros(valor).slice(0, 11);
+    if (numeros.length <= 10) {
+      return numeros
+        .replace(/^(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{4})(\d)/, "$1-$2");
+    }
+    return numeros
+      .replace(/^(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{5})(\d)/, "$1-$2");
+  }
+
+  function formatarCEP(valor) {
+    return somenteNumeros(valor).slice(0, 8).replace(/^(\d{5})(\d)/, "$1-$2");
+  }
+
+  function aplicarMascara(id, formatador) {
+    const campo = document.getElementById(id);
+    if (!campo) return;
+    const atualizar = function () {
+      const inicio = campo.selectionStart;
+      const tamanhoAnterior = campo.value.length;
+      campo.value = formatador(campo.value);
+      if (inicio !== null) {
+        const diferenca = campo.value.length - tamanhoAnterior;
+        const novaPosicao = Math.max(0, inicio + diferenca);
+        campo.setSelectionRange(novaPosicao, novaPosicao);
+      }
+    };
+    campo.addEventListener("input", atualizar);
+    campo.addEventListener("blur", atualizar);
+  }
+
+  function iniciarFoto() {
+    const arquivo = document.getElementById("arquivoFotoMembro");
+    const foto = document.getElementById("fotoMembro");
+    const placeholder = document.getElementById("fotoMembroPlaceholder");
+    const status = document.getElementById("statusFoto");
+    if (!arquivo || !foto || !placeholder) return;
+
+    let urlAtual = "";
+    arquivo.addEventListener("change", function () {
+      const selecionado = arquivo.files && arquivo.files[0];
+      if (!selecionado) return;
+
+      const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
+      if (!tiposPermitidos.includes(selecionado.type)) {
+        arquivo.value = "";
+        if (status) status.textContent = "Selecione uma foto JPG, PNG ou WebP.";
+        return;
+      }
+
+      if (selecionado.size > 5 * 1024 * 1024) {
+        arquivo.value = "";
+        if (status) status.textContent = "A foto deve ter no máximo 5 MB.";
+        return;
+      }
+
+      if (urlAtual) URL.revokeObjectURL(urlAtual);
+      urlAtual = URL.createObjectURL(selecionado);
+      foto.onload = function () {
+        foto.hidden = false;
+        placeholder.hidden = true;
+        if (status) status.textContent = selecionado.name;
+      };
+      foto.onerror = function () {
+        foto.hidden = true;
+        placeholder.hidden = false;
+        if (status) status.textContent = "Não foi possível carregar a foto selecionada.";
+      };
+      foto.src = urlAtual;
+      foto.alt = "Pré-visualização da foto do membro";
+    });
+  }
+
+  function iniciarEspelhos() {
+    document.querySelectorAll("[data-espelho-campo]").forEach(function (espelho) {
+      const campo = document.getElementById(espelho.dataset.espelhoCampo);
+      if (!campo) return;
+      const copiarParaCampo = function () { campo.value = espelho.value; campo.dispatchEvent(new Event("input", { bubbles: true })); };
+      const copiarParaEspelho = function () { espelho.value = campo.value; };
+      espelho.addEventListener("input", copiarParaCampo);
+      espelho.addEventListener("change", copiarParaCampo);
+      campo.addEventListener("input", copiarParaEspelho);
+      campo.addEventListener("change", copiarParaEspelho);
+    });
+  }
+
+  function iniciarCEP() {
+    const cep = document.getElementById("CEP");
+    const status = document.getElementById("statusCep");
+    if (!cep) return;
+
+    async function consultar() {
+      const numeros = somenteNumeros(cep.value);
+      if (numeros.length !== 8) return;
+      if (status) status.textContent = "Buscando endereço...";
+      try {
+        const resposta = await fetch("https://viacep.com.br/ws/" + numeros + "/json/");
+        if (!resposta.ok) throw new Error("Falha na consulta");
+        const dados = await resposta.json();
+        if (dados.erro) throw new Error("CEP não encontrado");
+        const mapa = { ENDERECO: dados.logradouro, BAIRRO: dados.bairro, CIDADE: dados.localidade, ESTADO: dados.uf };
+        Object.entries(mapa).forEach(function ([id, valor]) {
+          const campo = document.getElementById(id);
+          if (campo && valor) campo.value = valor;
+        });
+        if (status) status.textContent = "Endereço preenchido automaticamente.";
+        const numero = document.getElementById("NUMERO");
+        if (numero) numero.focus();
+      } catch (erro) {
+        if (status) status.textContent = "CEP não encontrado. Preencha o endereço manualmente.";
+      }
+    }
+
+    cep.addEventListener("input", function () {
+      cep.value = formatarCEP(cep.value);
+      if (somenteNumeros(cep.value).length === 8) consultar();
+      else if (status) status.textContent = "Digite o CEP para preencher o endereço automaticamente.";
+    });
+    cep.addEventListener("blur", consultar);
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    aplicarMascara("CPF", formatarCPF);
+    aplicarMascara("TELEFONE", formatarTelefone);
+    aplicarMascara("WHATSAPP", formatarTelefone);
+    iniciarFoto();
+    iniciarEspelhos();
+    iniciarCEP();
+  });
+})();
+</script>
+
 <script src="js/configuracoes.js?v=2"></script>
 <script src="js/api.js?v=2"></script>
 <script src="js/app.js?v=2"></script>
 <script src="js/auth.js?v=2"></script>
 <script src="js/membro-formulario.js?v=2"></script>
-<script src="js/novo-membro.js?v=2"></script>
+<script src="js/editar-membro.js?v=2"></script>
 </body>
 </html>
