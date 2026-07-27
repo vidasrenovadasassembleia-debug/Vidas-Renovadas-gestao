@@ -384,6 +384,12 @@
       configurarResumo();
       configurarCancelamento();
       modulo.definirSomenteLeitura(formulario, false);
+
+      const botaoSalvar = document.getElementById("botaoSalvarEdicao");
+      if (botaoSalvar) {
+        botaoSalvar.disabled = false;
+      }
+
       modulo.mostrarAviso("Cadastro carregado. Faça as alterações necessárias.", "informacao");
     } catch (erro) {
       console.error("[EDITAR MEMBRO] Erro ao carregar:", erro);
@@ -419,13 +425,13 @@
       let dados = prepararDadosCompletos(dadosFormulario);
       dados = await prepararFoto(dados);
 
-        const resultado = validarResposta(
-  await modulo.obterAuth().chamarApi({
-    acao: "atualizar",
-    id: idMembro,
-    dados
-  })
-);
+      const resultado = validarResposta(
+        await modulo.obterAuth().chamarApi({
+          acao: "atualizar",
+          id: idMembro,
+          dados
+        })
+      );
 
       alteracoesSalvas = true;
       modulo.mostrarAviso(
@@ -508,6 +514,12 @@
 
       modulo.definirSomenteLeitura(formulario, true);
       formulario.addEventListener("submit", salvarAlteracoes);
+
+      const botaoSalvar = document.getElementById("botaoSalvarEdicao");
+      if (botaoSalvar) {
+        botaoSalvar.addEventListener("click", salvarAlteracoes);
+      }
+
       configurarPreviewFoto();
       carregarMembro();
     } catch (erro) {
