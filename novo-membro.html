@@ -421,42 +421,6 @@
       white-space: pre-wrap;
     }
 
-    /* Carteirinha */
-
-    .carteirinha-area {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 130px;
-      align-items: center;
-      gap: 22px;
-    }
-
-    .carteirinha-dados {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .qr-box {
-      display: flex;
-      width: 120px;
-      height: 120px;
-      align-items: center;
-      justify-content: center;
-      justify-self: end;
-      border: 1px dashed #aebbc5;
-      border-radius: 14px;
-      background:
-        linear-gradient(45deg, #e6ebef 25%, transparent 25%) 0 0 / 14px 14px,
-        linear-gradient(-45deg, #e6ebef 25%, transparent 25%) 0 7px / 14px 14px,
-        linear-gradient(45deg, transparent 75%, #e6ebef 75%) 7px -7px / 14px 14px,
-        linear-gradient(-45deg, transparent 75%, #e6ebef 75%) -7px 0 / 14px 14px,
-        #ffffff;
-      color: var(--ficha-azul);
-      font-size: 0.64rem;
-      font-weight: 900;
-      text-align: center;
-    }
-
     /* Estado de carregamento/erro */
 
     .ficha-aviso {
@@ -544,8 +508,7 @@
         grid-column: 1 / -1;
       }
 
-      .dados-grid-3,
-      .carteirinha-dados {
+      .dados-grid-3 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
@@ -573,15 +536,10 @@
       }
 
       .dados-grid,
-      .dados-grid-3,
-      .carteirinha-dados,
-      .carteirinha-area {
+      .dados-grid-3 {
         grid-template-columns: 1fr;
       }
 
-      .qr-box {
-        justify-self: start;
-      }
 
       .visualizar-acoes {
         display: grid;
@@ -999,10 +957,6 @@
 
             <div class="membro-resumo-lateral">
               <div class="resumo-dado">
-                <span class="resumo-dado-label">Carteirinha</span>
-                <span class="resumo-dado-valor" id="resumoCarteirinha">Após o cadastro</span>
-              </div>
-              <div class="resumo-dado">
                 <span class="resumo-dado-label">Data de cadastro</span>
                 <span class="resumo-dado-valor" id="resumoDataCadastro">Será registrada</span>
               </div>
@@ -1279,7 +1233,6 @@
               </div>
             </div>
           </section>
-                    <!-- Carteirinha gerenciada após o cadastro. -->
           <section class="ficha-card ficha-card-largo">
             <header class="ficha-card-cabecalho">
               <div class="ficha-card-titulo-area">
@@ -1346,6 +1299,7 @@
   <script src="js/api.js?v=2"></script>
   <script src="js/app.js?v=2"></script>
   <script src="js/auth.js?v=2"></script>
+  <script src="js/membro-formulario.js?v=1"></script>
   <script src="js/novo-membro.js?v=1"></script>
 
 </body>
