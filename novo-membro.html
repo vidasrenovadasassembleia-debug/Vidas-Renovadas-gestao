@@ -815,11 +815,6 @@
 </div>
 <div class="membro-resumo-conteudo edicao-resumo">
 <p class="membro-resumo-etiqueta">Novo cadastro ministerial</p>
-<div>
-    <h2 class="membro-nome" id="resumoNomeCompleto">
-        Nome completo do membro
-    </h2>
-</div>
 <div class="edicao-resumo-linha">
 <div>
 <label class="dado-label" for="resumoCongregacao">Congregação</label>
@@ -952,7 +947,7 @@
 </div>
 </div>
 </section>
-<section class="ficha-card ficha-card-largo">
+<section class="ficha-card">
 <header class="ficha-card-cabecalho">
 <div class="ficha-card-titulo-area">
 <span aria-hidden="true" class="ficha-card-icone">⌂</span>
@@ -1121,157 +1116,6 @@
 <span>Carregando...</span>
 </div>
 </div>
-
-<script>
-(function () {
-  "use strict";
-
-  function somenteNumeros(valor) {
-    return String(valor || "").replace(/\D/g, "");
-  }
-
-  function formatarCPF(valor) {
-    const numeros = somenteNumeros(valor).slice(0, 11);
-    return numeros
-      .replace(/^(\d{3})(\d)/, "$1.$2")
-      .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
-      .replace(/\.(\d{3})(\d)/, ".$1-$2");
-  }
-
-  function formatarTelefone(valor) {
-    const numeros = somenteNumeros(valor).slice(0, 11);
-    if (numeros.length <= 10) {
-      return numeros
-        .replace(/^(\d{2})(\d)/, "($1) $2")
-        .replace(/(\d{4})(\d)/, "$1-$2");
-    }
-    return numeros
-      .replace(/^(\d{2})(\d)/, "($1) $2")
-      .replace(/(\d{5})(\d)/, "$1-$2");
-  }
-
-  function formatarCEP(valor) {
-    return somenteNumeros(valor).slice(0, 8).replace(/^(\d{5})(\d)/, "$1-$2");
-  }
-
-  function aplicarMascara(id, formatador) {
-    const campo = document.getElementById(id);
-    if (!campo) return;
-    const atualizar = function () {
-      const inicio = campo.selectionStart;
-      const tamanhoAnterior = campo.value.length;
-      campo.value = formatador(campo.value);
-      if (inicio !== null) {
-        const diferenca = campo.value.length - tamanhoAnterior;
-        const novaPosicao = Math.max(0, inicio + diferenca);
-        campo.setSelectionRange(novaPosicao, novaPosicao);
-      }
-    };
-    campo.addEventListener("input", atualizar);
-    campo.addEventListener("blur", atualizar);
-  }
-
-  function iniciarFoto() {
-    const arquivo = document.getElementById("arquivoFotoMembro");
-    const foto = document.getElementById("fotoMembro");
-    const placeholder = document.getElementById("fotoMembroPlaceholder");
-    const status = document.getElementById("statusFoto");
-    if (!arquivo || !foto || !placeholder) return;
-
-    let urlAtual = "";
-    arquivo.addEventListener("change", function () {
-      const selecionado = arquivo.files && arquivo.files[0];
-      if (!selecionado) return;
-
-      const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
-      if (!tiposPermitidos.includes(selecionado.type)) {
-        arquivo.value = "";
-        if (status) status.textContent = "Selecione uma foto JPG, PNG ou WebP.";
-        return;
-      }
-
-      if (selecionado.size > 5 * 1024 * 1024) {
-        arquivo.value = "";
-        if (status) status.textContent = "A foto deve ter no máximo 5 MB.";
-        return;
-      }
-
-      if (urlAtual) URL.revokeObjectURL(urlAtual);
-      urlAtual = URL.createObjectURL(selecionado);
-      foto.onload = function () {
-        foto.hidden = false;
-        placeholder.hidden = true;
-        if (status) status.textContent = selecionado.name;
-      };
-      foto.onerror = function () {
-        foto.hidden = true;
-        placeholder.hidden = false;
-        if (status) status.textContent = "Não foi possível carregar a foto selecionada.";
-      };
-      foto.src = urlAtual;
-      foto.alt = "Pré-visualização da foto do membro";
-    });
-  }
-
-  function iniciarEspelhos() {
-    document.querySelectorAll("[data-espelho-campo]").forEach(function (espelho) {
-      const campo = document.getElementById(espelho.dataset.espelhoCampo);
-      if (!campo) return;
-      const copiarParaCampo = function () { campo.value = espelho.value; campo.dispatchEvent(new Event("input", { bubbles: true })); };
-      const copiarParaEspelho = function () { espelho.value = campo.value; };
-      espelho.addEventListener("input", copiarParaCampo);
-      espelho.addEventListener("change", copiarParaCampo);
-      campo.addEventListener("input", copiarParaEspelho);
-      campo.addEventListener("change", copiarParaEspelho);
-    });
-  }
-
-  function iniciarCEP() {
-    const cep = document.getElementById("CEP");
-    const status = document.getElementById("statusCep");
-    if (!cep) return;
-
-    async function consultar() {
-      const numeros = somenteNumeros(cep.value);
-      if (numeros.length !== 8) return;
-      if (status) status.textContent = "Buscando endereço...";
-      try {
-        const resposta = await fetch("https://viacep.com.br/ws/" + numeros + "/json/");
-        if (!resposta.ok) throw new Error("Falha na consulta");
-        const dados = await resposta.json();
-        if (dados.erro) throw new Error("CEP não encontrado");
-        const mapa = { ENDERECO: dados.logradouro, BAIRRO: dados.bairro, CIDADE: dados.localidade, ESTADO: dados.uf };
-        Object.entries(mapa).forEach(function ([id, valor]) {
-          const campo = document.getElementById(id);
-          if (campo && valor) campo.value = valor;
-        });
-        if (status) status.textContent = "Endereço preenchido automaticamente.";
-        const numero = document.getElementById("NUMERO");
-        if (numero) numero.focus();
-      } catch (erro) {
-        if (status) status.textContent = "CEP não encontrado. Preencha o endereço manualmente.";
-      }
-    }
-
-    cep.addEventListener("input", function () {
-      cep.value = formatarCEP(cep.value);
-      if (somenteNumeros(cep.value).length === 8) consultar();
-      else if (status) status.textContent = "Digite o CEP para preencher o endereço automaticamente.";
-    });
-    cep.addEventListener("blur", consultar);
-  }
-
-  document.addEventListener("DOMContentLoaded", function () {
-    aplicarMascara("CPF", formatarCPF);
-    aplicarMascara("TELEFONE", formatarTelefone);
-    aplicarMascara("WHATSAPP", formatarTelefone);
-    iniciarFoto();
-    iniciarEspelhos();
-    iniciarCEP();
-  });
-})();
-</script>
-
 <script src="js/configuracoes.js?v=2"></script>
 <script src="js/api.js?v=2"></script>
 <script src="js/app.js?v=2"></script>
