@@ -1,391 +1,210 @@
 /* ==========================================================================
    VIDAS RENOVADAS GESTÃO 2.0
-   Arquivo: js/visualizar-membro.js
-   Descrição: Carregamento e exibição da ficha digital do membro
+   Arquivo: js/editar-membro.js
+   Descrição: Ficha de visualização em modo editável
    ========================================================================== */
-
 "use strict";
-
 (function (window, document) {
-  const CAMPOS_DATA = new Set([
-    "DATA_CADASTRO",
-    "DATA_NASCIMENTO",
-    "DATA_EMISSAO_RG",
-    "DATA_CONVERSAO",
-    "DATA_BATISMO_AGUAS",
-    "DATA_BATISMO_ESPIRITO",
-    "DATA_ADMISSAO",
-    "DATA_CONSAGRACAO",
-    "DATA_CASAMENTO",
-    "DATA_EMISSAO_CARTEIRINHA",
-    "VALIDADE_CARTEIRINHA",
-    "ATUALIZADO_EM"
-  ]);
+  const CAMPOS_DATA = new Set(["DATA_CADASTRO","DATA_NASCIMENTO","DATA_EMISSAO_RG","DATA_CONVERSAO","DATA_BATISMO_AGUAS","DATA_ADMISSAO","DATA_CONSAGRACAO","DATA_CASAMENTO"]);
+  let formulario = null;
+  let idMembro = "";
+  let arquivoFotoSelecionado = null;
+  let urlPreviewFoto = "";
 
-  const CAMPOS_FORMATADOS = {
-    CPF: (valor) => window.VRG.formatarCPF(valor),
-    TELEFONE: (valor) => window.VRG.formatarTelefone(valor),
-    WHATSAPP: (valor) => window.VRG.formatarTelefone(valor),
-    CEP: (valor) => window.VRG.formatarCEP(valor)
-  };
+  function primeiroValor(objeto, chaves) {
+    for (const chave of chaves) {
+      const valor = objeto?.[chave];
+      if (valor !== undefined && valor !== null && String(valor).trim() !== "") return valor;
+    }
+    return "";
+  }
 
-  function obterElementos() {
+  function normalizarMembro(m) {
     return {
-      aviso: document.getElementById("avisoFicha"),
-      foto: document.getElementById("fotoMembro"),
-      fotoPlaceholder: document.getElementById("fotoMembroPlaceholder"),
-      botaoEditar: document.getElementById("botaoEditarMembro"),
-      botaoCarteirinha: document.getElementById("botaoAbrirCarteirinha"),
-      qrCode: document.getElementById("qrCodeMembro")
+      ID: primeiroValor(m, ["ID","id"]),
+      CODIGO: primeiroValor(m, ["CODIGO","codigo"]),
+      NUMERO_CARTEIRINHA: primeiroValor(m, ["NUMERO_CARTEIRINHA","numeroCarteirinha"]),
+      FOTO_URL: primeiroValor(m, ["FOTO_URL","fotoUrl","foto"]),
+      NOME_COMPLETO: primeiroValor(m, ["NOME_COMPLETO","nomeCompleto","nome"]),
+      DATA_NASCIMENTO: primeiroValor(m, ["DATA_NASCIMENTO","dataNascimento"]),
+      SEXO: primeiroValor(m, ["SEXO","sexo"]),
+      ESTADO_CIVIL: primeiroValor(m, ["ESTADO_CIVIL","estadoCivil"]),
+      PROFISSAO: primeiroValor(m, ["PROFISSAO","profissao"]),
+      NATURALIDADE: primeiroValor(m, ["NATURALIDADE","naturalidade"]),
+      NACIONALIDADE: primeiroValor(m, ["NACIONALIDADE","nacionalidade"]),
+      TELEFONE: primeiroValor(m, ["TELEFONE","telefone"]),
+      WHATSAPP: primeiroValor(m, ["WHATSAPP","whatsapp"]),
+      EMAIL: primeiroValor(m, ["EMAIL","email"]),
+      CPF: primeiroValor(m, ["CPF","cpf"]),
+      RG: primeiroValor(m, ["RG","rg"]),
+      ORGAO_EMISSOR: primeiroValor(m, ["ORGAO_EMISSOR","orgaoEmissor"]),
+      DATA_EMISSAO_RG: primeiroValor(m, ["DATA_EMISSAO_RG","dataEmissaoRg"]),
+      CEP: primeiroValor(m, ["CEP","cep"]),
+      ENDERECO: primeiroValor(m, ["ENDERECO","endereco"]),
+      NUMERO: primeiroValor(m, ["NUMERO","numero"]),
+      COMPLEMENTO: primeiroValor(m, ["COMPLEMENTO","complemento"]),
+      BAIRRO: primeiroValor(m, ["BAIRRO","bairro"]),
+      CIDADE: primeiroValor(m, ["CIDADE","cidade"]),
+      ESTADO: primeiroValor(m, ["ESTADO","estado"]),
+      DATA_CONVERSAO: primeiroValor(m, ["DATA_CONVERSAO","dataConversao"]),
+      DATA_BATISMO_AGUAS: primeiroValor(m, ["DATA_BATISMO_AGUAS","dataBatismoAguas","dataBatismo"]),
+      CARGO: primeiroValor(m, ["CARGO","cargo"]),
+      CONGREGACAO: primeiroValor(m, ["CONGREGACAO","congregacao"]),
+      SITUACAO: primeiroValor(m, ["SITUACAO","situacao"]) || "ATIVO",
+      DATA_ADMISSAO: primeiroValor(m, ["DATA_ADMISSAO","dataAdmissao"]),
+      IGREJA_ORIGEM: primeiroValor(m, ["IGREJA_ORIGEM","igrejaOrigem"]),
+      DATA_CONSAGRACAO: primeiroValor(m, ["DATA_CONSAGRACAO","dataConsagracao"]),
+      NOME_PAI: primeiroValor(m, ["NOME_PAI","nomePai","pai"]),
+      NOME_MAE: primeiroValor(m, ["NOME_MAE","nomeMae","mae"]),
+      CONJUGE: primeiroValor(m, ["CONJUGE","conjuge"]),
+      DATA_CASAMENTO: primeiroValor(m, ["DATA_CASAMENTO","dataCasamento"]),
+      ID_FAMILIA: primeiroValor(m, ["ID_FAMILIA","idFamilia"]),
+      OBSERVACOES: primeiroValor(m, ["OBSERVACOES","observacoes"]),
+      DATA_CADASTRO: primeiroValor(m, ["DATA_CADASTRO","dataCadastro","criadoEm"])
     };
   }
 
-  function definirAviso(mensagem, ativo = true) {
-    const aviso = obterElementos().aviso;
-    if (!aviso) return;
+  function normalizarDataCampo(valor) {
+    const texto = String(valor || "").trim();
+    if (!texto) return "";
+    if (/^\d{4}-\d{2}-\d{2}/.test(texto)) return texto.slice(0,10);
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) {
+      const [d,m,a] = texto.split("/");
+      return `${a}-${m}-${d}`;
+    }
+    return "";
+  }
 
+  function definirAviso(mensagem, ativo=true) {
+    const aviso = document.getElementById("avisoFicha");
+    if (!aviso) return;
     aviso.textContent = mensagem || "";
     aviso.classList.toggle("ativo", ativo);
   }
 
-  function primeiroValor(objeto, chaves) {
-    for (const chave of chaves) {
-      const valor = objeto[chave];
+  function preencherFormulario(membro) {
+    document.getElementById("ID").value = membro.ID || idMembro;
+    document.getElementById("FOTO_URL").value = membro.FOTO_URL || "";
 
-      if (
-        valor !== undefined &&
-        valor !== null &&
-        String(valor).trim() !== ""
-      ) {
-        return valor;
-      }
-    }
-
-    return "";
-  }
-
-  /*
-   * O backend retorna os dados em camelCase.
-   * A ficha utiliza os nomes oficiais em caixa alta nos atributos data-campo.
-   * A normalização é feita somente aqui, na fronteira da página.
-   */
-  function normalizarMembro(membroApi) {
-    return {
-      ID: primeiroValor(membroApi, ["ID", "id"]),
-      CODIGO: primeiroValor(membroApi, ["CODIGO", "codigo"]),
-      NUMERO_CARTEIRINHA: primeiroValor(
-        membroApi,
-        ["NUMERO_CARTEIRINHA", "numeroCarteirinha"]
-      ),
-
-      NOME_COMPLETO: primeiroValor(
-        membroApi,
-        ["NOME_COMPLETO", "nomeCompleto", "nome"]
-      ),
-
-      CPF: primeiroValor(membroApi, ["CPF", "cpf"]),
-      RG: primeiroValor(membroApi, ["RG", "rg"]),
-      ORGAO_EMISSOR: primeiroValor(
-        membroApi,
-        ["ORGAO_EMISSOR", "orgaoEmissor"]
-      ),
-      DATA_EMISSAO_RG: primeiroValor(
-        membroApi,
-        ["DATA_EMISSAO_RG", "dataEmissaoRg"]
-      ),
-      TITULO_ELEITOR: primeiroValor(
-        membroApi,
-        ["TITULO_ELEITOR", "tituloEleitor"]
-      ),
-      CERTIDAO: primeiroValor(membroApi, ["CERTIDAO", "certidao"]),
-
-      DATA_NASCIMENTO: primeiroValor(
-        membroApi,
-        ["DATA_NASCIMENTO", "dataNascimento"]
-      ),
-      SEXO: primeiroValor(membroApi, ["SEXO", "sexo"]),
-      ESTADO_CIVIL: primeiroValor(
-        membroApi,
-        ["ESTADO_CIVIL", "estadoCivil"]
-      ),
-      PROFISSAO: primeiroValor(membroApi, ["PROFISSAO", "profissao"]),
-      NATURALIDADE: primeiroValor(
-        membroApi,
-        ["NATURALIDADE", "naturalidade"]
-      ),
-      NACIONALIDADE: primeiroValor(
-        membroApi,
-        ["NACIONALIDADE", "nacionalidade"]
-      ),
-
-      TELEFONE: primeiroValor(membroApi, ["TELEFONE", "telefone"]),
-      WHATSAPP: primeiroValor(membroApi, ["WHATSAPP", "whatsapp"]),
-      EMAIL: primeiroValor(membroApi, ["EMAIL", "email"]),
-
-      CEP: primeiroValor(membroApi, ["CEP", "cep"]),
-      ENDERECO: primeiroValor(membroApi, ["ENDERECO", "endereco"]),
-      NUMERO: primeiroValor(membroApi, ["NUMERO", "numero"]),
-      COMPLEMENTO: primeiroValor(
-        membroApi,
-        ["COMPLEMENTO", "complemento"]
-      ),
-      BAIRRO: primeiroValor(membroApi, ["BAIRRO", "bairro"]),
-      CIDADE: primeiroValor(membroApi, ["CIDADE", "cidade"]),
-      ESTADO: primeiroValor(membroApi, ["ESTADO", "estado"]),
-
-      DATA_CONVERSAO: primeiroValor(
-        membroApi,
-        ["DATA_CONVERSAO", "dataConversao"]
-      ),
-      DATA_BATISMO_AGUAS: primeiroValor(
-        membroApi,
-        ["DATA_BATISMO_AGUAS", "dataBatismoAguas", "dataBatismo"]
-      ),
-      DATA_BATISMO_ESPIRITO: primeiroValor(
-        membroApi,
-        ["DATA_BATISMO_ESPIRITO", "dataBatismoEspirito"]
-      ),
-      CARGO: primeiroValor(membroApi, ["CARGO", "cargo"]),
-      CONGREGACAO: primeiroValor(
-        membroApi,
-        ["CONGREGACAO", "congregacao"]
-      ),
-      SITUACAO: primeiroValor(membroApi, ["SITUACAO", "situacao"]),
-      DEPARTAMENTO: primeiroValor(
-        membroApi,
-        ["DEPARTAMENTO", "departamento"]
-      ),
-      DATA_ADMISSAO: primeiroValor(
-        membroApi,
-        ["DATA_ADMISSAO", "dataAdmissao"]
-      ),
-      FORMA_RECEBIMENTO: primeiroValor(
-        membroApi,
-        ["FORMA_RECEBIMENTO", "formaRecebimento"]
-      ),
-      IGREJA_ORIGEM: primeiroValor(
-        membroApi,
-        ["IGREJA_ORIGEM", "igrejaOrigem"]
-      ),
-      DATA_CONSAGRACAO: primeiroValor(
-        membroApi,
-        ["DATA_CONSAGRACAO", "dataConsagracao"]
-      ),
-      MINISTERIO: primeiroValor(membroApi, ["MINISTERIO", "ministerio"]),
-
-      NOME_PAI: primeiroValor(membroApi, ["NOME_PAI", "nomePai", "pai"]),
-      NOME_MAE: primeiroValor(membroApi, ["NOME_MAE", "nomeMae", "mae"]),
-      CONJUGE: primeiroValor(membroApi, ["CONJUGE", "conjuge"]),
-      DATA_CASAMENTO: primeiroValor(
-        membroApi,
-        ["DATA_CASAMENTO", "dataCasamento"]
-      ),
-      QUANTIDADE_FILHOS: primeiroValor(
-        membroApi,
-        ["QUANTIDADE_FILHOS", "quantidadeFilhos"]
-      ),
-      ID_FAMILIA: primeiroValor(
-        membroApi,
-        ["ID_FAMILIA", "idFamilia"]
-      ),
-      FILHOS: primeiroValor(membroApi, ["FILHOS", "filhos"]),
-
-      DATA_EMISSAO_CARTEIRINHA: primeiroValor(
-        membroApi,
-        ["DATA_EMISSAO_CARTEIRINHA", "dataEmissaoCarteirinha"]
-      ),
-      VALIDADE_CARTEIRINHA: primeiroValor(
-        membroApi,
-        ["VALIDADE_CARTEIRINHA", "validadeCarteirinha"]
-      ),
-      STATUS_CARTEIRINHA: primeiroValor(
-        membroApi,
-        ["STATUS_CARTEIRINHA", "statusCarteirinha"]
-      ),
-      CODIGO_DIGITAL: primeiroValor(
-        membroApi,
-        ["CODIGO_DIGITAL", "codigoDigital", "qrCode", "tokenPublico"]
-      ),
-      ATUALIZADO_EM: primeiroValor(
-        membroApi,
-        ["ATUALIZADO_EM", "atualizadoEm", "ultimaAtualizacao"]
-      ),
-      DATA_CADASTRO: primeiroValor(
-        membroApi,
-        ["DATA_CADASTRO", "dataCadastro"]
-      ),
-
-      FOTO_URL: primeiroValor(
-        membroApi,
-        ["FOTO_URL", "fotoUrl", "FOTO", "foto"]
-      ),
-
-      OBSERVACOES: primeiroValor(
-        membroApi,
-        ["OBSERVACOES", "observacoes", "observacaoCarteirinha"]
-      )
-    };
-  }
-
-  function formatarValor(campo, valor) {
-    if (valor === null || valor === undefined || String(valor).trim() === "") {
-      return "—";
-    }
-
-    if (CAMPOS_DATA.has(campo)) {
-      return window.VRG.formatarData(valor) || "—";
-    }
-
-    if (CAMPOS_FORMATADOS[campo]) {
-      return CAMPOS_FORMATADOS[campo](valor) || "—";
-    }
-
-    return String(valor).trim();
-  }
-
-  function preencherCampos(membro) {
-    document.querySelectorAll("[data-campo]").forEach((elemento) => {
-      const campo = elemento.dataset.campo;
-      const valor = formatarValor(campo, membro[campo]);
-
-      elemento.textContent = valor;
-      elemento.classList.toggle("dado-valor-vazio", valor === "—");
+    document.querySelectorAll("[data-campo-edicao]").forEach((campo) => {
+      const nome = campo.dataset.campoEdicao;
+      campo.value = CAMPOS_DATA.has(nome) ? normalizarDataCampo(membro[nome]) : (membro[nome] ?? "");
     });
-  }
 
-  function preencherFoto(membro) {
-    const { foto, fotoPlaceholder } = obterElementos();
-    if (!foto || !fotoPlaceholder) return;
+    document.querySelectorAll("[data-campo-leitura]").forEach((elemento) => {
+      const nome = elemento.dataset.campoLeitura;
+      let valor = membro[nome];
+      if (CAMPOS_DATA.has(nome) && valor) valor = window.VRG.formatarData(valor);
+      elemento.textContent = String(valor || "—");
+    });
 
-    const enderecoFoto = String(membro.FOTO_URL || "").trim();
-
-    if (!enderecoFoto) {
-      foto.hidden = true;
-      foto.removeAttribute("src");
-      fotoPlaceholder.hidden = false;
-      return;
-    }
-
-    foto.onload = () => {
+    const foto = document.getElementById("fotoMembro");
+    const placeholder = document.getElementById("fotoMembroPlaceholder");
+    if (foto && placeholder && membro.FOTO_URL) {
+      foto.src = membro.FOTO_URL;
       foto.hidden = false;
-      fotoPlaceholder.hidden = true;
-    };
+      placeholder.hidden = true;
+    }
 
-    foto.onerror = () => {
-      foto.hidden = true;
-      foto.removeAttribute("src");
-      fotoPlaceholder.hidden = false;
-    };
-
-    foto.src = enderecoFoto;
-    foto.alt = `Foto de ${membro.NOME_COMPLETO || "membro"}`;
+    const cancelar = document.getElementById("botaoCancelarEdicao");
+    if (cancelar) cancelar.href = `visualizar-membro.html?id=${encodeURIComponent(idMembro)}`;
   }
 
-  function configurarAcoes(id, membro) {
-    const { botaoEditar, botaoCarteirinha, qrCode } = obterElementos();
-
-    if (botaoEditar) {
-      botaoEditar.disabled = false;
-      botaoEditar.removeAttribute("title");
-      botaoEditar.addEventListener(
-        "click",
-        () => window.VRG.navegar(
-          `editar-membro.html?id=${encodeURIComponent(id)}`
-        ),
-        { once: true }
-      );
-    }
-
-    const possuiCarteirinha = Boolean(
-      membro.NUMERO_CARTEIRINHA || membro.CODIGO_DIGITAL
-    );
-
-    if (botaoCarteirinha) {
-      botaoCarteirinha.disabled = !possuiCarteirinha;
-      botaoCarteirinha.title = possuiCarteirinha
-        ? "Carteirinha disponível para este membro."
-        : "Este membro ainda não possui carteirinha emitida.";
-    }
-
-    if (qrCode) {
-      qrCode.textContent = membro.CODIGO_DIGITAL
-        ? String(membro.CODIGO_DIGITAL)
-        : "QR CODE";
-    }
+  async function buscarMembro() {
+    const resposta = await window.VRGAuth.chamarApi({ acao: "buscarMembro", id: idMembro });
+    let membro = resposta?.membro || resposta?.dados || resposta?.data || resposta;
+    if (typeof membro === "string") membro = JSON.parse(membro);
+    if (!membro || typeof membro !== "object") throw new Error("O cadastro do membro não foi retornado pela API.");
+    return normalizarMembro(membro);
   }
 
-  async function buscarMembro(id) {
-    if (
-      !window.VRGAuth ||
-      typeof window.VRGAuth.chamarApi !== "function"
-    ) {
-      throw new Error(
-        "O recurso de autenticação não foi carregado corretamente."
-      );
-    }
-
-    const resposta = await window.VRGAuth.chamarApi({
-      acao: "buscarMembro",
-      id
-    });
-
-    if (!resposta.membro || typeof resposta.membro !== "object") {
-      throw new Error(
-        "O cadastro do membro não foi retornado pela API."
-      );
-    }
-
-    return normalizarMembro(resposta.membro);
+  function prepararDados() {
+    const dados = Object.fromEntries(new FormData(formulario).entries());
+    dados.id = idMembro;
+    dados.ID = idMembro;
+    return dados;
   }
 
-  async function carregarFicha() {
-    const id = window.VRG.obterParametro("id");
-
-    if (!id) {
-      definirAviso("Não foi informado qual membro deve ser visualizado.");
-      window.VRG.erro("O identificador do membro não foi informado.");
+  async function salvar(evento) {
+    evento.preventDefault();
+    if (!window.VRG.validarFormulario(formulario)) return;
+    if (arquivoFotoSelecionado) {
+      window.VRG.erro("A nova foto foi pré-visualizada, mas o envio da foto ainda precisa ser conectado.");
       return;
     }
+
+    const botao = document.getElementById("botaoSalvarEdicao");
+    const textoOriginal = botao?.textContent || "✓ Salvar alterações";
+    if (botao) { botao.disabled = true; botao.textContent = "Salvando..."; }
 
     try {
-      const membro = await window.VRG.comCarregamento(
-        () => buscarMembro(id),
-        "Carregando ficha do membro..."
+      await window.VRG.comCarregamento(
+        () => window.VRGAuth.chamarApi({ acao: "atualizarMembro", dados: prepararDados() }),
+        "Salvando alterações..."
       );
-
-      preencherCampos(membro);
-      preencherFoto(membro);
-      configurarAcoes(id, membro);
-      definirAviso("", false);
-    } catch (falha) {
-      console.error("[Visualizar membro]", falha);
-
-      definirAviso(
-        falha.message || "Não foi possível carregar a ficha do membro."
-      );
-
-      window.VRG.erro(
-        falha.message || "Não foi possível carregar a ficha do membro."
-      );
+      window.VRG.sucesso("Cadastro atualizado com sucesso.");
+      window.setTimeout(() => window.VRG.navegar(`visualizar-membro.html?id=${encodeURIComponent(idMembro)}`), 650);
+    } catch (erro) {
+      console.error("[Editar membro]", erro);
+      window.VRG.erro(erro.message || "Não foi possível salvar as alterações.");
+    } finally {
+      if (botao) { botao.disabled = false; botao.textContent = textoOriginal; }
     }
   }
 
-  function inicializar() {
-    if (
-      !window.VRG ||
-      !window.VR_API ||
-      !window.VRGAuth ||
-      typeof window.VRGAuth.chamarApi !== "function"
-    ) {
+  function configurarFoto() {
+    const arquivo = document.getElementById("arquivoFotoMembro");
+    const foto = document.getElementById("fotoMembro");
+    const placeholder = document.getElementById("fotoMembroPlaceholder");
+    const status = document.getElementById("statusFoto");
+    if (!arquivo || !foto || !placeholder) return;
+
+    arquivo.addEventListener("change", () => {
+      const selecionado = arquivo.files?.[0] || null;
+      arquivoFotoSelecionado = selecionado;
+      if (urlPreviewFoto) URL.revokeObjectURL(urlPreviewFoto);
+      if (!selecionado) return;
+      urlPreviewFoto = URL.createObjectURL(selecionado);
+      foto.src = urlPreviewFoto;
+      foto.hidden = false;
+      placeholder.hidden = true;
+      if (status) status.textContent = `Nova foto selecionada: ${selecionado.name}`;
+    });
+  }
+
+  async function inicializar() {
+    formulario = document.getElementById("formFichaMembroEditavel");
+    if (!formulario || !window.VRG || !window.VRGAuth || typeof window.VRGAuth.chamarApi !== "function") {
       definirAviso("Os recursos necessários da página não foram carregados.");
       return;
     }
 
-    carregarFicha();
+    idMembro = String(window.VRG.obterParametro("id") || "").trim();
+    if (!idMembro) {
+      definirAviso("Não foi informado qual membro deve ser editado.");
+      return;
+    }
+
+    formulario.addEventListener("submit", salvar);
+    configurarFoto();
+
+    try {
+      const membro = await window.VRG.comCarregamento(buscarMembro, "Carregando ficha do membro...");
+      preencherFormulario(membro);
+      definirAviso("", false);
+    } catch (erro) {
+      console.error("[Editar membro]", erro);
+      definirAviso(erro.message || "Não foi possível carregar a ficha do membro.");
+      window.VRG.erro(erro.message || "Não foi possível carregar a ficha do membro.");
+    }
   }
 
+  window.addEventListener("beforeunload", () => {
+    if (urlPreviewFoto) URL.revokeObjectURL(urlPreviewFoto);
+  });
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", inicializar, { once: true });
+    document.addEventListener("DOMContentLoaded", inicializar, { once:true });
   } else {
     inicializar();
   }
