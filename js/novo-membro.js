@@ -85,19 +85,11 @@
     );
 
     try {
-      try {
-  let dados = modulo.obterDados(formulario);
+      let dados = modulo.obterDados(formulario);
 
-  dados = modulo.prepararDadosApi(dados);
+      dados = modulo.prepararDadosApi(dados);
 
-  dados = await prepararFoto(dados);
-
-  const resultado = tratarRespostaCadastro(
-    await modulo.obterAuth().chamarApi({
-      acao: "cadastrarMembro",
-      dados: dados
-    })
-  );
+      dados = await prepararFoto(dados);
 
       const resultado = tratarRespostaCadastro(
         await modulo.obterAuth().chamarApi({
