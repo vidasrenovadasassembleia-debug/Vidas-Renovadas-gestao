@@ -128,21 +128,84 @@
 
     return dados;
   }
-function prepararDadosApi(dadosOriginais) {
-  const dados = { ...dadosOriginais };
+  function normalizarSituacao(valor) {
+    const situacao = texto(valor);
 
-  Object.entries(dadosOriginais || {}).forEach(([chave, valor]) => {
-    const chaveCamelCase = chave
-      .toLowerCase()
-      .replace(/_([a-z])/g, function (_, letra) {
-        return letra.toUpperCase();
-      });
+    if (!situacao) return "Ativo";
 
-    dados[chaveCamelCase] = valor;
-  });
+    const chave = situacao
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toUpperCase();
 
-  return dados;
-}
+    const situacoesConhecidas = {
+      ATIVO: "Ativo",
+      INATIVO: "Inativo",
+      AFASTADO: "Afastado",
+      TRANSFERIDO: "Transferido",
+      FALECIDO: "Falecido",
+      DISCIPLINADO: "Disciplinado"
+    };
+
+    return situacoesConhecidas[chave] || situacao;
+  }
+
+  function prepararDadosApi(dadosOriginais) {
+    const origem = dadosOriginais || {};
+
+    const valor = (...nomes) => obterPrimeiroValor(origem, nomes, "");
+
+    return {
+      id: valor("id", "ID", "codigo", "CODIGO"),
+      nomeCompleto: valor("nomeCompleto", "NOME_COMPLETO"),
+      cpf: valor("cpf", "CPF"),
+      rg: valor("rg", "RG"),
+      dataNascimento: valor("dataNascimento", "DATA_NASCIMENTO"),
+      estadoCivil: valor("estadoCivil", "ESTADO_CIVIL"),
+      conjuge: valor("conjuge", "CONJUGE", "nomeConjuge", "NOME_CONJUGE"),
+      pai: valor("pai", "PAI", "nomePai", "NOME_PAI"),
+      mae: valor("mae", "MAE", "nomeMae", "NOME_MAE"),
+      telefone: valor("telefone", "TELEFONE"),
+      whatsapp: valor("whatsapp", "WHATSAPP"),
+      email: valor("email", "EMAIL"),
+      cep: valor("cep", "CEP"),
+      endereco: valor("endereco", "ENDERECO", "logradouro", "LOGRADOURO"),
+      numero: valor("numero", "NUMERO"),
+      complemento: valor("complemento", "COMPLEMENTO"),
+      bairro: valor("bairro", "BAIRRO"),
+      cidade: valor("cidade", "CIDADE"),
+      estado: valor("estado", "ESTADO", "uf", "UF"),
+      cargo: valor("cargo", "CARGO"),
+      congregacao: valor("congregacao", "CONGREGACAO"),
+      dataConversao: valor("dataConversao", "DATA_CONVERSAO"),
+      dataBatismo: valor(
+        "dataBatismo",
+        "DATA_BATISMO",
+        "dataBatismoAguas",
+        "DATA_BATISMO_AGUAS"
+      ),
+      situacao: normalizarSituacao(valor("situacao", "SITUACAO")),
+      foto: valor("foto", "FOTO", "fotoUrl", "FOTO_URL", "urlFoto"),
+      qrCode: valor(
+        "qrCode",
+        "QR_CODE",
+        "codigoDigital",
+        "CODIGO_DIGITAL",
+        "tokenPublico"
+      ),
+      observacaoCarteirinha: valor(
+        "observacaoCarteirinha",
+        "OBSERVACAO_CARTEIRINHA",
+        "observacoes",
+        "OBSERVACOES"
+      ),
+      idFamilia: valor("idFamilia", "ID_FAMILIA"),
+      validadeCarteirinha: valor(
+        "validadeCarteirinha",
+        "VALIDADE_CARTEIRINHA"
+      )
+    };
+  }
   function validarCPFBasico(cpf) {
     const numeros = somenteNumeros(cpf);
 
@@ -441,7 +504,7 @@ function prepararDadosApi(dadosOriginais) {
       resumoSituacao: obterPrimeiroValor(
         dados,
         ["SITUACAO", "situacao"],
-        "ATIVO"
+        "Ativo"
       ),
       resumoDataCadastro: obterPrimeiroValor(
         dados,
