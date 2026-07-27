@@ -340,21 +340,26 @@
       );
     }
 
-    const url = obterPrimeiroValor(
-      resultado,
-      [
-        "url",
-        "fotoUrl",
-        "FOTO_URL",
-        "link",
-        "arquivoUrl"
-      ],
-      obterPrimeiroValor(
-        resultado?.dados,
-        ["url", "fotoUrl", "FOTO_URL", "link", "arquivoUrl"],
-        ""
-      )
-    );
+    const url =
+  resultado?.foto?.url ||
+  resultado?.arquivo?.url ||
+  resultado?.dados?.foto?.url ||
+  resultado?.dados?.arquivo?.url ||
+  obterPrimeiroValor(
+    resultado,
+    [
+      "url",
+      "fotoUrl",
+      "FOTO_URL",
+      "link",
+      "arquivoUrl"
+    ],
+    obterPrimeiroValor(
+      resultado?.dados,
+      ["url", "fotoUrl", "FOTO_URL", "link", "arquivoUrl"],
+      ""
+    )
+  );
 
     if (!url) {
       throw new Error(
