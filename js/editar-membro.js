@@ -258,7 +258,7 @@
       sincronizarEspelhoComCampo(espelho);
     });
 
-    ["NOME_COMPLETO", "CONGREGACAO", "CARGO"].forEach((nome) => {
+    ["CONGREGACAO", "CARGO"].forEach((nome) => {
       const campo = localizarCampo(nome);
       const espelho = document.querySelector(
         `[data-espelho-campo="${nome}"]`
@@ -378,8 +378,7 @@
   }
 
   async function buscarMembro() {
-    const resposta = await window.VRGAuth.chamarApi({
-      acao: "buscarMembro",
+    const resposta = await window.VR_API.enviar("buscarMembro", {
       id: idMembro
     });
 
@@ -440,8 +439,7 @@
     try {
       await window.VRG.comCarregamento(
         async () => {
-          await window.VRGAuth.chamarApi({
-            acao: "atualizarMembro",
+          await window.VR_API.enviar("atualizarMembro", {
             dados
           });
         },
@@ -469,13 +467,7 @@
   function inicializar() {
     formulario = document.getElementById("formEditarMembro");
 
-    if (
-      !formulario ||
-      !window.VRG ||
-      !window.VR_API ||
-      !window.VRGAuth ||
-      typeof window.VRGAuth.chamarApi !== "function"
-    ) {
+    if (!formulario || !window.VRG || !window.VR_API) {
       definirAviso(
         "Os recursos necessários da página não foram carregados corretamente."
       );
