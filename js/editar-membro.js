@@ -1,503 +1,1278 @@
-/* ==========================================================================
-   VIDAS RENOVADAS GESTÃO 2.0
-   Arquivo: js/editar-membro.js
-   Descrição: Carregamento e atualização da ficha digital do membro
-   ========================================================================== */
+<!DOCTYPE html>
 
-"use strict";
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Editar membro | Vidas Renovadas Gestão</title>
+<meta content="Cadastro completo da ficha digital de um novo membro da Igreja Vidas Renovadas." name="description"/>
+<meta content="#071f3b" name="theme-color"/>
+<link href="logo.png" rel="icon" type="image/png"/>
+<link href="css/estilo.css?v=50" rel="stylesheet"/>
+<style>
+    /* =========================================================
+       FICHA DIGITAL DO MEMBRO
+       Base visual compartilhada entre cadastro, edição e visualização
+       ========================================================= */
 
-(function (window, document) {
-  const CAMPOS_DATA = new Set([
-    "DATA_CADASTRO",
-    "DATA_NASCIMENTO",
-    "DATA_EMISSAO_RG",
-    "DATA_CONVERSAO",
-    "DATA_BATISMO_AGUAS",
-    "DATA_BATISMO_ESPIRITO",
-    "DATA_ADMISSAO",
-    "DATA_CONSAGRACAO",
-    "DATA_CASAMENTO",
-    "DATA_EMISSAO_CARTEIRINHA",
-    "VALIDADE_CARTEIRINHA",
-    "ATUALIZADO_EM"
-  ]);
-
-  let formulario = null;
-  let idMembro = "";
-  let membroCarregado = null;
-  let arquivoFotoSelecionado = null;
-  let urlPreviewFoto = "";
-
-  function obterElementos() {
-    return {
-      aviso: document.getElementById("avisoFicha"),
-      campoId: document.getElementById("id"),
-      campoFotoUrl: document.getElementById("FOTO_URL"),
-      foto: document.getElementById("fotoMembro"),
-      fotoPlaceholder: document.getElementById("fotoMembroPlaceholder"),
-      arquivoFoto: document.getElementById("arquivoFotoMembro"),
-      statusFoto: document.getElementById("statusFoto"),
-      resumoCodigo: document.getElementById("resumoCodigo"),
-      resumoSituacao: document.getElementById("resumoSituacao"),
-      resumoCarteirinha: document.getElementById("resumoCarteirinha"),
-      resumoDataCadastro: document.getElementById("resumoDataCadastro"),
-      resumoFamilia: document.getElementById("resumoFamilia"),
-      cancelarTopo: document.getElementById("botaoCancelarTopo"),
-      cancelarRodape: document.getElementById("botaoCancelarRodape"),
-      botoesSalvar: Array.from(
-        document.querySelectorAll('#formEditarMembro button[type="submit"]')
-      )
-    };
-  }
-
-  function definirAviso(mensagem, ativo = true) {
-    const aviso = obterElementos().aviso;
-    if (!aviso) return;
-
-    aviso.textContent = mensagem || "";
-    aviso.classList.toggle("ativo", ativo);
-  }
-
-  function normalizarTexto(valor) {
-    if (valor === null || valor === undefined) return "";
-    return String(valor).trim();
-  }
-
-  function normalizarDataParaCampo(valor) {
-    const texto = normalizarTexto(valor);
-    if (!texto) return "";
-
-    if (/^\d{4}-\d{2}-\d{2}/.test(texto)) {
-      return texto.slice(0, 10);
+    :root {
+      --ficha-azul: var(--azul-900, #071f3b);
+      --ficha-azul-medio: var(--azul-700, #144b7f);
+      --ficha-dourado: var(--dourado-700, #9f7620);
+      --ficha-fundo: var(--superficie-suave, #f5f7f9);
+      --ficha-superficie: var(--superficie, #ffffff);
+      --ficha-borda: var(--borda-sistema, #dce3e8);
+      --ficha-texto: var(--texto, #263442);
+      --ficha-texto-suave: var(--texto-suave-sistema, #687785);
+      --ficha-raio: var(--raio-card, 16px);
+      --ficha-sombra: var(--sombra-card, 0 10px 28px rgba(7, 31, 59, 0.08));
     }
 
-    if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) {
-      const [dia, mes, ano] = texto.split("/");
-      return `${ano}-${mes}-${dia}`;
+    .visualizar-apresentacao {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 18px;
     }
 
-    const data = new Date(valor);
-
-    if (Number.isNaN(data.getTime())) {
-      return "";
+    .visualizar-etiqueta {
+      margin: 0 0 5px;
+      color: var(--ficha-dourado);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.085em;
+      text-transform: uppercase;
     }
 
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, "0");
-    const dia = String(data.getDate()).padStart(2, "0");
-
-    return `${ano}-${mes}-${dia}`;
-  }
-
-  function formatarDataResumo(valor) {
-    const texto = normalizarTexto(valor);
-    if (!texto) return "—";
-
-    if (window.VRG && typeof window.VRG.formatarData === "function") {
-      return window.VRG.formatarData(valor) || "—";
+    .visualizar-titulo {
+      margin: 0;
+      color: var(--ficha-azul);
+      font-size: clamp(1.6rem, 3vw, 2.15rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
     }
 
-    const dataCampo = normalizarDataParaCampo(valor);
-    if (!dataCampo) return texto;
-
-    const [ano, mes, dia] = dataCampo.split("-");
-    return `${dia}/${mes}/${ano}`;
-  }
-
-  function localizarCampo(nome) {
-    if (!formulario) return null;
-    return formulario.elements.namedItem(nome);
-  }
-
-  function garantirOpcaoSelect(select, valor) {
-    if (!(select instanceof HTMLSelectElement) || !valor) return;
-
-    const existe = Array.from(select.options).some(
-      (opcao) => opcao.value === valor
-    );
-
-    if (!existe) {
-      select.add(new Option(valor, valor));
+    .visualizar-descricao {
+      margin: 7px 0 0;
+      color: var(--ficha-texto-suave);
+      font-size: 0.86rem;
+      line-height: 1.5;
     }
+
+    .visualizar-acoes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 9px;
+    }
+
+    .ficha-botao {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 14px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: 10px;
+      background: #ffffff;
+      color: var(--ficha-azul);
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 850;
+      text-decoration: none;
+      transition:
+        border-color 180ms ease,
+        background 180ms ease,
+        color 180ms ease,
+        opacity 180ms ease,
+        transform 180ms ease;
+    }
+
+    .ficha-botao:hover {
+      border-color: var(--ficha-azul-medio);
+      background: #f8fbfd;
+      transform: translateY(-1px);
+    }
+
+    .ficha-botao-primario {
+      border-color: var(--ficha-azul);
+      background: var(--ficha-azul);
+      color: #ffffff;
+    }
+
+    .ficha-botao-primario:hover {
+      border-color: var(--ficha-azul-medio);
+      background: var(--ficha-azul-medio);
+      color: #ffffff;
+    }
+
+    .ficha-botao-dourado {
+      border-color: var(--ficha-dourado);
+      background: var(--ficha-dourado);
+      color: #ffffff;
+    }
+
+    .ficha-botao-dourado:hover {
+      border-color: #7f5e17;
+      background: #7f5e17;
+      color: #ffffff;
+    }
+
+    .ficha-botao:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+      transform: none;
+    }
+
+    /* Resumo principal */
+
+    .membro-resumo {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 22px;
+      margin-bottom: 18px;
+      padding: 24px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: var(--ficha-raio);
+      background:
+        linear-gradient(135deg, rgba(7, 31, 59, 0.035), transparent 45%),
+        #ffffff;
+      box-shadow: var(--ficha-sombra);
+    }
+
+    .membro-foto-box {
+      position: relative;
+      width: 138px;
+      height: 168px;
+      overflow: hidden;
+      border: 5px solid #ffffff;
+      border-radius: 18px;
+      background: #eaf0f4;
+      box-shadow:
+        0 0 0 1px var(--ficha-borda),
+        0 10px 22px rgba(7, 31, 59, 0.12);
+    }
+
+    .membro-foto {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .membro-foto-placeholder {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 50% 32%, #bccbd5 0 19%, transparent 20%),
+        radial-gradient(circle at 50% 105%, #bccbd5 0 42%, transparent 43%),
+        #eaf0f4;
+      color: var(--ficha-texto-suave);
+      font-size: 0.7rem;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .membro-resumo-conteudo {
+      min-width: 0;
+    }
+
+    .membro-resumo-etiqueta {
+      margin: 0 0 7px;
+      color: var(--ficha-dourado);
+      font-size: 0.67rem;
+      font-weight: 900;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .membro-nome {
+      margin: 0;
+      color: var(--ficha-azul);
+      font-size: clamp(1.45rem, 3vw, 2.05rem);
+      font-weight: 900;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+    }
+
+    .membro-congregacao {
+      margin: 8px 0 0;
+      color: var(--ficha-texto-suave);
+      font-size: 0.83rem;
+      font-weight: 700;
+    }
+
+    .membro-identificadores {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .ficha-badge {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 11px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font-size: 0.71rem;
+      font-weight: 850;
+      line-height: 1.2;
+    }
+
+    .ficha-badge-codigo {
+      border-color: #c7d6e2;
+      background: #edf4f8;
+      color: #245f91;
+    }
+
+    .ficha-badge-cargo {
+      border-color: #d8c6f0;
+      background: #f3ecfb;
+      color: #6941a5;
+    }
+
+    .ficha-badge-situacao {
+      border-color: #b9dfca;
+      background: #e7f6ee;
+      color: #16794f;
+    }
+
+    .ficha-badge-ponto {
+      width: 8px;
+      height: 8px;
+      flex: 0 0 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .membro-resumo-lateral {
+      display: grid;
+      min-width: 180px;
+      gap: 10px;
+    }
+
+    .resumo-dado {
+      padding: 12px 14px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: 12px;
+      background: var(--ficha-fundo);
+    }
+
+    .resumo-dado-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ficha-texto-suave);
+      font-size: 0.64rem;
+      font-weight: 850;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+    }
+
+    .resumo-dado-valor {
+      display: block;
+      color: var(--ficha-azul);
+      font-size: 0.78rem;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    /* Conteúdo da ficha */
+
+    .ficha-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .ficha-card {
+      grid-column: span 6;
+      overflow: hidden;
+      border: 1px solid var(--ficha-borda);
+      border-radius: var(--ficha-raio);
+      background: var(--ficha-superficie);
+      box-shadow: 0 6px 20px rgba(7, 31, 59, 0.055);
+    }
+
+    .ficha-card-largo {
+      grid-column: 1 / -1;
+    }
+
+    .ficha-card-cabecalho {
+      display: flex;
+      min-height: 55px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--ficha-borda);
+      background:
+        linear-gradient(90deg, rgba(7, 31, 59, 0.035), transparent),
+        #ffffff;
+    }
+
+    .ficha-card-titulo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ficha-card-icone {
+      display: inline-flex;
+      width: 31px;
+      height: 31px;
+      flex: 0 0 31px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9px;
+      background: #eef3f7;
+      color: var(--ficha-azul);
+      font-size: 0.88rem;
+      font-weight: 900;
+    }
+
+    .ficha-card-titulo {
+      margin: 0;
+      color: var(--ficha-azul);
+      font-size: 0.86rem;
+      font-weight: 900;
+    }
+
+    .ficha-card-subtitulo {
+      margin: 3px 0 0;
+      color: var(--ficha-texto-suave);
+      font-size: 0.66rem;
+    }
+
+    .ficha-card-corpo {
+      padding: 17px 18px 19px;
+    }
+
+    .dados-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 20px;
+    }
+
+    .dados-grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .dado-item {
+      min-width: 0;
+    }
+
+    .dado-item-largo {
+      grid-column: 1 / -1;
+    }
+
+    .dado-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ficha-texto-suave);
+      font-size: 0.66rem;
+      font-weight: 850;
+      letter-spacing: 0.025em;
+    }
+
+    .dado-valor {
+      display: block;
+      min-height: 21px;
+      color: var(--ficha-texto);
+      font-size: 0.79rem;
+      font-weight: 750;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .dado-valor-vazio {
+      color: #98a3ab;
+      font-weight: 650;
+    }
+
+    .observacoes-texto {
+      min-height: 90px;
+      margin: 0;
+      color: var(--ficha-texto);
+      font-size: 0.79rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    /* Estado de carregamento/erro */
+
+    .ficha-aviso {
+      display: none;
+      margin-bottom: 16px;
+      padding: 13px 15px;
+      border: 1px solid #ead79a;
+      border-radius: 12px;
+      background: #fff8df;
+      color: #735815;
+      font-size: 0.76rem;
+      font-weight: 750;
+      line-height: 1.45;
+    }
+
+    .ficha-aviso.ativo {
+      display: block;
+    }
+
+    .visualizar-rodape {
+      margin-top: 20px;
+      padding: 13px 0 2px;
+      color: var(--ficha-texto-suave);
+      font-size: 0.68rem;
+      text-align: center;
+    }
+
+    /* Impressão */
+
+    @media print {
+      .sidebar,
+      .overlay-menu,
+      .topbar,
+      .visualizar-apresentacao,
+      .carregamento-global,
+      .visualizar-rodape {
+        display: none !important;
+      }
+
+      body,
+      .sistema-page,
+      .sistema-layout,
+      .sistema-main,
+      .sistema-conteudo {
+        width: 100% !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+      }
+
+      .membro-resumo,
+      .ficha-card {
+        break-inside: avoid;
+        box-shadow: none !important;
+      }
+
+      .ficha-grid {
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .membro-resumo {
+        grid-template-columns: 135px minmax(0, 1fr);
+      }
+
+      .membro-resumo-lateral {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .visualizar-apresentacao {
+        flex-direction: column;
+      }
+
+      .visualizar-acoes {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .ficha-card {
+        grid-column: 1 / -1;
+      }
+
+      .dados-grid-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 650px) {
+      .membro-resumo {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .membro-resumo-conteudo {
+        width: 100%;
+      }
+
+      .membro-identificadores {
+        justify-content: center;
+      }
+
+      .membro-resumo-lateral {
+        width: 100%;
+        grid-template-columns: 1fr;
+        text-align: left;
+      }
+
+      .dados-grid,
+      .dados-grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+
+      .visualizar-acoes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .ficha-botao {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .visualizar-acoes {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* =========================================================
+       NOVO MEMBRO
+       Cadastro da ficha digital oficial
+       ========================================================= */
+
+    .edicao-formulario {
+      display: contents;
+    }
+
+    .edicao-campo {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      min-height: 42px;
+      padding: 9px 11px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: 10px;
+      background: #ffffff;
+      color: var(--ficha-texto);
+      font: inherit;
+      font-size: 0.79rem;
+      font-weight: 700;
+      line-height: 1.35;
+      transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        background 160ms ease;
+    }
+
+    .edicao-campo:focus {
+      border-color: var(--ficha-azul-medio);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(20, 75, 127, 0.12);
+    }
+
+    .edicao-campo:disabled,
+    .edicao-campo[readonly] {
+      background: #eef2f5;
+      color: #65727c;
+      cursor: not-allowed;
+    }
+
+    textarea.edicao-campo {
+      min-height: 104px;
+      resize: vertical;
+    }
+
+    .edicao-foto-acoes {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      left: 8px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .edicao-foto-botao {
+      display: inline-flex;
+      min-height: 34px;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 9px;
+      background: rgba(7, 31, 59, 0.9);
+      color: #ffffff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.68rem;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .edicao-foto-status {
+      margin: 8px 0 0;
+      color: var(--ficha-texto-suave);
+      font-size: 0.68rem;
+      line-height: 1.4;
+    }
+
+    .edicao-resumo {
+      display: grid;
+      gap: 12px;
+    }
+
+    .edicao-resumo .edicao-campo {
+      max-width: 560px;
+    }
+
+    .edicao-resumo-linha {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .edicao-acoes-rodape {
+      position: sticky;
+      z-index: 8;
+      bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+      padding: 14px;
+      border: 1px solid var(--ficha-borda);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 10px 30px rgba(7, 31, 59, 0.12);
+      backdrop-filter: blur(8px);
+    }
+
+    .campo-ajuda {
+      display: block;
+      margin-top: 5px;
+      color: var(--ficha-texto-suave);
+      font-size: 0.64rem;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 650px) {
+      .edicao-resumo-linha {
+        grid-template-columns: 1fr;
+      }
+
+      .edicao-acoes-rodape {
+        position: static;
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
+</head>
+<body class="sistema-page" data-page="membros">
+<div class="sistema-layout">
+<aside aria-label="Menu principal" class="sidebar">
+<div class="sidebar-topo">
+<div class="sidebar-logo-box">
+<img alt="Logo da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas" class="sidebar-logo" src="logo.png"/>
+</div>
+<div class="sidebar-identidade">
+<p class="sidebar-nome">Vidas Renovadas Gestão</p>
+<p class="sidebar-ministerio">Ministério Vidas Renovadas</p>
+</div>
+</div>
+<nav class="menu-navegacao">
+<div class="menu-grupo">
+<p class="menu-grupo-titulo">Visão geral</p>
+<a class="menu-item" data-page="dashboard" href="dashboard.html">
+<span aria-hidden="true" class="menu-item-icone">⌂</span>
+<span>Dashboard</span>
+</a>
+</div>
+<div class="menu-grupo">
+<p class="menu-grupo-titulo">Pessoas</p>
+<a class="menu-item" data-page="membros" href="membros.html">
+<span aria-hidden="true" class="menu-item-icone">♙</span>
+<span>Membros</span>
+</a>
+<a class="menu-item" data-page="familias" href="familias.html">
+<span aria-hidden="true" class="menu-item-icone">♧</span>
+<span>Famílias</span>
+</a>
+<a class="menu-item" data-page="congregacoes" href="congregacoes.html">
+<span aria-hidden="true" class="menu-item-icone">⌂</span>
+<span>Congregações</span>
+</a>
+</div>
+<div class="menu-grupo">
+<p class="menu-grupo-titulo">Documentos</p>
+<a class="menu-item" data-page="carteirinhas" href="carteirinhas.html">
+<span aria-hidden="true" class="menu-item-icone">▣</span>
+<span>Carteirinhas</span>
+</a>
+<a class="menu-item" data-page="certificados" href="certificados/index.html">
+<span aria-hidden="true" class="menu-item-icone">◇</span>
+<span>Certificados</span>
+</a>
+</div>
+<div class="menu-grupo">
+<p class="menu-grupo-titulo">Gestão</p>
+<a class="menu-item" data-page="financeiro" href="financeiro.html">
+<span aria-hidden="true" class="menu-item-icone">R$</span>
+<span>Financeiro</span>
+</a>
+<a class="menu-item" data-page="relatorios" href="relatorios.html">
+<span aria-hidden="true" class="menu-item-icone">▤</span>
+<span>Relatórios</span>
+</a>
+<a class="menu-item" data-page="configuracoes" data-permissao="administracao" href="configuracoes.html">
+<span aria-hidden="true" class="menu-item-icone">⚙</span>
+<span>Administração</span>
+</a>
+</div>
+</nav>
+<div class="sidebar-rodape">
+<div class="usuario-sidebar">
+<div class="usuario-avatar" data-usuario-iniciais="">VR</div>
+<div class="usuario-sidebar-dados">
+<div class="usuario-sidebar-nome" data-usuario-nome="">Usuário</div>
+<div class="usuario-sidebar-cargo" data-usuario-cargo="">Carregando perfil...</div>
+</div>
+<button aria-label="Sair do sistema" class="botao-sair-sidebar" data-acao="logout" data-confirmar-logout="true" title="Sair do sistema" type="button">
+            ↪
+          </button>
+</div>
+</div>
+</aside>
+<div class="overlay-menu" data-acao="fechar-menu"></div>
+<main class="sistema-main">
+<header class="topbar">
+<div class="topbar-esquerda">
+<button aria-expanded="false" aria-label="Abrir menu" class="botao-menu-mobile" data-acao="alternar-menu" type="button">
+            ☰
+          </button>
+<div>
+<h1 class="topbar-titulo">Editar membro</h1>
+<p class="topbar-subtitulo">Atualização completa da ficha ministerial</p>
+</div>
+</div>
+<div class="topbar-direita">
+<div class="topbar-data">
+<strong id="dataAtual">—</strong><br/>
+<span id="horaAtual">—</span>
+</div>
+<div class="topbar-avatar" data-usuario-iniciais="">VR</div>
+</div>
+</header>
+<div class="sistema-conteudo">
+<form class="edicao-formulario" id="formEditarMembro" novalidate="">
+<input id="id" name="id" type="hidden"/>
+<input id="FOTO_URL" name="FOTO_URL" type="hidden"/>
+<section class="visualizar-apresentacao">
+<div>
+<p class="visualizar-etiqueta">Secretaria</p>
+<h2 class="visualizar-titulo">Editar ficha digital</h2>
+<p class="visualizar-descricao">Atualize os dados pessoais, de contato, endereço, filiação, casamento e vida cristã do membro.</p>
+</div>
+<div class="visualizar-acoes">
+<a class="ficha-botao" href="membros.html" id="botaoCancelarTopo">
+                ← Cancelar
+              </a>
+<button class="ficha-botao ficha-botao-primario" data-permissao="membros-editar" id="botaoSalvarTopo" type="submit">
+                ✓ Salvar alterações
+              </button>
+</div>
+</section>
+<div aria-live="polite" class="ficha-aviso ativo" id="avisoFicha" role="status">
+            Carregando os dados do membro para edição...
+          </div>
+<section aria-label="Resumo do membro em edição" class="membro-resumo">
+<div>
+<div class="membro-foto-box">
+<div class="membro-foto-placeholder" id="fotoMembroPlaceholder">
+                  FOTO DO<br/>MEMBRO
+                </div>
+<img alt="Foto do membro" class="membro-foto" hidden="" id="fotoMembro"/>
+<div class="edicao-foto-acoes">
+<label class="edicao-foto-botao" for="arquivoFotoMembro">
+                    Alterar foto
+                  </label>
+<input accept="image/jpeg,image/png,image/webp" data-campo-foto="true" hidden="" id="arquivoFotoMembro" name="arquivoFotoMembro" type="file"/>
+</div>
+</div>
+<p aria-live="polite" class="edicao-foto-status" id="statusFoto">
+                A foto atual será mantida até que uma nova seja selecionada.
+              </p>
+</div>
+<div class="membro-resumo-conteudo edicao-resumo">
+<p class="membro-resumo-etiqueta">Identificação ministerial</p>
+<div>
+<label class="dado-label" for="NOME_COMPLETO">Nome completo</label>
+<input class="edicao-campo" id="NOME_COMPLETO" name="NOME_COMPLETO" placeholder="Nome completo do membro" required="" type="text"/>
+</div>
+<div class="edicao-resumo-linha">
+<div>
+<label class="dado-label" for="resumoCongregacao">Congregação</label>
+<select class="edicao-campo" data-espelho-campo="CONGREGACAO" id="resumoCongregacao"><option value="">Selecione</option><option value="Independência / Petrópolis">Independência / Petrópolis</option><option value="Km 51 / Xerém">Km 51 / Xerém</option></select>
+</div>
+<div>
+<label class="dado-label" for="resumoCargo">Cargo</label>
+<select class="edicao-campo" data-espelho-campo="CARGO" id="resumoCargo"><option value="">Selecione</option><option value="PASTOR">PASTOR</option><option value="PASTORA">PASTORA</option><option value="PRESBÍTERO">PRESBÍTERO</option><option value="EVANGELISTA">EVANGELISTA</option><option value="DIÁCONO">DIÁCONO</option><option value="DIACONISA">DIACONISA</option><option value="MISSIONÁRIO">MISSIONÁRIO</option><option value="MISSIONÁRIA">MISSIONÁRIA</option><option value="OBREIRO">OBREIRO</option><option value="OBREIRA">OBREIRA</option><option value="AUXILIAR DE TRABALHO">AUXILIAR DE TRABALHO</option><option value="MEMBRO">MEMBRO</option><option value="MEMBRA">MEMBRA</option></select>
+</div>
+</div>
+<div class="membro-identificadores">
+<span class="ficha-badge ficha-badge-codigo">
+                  ID: <strong id="resumoCodigo">—</strong>
+</span>
+<span class="ficha-badge ficha-badge-situacao">
+<span aria-hidden="true" class="ficha-badge-ponto"></span>
+<span id="resumoSituacao">ATIVO</span>
+</span>
+</div>
+</div>
+<div class="membro-resumo-lateral">
+<div class="resumo-dado">
+<span class="resumo-dado-label">Data de cadastro</span>
+<span class="resumo-dado-valor" id="resumoDataCadastro">—</span>
+</div>
+
+</div>
+</section>
+<div class="ficha-grid">
+<section class="ficha-card ficha-card-largo">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">♙</span>
+<div>
+<h3 class="ficha-card-titulo">Dados pessoais</h3>
+<p class="ficha-card-subtitulo">Identificação civil do membro</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<div class="dados-grid dados-grid-3">
+<div class="dado-item">
+<label class="dado-label" for="DATA_NASCIMENTO">Data de nascimento</label>
+<input class="edicao-campo" id="DATA_NASCIMENTO" name="DATA_NASCIMENTO" type="date"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="SEXO">Sexo</label>
+<select class="edicao-campo" id="SEXO" name="SEXO"><option value="">Selecione</option><option value="MASCULINO">Masculino</option><option value="FEMININO">Feminino</option></select>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="ESTADO_CIVIL">Estado civil</label>
+<select class="edicao-campo" id="ESTADO_CIVIL" name="ESTADO_CIVIL"><option value="">Selecione</option><option value="SOLTEIRO(A)">Solteiro(a)</option><option value="CASADO(A)">Casado(a)</option><option value="DIVORCIADO(A)">Divorciado(a)</option><option value="VIÚVO(A)">Viúvo(a)</option></select>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="PROFISSAO">Profissão</label>
+<input class="edicao-campo" id="PROFISSAO" name="PROFISSAO" type="text"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="NATURALIDADE">Naturalidade</label>
+<input class="edicao-campo" id="NATURALIDADE" name="NATURALIDADE" type="text"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="NACIONALIDADE">Nacionalidade</label>
+<input class="edicao-campo" id="NACIONALIDADE" name="NACIONALIDADE" type="text"/>
+</div>
+</div>
+</div>
+</section>
+<section class="ficha-card">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">▤</span>
+<div>
+<h3 class="ficha-card-titulo">Documentos</h3>
+<p class="ficha-card-subtitulo">Registros e identificação oficial</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<div class="dados-grid">
+<div class="dado-item">
+<label class="dado-label" for="CPF">CPF</label>
+<input autocomplete="off" class="edicao-campo" id="CPF" inputmode="numeric" maxlength="14" name="CPF" placeholder="000.000.000-00" type="text"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="RG">RG</label>
+<input class="edicao-campo" id="RG" name="RG" type="text"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="ORGAO_EMISSOR">Órgão emissor</label>
+<input class="edicao-campo" id="ORGAO_EMISSOR" name="ORGAO_EMISSOR" type="text"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="DATA_EMISSAO_RG">Data de emissão do RG</label>
+<input class="edicao-campo" id="DATA_EMISSAO_RG" name="DATA_EMISSAO_RG" type="date"/>
+</div>
+
+
+</div>
+</div>
+</section>
+<section class="ficha-card">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">☎</span>
+<div>
+<h3 class="ficha-card-titulo">Contatos</h3>
+<p class="ficha-card-subtitulo">Canais de comunicação</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<div class="dados-grid">
+<div class="dado-item">
+<label class="dado-label" for="TELEFONE">Telefone</label>
+<input autocomplete="tel" class="edicao-campo" id="TELEFONE" inputmode="tel" maxlength="15" name="TELEFONE" placeholder="(21) 00000-0000" type="tel"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="WHATSAPP">WhatsApp</label>
+<input autocomplete="tel" class="edicao-campo" id="WHATSAPP" inputmode="tel" maxlength="15" name="WHATSAPP" placeholder="(21) 00000-0000" type="tel"/>
+</div>
+<div class="dado-item dado-item-largo">
+<label class="dado-label" for="EMAIL">E-mail</label>
+<input class="edicao-campo" id="EMAIL" name="EMAIL" type="email"/>
+</div>
+</div>
+</div>
+</section>
+<section class="ficha-card ficha-card-largo">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">⌂</span>
+<div>
+<h3 class="ficha-card-titulo">Endereço</h3>
+<p class="ficha-card-subtitulo">Localização residencial</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<div class="dados-grid">
+<div class="dado-item">
+<label class="dado-label" for="CEP">CEP</label>
+<input autocomplete="postal-code" class="edicao-campo" id="CEP" inputmode="numeric" maxlength="9" name="CEP" placeholder="00000-000" type="text"/><small aria-live="polite" class="edicao-campo-ajuda" id="statusCep">Digite o CEP para preencher o endereço automaticamente.</small>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="NUMERO">Número</label>
+<input class="edicao-campo" id="NUMERO" name="NUMERO" type="text"/>
+</div>
+<div class="dado-item dado-item-largo">
+<label class="dado-label" for="ENDERECO">Endereço</label>
+<input class="edicao-campo" id="ENDERECO" name="ENDERECO" type="text"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="COMPLEMENTO">Complemento</label>
+<input class="edicao-campo" id="COMPLEMENTO" name="COMPLEMENTO" type="text"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="BAIRRO">Bairro</label>
+<input class="edicao-campo" id="BAIRRO" name="BAIRRO" type="text"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="CIDADE">Cidade</label>
+<input class="edicao-campo" id="CIDADE" name="CIDADE" type="text"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="ESTADO">Estado</label>
+<input class="edicao-campo" id="ESTADO" name="ESTADO" type="text"/>
+</div>
+</div>
+</div>
+</section>
+<section class="ficha-card ficha-card-largo">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">◇</span>
+<div>
+<h3 class="ficha-card-titulo">Vida cristã e ministerial</h3>
+<p class="ficha-card-subtitulo">Histórico e situação eclesiástica</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<div class="dados-grid dados-grid-3">
+<div class="dado-item">
+<label class="dado-label" for="DATA_CONVERSAO">Data da conversão</label>
+<input class="edicao-campo" id="DATA_CONVERSAO" name="DATA_CONVERSAO" type="date"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="DATA_BATISMO_AGUAS">Batismo nas águas</label>
+<input class="edicao-campo" id="DATA_BATISMO_AGUAS" name="DATA_BATISMO_AGUAS" type="date"/>
+</div>
+
+<div class="dado-item">
+<label class="dado-label" for="CARGO">Cargo</label>
+<select class="edicao-campo" id="CARGO" name="CARGO"><option value="">Selecione</option><option value="PASTOR">PASTOR</option><option value="PASTORA">PASTORA</option><option value="PRESBÍTERO">PRESBÍTERO</option><option value="EVANGELISTA">EVANGELISTA</option><option value="DIÁCONO">DIÁCONO</option><option value="DIACONISA">DIACONISA</option><option value="MISSIONÁRIO">MISSIONÁRIO</option><option value="MISSIONÁRIA">MISSIONÁRIA</option><option value="OBREIRO">OBREIRO</option><option value="OBREIRA">OBREIRA</option><option value="AUXILIAR DE TRABALHO">AUXILIAR DE TRABALHO</option><option value="MEMBRO">MEMBRO</option><option value="MEMBRA">MEMBRA</option></select>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="CONGREGACAO">Congregação</label>
+<select class="edicao-campo" id="CONGREGACAO" name="CONGREGACAO" required=""><option value="">Selecione</option><option value="Independência / Petrópolis">Independência / Petrópolis</option><option value="Km 51 / Xerém">Km 51 / Xerém</option></select>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="SITUACAO">Situação</label>
+<select class="edicao-campo" id="SITUACAO" name="SITUACAO"><option value="">Selecione</option><option selected="" value="ATIVO">Ativo</option><option value="CONGREGADO">Congregado</option><option value="VISITANTE">Visitante</option><option value="INATIVO">Inativo</option><option value="TRANSFERIDO">Transferido</option><option value="FALECIDO">Falecido</option></select>
+</div>
+
+<div class="dado-item">
+<label class="dado-label" for="DATA_ADMISSAO">Data de admissão</label>
+<input class="edicao-campo" id="DATA_ADMISSAO" name="DATA_ADMISSAO" type="date"/>
+</div>
+
+<div class="dado-item">
+<label class="dado-label" for="IGREJA_ORIGEM">Igreja de origem</label>
+<input class="edicao-campo" id="IGREJA_ORIGEM" name="IGREJA_ORIGEM" type="text"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="DATA_CONSAGRACAO">Data de consagração</label>
+<input class="edicao-campo" id="DATA_CONSAGRACAO" name="DATA_CONSAGRACAO" type="date"/>
+</div>
+
+</div>
+</div>
+</section>
+<section class="ficha-card ficha-card-largo">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">♧</span>
+<div>
+<h3 class="ficha-card-titulo">Filiação e casamento</h3>
+<p class="ficha-card-subtitulo">Dados familiares essenciais do membro</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<div class="dados-grid dados-grid-2">
+<div class="dado-item dado-item-largo">
+<label class="dado-label" for="NOME_PAI">Nome do pai</label>
+<input class="edicao-campo" id="NOME_PAI" name="NOME_PAI" type="text"/>
+</div>
+<div class="dado-item dado-item-largo">
+<label class="dado-label" for="NOME_MAE">Nome da mãe</label>
+<input class="edicao-campo" id="NOME_MAE" name="NOME_MAE" type="text"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="CONJUGE">Nome do cônjuge</label>
+<input class="edicao-campo" id="CONJUGE" name="CONJUGE" type="text"/>
+</div>
+<div class="dado-item">
+<label class="dado-label" for="DATA_CASAMENTO">Data do casamento</label>
+<input class="edicao-campo" id="DATA_CASAMENTO" name="DATA_CASAMENTO" type="date"/>
+</div>
+
+
+
+</div>
+</div>
+</section>
+<section class="ficha-card ficha-card-largo">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">✎</span>
+<div>
+<h3 class="ficha-card-titulo">Observações</h3>
+<p class="ficha-card-subtitulo">Anotações gerais sobre o cadastro</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<div class="dados-grid">
+<div class="dado-item dado-item-largo">
+<label class="dado-label" for="OBSERVACOES">Observações</label>
+<textarea class="edicao-campo" id="OBSERVACOES" name="OBSERVACOES" placeholder="Digite observações importantes sobre o cadastro." rows="4"></textarea>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="edicao-acoes-rodape">
+<a class="ficha-botao" href="membros.html" id="botaoCancelarRodape">
+              ← Cancelar
+            </a>
+<button class="ficha-botao ficha-botao-primario" data-permissao="membros-editar" id="botaoSalvarRodape" type="submit">
+              ✓ Salvar alterações
+            </button>
+</div>
+</form>
+<footer class="visualizar-rodape">
+          Vidas Renovadas Gestão — Projeto Neemias
+        </footer>
+</div>
+</main>
+</div>
+<div aria-hidden="true" class="carregamento-global" id="carregamentoGlobal">
+<div aria-live="polite" class="carregamento-caixa" role="status">
+<span aria-hidden="true" class="spinner"></span>
+<span>Carregando...</span>
+</div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function somenteNumeros(valor) {
+    return String(valor || "").replace(/\D/g, "");
   }
 
-  function definirValorCampo(nome, valor) {
-    const campo = localizarCampo(nome);
+  function formatarCPF(valor) {
+    const numeros = somenteNumeros(valor).slice(0, 11);
+    return numeros
+      .replace(/^(\d{3})(\d)/, "$1.$2")
+      .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+      .replace(/\.(\d{3})(\d)/, ".$1-$2");
+  }
+
+  function formatarTelefone(valor) {
+    const numeros = somenteNumeros(valor).slice(0, 11);
+    if (numeros.length <= 10) {
+      return numeros
+        .replace(/^(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{4})(\d)/, "$1-$2");
+    }
+    return numeros
+      .replace(/^(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{5})(\d)/, "$1-$2");
+  }
+
+  function formatarCEP(valor) {
+    return somenteNumeros(valor).slice(0, 8).replace(/^(\d{5})(\d)/, "$1-$2");
+  }
+
+  function aplicarMascara(id, formatador) {
+    const campo = document.getElementById(id);
     if (!campo) return;
-
-    let valorFinal = valor;
-
-    if (CAMPOS_DATA.has(nome)) {
-      valorFinal = normalizarDataParaCampo(valor);
-    } else {
-      valorFinal = valor === null || valor === undefined ? "" : String(valor);
-    }
-
-    if (campo instanceof HTMLSelectElement) {
-      garantirOpcaoSelect(campo, valorFinal);
-    }
-
-    campo.value = valorFinal;
-  }
-
-  function preencherFormulario(membro) {
-    Object.keys(membro).forEach((campo) => {
-      definirValorCampo(campo, membro[campo]);
-    });
-
-    const elementos = obterElementos();
-
-    if (elementos.campoId) {
-      elementos.campoId.value = idMembro;
-    }
-
-    if (elementos.campoFotoUrl) {
-      elementos.campoFotoUrl.value = normalizarTexto(
-        membro.FOTO_URL || membro.FOTO
-      );
-    }
-  }
-
-  function exibirFoto(endereco, nomeMembro = "") {
-    const { foto, fotoPlaceholder } = obterElementos();
-    if (!foto || !fotoPlaceholder) return;
-
-    const url = normalizarTexto(endereco);
-
-    if (!url) {
-      foto.hidden = true;
-      foto.removeAttribute("src");
-      fotoPlaceholder.hidden = false;
-      return;
-    }
-
-    foto.onload = () => {
-      foto.hidden = false;
-      fotoPlaceholder.hidden = true;
+    const atualizar = function () {
+      const inicio = campo.selectionStart;
+      const tamanhoAnterior = campo.value.length;
+      campo.value = formatador(campo.value);
+      if (inicio !== null) {
+        const diferenca = campo.value.length - tamanhoAnterior;
+        const novaPosicao = Math.max(0, inicio + diferenca);
+        campo.setSelectionRange(novaPosicao, novaPosicao);
+      }
     };
-
-    foto.onerror = () => {
-      foto.hidden = true;
-      foto.removeAttribute("src");
-      fotoPlaceholder.hidden = false;
-    };
-
-    foto.src = url;
-    foto.alt = `Foto de ${nomeMembro || "membro"}`;
+    campo.addEventListener("input", atualizar);
+    campo.addEventListener("blur", atualizar);
   }
 
-  function preencherFotoAtual(membro) {
-    const { statusFoto } = obterElementos();
-    const enderecoFoto = normalizarTexto(membro.FOTO_URL || membro.FOTO);
+  function iniciarFoto() {
+    const arquivo = document.getElementById("arquivoFotoMembro");
+    const foto = document.getElementById("fotoMembro");
+    const placeholder = document.getElementById("fotoMembroPlaceholder");
+    const status = document.getElementById("statusFoto");
+    if (!arquivo || !foto || !placeholder) return;
 
-    exibirFoto(enderecoFoto, membro.NOME_COMPLETO);
+    let urlAtual = "";
+    arquivo.addEventListener("change", function () {
+      const selecionado = arquivo.files && arquivo.files[0];
+      if (!selecionado) return;
 
-    if (statusFoto) {
-      statusFoto.textContent = enderecoFoto
-        ? "Foto atual do membro carregada."
-        : "Este membro ainda não possui foto cadastrada.";
-    }
-  }
+      const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
+      if (!tiposPermitidos.includes(selecionado.type)) {
+        arquivo.value = "";
+        if (status) status.textContent = "Selecione uma foto JPG, PNG ou WebP.";
+        return;
+      }
 
-  function obterValorCampo(nome) {
-    const campo = localizarCampo(nome);
-    return campo ? normalizarTexto(campo.value) : "";
-  }
+      if (selecionado.size > 5 * 1024 * 1024) {
+        arquivo.value = "";
+        if (status) status.textContent = "A foto deve ter no máximo 5 MB.";
+        return;
+      }
 
-  function atualizarResumo() {
-    const elementos = obterElementos();
-
-    if (elementos.resumoCodigo) {
-      elementos.resumoCodigo.textContent =
-        normalizarTexto(
-          membroCarregado &&
-          (membroCarregado.CODIGO || membroCarregado.ID || idMembro)
-        ) || "—";
-    }
-
-    if (elementos.resumoSituacao) {
-      elementos.resumoSituacao.textContent =
-        obterValorCampo("SITUACAO") || "Situação não informada";
-    }
-
-    if (elementos.resumoCarteirinha) {
-      elementos.resumoCarteirinha.textContent =
-        obterValorCampo("NUMERO_CARTEIRINHA") || "—";
-    }
-
-    if (elementos.resumoDataCadastro) {
-      elementos.resumoDataCadastro.textContent =
-        formatarDataResumo(membroCarregado && membroCarregado.DATA_CADASTRO);
-    }
-
-    if (elementos.resumoFamilia) {
-      elementos.resumoFamilia.textContent =
-        obterValorCampo("ID_FAMILIA") || "—";
-    }
-  }
-
-  function sincronizarEspelhoComCampo(espelho) {
-    const nomeCampo = espelho.dataset.espelhoCampo;
-    const campoPrincipal = localizarCampo(nomeCampo);
-    if (!campoPrincipal) return;
-
-    espelho.value = campoPrincipal.value;
-
-    const atualizarPrincipal = () => {
-      campoPrincipal.value = espelho.value;
-      campoPrincipal.dispatchEvent(new Event("input", { bubbles: true }));
-      campoPrincipal.dispatchEvent(new Event("change", { bubbles: true }));
-    };
-
-    espelho.addEventListener("input", atualizarPrincipal);
-    espelho.addEventListener("change", atualizarPrincipal);
-  }
-
-  function configurarEspelhos() {
-    document.querySelectorAll("[data-espelho-campo]").forEach((espelho) => {
-      sincronizarEspelhoComCampo(espelho);
-    });
-
-    ["CONGREGACAO", "CARGO"].forEach((nome) => {
-      const campo = localizarCampo(nome);
-      const espelho = document.querySelector(
-        `[data-espelho-campo="${nome}"]`
-      );
-
-      if (!campo || !espelho) return;
-
-      const atualizarEspelho = () => {
-        espelho.value = campo.value;
+      if (urlAtual) URL.revokeObjectURL(urlAtual);
+      urlAtual = URL.createObjectURL(selecionado);
+      foto.onload = function () {
+        foto.hidden = false;
+        placeholder.hidden = true;
+        if (status) status.textContent = selecionado.name;
       };
-
-      campo.addEventListener("input", atualizarEspelho);
-      campo.addEventListener("change", atualizarEspelho);
+      foto.onerror = function () {
+        foto.hidden = true;
+        placeholder.hidden = false;
+        if (status) status.textContent = "Não foi possível carregar a foto selecionada.";
+      };
+      foto.src = urlAtual;
+      foto.alt = "Pré-visualização da foto do membro";
     });
   }
 
-  function configurarAtualizacaoResumo() {
-    ["SITUACAO", "NUMERO_CARTEIRINHA", "ID_FAMILIA"].forEach((nome) => {
-      const campo = localizarCampo(nome);
+  function iniciarEspelhos() {
+    document.querySelectorAll("[data-espelho-campo]").forEach(function (espelho) {
+      const campo = document.getElementById(espelho.dataset.espelhoCampo);
       if (!campo) return;
-
-      campo.addEventListener("input", atualizarResumo);
-      campo.addEventListener("change", atualizarResumo);
+      const copiarParaCampo = function () { campo.value = espelho.value; campo.dispatchEvent(new Event("input", { bubbles: true })); };
+      const copiarParaEspelho = function () { espelho.value = campo.value; };
+      espelho.addEventListener("input", copiarParaCampo);
+      espelho.addEventListener("change", copiarParaCampo);
+      campo.addEventListener("input", copiarParaEspelho);
+      campo.addEventListener("change", copiarParaEspelho);
     });
   }
 
-  function configurarCancelamento() {
-    const destino = `visualizar-membro.html?id=${encodeURIComponent(idMembro)}`;
-    const { cancelarTopo, cancelarRodape } = obterElementos();
+  function iniciarCEP() {
+    const cep = document.getElementById("CEP");
+    const status = document.getElementById("statusCep");
+    if (!cep) return;
 
-    if (cancelarTopo) cancelarTopo.href = destino;
-    if (cancelarRodape) cancelarRodape.href = destino;
-  }
-
-  function liberarFormulario(liberar) {
-    if (!formulario) return;
-
-    formulario.querySelectorAll("input, select, textarea, button").forEach(
-      (elemento) => {
-        if (
-          elemento.id === "id" ||
-          elemento.id === "FOTO_URL" ||
-          elemento.readOnly
-        ) {
-          return;
-        }
-
-        elemento.disabled = !liberar;
+    async function consultar() {
+      const numeros = somenteNumeros(cep.value);
+      if (numeros.length !== 8) return;
+      if (status) status.textContent = "Buscando endereço...";
+      try {
+        const resposta = await fetch("https://viacep.com.br/ws/" + numeros + "/json/");
+        if (!resposta.ok) throw new Error("Falha na consulta");
+        const dados = await resposta.json();
+        if (dados.erro) throw new Error("CEP não encontrado");
+        const mapa = { ENDERECO: dados.logradouro, BAIRRO: dados.bairro, CIDADE: dados.localidade, ESTADO: dados.uf };
+        Object.entries(mapa).forEach(function ([id, valor]) {
+          const campo = document.getElementById(id);
+          if (campo && valor) campo.value = valor;
+        });
+        if (status) status.textContent = "Endereço preenchido automaticamente.";
+        const numero = document.getElementById("NUMERO");
+        if (numero) numero.focus();
+      } catch (erro) {
+        if (status) status.textContent = "CEP não encontrado. Preencha o endereço manualmente.";
       }
-    );
-  }
+    }
 
-  function definirEstadoSalvamento(salvando) {
-    const { botoesSalvar } = obterElementos();
-
-    botoesSalvar.forEach((botao) => {
-      if (!botao.dataset.textoOriginal) {
-        botao.dataset.textoOriginal =
-          botao.textContent.trim() || "Salvar alterações";
-      }
-
-      botao.disabled = salvando;
-      botao.textContent = salvando
-        ? "Salvando..."
-        : botao.dataset.textoOriginal;
+    cep.addEventListener("input", function () {
+      cep.value = formatarCEP(cep.value);
+      if (somenteNumeros(cep.value).length === 8) consultar();
+      else if (status) status.textContent = "Digite o CEP para preencher o endereço automaticamente.";
     });
+    cep.addEventListener("blur", consultar);
   }
 
-  function configurarSelecaoFoto() {
-    const { arquivoFoto, statusFoto } = obterElementos();
-    if (!arquivoFoto) return;
-
-    arquivoFoto.addEventListener("change", () => {
-      const arquivo = arquivoFoto.files && arquivoFoto.files[0];
-
-      if (!arquivo) {
-        arquivoFotoSelecionado = null;
-        return;
-      }
-
-      if (!["image/jpeg", "image/png", "image/webp"].includes(arquivo.type)) {
-        arquivoFoto.value = "";
-        arquivoFotoSelecionado = null;
-
-        if (statusFoto) {
-          statusFoto.textContent =
-            "Selecione uma imagem JPG, PNG ou WebP.";
-        }
-
-        window.VRG.erro("O formato da foto selecionada não é permitido.");
-        return;
-      }
-
-      arquivoFotoSelecionado = arquivo;
-
-      if (urlPreviewFoto) {
-        URL.revokeObjectURL(urlPreviewFoto);
-      }
-
-      urlPreviewFoto = URL.createObjectURL(arquivo);
-      exibirFoto(urlPreviewFoto, obterValorCampo("NOME_COMPLETO"));
-
-      if (statusFoto) {
-        statusFoto.textContent =
-          "Nova foto selecionada para visualização. O envio será conectado na etapa de upload.";
-      }
-    });
-  }
-
-  function prepararDados() {
-    const dados = window.VRG.formularioParaObjeto(formulario);
-
-    dados.id = idMembro;
-    delete dados.acao;
-
-    return dados;
-  }
-
-  async function buscarMembro() {
-    const resposta = await window.VR_API.enviar("buscarMembro", {
-      id: idMembro
-    });
-
-    if (!resposta.membro || typeof resposta.membro !== "object") {
-      throw new Error("O cadastro do membro não foi retornado pela API.");
-    }
-
-    return resposta.membro;
-  }
-
-  async function carregarMembro() {
-    try {
-      const membro = await window.VRG.comCarregamento(
-        buscarMembro,
-        "Carregando dados do membro..."
-      );
-
-      membroCarregado = membro;
-      preencherFormulario(membro);
-      preencherFotoAtual(membro);
-      configurarCancelamento();
-      configurarEspelhos();
-      configurarAtualizacaoResumo();
-      atualizarResumo();
-      liberarFormulario(true);
-      definirAviso("", false);
-    } catch (falha) {
-      console.error("[Editar membro] Erro ao carregar:", falha);
-
-      liberarFormulario(false);
-      definirAviso(
-        falha.message || "Não foi possível carregar os dados do membro."
-      );
-
-      window.VRG.erro(
-        falha.message || "Não foi possível carregar os dados do membro."
-      );
-    }
-  }
-
-  async function salvarAlteracoes(evento) {
-    evento.preventDefault();
-
-    if (!window.VRG.validarFormulario(formulario)) {
-      return;
-    }
-
-    if (arquivoFotoSelecionado) {
-      window.VRG.erro(
-        "A nova foto foi apenas pré-visualizada. Conectaremos o envio da foto na próxima etapa."
-      );
-      return;
-    }
-
-    const dados = prepararDados();
-    definirEstadoSalvamento(true);
-
-    try {
-      await window.VRG.comCarregamento(
-        async () => {
-          await window.VR_API.enviar("atualizarMembro", {
-            dados
-          });
-        },
-        "Salvando alterações..."
-      );
-
-      window.VRG.sucesso("Cadastro atualizado com sucesso.");
-
-      window.setTimeout(() => {
-        window.VRG.navegar(
-          `visualizar-membro.html?id=${encodeURIComponent(idMembro)}`
-        );
-      }, 650);
-    } catch (falha) {
-      console.error("[Editar membro] Erro ao salvar:", falha);
-
-      window.VRG.erro(
-        falha.message || "Não foi possível salvar as alterações."
-      );
-    } finally {
-      definirEstadoSalvamento(false);
-    }
-  }
-
-  function inicializar() {
-    formulario = document.getElementById("formEditarMembro");
-
-    if (!formulario || !window.VRG || !window.VR_API) {
-      definirAviso(
-        "Os recursos necessários da página não foram carregados corretamente."
-      );
-      return;
-    }
-
-    idMembro = normalizarTexto(window.VRG.obterParametro("id"));
-
-    if (!idMembro) {
-      definirAviso("Não foi informado qual membro deve ser editado.");
-      liberarFormulario(false);
-      window.VRG.erro("O identificador do membro não foi informado.");
-      return;
-    }
-
-    liberarFormulario(false);
-    configurarSelecaoFoto();
-    formulario.addEventListener("submit", salvarAlteracoes);
-    carregarMembro();
-  }
-
-  window.addEventListener("beforeunload", () => {
-    if (urlPreviewFoto) {
-      URL.revokeObjectURL(urlPreviewFoto);
-    }
+  document.addEventListener("DOMContentLoaded", function () {
+    aplicarMascara("CPF", formatarCPF);
+    aplicarMascara("TELEFONE", formatarTelefone);
+    aplicarMascara("WHATSAPP", formatarTelefone);
+    iniciarFoto();
+    iniciarEspelhos();
+    iniciarCEP();
   });
+})();
+</script>
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", inicializar, { once: true });
-  } else {
-    inicializar();
-  }
-})(window, document);
+<script src="js/configuracoes.js?v=2"></script>
+<script src="js/api.js?v=2"></script>
+<script src="js/app.js?v=2"></script>
+<script src="js/auth.js?v=2"></script>
+<script src="js/membro-formulario.js?v=2"></script>
+<script src="js/editar-membro.js?v=2"></script>
+</body>
+</html>
