@@ -1,4 +1,3 @@
-NOVO MEMBRO HTML 09:28
 <!DOCTYPE html>
 
 <html lang="pt-BR">
@@ -817,8 +816,8 @@ NOVO MEMBRO HTML 09:28
 <div class="membro-resumo-conteudo edicao-resumo">
 <p class="membro-resumo-etiqueta">Novo cadastro ministerial</p>
 <div>
-<label class="dado-label" for="NOME_COMPLETO">Nome completo</label>
-<input class="edicao-campo" id="NOME_COMPLETO" name="NOME_COMPLETO" placeholder="Nome completo do membro" required="" type="text"/>
+<label class="dado-label" for="resumoNomeCompleto">Nome completo</label>
+<input class="edicao-campo" data-espelho-campo="NOME_COMPLETO" id="resumoNomeCompleto" placeholder="Nome completo do membro" type="text"/>
 </div>
 <div class="edicao-resumo-linha">
 <div>
@@ -861,7 +860,10 @@ NOVO MEMBRO HTML 09:28
 </header>
 <div class="ficha-card-corpo">
 <div class="dados-grid dados-grid-3">
-
+<div class="dado-item dado-item-largo">
+<label class="dado-label" for="NOME_COMPLETO">Nome completo</label>
+<input class="edicao-campo" id="NOME_COMPLETO" name="NOME_COMPLETO" required="" type="text"/>
+</div>
 <div class="dado-item">
 <label class="dado-label" for="DATA_NASCIMENTO">Data de nascimento</label>
 <input class="edicao-campo" id="DATA_NASCIMENTO" name="DATA_NASCIMENTO" type="date"/>
