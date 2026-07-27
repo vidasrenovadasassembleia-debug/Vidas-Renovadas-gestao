@@ -591,6 +591,7 @@ function prepararDadosApi(dadosOriginais) {
     obterAuth,
     obterFormulario,
     obterDados,
+    prepararDadosApi,
     validar,
     mostrarAviso,
     definirCarregando,
