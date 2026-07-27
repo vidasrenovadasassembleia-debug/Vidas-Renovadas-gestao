@@ -1,27 +1,16 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
+
 <html lang="pt-BR">
-
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>Visualizar membro | Vidas Renovadas Gestão</title>
-
-  <meta
-    name="description"
-    content="Ficha digital completa do membro da Igreja Vidas Renovadas."
-  >
-
-  <meta name="theme-color" content="#071f3b">
-
-  <link rel="icon" type="image/png" href="logo.png">
-  <link rel="stylesheet" href="css/estilo.css?v=50">
-
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Visualizar membro | Vidas Renovadas Gestão</title>
+<meta content="Ficha digital completa do membro da Igreja Vidas Renovadas." name="description"/>
+<meta content="#071f3b" name="theme-color"/>
+<link href="logo.png" rel="icon" type="image/png"/>
+<link href="css/estilo.css?v=50" rel="stylesheet"/>
+<style>
     /* =========================================================
        VISUALIZAR MEMBRO
        Ficha digital oficial do membro
@@ -610,734 +599,429 @@
     }
   </style>
 </head>
-
 <body class="sistema-page" data-page="membros">
-
-  <div class="sistema-layout">
-
-    <aside class="sidebar" aria-label="Menu principal">
-
-      <div class="sidebar-topo">
-
-        <div class="sidebar-logo-box">
-          <img
-            class="sidebar-logo"
-            src="logo.png"
-            alt="Logo da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas"
-          >
-        </div>
-
-        <div class="sidebar-identidade">
-          <p class="sidebar-nome">Vidas Renovadas Gestão</p>
-          <p class="sidebar-ministerio">Ministério Vidas Renovadas</p>
-        </div>
-
-      </div>
-
-      <nav class="menu-navegacao">
-
-        <div class="menu-grupo">
-          <p class="menu-grupo-titulo">Visão geral</p>
-
-          <a class="menu-item" href="dashboard.html" data-page="dashboard">
-            <span class="menu-item-icone" aria-hidden="true">⌂</span>
-            <span>Dashboard</span>
-          </a>
-        </div>
-
-        <div class="menu-grupo">
-          <p class="menu-grupo-titulo">Pessoas</p>
-
-          <a class="menu-item" href="membros.html" data-page="membros">
-            <span class="menu-item-icone" aria-hidden="true">♙</span>
-            <span>Membros</span>
-          </a>
-
-          <a class="menu-item" href="familias.html" data-page="familias">
-            <span class="menu-item-icone" aria-hidden="true">♧</span>
-            <span>Famílias</span>
-          </a>
-
-          <a class="menu-item" href="congregacoes.html" data-page="congregacoes">
-            <span class="menu-item-icone" aria-hidden="true">⌂</span>
-            <span>Congregações</span>
-          </a>
-        </div>
-
-        <div class="menu-grupo">
-          <p class="menu-grupo-titulo">Documentos</p>
-
-          <a class="menu-item" href="carteirinhas.html" data-page="carteirinhas">
-            <span class="menu-item-icone" aria-hidden="true">▣</span>
-            <span>Carteirinhas</span>
-          </a>
-
-          <a class="menu-item" href="certificados/index.html" data-page="certificados">
-            <span class="menu-item-icone" aria-hidden="true">◇</span>
-            <span>Certificados</span>
-          </a>
-        </div>
-
-        <div class="menu-grupo">
-          <p class="menu-grupo-titulo">Gestão</p>
-
-          <a class="menu-item" href="financeiro.html" data-page="financeiro">
-            <span class="menu-item-icone" aria-hidden="true">R$</span>
-            <span>Financeiro</span>
-          </a>
-
-          <a class="menu-item" href="relatorios.html" data-page="relatorios">
-            <span class="menu-item-icone" aria-hidden="true">▤</span>
-            <span>Relatórios</span>
-          </a>
-
-          <a
-            class="menu-item"
-            href="configuracoes.html"
-            data-page="configuracoes"
-            data-permissao="administracao"
-          >
-            <span class="menu-item-icone" aria-hidden="true">⚙</span>
-            <span>Administração</span>
-          </a>
-        </div>
-
-      </nav>
-
-      <div class="sidebar-rodape">
-        <div class="usuario-sidebar">
-
-          <div class="usuario-avatar" data-usuario-iniciais>VR</div>
-
-          <div class="usuario-sidebar-dados">
-            <div class="usuario-sidebar-nome" data-usuario-nome>Usuário</div>
-            <div class="usuario-sidebar-cargo" data-usuario-cargo>Carregando perfil...</div>
-          </div>
-
-          <button
-            type="button"
-            class="botao-sair-sidebar"
-            data-acao="logout"
-            data-confirmar-logout="true"
-            aria-label="Sair do sistema"
-            title="Sair do sistema"
-          >
+<div class="sistema-layout">
+<aside aria-label="Menu principal" class="sidebar">
+<div class="sidebar-topo">
+<div class="sidebar-logo-box">
+<img alt="Logo da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas" class="sidebar-logo" src="logo.png"/>
+</div>
+<div class="sidebar-identidade">
+<p class="sidebar-nome">Vidas Renovadas Gestão</p>
+<p class="sidebar-ministerio">Ministério Vidas Renovadas</p>
+</div>
+</div>
+<nav class="menu-navegacao">
+<div class="menu-grupo">
+<p class="menu-grupo-titulo">Visão geral</p>
+<a class="menu-item" data-page="dashboard" href="dashboard.html">
+<span aria-hidden="true" class="menu-item-icone">⌂</span>
+<span>Dashboard</span>
+</a>
+</div>
+<div class="menu-grupo">
+<p class="menu-grupo-titulo">Pessoas</p>
+<a class="menu-item" data-page="membros" href="membros.html">
+<span aria-hidden="true" class="menu-item-icone">♙</span>
+<span>Membros</span>
+</a>
+<a class="menu-item" data-page="familias" href="familias.html">
+<span aria-hidden="true" class="menu-item-icone">♧</span>
+<span>Famílias</span>
+</a>
+<a class="menu-item" data-page="congregacoes" href="congregacoes.html">
+<span aria-hidden="true" class="menu-item-icone">⌂</span>
+<span>Congregações</span>
+</a>
+</div>
+<div class="menu-grupo">
+<p class="menu-grupo-titulo">Documentos</p>
+<a class="menu-item" data-page="carteirinhas" href="carteirinhas.html">
+<span aria-hidden="true" class="menu-item-icone">▣</span>
+<span>Carteirinhas</span>
+</a>
+<a class="menu-item" data-page="certificados" href="certificados/index.html">
+<span aria-hidden="true" class="menu-item-icone">◇</span>
+<span>Certificados</span>
+</a>
+</div>
+<div class="menu-grupo">
+<p class="menu-grupo-titulo">Gestão</p>
+<a class="menu-item" data-page="financeiro" href="financeiro.html">
+<span aria-hidden="true" class="menu-item-icone">R$</span>
+<span>Financeiro</span>
+</a>
+<a class="menu-item" data-page="relatorios" href="relatorios.html">
+<span aria-hidden="true" class="menu-item-icone">▤</span>
+<span>Relatórios</span>
+</a>
+<a class="menu-item" data-page="configuracoes" data-permissao="administracao" href="configuracoes.html">
+<span aria-hidden="true" class="menu-item-icone">⚙</span>
+<span>Administração</span>
+</a>
+</div>
+</nav>
+<div class="sidebar-rodape">
+<div class="usuario-sidebar">
+<div class="usuario-avatar" data-usuario-iniciais="">VR</div>
+<div class="usuario-sidebar-dados">
+<div class="usuario-sidebar-nome" data-usuario-nome="">Usuário</div>
+<div class="usuario-sidebar-cargo" data-usuario-cargo="">Carregando perfil...</div>
+</div>
+<button aria-label="Sair do sistema" class="botao-sair-sidebar" data-acao="logout" data-confirmar-logout="true" title="Sair do sistema" type="button">
             ↪
           </button>
-
-        </div>
-      </div>
-
-    </aside>
-
-    <div class="overlay-menu" data-acao="fechar-menu"></div>
-
-    <main class="sistema-main">
-
-      <header class="topbar">
-
-        <div class="topbar-esquerda">
-
-          <button
-            type="button"
-            class="botao-menu-mobile"
-            data-acao="alternar-menu"
-            aria-label="Abrir menu"
-            aria-expanded="false"
-          >
+</div>
+</div>
+</aside>
+<div class="overlay-menu" data-acao="fechar-menu"></div>
+<main class="sistema-main">
+<header class="topbar">
+<div class="topbar-esquerda">
+<button aria-expanded="false" aria-label="Abrir menu" class="botao-menu-mobile" data-acao="alternar-menu" type="button">
             ☰
           </button>
-
-          <div>
-            <h1 class="topbar-titulo">Ficha do membro</h1>
-            <p class="topbar-subtitulo">Consulta completa do cadastro ministerial</p>
-          </div>
-
-        </div>
-
-        <div class="topbar-direita">
-
-          <div class="topbar-data">
-            <strong id="dataAtual">—</strong><br>
-            <span id="horaAtual">—</span>
-          </div>
-
-          <div class="topbar-avatar" data-usuario-iniciais>VR</div>
-
-        </div>
-
-      </header>
-
-      <div class="sistema-conteudo">
-
-        <section class="visualizar-apresentacao">
-
-          <div>
-            <p class="visualizar-etiqueta">Secretaria</p>
-            <h2 class="visualizar-titulo">Ficha digital do membro</h2>
-            <p class="visualizar-descricao">
-              Consulte os dados pessoais, familiares, eclesiásticos e documentais do membro.
-            </p>
-          </div>
-
-          <div class="visualizar-acoes">
-
-            <a class="ficha-botao" href="membros.html">
+<div>
+<h1 class="topbar-titulo">Visualizar membro</h1>
+<p class="topbar-subtitulo">Consulta completa da ficha ministerial</p>
+</div>
+</div>
+<div class="topbar-direita">
+<div class="topbar-data">
+<strong id="dataAtual">—</strong><br/>
+<span id="horaAtual">—</span>
+</div>
+<div class="topbar-avatar" data-usuario-iniciais="">VR</div>
+</div>
+</header>
+<div class="sistema-conteudo">
+<section class="visualizar-apresentacao">
+<div>
+<p class="visualizar-etiqueta">Secretaria</p>
+<h2 class="visualizar-titulo">Ficha digital do membro</h2>
+<p class="visualizar-descricao">Consulte os dados pessoais, de contato, endereço, filiação, casamento e vida cristã do membro.</p>
+</div>
+<div class="visualizar-acoes">
+<a class="ficha-botao" href="membros.html">
               ← Voltar
             </a>
-
-            <button
-              type="button"
-              class="ficha-botao"
-              id="botaoEditarMembro"
-              data-permissao="membros-editar"
-              disabled
-              title="A integração será feita na próxima etapa"
-            >
+<button class="ficha-botao" data-permissao="membros-editar" disabled="" id="botaoEditarMembro" title="A integração será feita na próxima etapa" type="button">
               ✎ Editar
             </button>
-
-            <button
-              type="button"
-              class="ficha-botao"
-              id="botaoImprimirFicha"
-              onclick="window.print()"
-            >
+<button class="ficha-botao" id="botaoImprimirFicha" onclick="window.print()" type="button">
               ▤ Imprimir
             </button>
-
-            <button
-              type="button"
-              class="ficha-botao ficha-botao-dourado"
-              id="botaoAbrirCarteirinha"
-              disabled
-              title="A integração será feita na próxima etapa"
-            >
+<button class="ficha-botao ficha-botao-dourado" disabled="" id="botaoAbrirCarteirinha" title="A integração será feita na próxima etapa" type="button">
               ▣ Carteirinha
             </button>
-
-          </div>
-
-        </section>
-
-        <div class="ficha-aviso ativo" id="avisoFicha">
+</div>
+</section>
+<div class="ficha-aviso ativo" id="avisoFicha">
           Estrutura visual pronta. Os dados reais serão conectados ao sistema na próxima etapa.
         </div>
-
-        <section class="membro-resumo" aria-label="Resumo do membro">
-
-          <div class="membro-foto-box">
-            <div class="membro-foto-placeholder" id="fotoMembroPlaceholder">
-              FOTO DO<br>MEMBRO
+<section aria-label="Resumo do membro" class="membro-resumo">
+<div class="membro-foto-box">
+<div class="membro-foto-placeholder" id="fotoMembroPlaceholder">
+              FOTO DO<br/>MEMBRO
             </div>
-
-            <img
-              class="membro-foto"
-              id="fotoMembro"
-              alt="Foto do membro"
-              hidden
-            >
-          </div>
-
-          <div class="membro-resumo-conteudo">
-
-            <p class="membro-resumo-etiqueta">Identificação ministerial</p>
-
-            <h3 class="membro-nome" data-campo="NOME_COMPLETO">
+<img alt="Foto do membro" class="membro-foto" hidden="" id="fotoMembro"/>
+</div>
+<div class="membro-resumo-conteudo">
+<p class="membro-resumo-etiqueta">Identificação ministerial</p>
+<h3 class="membro-nome" data-campo="NOME_COMPLETO">
               Nome completo do membro
             </h3>
-
-            <p class="membro-congregacao" data-campo="CONGREGACAO">
+<p class="membro-congregacao" data-campo="CONGREGACAO">
               Congregação não informada
             </p>
-
-            <div class="membro-identificadores">
-
-              <span class="ficha-badge ficha-badge-codigo">
+<div class="membro-identificadores">
+<span class="ficha-badge ficha-badge-codigo">
                 ID:
                 <strong data-campo="CODIGO">—</strong>
-              </span>
-
-              <span class="ficha-badge ficha-badge-cargo">
-                <span class="ficha-badge-ponto" aria-hidden="true"></span>
-                <span data-campo="CARGO">Cargo não informado</span>
-              </span>
-
-              <span class="ficha-badge ficha-badge-situacao">
-                <span class="ficha-badge-ponto" aria-hidden="true"></span>
-                <span data-campo="SITUACAO">Situação não informada</span>
-              </span>
-
-            </div>
-
-          </div>
-
-          <div class="membro-resumo-lateral">
-
-            <div class="resumo-dado">
-              <span class="resumo-dado-label">Carteirinha</span>
-              <span class="resumo-dado-valor" data-campo="NUMERO_CARTEIRINHA">—</span>
-            </div>
-
-            <div class="resumo-dado">
-              <span class="resumo-dado-label">Data de cadastro</span>
-              <span class="resumo-dado-valor" data-campo="DATA_CADASTRO">—</span>
-            </div>
-
-            <div class="resumo-dado">
-              <span class="resumo-dado-label">Família vinculada</span>
-              <span class="resumo-dado-valor" data-campo="ID_FAMILIA">—</span>
-            </div>
-
-          </div>
-
-        </section>
-
-        <div class="ficha-grid">
-
-          <!-- DADOS PESSOAIS -->
-
-          <section class="ficha-card ficha-card-largo ficha-card-dados-pessoais">
-
-            <header class="ficha-card-cabecalho">
-              <div class="ficha-card-titulo-area">
-                <span class="ficha-card-icone" aria-hidden="true">♙</span>
-                <div>
-                  <h3 class="ficha-card-titulo">Dados pessoais</h3>
-                  <p class="ficha-card-subtitulo">Identificação civil e contatos do membro</p>
-                </div>
-              </div>
-            </header>
-
-            <div class="ficha-card-corpo">
-
-              <div class="dados-grid dados-grid-3">
-
-                <div class="dado-item dado-item-largo">
-                  <span class="dado-label">Nome completo</span>
-                  <span class="dado-valor" data-campo="NOME_COMPLETO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Data de nascimento</span>
-                  <span class="dado-valor" data-campo="DATA_NASCIMENTO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Sexo</span>
-                  <span class="dado-valor" data-campo="SEXO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Estado civil</span>
-                  <span class="dado-valor" data-campo="ESTADO_CIVIL">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Profissão</span>
-                  <span class="dado-valor" data-campo="PROFISSAO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Naturalidade</span>
-                  <span class="dado-valor" data-campo="NATURALIDADE">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Nacionalidade</span>
-                  <span class="dado-valor" data-campo="NACIONALIDADE">—</span>
-                </div>
-
-              </div>
-
-              <div class="dados-pessoais-divisor" aria-hidden="true"></div>
-
-              <div class="dados-grid dados-grid-3">
-
-                <div class="dado-item">
-                  <span class="dado-label">Telefone</span>
-                  <span class="dado-valor" data-campo="TELEFONE">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">WhatsApp</span>
-                  <span class="dado-valor" data-campo="WHATSAPP">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">E-mail</span>
-                  <span class="dado-valor" data-campo="EMAIL">—</span>
-                </div>
-
-              </div>
-
-            </div>
-
-          </section>
-
-          <!-- DOCUMENTOS -->
-
-          <section class="ficha-card">
-
-            <header class="ficha-card-cabecalho">
-              <div class="ficha-card-titulo-area">
-                <span class="ficha-card-icone" aria-hidden="true">▤</span>
-                <div>
-                  <h3 class="ficha-card-titulo">Documentos</h3>
-                  <p class="ficha-card-subtitulo">Registros e identificação oficial</p>
-                </div>
-              </div>
-            </header>
-
-            <div class="ficha-card-corpo">
-              <div class="dados-grid">
-
-                <div class="dado-item">
-                  <span class="dado-label">CPF</span>
-                  <span class="dado-valor" data-campo="CPF">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">RG</span>
-                  <span class="dado-valor" data-campo="RG">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Órgão emissor</span>
-                  <span class="dado-valor" data-campo="ORGAO_EMISSOR">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Data de emissão</span>
-                  <span class="dado-valor" data-campo="DATA_EMISSAO_RG">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Título de eleitor</span>
-                  <span class="dado-valor" data-campo="TITULO_ELEITOR">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Certidão</span>
-                  <span class="dado-valor" data-campo="CERTIDAO">—</span>
-                </div>
-
-              </div>
-            </div>
-
-          </section>
-
-          <!-- ENDEREÇO -->
-
-          <section class="ficha-card">
-
-            <header class="ficha-card-cabecalho">
-              <div class="ficha-card-titulo-area">
-                <span class="ficha-card-icone" aria-hidden="true">⌂</span>
-                <div>
-                  <h3 class="ficha-card-titulo">Endereço</h3>
-                  <p class="ficha-card-subtitulo">Residência e localização</p>
-                </div>
-              </div>
-            </header>
-
-            <div class="ficha-card-corpo">
-              <div class="dados-grid">
-
-                <div class="dado-item">
-                  <span class="dado-label">CEP</span>
-                  <span class="dado-valor" data-campo="CEP">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Número</span>
-                  <span class="dado-valor" data-campo="NUMERO">—</span>
-                </div>
-
-                <div class="dado-item dado-item-largo">
-                  <span class="dado-label">Endereço</span>
-                  <span class="dado-valor" data-campo="ENDERECO">—</span>
-                </div>
-
-                <div class="dado-item dado-item-largo">
-                  <span class="dado-label">Complemento</span>
-                  <span class="dado-valor" data-campo="COMPLEMENTO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Bairro</span>
-                  <span class="dado-valor" data-campo="BAIRRO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Cidade</span>
-                  <span class="dado-valor" data-campo="CIDADE">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Estado</span>
-                  <span class="dado-valor" data-campo="ESTADO">—</span>
-                </div>
-
-              </div>
-            </div>
-
-          </section>
-
-          <!-- VIDA CRISTÃ -->
-
-          <section class="ficha-card ficha-card-largo">
-
-            <header class="ficha-card-cabecalho">
-              <div class="ficha-card-titulo-area">
-                <span class="ficha-card-icone" aria-hidden="true">◇</span>
-                <div>
-                  <h3 class="ficha-card-titulo">Vida cristã e ministerial</h3>
-                  <p class="ficha-card-subtitulo">Histórico e vínculo eclesiástico</p>
-                </div>
-              </div>
-            </header>
-
-            <div class="ficha-card-corpo">
-              <div class="dados-grid dados-grid-3">
-
-                <div class="dado-item">
-                  <span class="dado-label">Data da conversão</span>
-                  <span class="dado-valor" data-campo="DATA_CONVERSAO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Batismo nas águas</span>
-                  <span class="dado-valor" data-campo="DATA_BATISMO_AGUAS">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Batismo no Espírito Santo</span>
-                  <span class="dado-valor" data-campo="DATA_BATISMO_ESPIRITO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Cargo</span>
-                  <span class="dado-valor" data-campo="CARGO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Congregação</span>
-                  <span class="dado-valor" data-campo="CONGREGACAO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Situação</span>
-                  <span class="dado-valor" data-campo="SITUACAO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Departamento</span>
-                  <span class="dado-valor" data-campo="DEPARTAMENTO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Data de admissão</span>
-                  <span class="dado-valor" data-campo="DATA_ADMISSAO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Forma de recebimento</span>
-                  <span class="dado-valor" data-campo="FORMA_RECEBIMENTO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Igreja de origem</span>
-                  <span class="dado-valor" data-campo="IGREJA_ORIGEM">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Data de consagração</span>
-                  <span class="dado-valor" data-campo="DATA_CONSAGRACAO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Ministério</span>
-                  <span class="dado-valor" data-campo="MINISTERIO">—</span>
-                </div>
-
-              </div>
-            </div>
-
-          </section>
-
-          <!-- FAMÍLIA -->
-
-          <section class="ficha-card ficha-card-largo">
-
-            <header class="ficha-card-cabecalho">
-              <div class="ficha-card-titulo-area">
-                <span class="ficha-card-icone" aria-hidden="true">♧</span>
-                <div>
-                  <h3 class="ficha-card-titulo">Família</h3>
-                  <p class="ficha-card-subtitulo">Vínculos e informações familiares</p>
-                </div>
-              </div>
-            </header>
-
-            <div class="ficha-card-corpo">
-              <div class="dados-grid dados-grid-3">
-
-                <div class="dado-item">
-                  <span class="dado-label">Nome do pai</span>
-                  <span class="dado-valor" data-campo="NOME_PAI">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Nome da mãe</span>
-                  <span class="dado-valor" data-campo="NOME_MAE">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Cônjuge</span>
-                  <span class="dado-valor" data-campo="CONJUGE">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Data do casamento</span>
-                  <span class="dado-valor" data-campo="DATA_CASAMENTO">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">Quantidade de filhos</span>
-                  <span class="dado-valor" data-campo="QUANTIDADE_FILHOS">—</span>
-                </div>
-
-                <div class="dado-item">
-                  <span class="dado-label">ID da família</span>
-                  <span class="dado-valor" data-campo="ID_FAMILIA">—</span>
-                </div>
-
-                <div class="dado-item dado-item-largo">
-                  <span class="dado-label">Filhos</span>
-                  <span class="dado-valor" data-campo="FILHOS">—</span>
-                </div>
-
-              </div>
-            </div>
-
-          </section>
-
-          <!-- CARTEIRINHA -->
-
-          <section class="ficha-card ficha-card-largo">
-
-            <header class="ficha-card-cabecalho">
-              <div class="ficha-card-titulo-area">
-                <span class="ficha-card-icone" aria-hidden="true">▣</span>
-                <div>
-                  <h3 class="ficha-card-titulo">Carteirinha</h3>
-                  <p class="ficha-card-subtitulo">Dados do documento de identificação ministerial</p>
-                </div>
-              </div>
-            </header>
-
-            <div class="ficha-card-corpo">
-
-              <div class="carteirinha-area">
-
-                <div class="carteirinha-dados">
-
-                  <div class="dado-item">
-                    <span class="dado-label">Número</span>
-                    <span class="dado-valor" data-campo="NUMERO_CARTEIRINHA">—</span>
-                  </div>
-
-                  <div class="dado-item">
-                    <span class="dado-label">Data de emissão</span>
-                    <span class="dado-valor" data-campo="DATA_EMISSAO_CARTEIRINHA">—</span>
-                  </div>
-
-                  <div class="dado-item">
-                    <span class="dado-label">Validade</span>
-                    <span class="dado-valor" data-campo="VALIDADE_CARTEIRINHA">—</span>
-                  </div>
-
-                  <div class="dado-item">
-                    <span class="dado-label">Status</span>
-                    <span class="dado-valor" data-campo="STATUS_CARTEIRINHA">—</span>
-                  </div>
-
-                  <div class="dado-item">
-                    <span class="dado-label">Código digital</span>
-                    <span class="dado-valor" data-campo="CODIGO_DIGITAL">—</span>
-                  </div>
-
-                  <div class="dado-item">
-                    <span class="dado-label">Última atualização</span>
-                    <span class="dado-valor" data-campo="ATUALIZADO_EM">—</span>
-                  </div>
-
-                </div>
-
-                <div class="qr-box" id="qrCodeMembro" aria-label="Área do QR Code">
-                  QR CODE
-                </div>
-
-              </div>
-
-            </div>
-
-          </section>
-
-          <!-- OBSERVAÇÕES -->
-
-          <section class="ficha-card ficha-card-largo">
-
-            <header class="ficha-card-cabecalho">
-              <div class="ficha-card-titulo-area">
-                <span class="ficha-card-icone" aria-hidden="true">✎</span>
-                <div>
-                  <h3 class="ficha-card-titulo">Observações</h3>
-                  <p class="ficha-card-subtitulo">Anotações gerais sobre o cadastro</p>
-                </div>
-              </div>
-            </header>
-
-            <div class="ficha-card-corpo">
-              <p class="observacoes-texto" data-campo="OBSERVACOES">
+</span>
+<span class="ficha-badge ficha-badge-cargo">
+<span aria-hidden="true" class="ficha-badge-ponto"></span>
+<span data-campo="CARGO">Cargo não informado</span>
+</span>
+<span class="ficha-badge ficha-badge-situacao">
+<span aria-hidden="true" class="ficha-badge-ponto"></span>
+<span data-campo="SITUACAO">Situação não informada</span>
+</span>
+</div>
+</div>
+<div class="membro-resumo-lateral">
+<div class="resumo-dado">
+<span class="resumo-dado-label">Carteirinha</span>
+<span class="resumo-dado-valor" data-campo="NUMERO_CARTEIRINHA">—</span>
+</div>
+<div class="resumo-dado">
+<span class="resumo-dado-label">Data de cadastro</span>
+<span class="resumo-dado-valor" data-campo="DATA_CADASTRO">—</span>
+</div>
+<div class="resumo-dado">
+<span class="resumo-dado-label">Família vinculada</span>
+<span class="resumo-dado-valor" data-campo="ID_FAMILIA">—</span>
+</div>
+</div>
+</section>
+<div class="ficha-grid">
+<!-- DADOS PESSOAIS -->
+<section class="ficha-card ficha-card-largo ficha-card-dados-pessoais">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">♙</span>
+<div>
+<h3 class="ficha-card-titulo">Dados pessoais</h3>
+<p class="ficha-card-subtitulo">Identificação civil e contatos do membro</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<div class="dados-grid dados-grid-3">
+
+<div class="dado-item">
+<span class="dado-label">Data de nascimento</span>
+<span class="dado-valor" data-campo="DATA_NASCIMENTO">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Sexo</span>
+<span class="dado-valor" data-campo="SEXO">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Estado civil</span>
+<span class="dado-valor" data-campo="ESTADO_CIVIL">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Profissão</span>
+<span class="dado-valor" data-campo="PROFISSAO">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Naturalidade</span>
+<span class="dado-valor" data-campo="NATURALIDADE">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Nacionalidade</span>
+<span class="dado-valor" data-campo="NACIONALIDADE">—</span>
+</div>
+</div>
+<div aria-hidden="true" class="dados-pessoais-divisor"></div>
+<div class="dados-grid dados-grid-3">
+<div class="dado-item">
+<span class="dado-label">Telefone</span>
+<span class="dado-valor" data-campo="TELEFONE">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">WhatsApp</span>
+<span class="dado-valor" data-campo="WHATSAPP">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">E-mail</span>
+<span class="dado-valor" data-campo="EMAIL">—</span>
+</div>
+</div>
+</div>
+</section>
+<!-- DOCUMENTOS -->
+<section class="ficha-card">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">▤</span>
+<div>
+<h3 class="ficha-card-titulo">Documentos</h3>
+<p class="ficha-card-subtitulo">Registros e identificação oficial</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<div class="dados-grid">
+<div class="dado-item">
+<span class="dado-label">CPF</span>
+<span class="dado-valor" data-campo="CPF">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">RG</span>
+<span class="dado-valor" data-campo="RG">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Órgão emissor</span>
+<span class="dado-valor" data-campo="ORGAO_EMISSOR">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Data de emissão</span>
+<span class="dado-valor" data-campo="DATA_EMISSAO_RG">—</span>
+</div>
+
+
+</div>
+</div>
+</section>
+<!-- ENDEREÇO -->
+<section class="ficha-card">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">⌂</span>
+<div>
+<h3 class="ficha-card-titulo">Endereço</h3>
+<p class="ficha-card-subtitulo">Residência e localização</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<div class="dados-grid">
+<div class="dado-item">
+<span class="dado-label">CEP</span>
+<span class="dado-valor" data-campo="CEP">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Número</span>
+<span class="dado-valor" data-campo="NUMERO">—</span>
+</div>
+<div class="dado-item dado-item-largo">
+<span class="dado-label">Endereço</span>
+<span class="dado-valor" data-campo="ENDERECO">—</span>
+</div>
+<div class="dado-item dado-item-largo">
+<span class="dado-label">Complemento</span>
+<span class="dado-valor" data-campo="COMPLEMENTO">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Bairro</span>
+<span class="dado-valor" data-campo="BAIRRO">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Cidade</span>
+<span class="dado-valor" data-campo="CIDADE">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Estado</span>
+<span class="dado-valor" data-campo="ESTADO">—</span>
+</div>
+</div>
+</div>
+</section>
+<!-- VIDA CRISTÃ -->
+<section class="ficha-card ficha-card-largo">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">◇</span>
+<div>
+<h3 class="ficha-card-titulo">Vida cristã e ministerial</h3>
+<p class="ficha-card-subtitulo">Histórico e vínculo eclesiástico</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<div class="dados-grid dados-grid-3">
+<div class="dado-item">
+<span class="dado-label">Data da conversão</span>
+<span class="dado-valor" data-campo="DATA_CONVERSAO">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Batismo nas águas</span>
+<span class="dado-valor" data-campo="DATA_BATISMO_AGUAS">—</span>
+</div>
+
+<div class="dado-item">
+<span class="dado-label">Cargo</span>
+<span class="dado-valor" data-campo="CARGO">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Congregação</span>
+<span class="dado-valor" data-campo="CONGREGACAO">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Situação</span>
+<span class="dado-valor" data-campo="SITUACAO">—</span>
+</div>
+
+<div class="dado-item">
+<span class="dado-label">Data de admissão</span>
+<span class="dado-valor" data-campo="DATA_ADMISSAO">—</span>
+</div>
+
+<div class="dado-item">
+<span class="dado-label">Igreja de origem</span>
+<span class="dado-valor" data-campo="IGREJA_ORIGEM">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Data de consagração</span>
+<span class="dado-valor" data-campo="DATA_CONSAGRACAO">—</span>
+</div>
+
+</div>
+</div>
+</section>
+<!-- FAMÍLIA -->
+<section class="ficha-card ficha-card-largo">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">♧</span>
+<div>
+<h3 class="ficha-card-titulo">Família</h3>
+<p class="ficha-card-subtitulo">Vínculos e informações familiares</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<div class="dados-grid dados-grid-3">
+<div class="dado-item">
+<span class="dado-label">Nome do pai</span>
+<span class="dado-valor" data-campo="NOME_PAI">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Nome da mãe</span>
+<span class="dado-valor" data-campo="NOME_MAE">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Cônjuge</span>
+<span class="dado-valor" data-campo="CONJUGE">—</span>
+</div>
+<div class="dado-item">
+<span class="dado-label">Data do casamento</span>
+<span class="dado-valor" data-campo="DATA_CASAMENTO">—</span>
+</div>
+
+
+
+</div>
+</div>
+</section>
+<!-- CARTEIRINHA -->
+
+<!-- OBSERVAÇÕES -->
+<section class="ficha-card ficha-card-largo">
+<header class="ficha-card-cabecalho">
+<div class="ficha-card-titulo-area">
+<span aria-hidden="true" class="ficha-card-icone">✎</span>
+<div>
+<h3 class="ficha-card-titulo">Observações</h3>
+<p class="ficha-card-subtitulo">Anotações gerais sobre o cadastro</p>
+</div>
+</div>
+</header>
+<div class="ficha-card-corpo">
+<p class="observacoes-texto" data-campo="OBSERVACOES">
                 Nenhuma observação cadastrada.
               </p>
-            </div>
-
-          </section>
-
-        </div>
-
-        <footer class="visualizar-rodape">
+</div>
+</section>
+</div>
+<footer class="visualizar-rodape">
           Vidas Renovadas Gestão — Projeto Neemias
         </footer>
-
-      </div>
-
-    </main>
-
-  </div>
-
-  <div
-    id="carregamentoGlobal"
-    class="carregamento-global"
-    aria-hidden="true"
-  >
-    <div
-      class="carregamento-caixa"
-      role="status"
-      aria-live="polite"
-    >
-      <span class="spinner" aria-hidden="true"></span>
-      <span>Carregando...</span>
-    </div>
-  </div>
-
- <script src="js/configuracoes.js?v=2"></script>
+</div>
+</main>
+</div>
+<div aria-hidden="true" class="carregamento-global" id="carregamentoGlobal">
+<div aria-live="polite" class="carregamento-caixa" role="status">
+<span aria-hidden="true" class="spinner"></span>
+<span>Carregando...</span>
+</div>
+</div>
+<script src="js/configuracoes.js?v=2"></script>
 <script src="js/api.js?v=2"></script>
 <script src="js/auth.js?v=2"></script>
 <script src="js/app.js?v=2"></script>
-<script src="js/visualizar-membro.js?v=4"></script>
+<script src="js/visualizar-membro.js?v=5"></script>
 </body>
 </html>
