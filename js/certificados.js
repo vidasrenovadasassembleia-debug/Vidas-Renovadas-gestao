@@ -419,10 +419,11 @@ async function pesquisarMembro(configuracao) {
   }
 
   try {
-    const resposta = await chamarApi({
-      acao: "pesquisarMembrosCertificado",
-      termo
-    });
+    const resposta = await 
+      obterAuthCertificados().chamarApi({
+  acao: "pesquisarMembrosCertificado",
+  termo
+});
 
     const membros = Array.isArray(resposta.membros)
       ? resposta.membros
