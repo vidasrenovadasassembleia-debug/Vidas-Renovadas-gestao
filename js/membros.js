@@ -184,7 +184,7 @@
       `editar-membro.html?id=${idCodificado}`;
 
     const linkCarteirinha =
-      `carteirinha.html?membros=${idCodificado}`;
+  `carteirinha.html?id=${idCodificado}`;
 
     const botaoVisualizar = `
       <a
