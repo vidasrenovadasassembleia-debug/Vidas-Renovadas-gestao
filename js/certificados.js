@@ -57,9 +57,9 @@ async function iniciarModuloCertificados() {
       : null;
 
   if (!sessao || !sessao.credential) {
-    window.location.replace("../index.html");
-    return;
-  }
+  window.location.replace("index.html");
+  return;
+}
 
   if (typeof aplicarIdentidadeUsuario === "function") {
     aplicarIdentidadeUsuario();
@@ -84,13 +84,13 @@ function configurarEventos() {
     });
   });
 
-  $("#botaoSair")?.addEventListener("click", () => {
-    if (typeof CHAVE_SESSAO !== "undefined") {
-      sessionStorage.removeItem(CHAVE_SESSAO);
-    }
+ $("#botaoSair")?.addEventListener("click", () => {
+  if (typeof CHAVE_SESSAO !== "undefined") {
+    sessionStorage.removeItem(CHAVE_SESSAO);
+  }
 
-    window.location.href = "../index.html";
-  });
+  window.location.href = "index.html";
+});
 
   Object.values(CONFIGURACAO_TIPOS_CERTIFICADO).forEach((configuracao) => {
     configurarPesquisaMembro(configuracao);
