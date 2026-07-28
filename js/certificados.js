@@ -673,10 +673,10 @@ async function registrarEImprimir(evento, tipo) {
   }
 
   try {
-    const resposta = await chamarApi({
-      acao: "emitirCertificado",
-      dados
-    });
+    const resposta = await obterAuthCertificados().chamarApi({
+  acao: "emitirCertificado",
+  dados
+});
 
     const certificadoRegistrado = resposta.certificado || {};
 
