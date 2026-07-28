@@ -978,9 +978,9 @@ function obterCidadeCertificado(dados, configuracoes) {
    ========================================================= */
 
 async function recarregarHistorico() {
-  const resposta = await chamarApi({
-    acao: "listarCertificados"
-  });
+ const resposta = await obterAuthCertificados().chamarApi({
+  acao: "listarCertificados"
+});
 
   ESTADO_CERTIFICADOS.historico = Array.isArray(resposta.certificados)
     ? resposta.certificados
