@@ -184,7 +184,7 @@
       `editar-membro.html?id=${idCodificado}`;
 
     const linkCarteirinha =
-  `carteirinha.html?id=${idCodificado}`;
+      `carteirinha.html?id=${idCodificado}`;
 
     const botaoVisualizar = `
       <a
@@ -434,7 +434,7 @@
     if (!ids.length) return;
 
     const parametros = new URLSearchParams({
-      membros: ids.join(",")
+      ids: ids.join(",")
     });
 
     window.location.href =
