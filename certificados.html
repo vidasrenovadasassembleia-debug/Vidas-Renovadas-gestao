@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Central de Certificados do Vidas Renovadas Gestão 2.0">
+  <title>Certificados | Vidas Renovadas Gestão 2.0</title>
+
+  <!-- Estilos globais do sistema -->
+  <link rel="stylesheet" href="../css/global.css">
+
+  <!-- Estilos exclusivos deste módulo -->
+  <link rel="stylesheet" href="../css/certificados.css">
+</head>
+
+<body class="pagina-certificados">
+  <div class="layout-sistema">
+    <!-- =====================================================
+         MENU LATERAL
+         ===================================================== -->
+    <aside class="menu-lateral" aria-label="Navegação principal">
+      <div class="menu-marca">
+        <img
+          class="menu-logo"
+          src="../logo.png"
+          alt="Assembleia de Deus Ministério Vidas Renovadas"
+        >
+        <div class="menu-marca-texto">
+          <strong>Vidas Renovadas</strong>
+          <span>Gestão 2.0</span>
+        </div>
+      </div>
+
+      <nav class="menu-navegacao">
+        <section class="menu-grupo" aria-labelledby="grupo-visao-geral">
+          <h2 id="grupo-visao-geral" class="menu-grupo-titulo">Visão geral</h2>
+          <a class="menu-item" href="../dashboard/dashboard.html">
+            <span aria-hidden="true">⌂</span>
+            <span>Dashboard</span>
+          </a>
+        </section>
+
+        <section class="menu-grupo" aria-labelledby="grupo-pessoas">
+          <h2 id="grupo-pessoas" class="menu-grupo-titulo">Pessoas</h2>
+          <a class="menu-item" href="../membros/membros.html">
+            <span aria-hidden="true">👥</span>
+            <span>Membros</span>
+          </a>
+          <a class="menu-item" href="../congregacoes/congregacoes.html">
+            <span aria-hidden="true">⌂</span>
+            <span>Congregações</span>
+          </a>
+        </section>
+
+        <section class="menu-grupo" aria-labelledby="grupo-documentos">
+          <h2 id="grupo-documentos" class="menu-grupo-titulo">Documentos</h2>
+          <a class="menu-item" href="../carteirinhas/carteirinhas.html">
+            <span aria-hidden="true">▣</span>
+            <span>Carteirinhas</span>
+          </a>
+          <a class="menu-item active" href="./certificados.html" aria-current="page">
+            <span aria-hidden="true">▤</span>
+            <span>Certificados</span>
+          </a>
+        </section>
+
+        <section class="menu-grupo" aria-labelledby="grupo-gestao">
+          <h2 id="grupo-gestao" class="menu-grupo-titulo">Gestão</h2>
+          <a class="menu-item" href="../financeiro/financeiro.html">
+            <span aria-hidden="true">$</span>
+            <span>Financeiro</span>
+          </a>
+          <a class="menu-item" href="../relatorios/relatorios.html">
+            <span aria-hidden="true">▥</span>
+            <span>Relatórios</span>
+          </a>
+          <a class="menu-item" href="../administracao/administracao.html">
+            <span aria-hidden="true">⚙</span>
+            <span>Administração</span>
+          </a>
+        </section>
+      </nav>
+
+      <div class="menu-rodape">
+        <div class="usuario-resumo">
+          <div class="usuario-avatar" id="usuarioAvatar" aria-hidden="true">VR</div>
+          <div class="usuario-dados">
+            <strong id="usuarioNome">Usuário</strong>
+            <span id="usuarioPerfil">Perfil</span>
+          </div>
+        </div>
+
+        <button id="botaoSair" class="botao-sair" type="button">
+          Sair
+        </button>
+      </div>
+    </aside>
+
+    <!-- =====================================================
+         CONTEÚDO PRINCIPAL
+         ===================================================== -->
+    <main class="conteudo-principal">
+      <header class="cabecalho-pagina">
+        <div>
+          <p class="cabecalho-contexto">Documentos</p>
+          <h1>Central de Certificados</h1>
+          <p class="cabecalho-descricao">
+            Emita, visualize e reimprima certificados oficiais de Batismo e Consagração.
+          </p>
+        </div>
+      </header>
+
+      <div
+        id="mensagemModulo"
+        class="mensagem-modulo"
+        role="status"
+        aria-live="polite"
+        hidden
+      ></div>
+
+      <!-- ===================================================
+           ABAS PRINCIPAIS
+           =================================================== -->
+      <nav class="abas-certificados" role="tablist" aria-label="Tipos de certificado">
+        <button
+          id="abaBatismo"
+          class="aba-certificado active"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="painelBatismo"
+          data-aba="batismo"
+        >
+          Certificado de Batismo
+        </button>
+
+        <button
+          id="abaConsagracao"
+          class="aba-certificado"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="painelConsagracao"
+          data-aba="consagracao"
+        >
+          Certificado de Consagração
+        </button>
+
+        <button
+          id="abaHistorico"
+          class="aba-certificado"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="painelHistorico"
+          data-aba="historico"
+        >
+          Histórico
+        </button>
+      </nav>
+
+      <!-- ===================================================
+           ÁREA OPERACIONAL + PREVIEW ÚNICO
+           =================================================== -->
+      <div class="central-certificados">
+        <section class="area-formularios" aria-label="Dados para emissão">
+          <!-- ===============================================
+               BATISMO
+               =============================================== -->
+          <section
+            id="painelBatismo"
+            class="painel-certificado active"
+            role="tabpanel"
+            aria-labelledby="abaBatismo"
+            data-painel="batismo"
+          >
+            <form id="formBatismo" class="formulario-certificado" autocomplete="off">
+              <input type="hidden" name="idMembro">
+              <input type="hidden" name="codigoMembro">
+              <input type="hidden" name="numeroCarteirinha">
+              <input type="hidden" name="sexo">
+              <input type="hidden" name="dataNascimento">
+              <input type="hidden" name="nomePai">
+              <input type="hidden" name="nomeMae">
+
+              <section class="cartao-formulario">
+                <header class="cartao-formulario-cabecalho">
+                  <div>
+                    <span class="etapa-formulario">1</span>
+                    <h2>Selecionar membro</h2>
+                  </div>
+                  <p>Pesquise pelo nome, código ou número da carteirinha.</p>
+                </header>
+
+                <div class="campo-pesquisa-membro">
+                  <label for="pesquisaMembroBatismo">Pesquisar membro</label>
+                  <div class="campo-pesquisa-linha">
+                    <input
+                      id="pesquisaMembroBatismo"
+                      type="search"
+                      placeholder="Digite pelo menos 2 caracteres"
+                      aria-describedby="ajudaPesquisaBatismo"
+                    >
+                    <button id="botaoPesquisarMembroBatismo" type="button">
+                      Pesquisar
+                    </button>
+                  </div>
+                  <small id="ajudaPesquisaBatismo">
+                    Após encontrar o cadastro, clique no membro para selecioná-lo.
+                  </small>
+                </div>
+
+                <div
+                  id="resultadosMembrosBatismo"
+                  class="resultados-membros"
+                  aria-label="Resultados da pesquisa de membros"
+                  hidden
+                ></div>
+
+                <div class="grade-campos">
+                  <div class="campo campo-largura-total">
+                    <label for="nomeBatismo">Nome completo</label>
+                    <input
+                      id="nomeBatismo"
+                      name="nome"
+                      type="text"
+                      placeholder="Selecione um membro"
+                      required
+                      readonly
+                    >
+                  </div>
+
+                  <div class="campo campo-largura-total">
+                    <label for="congregacaoBatismo">Congregação</label>
+                    <input
+                      id="congregacaoBatismo"
+                      name="congregacao"
+                      type="text"
+                      placeholder="Congregação do membro"
+                    >
+                  </div>
+                </div>
+              </section>
+
+              <section class="cartao-formulario">
+                <header class="cartao-formulario-cabecalho">
+                  <div>
+                    <span class="etapa-formulario">2</span>
+                    <h2>Dados da cerimônia</h2>
+                  </div>
+                  <p>Informe quando e onde o Batismo foi realizado.</p>
+                </header>
+
+                <div class="grade-campos">
+                  <div class="campo">
+                    <label for="dataCerimoniaBatismo">Data da cerimônia</label>
+                    <input
+                      id="dataCerimoniaBatismo"
+                      name="dataCerimonia"
+                      type="date"
+                      required
+                    >
+                  </div>
+
+                  <div class="campo">
+                    <label for="localBatismo">Cidade / Local</label>
+                    <input
+                      id="localBatismo"
+                      name="local"
+                      type="text"
+                      placeholder="Ex.: São Paulo - SP"
+                      required
+                    >
+                  </div>
+
+                  <div class="campo campo-largura-total">
+                    <label for="pastorBatismo">Pastor Presidente</label>
+                    <input
+                      id="pastorBatismo"
+                      name="pastor"
+                      type="text"
+                      placeholder="Nome do Pastor Presidente"
+                      required
+                    >
+                  </div>
+
+                  <div class="campo campo-largura-total">
+                    <label for="observacoesBatismo">Observações</label>
+                    <textarea
+                      id="observacoesBatismo"
+                      name="observacoes"
+                      rows="3"
+                      placeholder="Informação interna opcional"
+                    ></textarea>
+                  </div>
+                </div>
+              </section>
+
+              <div class="acoes-formulario">
+                <button
+                  class="botao-secundario"
+                  type="button"
+                  data-visualizar="batismo"
+                >
+                  Atualizar pré-visualização
+                </button>
+
+                <button class="botao-primario" type="submit">
+                  Emitir Certificado de Batismo
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <!-- ===============================================
+               CONSAGRAÇÃO
+               =============================================== -->
+          <section
+            id="painelConsagracao"
+            class="painel-certificado"
+            role="tabpanel"
+            aria-labelledby="abaConsagracao"
+            data-painel="consagracao"
+            hidden
+          >
+            <form id="formConsagracao" class="formulario-certificado" autocomplete="off">
+              <input type="hidden" name="idMembro">
+              <input type="hidden" name="codigoMembro">
+              <input type="hidden" name="numeroCarteirinha">
+              <input type="hidden" name="sexo">
+              <input type="hidden" name="dataNascimento">
+              <input type="hidden" name="nomePai">
+              <input type="hidden" name="nomeMae">
+
+              <section class="cartao-formulario">
+                <header class="cartao-formulario-cabecalho">
+                  <div>
+                    <span class="etapa-formulario">1</span>
+                    <h2>Selecionar membro</h2>
+                  </div>
+                  <p>Pesquise pelo nome, código ou número da carteirinha.</p>
+                </header>
+
+                <div class="campo-pesquisa-membro">
+                  <label for="pesquisaMembro">Pesquisar membro</label>
+                  <div class="campo-pesquisa-linha">
+                    <input
+                      id="pesquisaMembro"
+                      type="search"
+                      placeholder="Digite pelo menos 2 caracteres"
+                      aria-describedby="ajudaPesquisaConsagracao"
+                    >
+                    <button id="botaoPesquisarMembro" type="button">
+                      Pesquisar
+                    </button>
+                  </div>
+                  <small id="ajudaPesquisaConsagracao">
+                    Após encontrar o cadastro, clique no membro para selecioná-lo.
+                  </small>
+                </div>
+
+                <div
+                  id="resultadosMembros"
+                  class="resultados-membros"
+                  aria-label="Resultados da pesquisa de membros"
+                  hidden
+                ></div>
+
+                <div class="grade-campos">
+                  <div class="campo campo-largura-total">
+                    <label for="nomeConsagracao">Nome completo</label>
+                    <input
+                      id="nomeConsagracao"
+                      name="nome"
+                      type="text"
+                      placeholder="Selecione um membro"
+                      required
+                      readonly
+                    >
+                  </div>
+
+                  <div class="campo campo-largura-total">
+                    <label for="congregacaoConsagracao">Congregação</label>
+                    <input
+                      id="congregacaoConsagracao"
+                      name="congregacao"
+                      type="text"
+                      placeholder="Congregação do membro"
+                    >
+                  </div>
+                </div>
+              </section>
+
+              <section class="cartao-formulario">
+                <header class="cartao-formulario-cabecalho">
+                  <div>
+                    <span class="etapa-formulario">2</span>
+                    <h2>Dados da consagração</h2>
+                  </div>
+                  <p>Escolha o cargo do sistema e informe os dados da cerimônia.</p>
+                </header>
+
+                <div class="grade-campos">
+                  <div class="campo campo-largura-total">
+                    <label for="cargoConsagracao">Cargo ministerial</label>
+                    <select id="cargoConsagracao" name="cargo" required>
+                      <option value="">Carregando cargos...</option>
+                    </select>
+                  </div>
+
+                  <div class="campo">
+                    <label for="dataCerimoniaConsagracao">Data da cerimônia</label>
+                    <input
+                      id="dataCerimoniaConsagracao"
+                      name="dataCerimonia"
+                      type="date"
+                      required
+                    >
+                  </div>
+
+                  <div class="campo">
+                    <label for="localConsagracao">Cidade / Local</label>
+                    <input
+                      id="localConsagracao"
+                      name="local"
+                      type="text"
+                      placeholder="Ex.: São Paulo - SP"
+                      required
+                    >
+                  </div>
+
+                  <div class="campo campo-largura-total">
+                    <label for="pastorConsagracao">Pastor Presidente</label>
+                    <input
+                      id="pastorConsagracao"
+                      name="pastor"
+                      type="text"
+                      placeholder="Nome do Pastor Presidente"
+                      required
+                    >
+                  </div>
+
+                  <div class="campo campo-largura-total">
+                    <label for="observacoesConsagracao">Observações</label>
+                    <textarea
+                      id="observacoesConsagracao"
+                      name="observacoes"
+                      rows="3"
+                      placeholder="Informação interna opcional"
+                    ></textarea>
+                  </div>
+                </div>
+              </section>
+
+              <div class="acoes-formulario">
+                <button
+                  class="botao-secundario"
+                  type="button"
+                  data-visualizar="consagracao"
+                >
+                  Atualizar pré-visualização
+                </button>
+
+                <button class="botao-primario" type="submit">
+                  Emitir Certificado de Consagração
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <!-- ===============================================
+               HISTÓRICO
+               =============================================== -->
+          <section
+            id="painelHistorico"
+            class="painel-certificado painel-historico"
+            role="tabpanel"
+            aria-labelledby="abaHistorico"
+            data-painel="historico"
+            hidden
+          >
+            <header class="historico-cabecalho">
+              <div>
+                <h2>Histórico de Certificados</h2>
+                <p>Consulte certificados emitidos e faça reimpressões.</p>
+              </div>
+
+              <div class="historico-filtro">
+                <label for="filtroHistorico">Pesquisar no histórico</label>
+                <input
+                  id="filtroHistorico"
+                  type="search"
+                  placeholder="Número, nome, tipo ou cargo"
+                >
+              </div>
+            </header>
+
+            <div class="tabela-responsiva">
+              <table class="tabela-historico">
+                <thead>
+                  <tr>
+                    <th scope="col">Número</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Membro</th>
+                    <th scope="col">Cerimônia</th>
+                    <th scope="col">Emitido por</th>
+                    <th scope="col">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="corpoHistorico">
+                  <tr>
+                    <td colspan="6" class="historico-vazio">
+                      Carregando certificados...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <!-- ===============================================
+             PREVIEW ÚNICO
+             =============================================== -->
+        <aside
+          id="areaPreviewCertificado"
+          class="area-preview-certificado"
+          aria-labelledby="tituloPreviewCertificado"
+        >
+          <header class="preview-cabecalho">
+            <div>
+              <span class="preview-etiqueta">Pré-visualização</span>
+              <h2 id="tituloPreviewCertificado">Certificado A4 horizontal</h2>
+            </div>
+            <p>O conteúdo é atualizado conforme os dados informados.</p>
+          </header>
+
+          <div class="preview-palco">
+            <div
+              id="previewCertificado"
+              class="folha-certificado"
+              data-tipo="batismo"
+              aria-live="polite"
+            ></div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <!-- =====================================================
+       SCRIPTS
+       Ajuste apenas os nomes dos arquivos globais caso o seu
+       projeto utilize outra nomenclatura. O certificados.js
+       deve permanecer por último.
+       ===================================================== -->
+  <script src="../js/config.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/certificados.js"></script>
+</body>
+</html>
