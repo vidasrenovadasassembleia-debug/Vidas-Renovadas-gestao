@@ -2166,6 +2166,9 @@ const URL_API_CARTEIRINHA =
 const CHAVE_SESSAO_CARTEIRINHA =
   "vidasRenovadasSessao";
 
+const URL_VALIDACAO_CARTEIRINHA =
+  "https://vidasrenovadasassembleia-debug.github.io/Vidas-Renovadas-gestao/validar.html";
+
 /* =========================================================
    INICIALIZAÇÃO
 ========================================================= */
@@ -2399,9 +2402,13 @@ async function carregarPreVisualizacaoEmLote(idsMembros) {
 }
 
 async function buscarMembroCarteirinha(idMembro) {
+  // A emissão é idempotente no backend: cria na primeira vez e atualiza
+  // a mesma credencial nas reimpressões, preservando o token público.
   const resultado = await chamarApiCarteirinha({
-    acao: "buscar",
-    id: idMembro
+    acao: "emitirCarteirinha",
+    dados: {
+      idMembro: idMembro
+    }
   });
 
   let membro = resultado.membro;
@@ -2444,9 +2451,11 @@ function preencherCarteirinha(membro, idUrl) {
 
   const numeroOriginal =
     primeiroValor(
+      membro.numeroCarteirinha,
       membro.numeroCredencial,
       membro.numeroMembro,
       membro.matricula,
+      membro.codigo,
       membro.id,
       idUrl,
       "—"
@@ -2754,9 +2763,8 @@ function obterIniciais(nome) {
    QR CODE
 ========================================================= */
 
-function gerarQrCodeCarteirinha(membro, numero) {
-  const area =
-    document.getElementById("qrCodeCarteirinha");
+function gerarQrCodeCarteirinha(membro) {
+  const area = document.getElementById("qrCodeCarteirinha");
 
   if (!area) {
     return;
@@ -2764,23 +2772,26 @@ function gerarQrCodeCarteirinha(membro, numero) {
 
   area.innerHTML = "";
 
-  const id =
-    primeiroValor(
-      membro.id,
-      numero
-    );
+  const token = primeiroValor(
+    membro.tokenPublico,
+    membro.token_publico,
+    membro.tokenCarteirinha,
+    membro.token
+  );
 
-  const enderecoVerificacao =
-    criarEnderecoVerificacao(id);
+  if (!token) {
+    area.textContent = "QR indisponível";
+    console.warn("O membro não possui token público para validação.");
+    return;
+  }
 
+  const enderecoVerificacao = criarEnderecoVerificacao(token);
   area.dataset.endereco = enderecoVerificacao;
   area.title = enderecoVerificacao;
 
   if (typeof QRCode === "undefined") {
-    area.textContent = "QR";
-    console.warn(
-      "A biblioteca de QR Code não foi carregada."
-    );
+    area.textContent = "QR indisponível";
+    console.warn("A biblioteca de QR Code não foi carregada.");
     return;
   }
 
@@ -2794,17 +2805,9 @@ function gerarQrCodeCarteirinha(membro, numero) {
   });
 }
 
-function criarEnderecoVerificacao(idMembro) {
-  const paginaAtual = new URL(window.location.href);
-  const diretorio = paginaAtual.pathname.replace(/[^/]*$/, "");
-
-  const endereco = new URL(
-    diretorio + "membro.html",
-    paginaAtual.origin
-  );
-
-  endereco.searchParams.set("id", String(idMembro || "").trim());
-
+function criarEnderecoVerificacao(tokenPublico) {
+  const endereco = new URL(URL_VALIDACAO_CARTEIRINHA);
+  endereco.searchParams.set("token", String(tokenPublico || "").trim());
   return endereco.href;
 }
 
