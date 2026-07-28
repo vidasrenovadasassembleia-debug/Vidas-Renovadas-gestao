@@ -187,14 +187,16 @@ async function carregarDadosIniciais() {
   definirMensagem("Carregando dados do módulo...", "info");
 
   try {
-    const [dados, historico] = await Promise.all([
-      chamarApi({
-        acao: "obterDadosCertificados"
-      }),
-      chamarApi({
-        acao: "listarCertificados"
-      })
-    ]);
+    const auth = obterAuthCertificados();
+
+const [dados, historico] = await Promise.all([
+  auth.chamarApi({
+    acao: "obterDadosCertificados"
+  }),
+  auth.chamarApi({
+    acao: "listarCertificados"
+  })
+]);
 
     ESTADO_CERTIFICADOS.configuracoes = dados.configuracoes || {};
     ESTADO_CERTIFICADOS.arquivos = dados.arquivos || {};
