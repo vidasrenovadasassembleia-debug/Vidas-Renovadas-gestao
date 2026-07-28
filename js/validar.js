@@ -8,6 +8,7 @@
 
 (function (window, document) {
   const API_URL =
+    window.VR_CONFIG?.API?.URL ||
     "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec";
 
   const elementos = {};
@@ -478,7 +479,20 @@
       const dados = await resposta.json();
 
       if (!dados.sucesso || !dados.membro) {
-        mostrarCredencialInvalida();
+        mostrarMensagemInstitucional(
+          "Credencial não localizada",
+          dados.mensagem || "Não foi possível confirmar esta credencial."
+        );
+        return;
+      }
+
+      if (dados.valida === false) {
+        const expirada = dados.codigo === "CREDENCIAL_EXPIRADA";
+        mostrarMensagemInstitucional(
+          expirada ? "Credencial expirada" : "Credencial não ativa",
+          dados.mensagem ||
+            "Esta credencial não está ativa no cadastro oficial."
+        );
         return;
       }
 
