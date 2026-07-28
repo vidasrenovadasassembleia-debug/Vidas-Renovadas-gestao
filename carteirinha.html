@@ -2430,11 +2430,13 @@ function configurarLinkVoltar(idMembro) {
   const botaoVoltar =
     document.getElementById("botaoVoltar");
 
-  if (botaoVoltar) {
-    botaoVoltar.href = modoLoteCarteirinhas()
-      ? "membros.html"
-      : "membro.html?id=" + encodeURIComponent(idMembro);
+  if (!botaoVoltar) {
+    return;
   }
+
+  botaoVoltar.href = modoLoteCarteirinhas()
+    ? "membros.html"
+    : "visualizar-membro.html?id=" + encodeURIComponent(idMembro);
 }
 
 /* =========================================================
