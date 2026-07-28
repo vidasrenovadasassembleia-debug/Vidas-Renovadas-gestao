@@ -152,19 +152,23 @@
 
   function prepararDadosApi(dadosOriginais) {
     const origem = dadosOriginais || {};
-
     const valor = (...nomes) => obterPrimeiroValor(origem, nomes, "");
 
     return {
       id: valor("id", "ID", "codigo", "CODIGO"),
-      nomeCompleto: valor("nomeCompleto", "NOME_COMPLETO"),
+      codigo: valor("codigo", "CODIGO", "id", "ID"),
+      numeroCarteirinha: valor("numeroCarteirinha", "NUMERO_CARTEIRINHA"),
+      nomeCompleto: valor("nomeCompleto", "NOME_COMPLETO", "nome", "NOME"),
       cpf: valor("cpf", "CPF"),
       rg: valor("rg", "RG"),
+      orgaoEmissor: valor("orgaoEmissor", "ORGAO_EMISSOR"),
+      dataEmissaoRg: valor("dataEmissaoRg", "DATA_EMISSAO_RG"),
       dataNascimento: valor("dataNascimento", "DATA_NASCIMENTO"),
+      sexo: valor("sexo", "SEXO"),
       estadoCivil: valor("estadoCivil", "ESTADO_CIVIL"),
-      conjuge: valor("conjuge", "CONJUGE", "nomeConjuge", "NOME_CONJUGE"),
-      pai: valor("pai", "PAI", "nomePai", "NOME_PAI"),
-      mae: valor("mae", "MAE", "nomeMae", "NOME_MAE"),
+      profissao: valor("profissao", "PROFISSAO"),
+      naturalidade: valor("naturalidade", "NATURALIDADE"),
+      nacionalidade: valor("nacionalidade", "NACIONALIDADE"),
       telefone: valor("telefone", "TELEFONE"),
       whatsapp: valor("whatsapp", "WHATSAPP"),
       email: valor("email", "EMAIL"),
@@ -175,35 +179,30 @@
       bairro: valor("bairro", "BAIRRO"),
       cidade: valor("cidade", "CIDADE"),
       estado: valor("estado", "ESTADO", "uf", "UF"),
+      dataConversao: valor("dataConversao", "DATA_CONVERSAO"),
+      dataBatismo: valor("dataBatismo", "DATA_BATISMO", "dataBatismoAguas", "DATA_BATISMO_AGUAS"),
+      dataBatismoAguas: valor("dataBatismoAguas", "DATA_BATISMO_AGUAS", "dataBatismo", "DATA_BATISMO"),
+      dataBatismoEspirito: valor("dataBatismoEspirito", "DATA_BATISMO_ESPIRITO"),
       cargo: valor("cargo", "CARGO"),
       congregacao: valor("congregacao", "CONGREGACAO"),
-      dataConversao: valor("dataConversao", "DATA_CONVERSAO"),
-      dataBatismo: valor(
-        "dataBatismo",
-        "DATA_BATISMO",
-        "dataBatismoAguas",
-        "DATA_BATISMO_AGUAS"
-      ),
       situacao: normalizarSituacao(valor("situacao", "SITUACAO")),
-      foto: valor("foto", "FOTO", "fotoUrl", "FOTO_URL", "urlFoto"),
-      qrCode: valor(
-        "qrCode",
-        "QR_CODE",
-        "codigoDigital",
-        "CODIGO_DIGITAL",
-        "tokenPublico"
-      ),
-      observacaoCarteirinha: valor(
-        "observacaoCarteirinha",
-        "OBSERVACAO_CARTEIRINHA",
-        "observacoes",
-        "OBSERVACOES"
-      ),
+      dataAdmissao: valor("dataAdmissao", "DATA_ADMISSAO"),
+      igrejaOrigem: valor("igrejaOrigem", "IGREJA_ORIGEM"),
+      dataConsagracao: valor("dataConsagracao", "DATA_CONSAGRACAO"),
+      pai: valor("pai", "PAI", "nomePai", "NOME_PAI"),
+      mae: valor("mae", "MAE", "nomeMae", "NOME_MAE"),
+      nomePai: valor("nomePai", "NOME_PAI", "pai", "PAI"),
+      nomeMae: valor("nomeMae", "NOME_MAE", "mae", "MAE"),
+      conjuge: valor("conjuge", "CONJUGE", "nomeConjuge", "NOME_CONJUGE"),
+      dataCasamento: valor("dataCasamento", "DATA_CASAMENTO"),
       idFamilia: valor("idFamilia", "ID_FAMILIA"),
-      validadeCarteirinha: valor(
-        "validadeCarteirinha",
-        "VALIDADE_CARTEIRINHA"
-      )
+      observacoes: valor("observacoes", "OBSERVACOES"),
+      foto: valor("foto", "FOTO", "fotoUrl", "FOTO_URL", "urlFoto"),
+      qrCode: valor("qrCode", "QR_CODE", "codigoDigital", "CODIGO_DIGITAL", "tokenPublico"),
+      observacaoCarteirinha: valor("observacaoCarteirinha", "OBSERVACAO_CARTEIRINHA"),
+      dataEmissaoCarteirinha: valor("dataEmissaoCarteirinha", "DATA_EMISSAO_CARTEIRINHA"),
+      validadeCarteirinha: valor("validadeCarteirinha", "VALIDADE_CARTEIRINHA"),
+      dataCadastro: valor("dataCadastro", "DATA_CADASTRO", "criadoEm")
     };
   }
   function validarCPFBasico(cpf) {
@@ -447,6 +446,48 @@
     return texto(url);
   }
 
+  function normalizarDataParaCampo(valor) {
+    const valorTexto = texto(valor);
+    if (!valorTexto) return "";
+
+    if (/^\d{4}-\d{2}-\d{2}/.test(valorTexto)) {
+      return valorTexto.slice(0, 10);
+    }
+
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(valorTexto)) {
+      const [dia, mes, ano] = valorTexto.split("/");
+      return `${ano}-${mes}-${dia}`;
+    }
+
+    const data = new Date(valor);
+    if (Number.isNaN(data.getTime())) return "";
+
+    return [
+      data.getFullYear(),
+      String(data.getMonth() + 1).padStart(2, "0"),
+      String(data.getDate()).padStart(2, "0")
+    ].join("-");
+  }
+
+  function nomeCamelCase(nomeCampo) {
+    return String(nomeCampo || "")
+      .toLowerCase()
+      .replace(/_([a-z])/g, (_, letra) => letra.toUpperCase());
+  }
+
+  function valorCampoMembro(membro, campo) {
+    const aliases = [campo.name, campo.name.toLowerCase(), nomeCamelCase(campo.name)];
+
+    if (campo.name === "NOME_COMPLETO") aliases.push("nome");
+    if (campo.name === "NOME_PAI") aliases.push("pai");
+    if (campo.name === "NOME_MAE") aliases.push("mae");
+    if (campo.name === "FOTO_URL") aliases.push("foto", "fotoUrl", "urlFoto");
+    if (campo.name === "DATA_BATISMO_AGUAS") aliases.push("dataBatismo");
+
+    const valor = obterPrimeiroValor(membro, aliases, "");
+    return campo.type === "date" ? normalizarDataParaCampo(valor) : valor;
+  }
+
   function preencherFormulario(formularioOuSeletor, membro) {
     const formulario = obterFormulario(formularioOuSeletor);
 
@@ -455,17 +496,7 @@
     }
 
     formulario.querySelectorAll(SELETOR_CAMPOS).forEach((campo) => {
-      const valor = obterPrimeiroValor(
-        membro,
-        [
-          campo.name,
-          campo.name.toLowerCase(),
-          campo.name
-            .toLowerCase()
-            .replace(/_([a-z])/g, (_, letra) => letra.toUpperCase())
-        ],
-        ""
-      );
+      const valor = valorCampoMembro(membro, campo);
 
       if (campo.type === "checkbox") {
         campo.checked =
@@ -668,6 +699,7 @@
     buscarMembro,
     extrairIdResultado,
     normalizarRespostaMembro,
+    normalizarDataParaCampo,
     limparFormulario,
     configurarResumoEmTempoReal,
     escaparHtml
