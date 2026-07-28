@@ -45,8 +45,26 @@ const ESTADO_CERTIFICADOS = {
 };
 
 const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
+
 const $$ = (seletor, raiz = document) =>
   Array.from(raiz.querySelectorAll(seletor));
+
+function obterAuthCertificados() {
+  const auth = window.VRGAuth || window.Auth;
+
+  if (!auth || typeof auth.chamarApi !== "function") {
+    throw new Error(
+      "O módulo de autenticação e API não foi carregado corretamente."
+    );
+  }
+
+  return auth;
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  iniciarModuloCertificados
+);
 
 document.addEventListener("DOMContentLoaded", iniciarModuloCertificados);
 
