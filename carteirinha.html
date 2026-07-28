@@ -3108,20 +3108,9 @@ function primeiroValor(...valores) {
 function formatarNumeroCredencial(valor) {
   const texto = String(valor || "").trim();
 
-  if (!texto || texto === "—") {
-    return "—";
-  }
-
-  const somenteNumeros = texto.replace(/\D/g, "");
-
-  if (!somenteNumeros) {
-    return texto;
-  }
-
-  const numeroSemZeros = String(Number(somenteNumeros));
-  const numeroFinal = numeroSemZeros.padStart(3, "0");
-
-  return "VR-" + numeroFinal;
+  // A credencial deve exibir exatamente o código oficial recebido da API,
+  // por exemplo ADVR02. Nenhum prefixo ou máscara é recriado no frontend.
+  return texto && texto !== "—" ? texto : "—";
 }
 
 function formatarDataCarteirinha(valor) {
