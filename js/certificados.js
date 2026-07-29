@@ -1,85 +1,103 @@
 "use strict";
 
-/* ============================================================================
-   CERTIFICADOS — VIDAS RENOVADAS GESTÃO 2.0
-   Arquivo oficial: js/certificados.js
+/* ==========================================================================
+   CERTIFICADOS V4.0 — RENDERIZADOR ÚNICO
+   Batismo e Consagração utilizam a mesma Central e o mesmo renderizador.
+   ========================================================================== */
 
-   Arquitetura:
-   - O PNG contém toda a arte estática.
-   - O JavaScript sobrepõe apenas dados dinâmicos.
-   - O QR Code aponta para o certificado digital por token público.
-   ============================================================================ */
-
-const TIPOS_CERTIFICADO = Object.freeze({
+const CERTIFICADOS = Object.freeze({
   BATISMO: "BATISMO",
   CONSAGRACAO: "CONSAGRACAO",
   HISTORICO: "HISTORICO"
 });
 
-const TAMANHO_CANVAS_CERTIFICADO = Object.freeze({
-  largura: 1492,
-  altura: 1055
-});
-
-/*
- * Um único motor renderiza os dois certificados.
- * Cada modelo informa somente a imagem-base e as coordenadas dos campos.
- * As coordenadas são percentuais, portanto acompanham a escala do preview.
- */
 const MODELOS_CERTIFICADO = Object.freeze({
-  [TIPOS_CERTIFICADO.BATISMO]: {
-    imagem: "../assets/certificados/certificado-batismo-base.png",
-    classe: "certificado-batismo",
+  BATISMO: {
+    aba: "batismo",
+    formulario: "#formBatismo",
+    pesquisa: "#pesquisaMembroBatismo",
+    botaoPesquisa: "#botaoPesquisarMembroBatismo",
+    resultados: "#resultadosMembrosBatismo",
+    imagem: "assets/certificados/certificado-batismo-base.png",
     campos: {
-      nome:       { x: 17.0, y: 25.5, largura: 62.0, altura: 6.8 },
-      cidade:     { x: 27.0, y: 44.2, largura: 20.0, altura: 3.0 },
-      dia:        { x: 51.5, y: 44.2, largura: 4.0,  altura: 3.0 },
-      mes:        { x: 58.0, y: 44.2, largura: 12.0, altura: 3.0 },
-      ano:        { x: 75.5, y: 44.2, largura: 6.0,  altura: 3.0 },
-      assinatura: { x: 36.0, y: 48.2, largura: 28.0, altura: 7.0 },
-      registro:   { x: 23.0, y: 57.3, largura: 15.0, altura: 2.8 },
-      qrcode:     { x: 82.4, y: 37.7, largura: 10.0, altura: 15.2 }
+      nome: { top: 394, left: 235, width: 900, height: 86 },
+      cidade: { top: 735, left: 385, width: 330, height: 32 },
+      dia: { top: 735, left: 744, width: 65, height: 32 },
+      mes: { top: 735, left: 838, width: 215, height: 32 },
+      ano: { top: 735, left: 1080, width: 92, height: 32 },
+      assinatura: { top: 803, left: 490, width: 500, height: 96 },
+      registro: { top: 931, left: 350, width: 255, height: 32 },
+      qr: { top: 629, left: 1225, width: 140, height: 140 }
     }
   },
 
-  [TIPOS_CERTIFICADO.CONSAGRACAO]: {
-    imagem: "../assets/certificados/certificado-consagracao-base.png",
-    classe: "certificado-consagracao",
+  CONSAGRACAO: {
+    aba: "consagracao",
+    formulario: "#formConsagracao",
+    pesquisa: "#pesquisaMembro",
+    botaoPesquisa: "#botaoPesquisarMembro",
+    resultados: "#resultadosMembros",
+    imagem: "assets/certificados/certificado-consagracao-base.png",
     campos: {
-      nome:       { x: 17.5, y: 28.0, largura: 62.0, altura: 6.6 },
-      cargo:      { x: 43.0, y: 34.6, largura: 34.0, altura: 4.2 },
-      cidade:     { x: 29.0, y: 51.5, largura: 20.0, altura: 2.8 },
-      dia:        { x: 51.8, y: 51.5, largura: 4.0,  altura: 2.8 },
-      mes:        { x: 58.5, y: 51.5, largura: 12.0, altura: 2.8 },
-      ano:        { x: 76.0, y: 51.5, largura: 6.0,  altura: 2.8 },
-      assinatura: { x: 35.5, y: 54.8, largura: 29.0, altura: 7.0 },
-      registro:   { x: 21.0, y: 61.2, largura: 16.0, altura: 2.8 },
-      qrcode:     { x: 82.1, y: 44.2, largura: 10.4, altura: 15.8 }
+      nome: { top: 402, left: 235, width: 900, height: 82 },
+      cargo: { top: 505, left: 548, width: 360, height: 38 },
+      cidade: { top: 738, left: 385, width: 330, height: 32 },
+      dia: { top: 738, left: 744, width: 65, height: 32 },
+      mes: { top: 738, left: 838, width: 215, height: 32 },
+      ano: { top: 738, left: 1080, width: 92, height: 32 },
+      assinatura: { top: 806, left: 490, width: 500, height: 96 },
+      registro: { top: 934, left: 350, width: 255, height: 32 },
+      qr: { top: 629, left: 1225, width: 140, height: 140 }
     }
   }
 });
 
-const ESTADO_CERTIFICADOS = {
+const ESTADO = {
+  tipo: CERTIFICADOS.BATISMO,
   configuracoes: {},
-  arquivos: {},
   cargos: [],
   historico: [],
   certificadoAtual: null,
-  tipoAtivo: TIPOS_CERTIFICADO.BATISMO
+  observador: null
 };
 
 const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
 const $$ = (seletor, raiz = document) =>
   Array.from(raiz.querySelectorAll(seletor));
 
-document.addEventListener("DOMContentLoaded", iniciarModuloCertificados);
+document.addEventListener("DOMContentLoaded", iniciarCertificados);
 
-async function iniciarModuloCertificados() {
-  aplicarIdentidadeUsuario?.();
+function obterApiCertificados() {
+  const api = window.VRGAuth || window.Auth;
+
+  if (!api || typeof api.chamarApi !== "function") {
+    throw new Error(
+      "O módulo de autenticação/API não foi carregado corretamente."
+    );
+  }
+
+  return api;
+}
+
+async function iniciarCertificados() {
+  const sessao =
+    typeof obterSessao === "function"
+      ? obterSessao()
+      : null;
+
+  if (!sessao || !sessao.credential) {
+    window.location.replace("index.html");
+    return;
+  }
+
+  if (typeof aplicarIdentidadeUsuario === "function") {
+    aplicarIdentidadeUsuario();
+  }
+
   configurarEventos();
+  configurarEscala();
+  await carregarDados();
   abrirAba("batismo");
-  await carregarDadosIniciais();
-  atualizarPreview("batismo");
 }
 
 function configurarEventos() {
@@ -87,146 +105,204 @@ function configurarEventos() {
     botao.addEventListener("click", () => abrirAba(botao.dataset.aba));
   });
 
-  $("#botaoSair")?.addEventListener("click", () => {
-    if (typeof CHAVE_SESSAO !== "undefined") {
-      sessionStorage.removeItem(CHAVE_SESSAO);
-    }
-    window.location.href = "../index.html";
+  Object.values(MODELOS_CERTIFICADO).forEach((modelo) => {
+    configurarPesquisa(modelo);
+    configurarFormulario(modelo);
   });
 
-  configurarPesquisaMembro({
-    campoPesquisa: "#pesquisaMembroBatismo",
-    botaoPesquisa: "#botaoPesquisarMembroBatismo",
-    areaResultados: "#resultadosMembrosBatismo",
-    formulario: "#formBatismo",
-    tipo: TIPOS_CERTIFICADO.BATISMO
-  });
+  $$("[data-visualizar]").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      const tipo = tipoPorAba(botao.dataset.visualizar);
 
-  configurarPesquisaMembro({
-    campoPesquisa: "#pesquisaMembro",
-    botaoPesquisa: "#botaoPesquisarMembro",
-    areaResultados: "#resultadosMembros",
-    formulario: "#formConsagracao",
-    tipo: TIPOS_CERTIFICADO.CONSAGRACAO
-  });
-
-  $("#formBatismo")?.addEventListener("input", () => {
-    if (ESTADO_CERTIFICADOS.tipoAtivo === TIPOS_CERTIFICADO.BATISMO) {
-      atualizarPreview("batismo");
-    }
-  });
-
-  $("#formConsagracao")?.addEventListener("input", () => {
-    if (ESTADO_CERTIFICADOS.tipoAtivo === TIPOS_CERTIFICADO.CONSAGRACAO) {
-      atualizarPreview("consagracao");
-    }
-  });
-
-  $("#formBatismo")?.addEventListener("submit", (evento) =>
-    registrarEImprimir(evento, TIPOS_CERTIFICADO.BATISMO)
-  );
-
-  $("#formConsagracao")?.addEventListener("submit", (evento) =>
-    registrarEImprimir(evento, TIPOS_CERTIFICADO.CONSAGRACAO)
-  );
-
-  $$('[data-visualizar]').forEach((botao) => {
-    botao.addEventListener("click", () => atualizarPreview(botao.dataset.visualizar));
+      if (tipo) {
+        ESTADO.tipo = tipo;
+        atualizarPreview();
+      }
+    });
   });
 
   $("#filtroHistorico")?.addEventListener("input", renderizarHistorico);
-  window.addEventListener("resize", atualizarEscalaPreview);
+  window.addEventListener("afterprint", atualizarEscalaImediata);
 }
 
-function configurarPesquisaMembro(configuracao) {
-  const campo = $(configuracao.campoPesquisa);
-  const botao = $(configuracao.botaoPesquisa);
+function configurarPesquisa(modelo) {
+  const campo = $(modelo.pesquisa);
+  const botao = $(modelo.botaoPesquisa);
 
-  botao?.addEventListener("click", () => pesquisarMembro(configuracao));
+  botao?.addEventListener("click", () => pesquisarMembro(modelo));
+
   campo?.addEventListener("keydown", (evento) => {
     if (evento.key === "Enter") {
       evento.preventDefault();
-      pesquisarMembro(configuracao);
+      pesquisarMembro(modelo);
     }
   });
 }
 
-async function carregarDadosIniciais() {
-  definirMensagem("Carregando dados do módulo...", "info");
+function configurarFormulario(modelo) {
+  const formulario = $(modelo.formulario);
+
+  if (!formulario) {
+    return;
+  }
+
+  const atualizar = () => {
+    const tipo = tipoPorAba(modelo.aba);
+
+    if (ESTADO.tipo === tipo) {
+      atualizarPreview();
+    }
+  };
+
+  formulario.addEventListener("input", atualizar);
+  formulario.addEventListener("change", atualizar);
+
+  formulario.addEventListener("submit", (evento) => {
+    emitirCertificado(evento, tipoPorAba(modelo.aba));
+  });
+}
+
+function configurarEscala() {
+  const folha = $("#previewCertificado");
+
+  if (!folha || typeof ResizeObserver !== "function") {
+    return;
+  }
+
+  ESTADO.observador?.disconnect();
+  ESTADO.observador = new ResizeObserver(atualizarEscalaImediata);
+  ESTADO.observador.observe(folha);
+}
+
+function atualizarEscalaImediata() {
+  const folha = $("#previewCertificado");
+  const render = $(".certificado-render", folha);
+
+  if (!folha || !render) {
+    return;
+  }
+
+  render.style.setProperty(
+    "--escala-certificado",
+    String(folha.clientWidth / 1492)
+  );
+}
+
+async function carregarDados() {
+  mostrarMensagem("Carregando módulo...", "info");
 
   try {
+    const api = obterApiCertificados();
+
     const [dados, historico] = await Promise.all([
-      chamarApi({ acao: "obterDadosCertificados" }),
-      chamarApi({ acao: "listarCertificados" })
+      api.chamarApi({ acao: "obterDadosCertificados" }),
+      api.chamarApi({ acao: "listarCertificados" })
     ]);
 
-    ESTADO_CERTIFICADOS.configuracoes = dados?.configuracoes || {};
-    ESTADO_CERTIFICADOS.arquivos = dados?.arquivos || {};
-    ESTADO_CERTIFICADOS.cargos = Array.isArray(dados?.cargos) ? dados.cargos : [];
-    ESTADO_CERTIFICADOS.historico = Array.isArray(historico?.certificados)
+    ESTADO.configuracoes = dados.configuracoes || {};
+    ESTADO.cargos = Array.isArray(dados.cargos) ? dados.cargos : [];
+    ESTADO.historico = Array.isArray(historico.certificados)
       ? historico.certificados
       : [];
 
     preencherCargos();
     preencherPadroes();
     renderizarHistorico();
-    definirMensagem("Módulo carregado.", "success");
+    mostrarMensagem("Módulo carregado.", "success");
 
     setTimeout(() => {
       const mensagem = $("#mensagemModulo");
-      if (mensagem) mensagem.hidden = true;
-    }, 1800);
+      if (mensagem?.dataset.tipo === "success") {
+        mensagem.hidden = true;
+      }
+    }, 1400);
   } catch (erro) {
-    definirMensagem(erro?.message || "Não foi possível carregar o módulo.", "error");
+    mostrarMensagem(
+      erro?.message || "Não foi possível carregar o módulo.",
+      "error"
+    );
   }
 }
 
 function preencherCargos() {
-  const select = $("#formConsagracao [name='cargo']");
-  if (!select) return;
+  const campo = $("#formConsagracao [name='cargo']");
 
-  select.innerHTML = '<option value="">Selecione</option>';
+  if (!campo) {
+    return;
+  }
 
-  ESTADO_CERTIFICADOS.cargos.forEach((cargo) => {
+  campo.innerHTML = '<option value="">Selecione</option>';
+
+  ESTADO.cargos.forEach((item) => {
+    const nome =
+      typeof item === "string"
+        ? item.trim()
+        : String(
+            item?.nome ||
+            item?.cargo ||
+            item?.descricao ||
+            item?.titulo ||
+            item?.label ||
+            item?.value ||
+            ""
+          ).trim();
+
+    if (!nome) {
+      return;
+    }
+
     const opcao = document.createElement("option");
-    opcao.value = cargo;
-    opcao.textContent = cargo;
-    select.appendChild(opcao);
+    opcao.value = nome;
+    opcao.textContent = nome;
+    campo.appendChild(opcao);
   });
 }
 
 function preencherPadroes() {
-  const configuracoes = ESTADO_CERTIFICADOS.configuracoes;
+  Object.values(MODELOS_CERTIFICADO).forEach((modelo) => {
+    const formulario = $(modelo.formulario);
 
-  [$("#formBatismo"), $("#formConsagracao")].forEach((formulario) => {
-    if (!formulario) return;
-
-    if (formulario.elements.pastor) {
-      formulario.elements.pastor.value =
-        configuracoes.pastorPresidente || configuracoes.pastorLocal || "";
+    if (!formulario) {
+      return;
     }
 
-    if (formulario.elements.local) {
-      formulario.elements.local.value = [
-        configuracoes.cidadeIgreja,
-        configuracoes.estadoIgreja
-      ].filter(Boolean).join(" - ");
-    }
+    preencherSeVazio(
+      formulario,
+      "pastor",
+      ESTADO.configuracoes.pastorPresidente ||
+      ESTADO.configuracoes.pastorLocal ||
+      "Rogério Lemos da Silva"
+    );
 
-    if (formulario.elements.congregacao) {
-      formulario.elements.congregacao.value = configuracoes.congregacaoPadrao || "";
-    }
+    preencherSeVazio(
+      formulario,
+      "local",
+      [
+        ESTADO.configuracoes.cidadeIgreja,
+        ESTADO.configuracoes.estadoIgreja
+      ]
+        .filter(Boolean)
+        .join(" - ")
+    );
   });
 }
 
-function abrirAba(aba) {
-  const tipo = aba === "consagracao"
-    ? TIPOS_CERTIFICADO.CONSAGRACAO
-    : aba === "historico"
-      ? TIPOS_CERTIFICADO.HISTORICO
-      : TIPOS_CERTIFICADO.BATISMO;
+function preencherSeVazio(formulario, nome, valor) {
+  const campo = formulario.elements.namedItem(nome);
 
-  ESTADO_CERTIFICADOS.tipoAtivo = tipo;
+  if (campo && !String(campo.value || "").trim()) {
+    campo.value = valor || "";
+  }
+}
+
+function abrirAba(aba) {
+  const tipo = tipoPorAba(aba);
+
+  if (!tipo) {
+    return;
+  }
+
+  ESTADO.tipo = tipo;
 
   $$(".aba-certificado").forEach((botao) => {
     const ativa = botao.dataset.aba === aba;
@@ -240,51 +316,102 @@ function abrirAba(aba) {
     painel.hidden = !ativo;
   });
 
-  const areaPreview = $("#areaPreviewCertificado");
-  if (areaPreview) areaPreview.hidden = tipo === TIPOS_CERTIFICADO.HISTORICO;
+  const preview = $("#areaPreviewCertificado");
 
-  if (tipo === TIPOS_CERTIFICADO.HISTORICO) {
+  if (preview) {
+    preview.hidden = tipo === CERTIFICADOS.HISTORICO;
+  }
+
+  if (tipo === CERTIFICADOS.HISTORICO) {
     renderizarHistorico();
     return;
   }
 
-  atualizarPreview(aba);
+  atualizarPreview();
 }
 
-async function pesquisarMembro(configuracao) {
-  const campo = $(configuracao.campoPesquisa);
+function tipoPorAba(aba) {
+  const valor = normalizar(aba);
+
+  if (valor === "batismo") {
+    return CERTIFICADOS.BATISMO;
+  }
+
+  if (valor === "consagracao") {
+    return CERTIFICADOS.CONSAGRACAO;
+  }
+
+  if (valor === "historico") {
+    return CERTIFICADOS.HISTORICO;
+  }
+
+  return "";
+}
+
+function modeloAtual() {
+  return MODELOS_CERTIFICADO[ESTADO.tipo] || null;
+}
+
+async function pesquisarMembro(modelo) {
+  const campo = $(modelo.pesquisa);
+  const botao = $(modelo.botaoPesquisa);
   const termo = campo?.value.trim() || "";
 
   if (termo.length < 2) {
-    definirMensagem("Digite pelo menos 2 caracteres.", "error");
+    mostrarMensagem("Digite pelo menos 2 caracteres.", "error");
+    campo?.focus();
     return;
   }
 
-  definirMensagem("Pesquisando membro...", "info");
+  if (botao) {
+    botao.disabled = true;
+  }
+
+  mostrarMensagem("Pesquisando membro...", "info");
 
   try {
-    const resposta = await chamarApi({
+    const resposta = await obterApiCertificados().chamarApi({
       acao: "pesquisarMembrosCertificado",
       termo
     });
 
-    const membros = Array.isArray(resposta?.membros) ? resposta.membros : [];
-    mostrarResultadosMembros(membros, configuracao);
-    definirMensagem(`${membros.length} resultado(s) encontrado(s).`, "success");
+    const membros = Array.isArray(resposta.membros)
+      ? resposta.membros
+      : [];
+
+    mostrarResultados(membros, modelo);
+
+    mostrarMensagem(
+      membros.length
+        ? `${membros.length} resultado(s) encontrado(s).`
+        : "Nenhum membro encontrado.",
+      membros.length ? "success" : "info"
+    );
   } catch (erro) {
-    definirMensagem(erro?.message || "Erro ao pesquisar membro.", "error");
+    mostrarMensagem(
+      erro?.message || "Não foi possível pesquisar os membros.",
+      "error"
+    );
+  } finally {
+    if (botao) {
+      botao.disabled = false;
+    }
   }
 }
 
-function mostrarResultadosMembros(membros, configuracao) {
-  const area = $(configuracao.areaResultados);
-  if (!area) return;
+function mostrarResultados(membros, modelo) {
+  const area = $(modelo.resultados);
+
+  if (!area) {
+    return;
+  }
 
   area.innerHTML = "";
   area.hidden = false;
 
   if (!membros.length) {
-    area.innerHTML = '<div class="historico-vazio">Nenhum membro encontrado.</div>';
+    area.innerHTML =
+      '<div class="historico-vazio">Nenhum membro encontrado.</div>';
     return;
   }
 
@@ -292,326 +419,315 @@ function mostrarResultadosMembros(membros, configuracao) {
     const botao = document.createElement("button");
     botao.type = "button";
     botao.className = "resultado-membro";
+
+    const nome = membro.nomeCompleto || membro.nome || "Membro sem nome";
+    const numero =
+      membro.numeroCarteirinha ||
+      membro.numero ||
+      membro.codigo ||
+      membro.id ||
+      "";
+    const congregacao =
+      membro.congregacao ||
+      membro.nomeCongregacao ||
+      "Sem congregação";
+
     botao.innerHTML = `
       <span>
-        <strong>${esc(membro.nomeCompleto || membro.nome || "")}</strong><br>
-        ${esc(membro.congregacao || "Sem congregação")}
+        <strong>${esc(nome)}</strong><br>
+        ${esc(congregacao)}
       </span>
       <span>
-        ${esc(membro.numeroCarteirinha || membro.codigoMembro || membro.id || "")}<br>
+        ${esc(numero)}<br>
         ${esc(membro.situacao || "")}
       </span>
     `;
-    botao.addEventListener("click", () => selecionarMembro(membro, configuracao));
+
+    botao.addEventListener("click", () => selecionarMembro(membro, modelo));
     area.appendChild(botao);
   });
 }
 
-function selecionarMembro(membro, configuracao) {
-  const formulario = $(configuracao.formulario);
-  const area = $(configuracao.areaResultados);
-  const campoPesquisa = $(configuracao.campoPesquisa);
-  if (!formulario) return;
+function selecionarMembro(membro, modelo) {
+  const formulario = $(modelo.formulario);
 
-  atribuirCampo(formulario, "idMembro", membro.id || membro.idMembro || "");
-  atribuirCampo(formulario, "codigoMembro", membro.codigoMembro || membro.codigo || "");
-  atribuirCampo(formulario, "numeroCarteirinha", membro.numeroCarteirinha || "");
-  atribuirCampo(formulario, "nome", membro.nomeCompleto || membro.nome || "");
-  atribuirCampo(formulario, "sexo", membro.sexo || "");
-  atribuirCampo(formulario, "dataNascimento", membro.dataNascimento || "");
-  atribuirCampo(formulario, "nomePai", membro.nomePai || "");
-  atribuirCampo(formulario, "nomeMae", membro.nomeMae || "");
-
-  if (membro.congregacao) atribuirCampo(formulario, "congregacao", membro.congregacao);
-  if (area) area.hidden = true;
-  if (campoPesquisa) campoPesquisa.value = membro.nomeCompleto || membro.nome || "";
-
-  atualizarPreview(configuracao.tipo === TIPOS_CERTIFICADO.CONSAGRACAO
-    ? "consagracao"
-    : "batismo");
-}
-
-function atribuirCampo(formulario, nome, valor) {
-  if (formulario.elements[nome]) formulario.elements[nome].value = valor ?? "";
-}
-
-function obterDadosFormulario(formulario, tipo) {
-  const dados = Object.fromEntries(new FormData(formulario).entries());
-  dados.tipo = tipo;
-  return dados;
-}
-
-async function registrarEImprimir(evento, tipo) {
-  evento.preventDefault();
-
-  const formulario = evento.currentTarget;
-  const botao = formulario.querySelector('[type="submit"]');
-
-  if (!formulario.reportValidity()) return;
-  if (!String(formulario.elements.idMembro?.value || "").trim()) {
-    definirMensagem("Pesquise e selecione um membro antes de registrar o certificado.", "error");
+  if (!formulario) {
     return;
   }
 
-  const dados = obterDadosFormulario(formulario, tipo);
-  definirMensagem("Registrando certificado...", "info");
-  if (botao) botao.disabled = true;
+  const nome = membro.nomeCompleto || membro.nome || "";
+  const codigo = membro.codigo || membro.id || membro.idMembro || "";
+  const numero =
+    membro.numeroCarteirinha || membro.numero || codigo || "";
+
+  preencherCampo(formulario, "idMembro", codigo);
+  preencherCampo(formulario, "codigoMembro", codigo);
+  preencherCampo(formulario, "numeroCarteirinha", numero);
+  preencherCampo(formulario, "nome", nome);
+  preencherCampo(formulario, "sexo", membro.sexo || "");
+  preencherCampo(formulario, "dataNascimento", membro.dataNascimento || "");
+  preencherCampo(formulario, "nomePai", membro.nomePai || membro.pai || "");
+  preencherCampo(formulario, "nomeMae", membro.nomeMae || membro.mae || "");
+  preencherCampo(
+    formulario,
+    "congregacao",
+    membro.congregacao || membro.nomeCongregacao || ""
+  );
+
+  const area = $(modelo.resultados);
+  const pesquisa = $(modelo.pesquisa);
+
+  if (area) {
+    area.hidden = true;
+  }
+
+  if (pesquisa) {
+    pesquisa.value = numero || nome;
+  }
+
+  ESTADO.tipo = tipoPorAba(modelo.aba);
+  atualizarPreview();
+  mostrarMensagem(`${nome} selecionado com sucesso.`, "success");
+}
+
+function preencherCampo(formulario, nome, valor) {
+  const campo = formulario.elements.namedItem(nome);
+
+  if (campo) {
+    campo.value = valor ?? "";
+  }
+}
+
+function dadosFormulario(formulario, tipo) {
+  const dados = Object.fromEntries(new FormData(formulario).entries());
+  dados.tipo = tipo;
+
+  Object.keys(dados).forEach((chave) => {
+    if (typeof dados[chave] === "string") {
+      dados[chave] = dados[chave].trim();
+    }
+  });
+
+  return dados;
+}
+
+async function emitirCertificado(evento, tipo) {
+  evento.preventDefault();
+
+  const formulario = evento.currentTarget;
+  const botao = formulario.querySelector('button[type="submit"]');
+
+  if (!formulario.reportValidity()) {
+    return;
+  }
+
+  const idMembro =
+    formulario.elements.namedItem("idMembro")?.value.trim() ||
+    formulario.elements.namedItem("codigoMembro")?.value.trim() ||
+    "";
+
+  if (!idMembro) {
+    mostrarMensagem(
+      "Pesquise e selecione um membro antes de emitir.",
+      "error"
+    );
+    return;
+  }
+
+  const dados = dadosFormulario(formulario, tipo);
+
+  if (botao) {
+    botao.disabled = true;
+  }
+
+  mostrarMensagem("Registrando certificado...", "info");
 
   try {
-    const resposta = await chamarApi({ acao: "emitirCertificado", dados });
-    const registrado = resposta?.certificado || {};
+    const resposta = await obterApiCertificados().chamarApi({
+      acao: "emitirCertificado",
+      dados
+    });
 
-    const completos = {
+    const certificado = {
       ...dados,
-      ...registrado,
+      ...(resposta.certificado || {}),
       tipo,
-      numero: registrado.numero || dados.numero || "",
-      tokenPublico: registrado.tokenPublico || registrado.token || dados.tokenPublico || "",
-      linkDigital:
-        registrado.linkDigital ||
-        registrado.urlDigital ||
-        registrado.link ||
-        dados.linkDigital ||
+      numero:
+        resposta.certificado?.numero ||
+        dados.numero ||
         ""
     };
 
-    ESTADO_CERTIFICADOS.certificadoAtual = completos;
-    atualizarPreview(tipo === TIPOS_CERTIFICADO.CONSAGRACAO ? "consagracao" : "batismo", completos);
-    definirMensagem(`${completos.numero || "Certificado"} registrado com sucesso.`, "success");
-    await recarregarHistorico();
+    ESTADO.tipo = tipo;
+    ESTADO.certificadoAtual = certificado;
+    renderizarCertificado(certificado);
 
-    setTimeout(() => imprimirCertificado(completos), 350);
+    mostrarMensagem(
+      `${certificado.numero || "Certificado"} registrado com sucesso.`,
+      "success"
+    );
+
+    await recarregarHistorico();
+    setTimeout(imprimirCertificado, 350);
   } catch (erro) {
-    definirMensagem(erro?.message || "Não foi possível registrar o certificado.", "error");
+    mostrarMensagem(
+      erro?.message || "Não foi possível registrar o certificado.",
+      "error"
+    );
   } finally {
-    if (botao) botao.disabled = false;
+    if (botao) {
+      botao.disabled = false;
+    }
   }
 }
 
-function atualizarPreview(tipo, dadosForcados) {
-  const tipoApi = tipo === "consagracao"
-    ? TIPOS_CERTIFICADO.CONSAGRACAO
-    : TIPOS_CERTIFICADO.BATISMO;
+function atualizarPreview() {
+  const modelo = modeloAtual();
 
-  const formulario = tipoApi === TIPOS_CERTIFICADO.CONSAGRACAO
-    ? $("#formConsagracao")
-    : $("#formBatismo");
+  if (!modelo) {
+    return;
+  }
+
+  const formulario = $(modelo.formulario);
+
+  if (!formulario) {
+    return;
+  }
+
+  renderizarCertificado(dadosFormulario(formulario, ESTADO.tipo));
+}
+
+function renderizarCertificado(dados) {
+  const modelo = MODELOS_CERTIFICADO[dados.tipo] || modeloAtual();
   const alvo = $("#previewCertificado");
 
-  if (!alvo || (!formulario && !dadosForcados)) return;
+  if (!modelo || !alvo) {
+    return;
+  }
 
-  const dadosFormulario = dadosForcados || obterDadosFormulario(formulario, tipoApi);
-  const dados = normalizarDadosCertificado({ ...dadosFormulario, tipo: tipoApi });
+  const valores = montarValores(dados);
+  const campos = [];
 
-  alvo.dataset.tipo = tipoApi.toLowerCase();
-  alvo.innerHTML = renderizarCertificado(dados);
+  Object.entries(modelo.campos).forEach(([nome, posicao]) => {
+    if (nome === "cargo" && !valores.cargo) {
+      return;
+    }
+
+    campos.push(montarCampo(nome, valores[nome], posicao, valores));
+  });
+
+  alvo.innerHTML = `
+    <article class="certificado-render certificado-${modelo.aba}">
+      <img
+        class="certificado-arte"
+        src="${modelo.imagem}"
+        alt="${
+          modelo.aba === "consagracao"
+            ? "Certificado de Consagração"
+            : "Certificado de Batismo"
+        }"
+      >
+      ${campos.join("")}
+    </article>
+  `;
 
   requestAnimationFrame(() => {
-    atualizarEscalaPreview();
-    ajustarTipografiaCertificado(alvo);
+    atualizarEscalaImediata();
+    gerarQr(dados);
   });
 }
 
-/*
- * MOTOR ÚNICO
- *
- * Batismo e Consagração passam obrigatoriamente por esta função.
- * Não existe mais um certificado montado por HTML e outro por placeholders.
- */
-function renderizarCertificado(dados) {
-  const tipo = dados.tipo === TIPOS_CERTIFICADO.CONSAGRACAO
-    ? TIPOS_CERTIFICADO.CONSAGRACAO
-    : TIPOS_CERTIFICADO.BATISMO;
-
-  const modelo = MODELOS_CERTIFICADO[tipo];
-  const partesData = obterPartesDataCertificado(dados.dataCerimonia || dados.data);
-  const campos = [
-    criarCampo("nome", dados.nome, modelo.campos.nome, "certificado-dado-nome"),
-    criarCampo("cidade", obterCidadeCertificado(dados), modelo.campos.cidade, "certificado-dado-cidade"),
-    criarCampo("dia", partesData.dia, modelo.campos.dia, "certificado-dado-data"),
-    criarCampo("mes", partesData.mes, modelo.campos.mes, "certificado-dado-data"),
-    criarCampo("ano", partesData.ano, modelo.campos.ano, "certificado-dado-data"),
-    criarCampo("registro", dados.numero, modelo.campos.registro, "certificado-dado-registro")
-  ];
-
-  if (tipo === TIPOS_CERTIFICADO.CONSAGRACAO) {
-    campos.push(
-      criarCampo("cargo", dados.cargo, modelo.campos.cargo, "certificado-dado-cargo")
-    );
-  }
-
-  const assinatura = obterCaminhoAssinatura(dados);
-  const linkDigital = construirLinkCertificadoDigital(dados);
-  const qrCode = construirUrlImagemQr(linkDigital);
-
-  return `
-    <article
-      class="certificado-canvas ${modelo.classe}"
-      data-modelo="${tipo.toLowerCase()}"
-      aria-label="${tipo === TIPOS_CERTIFICADO.CONSAGRACAO
-        ? "Certificado de Consagração"
-        : "Certificado de Batismo"}"
-    >
-      <img
-        class="certificado-imagem-base"
-        src="${escAttr(modelo.imagem)}"
-        alt=""
-        aria-hidden="true"
-      >
-
-      ${campos.join("")}
-
-      <div
-        class="certificado-dado certificado-dado-assinatura"
-        style="${estiloCoordenadas(modelo.campos.assinatura)}"
-      >
-        ${assinatura
-          ? `<img src="${escAttr(assinatura)}" alt="Assinatura do Pastor Presidente">`
-          : ""}
-      </div>
-
-      <!--
-        O fundo branco cobre qualquer QR ilustrativo que ainda exista no PNG
-        antigo do Batismo. Assim somente o QR público gerado pelo sistema fica
-        visível, sem alterar a arte-base nesta etapa.
-      -->
-      <div
-        class="certificado-dado certificado-dado-qrcode"
-        style="${estiloCoordenadas(modelo.campos.qrcode)}"
-      >
-        <span class="certificado-qrcode-fundo" aria-hidden="true"></span>
-        <img src="${escAttr(qrCode)}" alt="QR Code para baixar o certificado digital">
-      </div>
-    </article>
-  `;
-}
-
-function normalizarDadosCertificado(dados) {
-  const tipo = String(dados.tipo || "").toUpperCase() === TIPOS_CERTIFICADO.CONSAGRACAO
-    ? TIPOS_CERTIFICADO.CONSAGRACAO
-    : TIPOS_CERTIFICADO.BATISMO;
+function montarValores(dados) {
+  const data = separarData(dados.dataCerimonia);
+  const nome = String(dados.nome || "NOME COMPLETO").trim();
+  const cargo = String(dados.cargo || "").trim();
 
   return {
-    ...dados,
-    tipo,
-    nome: limparPlaceholder(dados.nome || dados.nomeCompleto),
-    cargo: limparPlaceholder(dados.cargo),
-    numero: limparPlaceholder(dados.numero || dados.numeroCertificado),
-    tokenPublico: limparPlaceholder(dados.tokenPublico || dados.token)
+    nome,
+    classeNome:
+      nome.length > 42
+        ? "nome-muito-longo"
+        : nome.length > 31
+          ? "nome-longo"
+          : "",
+    cargo,
+    classeCargo: cargo.length > 20 ? "cargo-longo" : "",
+    cidade:
+      obterCidade(dados.local) ||
+      ESTADO.configuracoes.cidadeIgreja ||
+      "",
+    dia: data.dia,
+    mes: data.mes,
+    ano: data.ano,
+    assinatura:
+      "assets/assinaturas/assinatura-pastor-presidente.png",
+    registro: dados.numero || "PRÉVIA",
+    qr: ""
   };
 }
 
-function limparPlaceholder(valor) {
-  const texto = String(valor ?? "").trim();
+function montarCampo(nome, valor, posicao, valores) {
+  const estilo = [
+    `top:${posicao.top}px`,
+    `left:${posicao.left}px`,
+    `width:${posicao.width}px`,
+    `height:${posicao.height}px`
+  ].join(";");
 
-  if (!texto) return "";
-  if (/^\{[^}]+\}$/.test(texto)) return "";
-  if (/^(NOME COMPLETO|CARGO|CARGO MINISTERIAL|NÚMERO DO CERTIFICADO|NUMERO_CERTIFICADO|PRÉVIA)$/i.test(texto)) {
-    return "";
+  if (nome === "assinatura") {
+    return `
+      <div class="certificado-valor" data-campo="assinatura" style="${estilo}">
+        <img src="${valor}" alt="Assinatura do Pastor Presidente">
+      </div>
+    `;
   }
 
-  return texto;
-}
+  if (nome === "qr") {
+    return `
+      <div
+        id="qrCertificadoAtual"
+        class="certificado-valor"
+        data-campo="qr"
+        style="${estilo}"
+        aria-label="QR Code do certificado digital"
+      ></div>
+    `;
+  }
 
-function criarCampo(nome, conteudo, coordenadas, classeExtra) {
-  if (!coordenadas) return "";
+  const classes = [
+    nome === "nome" ? valores.classeNome : "",
+    nome === "cargo" ? valores.classeCargo : ""
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return `
     <div
-      class="certificado-dado ${classeExtra}"
-      data-campo="${escAttr(nome)}"
-      style="${estiloCoordenadas(coordenadas)}"
-    >${esc(conteudo || "")}</div>
+      class="certificado-valor ${classes}"
+      data-campo="${nome}"
+      style="${estilo}"
+    >
+      ${esc(valor)}
+    </div>
   `;
 }
 
-function estiloCoordenadas(campo) {
-  return [
-    `left:${campo.x}%`,
-    `top:${campo.y}%`,
-    `width:${campo.largura}%`,
-    `height:${campo.altura}%`
-  ].join(";");
-}
+function gerarQr(dados) {
+  const alvo = $("#qrCertificadoAtual");
 
-function atualizarEscalaPreview() {
-  const folha = $("#previewCertificado");
-  const canvas = $(".certificado-canvas", folha);
-  if (!folha || !canvas) return;
-
-  const escala = folha.clientWidth / TAMANHO_CANVAS_CERTIFICADO.largura;
-  canvas.style.setProperty("--certificado-escala", String(escala));
-}
-
-function ajustarTipografiaCertificado(raiz) {
-  ajustarTextoParaCaber($(".certificado-dado-nome", raiz), 61, 34);
-  ajustarTextoParaCaber($(".certificado-dado-cargo", raiz), 38, 24);
-}
-
-function ajustarTextoParaCaber(elemento, tamanhoMaximo, tamanhoMinimo) {
-  if (!elemento) return;
-
-  let tamanho = tamanhoMaximo;
-  elemento.style.fontSize = `${tamanho}px`;
-
-  while (
-    tamanho > tamanhoMinimo &&
-    (elemento.scrollWidth > elemento.clientWidth ||
-      elemento.scrollHeight > elemento.clientHeight)
-  ) {
-    tamanho -= 1;
-    elemento.style.fontSize = `${tamanho}px`;
-  }
-}
-
-function obterCidadeCertificado(dados) {
-  const configuracoes = ESTADO_CERTIFICADOS.configuracoes || {};
-  const cidade = dados.cidade || dados.local || configuracoes.cidadeIgreja || "CIDADE";
-  return String(cidade).split("-")[0].trim();
-}
-
-function obterPartesDataCertificado(valor) {
-  if (!valor) {
-    return { dia: "", mes: "", ano: "", extenso: "" };
+  if (!alvo) {
+    return;
   }
 
-  const data = new Date(`${String(valor).slice(0, 10)}T12:00:00`);
-  if (Number.isNaN(data.getTime())) {
-    return { dia: "", mes: "", ano: "", extenso: "" };
+  alvo.innerHTML = "";
+
+  if (typeof QRCode !== "function") {
+    alvo.textContent = "QR";
+    return;
   }
 
-  const mes = new Intl.DateTimeFormat("pt-BR", { month: "long" }).format(data);
-  return {
-    dia: String(data.getDate()),
-    mes,
-    ano: String(data.getFullYear()),
-    extenso: new Intl.DateTimeFormat("pt-BR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    }).format(data)
-  };
-}
-
-function obterCaminhoAssinatura(dados) {
-  const arquivos = ESTADO_CERTIFICADOS.arquivos || {};
-  const configuracoes = ESTADO_CERTIFICADOS.configuracoes || {};
-
-  return dados.assinatura ||
-    arquivos.assinatura ||
-    arquivos.assinaturaPastor ||
-    configuracoes.assinaturaPastor ||
-    "../assets/assinaturas/assinatura-pastor-presidente.png";
-}
-
-function construirLinkCertificadoDigital(dados) {
-  const linkInformado = String(
-    dados.linkDigital || dados.urlDigital || dados.link || ""
-  ).trim();
-  if (linkInformado) return linkInformado;
-
+  const url = new URL("certificado-digital.html", window.location.href);
   const token = String(dados.tokenPublico || dados.token || "").trim();
-  const url = new URL("../certificado-digital/certificado-digital.html", window.location.href);
 
   if (token) {
     url.searchParams.set("token", token);
@@ -619,81 +735,152 @@ function construirLinkCertificadoDigital(dados) {
     url.searchParams.set("modo", "previa");
   }
 
-  return url.href;
+  new QRCode(alvo, {
+    text: url.href,
+    width: Math.max(96, alvo.clientWidth - 8),
+    height: Math.max(96, alvo.clientHeight - 8),
+    colorDark: "#071f3b",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
 }
 
-function construirUrlImagemQr(conteudo) {
-  return `https://api.qrserver.com/v1/create-qr-code/?size=360x360&margin=8&data=${encodeURIComponent(conteudo)}`;
+function separarData(valor) {
+  if (!valor) {
+    return { dia: "", mes: "", ano: "" };
+  }
+
+  const partes = String(valor).split("-");
+
+  if (partes.length !== 3) {
+    return { dia: "", mes: "", ano: "" };
+  }
+
+  const data = new Date(
+    Number(partes[0]),
+    Number(partes[1]) - 1,
+    Number(partes[2])
+  );
+
+  if (Number.isNaN(data.getTime())) {
+    return { dia: "", mes: "", ano: "" };
+  }
+
+  return {
+    dia: String(data.getDate()).padStart(2, "0"),
+    mes: new Intl.DateTimeFormat("pt-BR", { month: "long" })
+      .format(data)
+      .toUpperCase(),
+    ano: String(data.getFullYear())
+  };
 }
 
-function imprimirCertificado(dados) {
-  ESTADO_CERTIFICADOS.certificadoAtual = dados || ESTADO_CERTIFICADOS.certificadoAtual;
-  const folha = $("#previewCertificado");
-  if (!folha) return;
+function obterCidade(valor) {
+  return String(valor || "").split("-")[0].trim();
+}
 
-  folha.classList.add("certificado-para-impressao");
+function imprimirCertificado() {
+  if (!$("#previewCertificado")?.innerHTML.trim()) {
+    mostrarMensagem("Gere a prévia antes de imprimir.", "error");
+    return;
+  }
+
   window.print();
-  setTimeout(() => folha.classList.remove("certificado-para-impressao"), 500);
 }
 
 async function recarregarHistorico() {
-  const resposta = await chamarApi({ acao: "listarCertificados" });
-  ESTADO_CERTIFICADOS.historico = Array.isArray(resposta?.certificados)
+  const resposta = await obterApiCertificados().chamarApi({
+    acao: "listarCertificados"
+  });
+
+  ESTADO.historico = Array.isArray(resposta.certificados)
     ? resposta.certificados
     : [];
+
   renderizarHistorico();
 }
 
 function renderizarHistorico() {
   const corpo = $("#corpoHistorico");
-  if (!corpo) return;
+
+  if (!corpo) {
+    return;
+  }
 
   const filtro = normalizar($("#filtroHistorico")?.value || "");
-  const itens = ESTADO_CERTIFICADOS.historico.filter((item) =>
-    normalizar(`${item.numero || ""} ${item.nome || item.nomeCompleto || ""} ${item.tipo || ""} ${item.cargo || ""}`).includes(filtro)
+
+  const itens = ESTADO.historico.filter((item) =>
+    normalizar(
+      `${item.numero || ""} ${item.nome || ""} ${item.tipo || ""} ${item.cargo || ""}`
+    ).includes(filtro)
   );
 
   corpo.innerHTML = "";
 
   if (!itens.length) {
-    corpo.innerHTML = '<tr><td colspan="6" class="historico-vazio">Nenhum certificado encontrado.</td></tr>';
+    corpo.innerHTML = `
+      <tr>
+        <td colspan="6" class="historico-vazio">
+          Nenhum certificado encontrado.
+        </td>
+      </tr>
+    `;
     return;
   }
 
   itens.forEach((item) => {
     const linha = document.createElement("tr");
+
     linha.innerHTML = `
       <td><strong>${esc(item.numero || "")}</strong></td>
-      <td>${esc(nomeTipoCertificado(item.tipo))}</td>
-      <td>${esc(item.nome || item.nomeCompleto || "")}</td>
+      <td>${esc(nomeTipo(item.tipo))}</td>
+      <td>${esc(item.nome || "")}</td>
       <td>${esc(dataBr(item.dataCerimonia || item.data))}</td>
       <td>${esc(item.emitidoPor || "")}</td>
-      <td><button class="botao-reimprimir" type="button">Reimprimir</button></td>
+      <td>
+        <button type="button" class="botao-reimprimir">
+          Reimprimir
+        </button>
+      </td>
     `;
+
     $("button", linha)?.addEventListener("click", () => reimprimir(item));
     corpo.appendChild(linha);
   });
 }
 
-function nomeTipoCertificado(tipo) {
-  return String(tipo || "").toUpperCase() === TIPOS_CERTIFICADO.CONSAGRACAO
+function reimprimir(item) {
+  const tipo =
+    String(item.tipo || "").toUpperCase() === CERTIFICADOS.CONSAGRACAO
+      ? CERTIFICADOS.CONSAGRACAO
+      : CERTIFICADOS.BATISMO;
+
+  ESTADO.tipo = tipo;
+  abrirAba(MODELOS_CERTIFICADO[tipo].aba);
+
+  const dados = {
+    ...item,
+    tipo,
+    dataCerimonia: item.dataCerimonia || item.data || ""
+  };
+
+  ESTADO.certificadoAtual = dados;
+  renderizarCertificado(dados);
+  setTimeout(imprimirCertificado, 350);
+}
+
+function nomeTipo(tipo) {
+  return String(tipo || "").toUpperCase() === CERTIFICADOS.CONSAGRACAO
     ? "Consagração"
     : "Batismo";
 }
 
-function reimprimir(item) {
-  const aba = String(item.tipo || "").toUpperCase() === TIPOS_CERTIFICADO.CONSAGRACAO
-    ? "consagracao"
-    : "batismo";
-
-  abrirAba(aba);
-  atualizarPreview(aba, item);
-  setTimeout(() => imprimirCertificado(item), 300);
-}
-
-function definirMensagem(texto, tipo) {
+function mostrarMensagem(texto, tipo) {
   const elemento = $("#mensagemModulo");
-  if (!elemento) return;
+
+  if (!elemento) {
+    return;
+  }
 
   elemento.hidden = false;
   elemento.textContent = texto;
@@ -708,21 +895,24 @@ function normalizar(valor) {
 }
 
 function dataBr(valor) {
-  if (!valor) return "";
-  const partes = String(valor).slice(0, 10).split("-");
-  return partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : String(valor);
+  if (!valor) {
+    return "";
+  }
+
+  const texto = String(valor);
+  const data = texto.includes("T") ? texto.split("T")[0] : texto;
+  const partes = data.split("-");
+
+  return partes.length === 3
+    ? `${partes[2]}/${partes[1]}/${partes[0]}`
+    : texto;
 }
 
 function esc(valor) {
-  return String(valor ?? "").replace(/[&<>"']/g, (caractere) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;"
-  })[caractere]);
-}
-
-function escAttr(valor) {
-  return esc(valor);
+  return String(valor ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
