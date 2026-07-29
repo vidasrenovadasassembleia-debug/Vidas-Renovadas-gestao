@@ -705,7 +705,8 @@ function montarCertificado(dados) {
 
   const imagemBase = consagracao
     ? "assets/certificados/certificado-consagracao-base.png"
-: "assets/certificados/certificado-batismo-base.png";
+    : "assets/certificados/certificado-batismo-base.png";
+
   return `
     <article class="certificado-canvas ${
       consagracao
@@ -757,7 +758,11 @@ function montarCertificado(dados) {
           certificado-campo-data
         "
       >
-        ${esc(cidade.toUpperCase())}, aos ${esc(data)}.
+        ${
+          consagracao
+            ? "Realizada"
+            : "Realizado"
+        } na cidade de ${esc(cidade.toUpperCase())}, aos ${esc(data)}.
       </div>
 
       <div
