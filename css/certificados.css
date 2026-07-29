@@ -365,13 +365,9 @@
   box-sizing: border-box;
   color: #071f3b;
   text-align: center;
+  background: transparent;
 }
 
-.certificado-campo-cobertura {
-  background: #fbf8ef;
-  box-shadow: 0 0 3px 3px #fbf8ef;
-  border-radius: 2px;
-}
 
 /* Batismo */
 
@@ -427,7 +423,7 @@
   width: 315px;
   height: 43px;
   justify-content: flex-start;
-  padding-left: 5px;
+  padding-left: 0;
   font-size: 17px;
   white-space: nowrap;
 }
@@ -437,9 +433,8 @@
   left: 1217px;
   width: 104px;
   height: 104px;
-  padding: 4px;
+  padding: 2px;
   background: #fff;
-  box-shadow: 0 0 2px 2px #fff;
 }
 
 /* Consagração */
@@ -512,7 +507,7 @@
   width: 330px;
   height: 43px;
   justify-content: flex-start;
-  padding-left: 5px;
+  padding-left: 0;
   font-size: 17px;
   white-space: nowrap;
 }
@@ -522,9 +517,8 @@
   left: 1217px;
   width: 104px;
   height: 104px;
-  padding: 4px;
+  padding: 2px;
   background: #fff;
-  box-shadow: 0 0 2px 2px #fff;
 }
 
 .certificado-campo-qr canvas,
