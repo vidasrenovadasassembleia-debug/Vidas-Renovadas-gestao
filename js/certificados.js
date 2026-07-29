@@ -103,7 +103,7 @@ const MODELOS_CERTIFICADO = Object.freeze({
       height: 138
     }
   }
-}
+});
 
 const ESTADO = {
   tipo: CERTIFICADOS.BATISMO,
