@@ -326,9 +326,20 @@
 }
 
 /* ==========================================================================
-   MODELOS OFICIAIS — ARTE FIXA + CAMPOS DINÂMICOS
-   Dimensão nativa das duas artes: 1492 × 1054 px.
+   CERTIFICADOS V3.0 — VERSÃO CONGELADA
+   A arte PNG contém todo o conteúdo fixo.
+   O sistema posiciona somente os dados realmente variáveis.
+   Canvas nativo: 1492 × 1054 px.
    ========================================================================== */
+
+.folha-certificado {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1492 / 1054;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 16px 34px rgba(7, 31, 59, .18);
+}
 
 .certificado-canvas {
   --certificado-escala: 1;
@@ -356,177 +367,168 @@
   pointer-events: none;
 }
 
-.certificado-campo-dinamico {
+.certificado-dado {
   position: absolute;
   z-index: 3;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
   color: #071f3b;
+  line-height: 1;
   text-align: center;
   background: transparent;
 }
 
+/* Nome — campo amplo para nomes extensos */
 
-/* Batismo */
-
-.certificado-batismo .certificado-campo-nome {
-  top: 446px;
-  left: 260px;
-  width: 935px;
-  height: 104px;
-  color: #b98320;
-  font-size: 67px;
-  line-height: 1;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.certificado-batismo .certificado-campo-nome.nome-longo {
-  font-size: 56px;
-}
-
-.certificado-batismo .certificado-campo-nome.nome-muito-longo {
-  font-size: 47px;
-}
-
-.certificado-batismo .certificado-campo-data {
-  top: 780px;
-  left: 397px;
-  width: 705px;
-  height: 55px;
-  font-size: 21px;
-  line-height: 1.1;
-  white-space: nowrap;
-}
-
-.certificado-batismo .certificado-campo-assinatura {
-  top: 835px;
-  left: 505px;
-  width: 475px;
-  height: 92px;
-}
-
-.certificado-batismo .certificado-campo-assinatura img {
-  display: block;
-  width: auto;
-  max-width: 450px;
-  height: 88px;
-  object-fit: contain;
-}
-
-.certificado-batismo .certificado-campo-registro {
-  top: 953px;
-  left: 347px;
-  width: 315px;
-  height: 43px;
-  justify-content: flex-start;
-  padding-left: 0;
-  font-size: 17px;
-  white-space: nowrap;
-}
-
-.certificado-batismo .certificado-campo-qr {
-  top: 842px;
-  left: 1217px;
-  width: 104px;
-  height: 104px;
-  padding: 2px;
-  background: #fff;
-}
-
-/* Consagração */
-
-.certificado-consagracao .certificado-campo-nome {
-  top: 414px;
-  left: 280px;
-  width: 910px;
-  height: 100px;
-  color: #b98320;
-  font-size: 63px;
-  line-height: 1;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.certificado-consagracao .certificado-campo-nome.nome-longo {
-  font-size: 54px;
-}
-
-.certificado-consagracao .certificado-campo-nome.nome-muito-longo {
-  font-size: 45px;
-}
-
-.certificado-consagracao .certificado-campo-cargo {
-  top: 527px;
-  left: 614px;
-  width: 265px;
-  height: 47px;
-  font-size: 21px;
-  font-weight: 700;
-  line-height: 1;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.certificado-consagracao .certificado-campo-cargo.cargo-longo {
-  font-size: 17px;
-}
-
-.certificado-consagracao .certificado-campo-data {
-  top: 786px;
-  left: 392px;
-  width: 715px;
-  height: 55px;
-  font-size: 20px;
-  line-height: 1.1;
-  white-space: nowrap;
-}
-
-.certificado-consagracao .certificado-campo-assinatura {
-  top: 839px;
-  left: 515px;
-  width: 460px;
-  height: 90px;
-}
-
-.certificado-consagracao .certificado-campo-assinatura img {
-  display: block;
-  width: auto;
-  max-width: 440px;
+.certificado-dado-nome {
+  top: 400px;
+  left: 235px;
+  width: 900px;
   height: 86px;
+  overflow: hidden;
+  color: #b98320;
+  font-size: 61px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.certificado-dado-nome.nome-longo {
+  font-size: 52px;
+}
+
+.certificado-dado-nome.nome-muito-longo {
+  font-size: 43px;
+}
+
+/* Cargo — utilizado somente em Consagração */
+
+.certificado-dado-cargo {
+  top: 498px;
+  left: 560px;
+  width: 340px;
+  height: 36px;
+  font-size: 22px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.certificado-dado-cargo.cargo-longo {
+  font-size: 17px;
+}
+
+/* Data — os textos fixos e as linhas já pertencem à arte */
+
+.certificado-dado-cidade {
+  top: 721px;
+  left: 395px;
+  width: 325px;
+  height: 34px;
+  font-size: 18px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.certificado-dado-dia {
+  top: 721px;
+  left: 742px;
+  width: 70px;
+  height: 34px;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+.certificado-dado-mes {
+  top: 721px;
+  left: 844px;
+  width: 210px;
+  height: 34px;
+  font-size: 18px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.certificado-dado-ano {
+  top: 721px;
+  left: 1085px;
+  width: 90px;
+  height: 34px;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+/* Assinatura oficial */
+
+.certificado-dado-assinatura {
+  top: 802px;
+  left: 485px;
+  width: 500px;
+  height: 102px;
+}
+
+.certificado-dado-assinatura img {
+  display: block;
+  width: auto;
+  max-width: 455px;
+  height: 94px;
   object-fit: contain;
 }
 
-.certificado-consagracao .certificado-campo-registro {
-  top: 952px;
-  left: 300px;
-  width: 330px;
-  height: 43px;
+/* Registro — a legenda REGISTRO Nº já está na arte */
+
+.certificado-dado-registro {
+  top: 929px;
+  left: 350px;
+  width: 250px;
+  height: 34px;
   justify-content: flex-start;
-  padding-left: 0;
   font-size: 17px;
   white-space: nowrap;
 }
 
-.certificado-consagracao .certificado-campo-qr {
-  top: 842px;
-  left: 1217px;
-  width: 104px;
-  height: 104px;
-  padding: 2px;
+/* QR real — único QR exibido */
+
+.certificado-dado-qr {
+  top: 627px;
+  left: 1226px;
+  width: 142px;
+  height: 142px;
+  padding: 4px;
   background: #fff;
 }
 
-.certificado-campo-qr canvas,
-.certificado-campo-qr img {
+.certificado-dado-qr canvas,
+.certificado-dado-qr img {
   display: block;
   width: 100% !important;
   height: 100% !important;
 }
+
+/* Ajustes específicos da Consagração */
+
+.certificado-consagracao .certificado-dado-nome {
+  top: 402px;
+}
+
+.certificado-consagracao .certificado-dado-cidade,
+.certificado-consagracao .certificado-dado-dia,
+.certificado-consagracao .certificado-dado-mes,
+.certificado-consagracao .certificado-dado-ano {
+  top: 724px;
+}
+
+.certificado-consagracao .certificado-dado-assinatura {
+  top: 806px;
+}
+
+.certificado-consagracao .certificado-dado-registro {
+  top: 932px;
+}
+
+/* Responsividade da Central */
 
 @media (max-width: 1180px) {
   .certificados-grid {
@@ -572,6 +574,8 @@
     min-width: 720px;
   }
 }
+
+/* Impressão A4 horizontal */
 
 @page {
   size: A4 landscape;
