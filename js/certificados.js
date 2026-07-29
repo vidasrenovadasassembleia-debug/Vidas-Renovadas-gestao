@@ -691,16 +691,15 @@ function montarCertificado(dados) {
         ? "nome-longo"
         : "";
 
-  const cargo = String(dados.cargo || "CARGO").trim();
-  const classeCargo = cargo.length > 18 ? "cargo-longo" : "";
+  const cargo = String(dados.cargo || "").trim();
+  const classeCargo = cargo.length > 20 ? "cargo-longo" : "";
 
   const configuracoes = ESTADO_CERTIFICADOS.configuracoes;
   const cidade =
-    obterCidadeCertificado(dados, configuracoes) || "CIDADE";
+    obterCidadeCertificado(dados, configuracoes) ||
+    "CIDADE";
 
-  const data =
-    dataExtenso(dados.dataCerimonia) || "DATA POR EXTENSO";
-
+  const partesData = obterPartesDataCertificado(dados.dataCerimonia);
   const numero = dados.numero || "PRÉVIA";
 
   const imagemBase = consagracao
@@ -723,76 +722,98 @@ function montarCertificado(dados) {
         }"
       >
 
-      <div
-        class="
-          certificado-campo-dinamico
-          certificado-campo-nome
-          ${classeNome}
-        "
-      >
+      <div class="certificado-dado certificado-dado-nome ${classeNome}">
         ${esc(nome)}
       </div>
 
       ${
-        consagracao
+        consagracao && cargo
           ? `
-            <div
-              class="
-                certificado-campo-dinamico
-                      certificado-campo-cargo
-                ${classeCargo}
-              "
-            >
+            <div class="certificado-dado certificado-dado-cargo ${classeCargo}">
               ${esc(cargo)}
             </div>
           `
           : ""
       }
 
-      <div
-        class="
-          certificado-campo-dinamico
-          certificado-campo-data
-        "
-      >
-        ${
-          consagracao
-            ? "Realizada"
-            : "Realizado"
-        } na cidade de ${esc(cidade.toUpperCase())}, aos ${esc(data)}.
+      <div class="certificado-dado certificado-dado-cidade">
+        ${esc(cidade)}
       </div>
 
-      <div
-        class="
-          certificado-campo-dinamico
-          certificado-campo-assinatura
-        "
-      >
+      <div class="certificado-dado certificado-dado-dia">
+        ${esc(partesData.dia)}
+      </div>
+
+      <div class="certificado-dado certificado-dado-mes">
+        ${esc(partesData.mes)}
+      </div>
+
+      <div class="certificado-dado certificado-dado-ano">
+        ${esc(partesData.ano)}
+      </div>
+
+      <div class="certificado-dado certificado-dado-assinatura">
         <img
           src="assets/assinaturas/assinatura-pastor-presidente.png"
           alt="Assinatura do Pastor Presidente"
         >
       </div>
 
-      <div
-        class="
-          certificado-campo-dinamico
-          certificado-campo-registro
-        "
-      >
+      <div class="certificado-dado certificado-dado-registro">
         ${esc(numero)}
       </div>
 
       <div
         id="qrCertificadoAtual"
-        class="
-          certificado-campo-dinamico
-          certificado-campo-qr
-        "
+        class="certificado-dado certificado-dado-qr"
         aria-label="QR Code do certificado digital"
       ></div>
     </article>
   `;
+}
+
+function obterPartesDataCertificado(valor) {
+  if (!valor) {
+    return {
+      dia: "",
+      mes: "",
+      ano: ""
+    };
+  }
+
+  const partes = String(valor).split("-");
+
+  if (partes.length !== 3) {
+    return {
+      dia: "",
+      mes: "",
+      ano: ""
+    };
+  }
+
+  const data = new Date(
+    Number(partes[0]),
+    Number(partes[1]) - 1,
+    Number(partes[2])
+  );
+
+  if (Number.isNaN(data.getTime())) {
+    return {
+      dia: "",
+      mes: "",
+      ano: ""
+    };
+  }
+
+  return {
+    dia: String(data.getDate()).padStart(2, "0"),
+    mes: new Intl.DateTimeFormat("pt-BR", {
+      month: "long"
+    })
+      .format(data)
+      .toUpperCase(),
+    ano: String(data.getFullYear())
+  };
 }
 
 function montarConteudoBatismo() {
@@ -858,8 +879,8 @@ function gerarQrCode(dados) {
 
   new QRCode(alvo, {
     text: link,
-    width: 100,
-    height: 100,
+    width: 134,
+    height: 134,
     colorDark: "#071f3b",
     colorLight: "#ffffff",
     correctLevel: QRCode.CorrectLevel.M
