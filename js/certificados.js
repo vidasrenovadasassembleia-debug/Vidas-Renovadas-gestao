@@ -32,75 +32,22 @@ const MODELOS_CERTIFICADO = Object.freeze({
   },
 
   CONSAGRACAO: {
-  aba: "consagracao",
-  formulario: "#formConsagracao",
-  pesquisa: "#pesquisaMembro",
-  botaoPesquisa: "#botaoPesquisarMembro",
-  resultados: "#resultadosMembros",
-  imagem: "assets/certificados/certificado-consagracao-base.png",
-
-  campos: {
-    nome: {
-      top: 415,
-      left: 215,
-      width: 1025,
-      height: 48
-    },
-
-    cargo: {
-      top: 500,
-      left: 215,
-      width: 1025,
-      height: 38
-    },
-
-    cidade: {
-      top: 808,
-      left: 455,
-      width: 255,
-      height: 34
-    },
-
-    dia: {
-      top: 808,
-      left: 730,
-      width: 75,
-      height: 34
-    },
-
-    mes: {
-      top: 808,
-      left: 825,
-      width: 170,
-      height: 34
-    },
-
-    ano: {
-      top: 808,
-      left: 1015,
-      width: 90,
-      height: 34
-    },
-
-    assinatura: {
-      top: 857,
-      left: 510,
-      width: 430,
-      height: 70
-    },
-
-    registro: {
-      top: 948,
-      left: 307,
-      width: 205,
-      height: 30
-    },
-
-    qr: {
-      top: 833,
-      left: 1180,
-      width: 138,
-      height: 138
+    aba: "consagracao",
+    formulario: "#formConsagracao",
+    pesquisa: "#pesquisaMembro",
+    botaoPesquisa: "#botaoPesquisarMembro",
+    resultados: "#resultadosMembros",
+    imagem: "assets/certificados/certificado-consagracao-base.png",
+    campos: {
+      nome: { top: 402, left: 235, width: 900, height: 82 },
+      cargo: { top: 505, left: 548, width: 360, height: 38 },
+      cidade: { top: 738, left: 385, width: 330, height: 32 },
+      dia: { top: 738, left: 744, width: 65, height: 32 },
+      mes: { top: 738, left: 838, width: 215, height: 32 },
+      ano: { top: 738, left: 1080, width: 92, height: 32 },
+      assinatura: { top: 806, left: 490, width: 500, height: 96 },
+      registro: { top: 934, left: 350, width: 255, height: 32 },
+      qr: { top: 629, left: 1225, width: 140, height: 140 }
     }
   }
 });
