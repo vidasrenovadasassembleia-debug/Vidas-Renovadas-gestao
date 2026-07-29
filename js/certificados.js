@@ -66,8 +66,6 @@ document.addEventListener(
   iniciarModuloCertificados
 );
 
-document.addEventListener("DOMContentLoaded", iniciarModuloCertificados);
-
 async function iniciarModuloCertificados() {
   const sessao =
     typeof obterSessao === "function"
@@ -804,7 +802,8 @@ function montarCertificado(dados) {
   const caminhoAssinatura =
     arquivos.assinatura ||
     arquivos.assinaturaPastor ||
-    "";
+    configuracoes.assinaturaPastor ||
+    "img/assinatura-pastor-presidente.png";
 
   const logo = caminhoLogo
     ? `<img class="cert-logo" src="${escAttr(caminhoLogo)}" alt="Logo da igreja">`
@@ -826,66 +825,36 @@ function montarCertificado(dados) {
     ? montarConteudoConsagracao(dados)
     : montarConteudoBatismo(dados);
   const certificadoDigital = montarBlocoCertificadoDigital(dados);
+  const nomeCertificado = String(dados.nome || "NOME COMPLETO").trim();
+  const classeNome =
+    nomeCertificado.length > 42
+      ? "certificado-nome-muito-longo"
+      : nomeCertificado.length > 31
+        ? "certificado-nome-longo"
+        : "";
 
   return `
     <article class="certificado-modelo ${
       consagracao ? "certificado-consagracao" : "certificado-batismo"
     }">
-      <div class="certificado-fundo-decorativo" aria-hidden="true"></div>
-
-      <div class="certificado-conteudo">
-        <header class="certificado-cabecalho">
-          ${logo}
-          <span class="certificado-nome-igreja">${esc(igreja)}</span>
-        </header>
-
-        <div class="certificado-ornamento certificado-ornamento-superior" aria-hidden="true"></div>
-
-        <h1 class="certificado-titulo">${esc(conteudo.titulo)}</h1>
-
-        <div class="certificado-ornamento certificado-ornamento-titulo" aria-hidden="true"></div>
-
+      <div class="certificado-canto-superior" aria-hidden="true"></div>
+      <div class="certificado-canto-inferior" aria-hidden="true"></div>
+      <img class="certificado-marca-dagua" src="${escAttr(caminhoLogo)}" alt="" aria-hidden="true">
+      <div class="certificado-corpo">
+        <header class="certificado-cabecalho">${logo}<span class="certificado-nome-igreja">${esc(igreja)}</span></header>
+        <div class="certificado-titulo-faixa"><h1 class="certificado-titulo">${esc(conteudo.titulo)}</h1></div>
+        <div class="certificado-ornamento-titulo" aria-hidden="true"></div>
         <p class="certificado-introducao">Certificamos que</p>
-
-        <div class="certificado-nome">
-          ${esc(dados.nome || "NOME COMPLETO")}
-        </div>
-
+        <div class="certificado-nome ${classeNome}">${esc(nomeCertificado)}</div>
         <div class="certificado-separador-nome" aria-hidden="true"></div>
-
-        <div class="certificado-texto-principal">
-          ${conteudo.textoPrincipal}
-        </div>
-
-        <blockquote class="certificado-versiculo">
-          <p>“${esc(conteudo.versiculo)}”</p>
-          <cite>${esc(conteudo.referencia)}</cite>
-        </blockquote>
-
-        <div class="certificado-ornamento certificado-ornamento-data" aria-hidden="true"></div>
-
-        <p class="certificado-data-local">
-          ${consagracao ? "Realizada" : "Realizado"} na cidade de
-          <strong>${esc(cidade || "CIDADE")}</strong>, aos
-          <strong>${esc(data || "DATA POR EXTENSO")}</strong>.
-        </p>
-
-        <footer class="certificado-rodape">
-          <div class="certificado-registro">
-            REGISTRO Nº
-            <strong>${esc(dados.numero || "PRÉVIA")}</strong>
-          </div>
-
-          <div class="certificado-assinatura">
-            ${assinatura}
-            <div class="certificado-linha-assinatura"></div>
-            <strong>${esc(pastor)}</strong>
-            <span>Pastor Presidente</span>
-          </div>
-
-          ${certificadoDigital}
-        </footer>
+        <div class="certificado-texto-principal">${conteudo.textoPrincipal}</div>
+        <blockquote class="certificado-versiculo"><p>${esc(conteudo.versiculo)}</p><cite>${esc(conteudo.referencia)}</cite></blockquote>
+        <div class="certificado-ornamento-data" aria-hidden="true"></div>
+        <p class="certificado-data-local">${consagracao ? "Realizada" : "Realizado"} na cidade de <strong>${esc(cidade || "CIDADE")}</strong>, aos <strong>${esc(data || "DATA POR EXTENSO")}</strong>.</p>
+        <div class="certificado-assinatura">${assinatura}<div class="certificado-linha-assinatura"></div><strong>${esc(pastor)}</strong><span>Pastor Presidente</span></div>
+        <div class="certificado-registro">REGISTRO Nº <strong>${esc(dados.numero || "PRÉVIA")}</strong></div>
       </div>
+      ${certificadoDigital}
     </article>
   `;
 }
@@ -932,33 +901,31 @@ function montarConteudoConsagracao(dados) {
 }
 
 function montarBlocoCertificadoDigital(dados) {
-  const caminhoQr =
-    dados.qrCodeUrl ||
-    dados.urlQrCode ||
-    dados.qrCode ||
-    "";
-
-  if (!caminhoQr) {
-    return `
-      <div class="certificado-digital certificado-digital-pendente" hidden>
-        <span>Baixe seu certificado digital.</span>
-      </div>
-    `;
-  }
-
+  const token = String(dados.tokenPublico || dados.token || "").trim();
+  const numero = String(dados.numero || "PRÉVIA").trim();
+  const linkDigitalInformado = String(dados.linkDigital || dados.urlDigital || dados.link || "").trim();
+  const linkDigital = linkDigitalInformado || construirLinkCertificadoDigital(token);
+  const caminhoQrInformado = String(dados.qrCodeUrl || dados.urlQrCode || dados.qrCode || "").trim();
+  const caminhoQr = caminhoQrInformado || construirUrlImagemQr(linkDigital);
   return `
-    <div class="certificado-digital">
-      <div class="certificado-digital-texto">
-        <span class="certificado-icone-celular" aria-hidden="true"></span>
-        <strong>Baixe seu<br>certificado digital.</strong>
-      </div>
-      <img
-        class="certificado-qrcode"
-        src="${escAttr(caminhoQr)}"
-        alt="QR Code para acessar o certificado digital"
-      >
-    </div>
+    <aside class="certificado-digital">
+      <span class="certificado-digital-selo" aria-hidden="true">✓</span>
+      <div class="certificado-digital-texto">Baixe seu<br>certificado digital.</div>
+      <img class="certificado-qrcode" src="${escAttr(caminhoQr)}" alt="QR Code para acessar o certificado digital">
+      <div class="certificado-codigo">CÓDIGO:<strong>${esc(numero)}</strong></div>
+    </aside>
   `;
+}
+
+function construirLinkCertificadoDigital(token) {
+  const url = new URL("certificado-digital.html", window.location.href);
+  if (token) url.searchParams.set("token", token);
+  else url.searchParams.set("modo", "previa");
+  return url.href;
+}
+
+function construirUrlImagemQr(conteudo) {
+  return "https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=" + encodeURIComponent(conteudo);
 }
 
 function obterCidadeCertificado(dados, configuracoes) {
