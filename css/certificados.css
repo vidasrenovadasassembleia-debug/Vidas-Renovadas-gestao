@@ -319,413 +319,219 @@
 .folha-certificado {
   position: relative;
   width: 100%;
-  aspect-ratio: 1448 / 1024;
+  aspect-ratio: 1492 / 1054;
   overflow: hidden;
   background: #fffdf7;
   box-shadow: 0 16px 34px rgba(7, 31, 59, .18);
 }
 
 /* ==========================================================================
-   CANVAS OFICIAL — 1448 × 1024
-   Todo o certificado escala como uma única peça. Isso garante que a prévia
-   e a impressão tenham exatamente as mesmas proporções.
+   MODELOS OFICIAIS — ARTE FIXA + CAMPOS DINÂMICOS
+   Dimensão nativa das duas artes: 1492 × 1054 px.
    ========================================================================== */
 
 .certificado-canvas {
+  --certificado-escala: 1;
   position: absolute;
   top: 0;
   left: 0;
-  width: 1448px;
-  height: 1024px;
+  width: 1492px;
+  height: 1054px;
   overflow: hidden;
-  transform: scale(var(--certificado-escala, 1));
+  transform: scale(var(--certificado-escala));
   transform-origin: top left;
-  color: #071f3b;
-  background:
-    #fffdf7
-    url("../assets/certificados/certificado-fundo-oficial.jpg")
-    center / 100% 100% no-repeat;
+  background: #fbf8ef;
   font-family: Georgia, "Times New Roman", serif;
 }
 
-.certificado-titulo {
+.certificado-imagem-base {
   position: absolute;
-  top: 300px;
-  left: 185px;
-  width: 930px;
-  margin: 0;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 1492px;
+  height: 1054px;
+  object-fit: fill;
+  user-select: none;
+  pointer-events: none;
+}
+
+.certificado-campo-dinamico {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   color: #071f3b;
-  font-size: 55px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 4px;
-  text-align: center;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.certificado-consagracao .certificado-titulo {
-  left: 145px;
-  width: 1010px;
-  font-size: 49px;
-  letter-spacing: 2px;
-}
-
-.certificado-titulo::before,
-.certificado-titulo::after {
-  color: #b98320;
-  font-size: 43px;
-  font-weight: 400;
-}
-
-.certificado-titulo::before {
-  content: "❧";
-  margin-right: 18px;
-}
-
-.certificado-titulo::after {
-  content: "❧";
-  display: inline-block;
-  margin-left: 18px;
-  transform: scaleX(-1);
-}
-
-.certificado-ornamento-titulo {
-  position: absolute;
-  top: 379px;
-  left: 438px;
-  width: 430px;
-  height: 9px;
-  border-top: 2px solid rgba(185, 131, 32, .75);
-}
-
-.certificado-ornamento-titulo::after {
-  content: "";
-  position: absolute;
-  top: -7px;
-  left: 50%;
-  width: 12px;
-  height: 12px;
-  background: #b98320;
-  transform: translateX(-50%) rotate(45deg);
-}
-
-.certificado-introducao {
-  position: absolute;
-  top: 402px;
-  left: 190px;
-  width: 925px;
-  margin: 0;
-  font-size: 25px;
-  line-height: 1.1;
   text-align: center;
 }
 
-.certificado-nome {
-  position: absolute;
-  top: 445px;
-  left: 185px;
-  width: 930px;
-  margin: 0;
-  overflow: hidden;
+.certificado-campo-cobertura {
+  background: #fbf8ef;
+  box-shadow: 0 0 5px 5px #fbf8ef;
+}
+
+/* Batismo */
+
+.certificado-batismo .certificado-campo-nome {
+  top: 458px;
+  left: 294px;
+  width: 864px;
+  height: 85px;
   color: #b98320;
-  font-size: 59px;
+  font-size: 67px;
   line-height: 1;
   letter-spacing: 3px;
-  text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.certificado-nome.nome-longo {
-  font-size: 51px;
+.certificado-batismo .certificado-campo-nome.nome-longo {
+  font-size: 56px;
 }
 
-.certificado-nome.nome-muito-longo {
-  font-size: 44px;
+.certificado-batismo .certificado-campo-nome.nome-muito-longo {
+  font-size: 47px;
 }
 
-.certificado-linha-nome {
-  position: absolute;
-  top: 523px;
-  left: 285px;
-  width: 730px;
-  height: 10px;
-  border-top: 2px solid rgba(185, 131, 32, .75);
+.certificado-batismo .certificado-campo-data {
+  top: 790px;
+  left: 422px;
+  width: 655px;
+  height: 44px;
+  font-size: 21px;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
-.certificado-linha-nome::after {
-  content: "";
-  position: absolute;
-  top: -7px;
-  left: 50%;
-  width: 12px;
-  height: 12px;
-  background: #b98320;
-  transform: translateX(-50%) rotate(45deg);
+.certificado-batismo .certificado-campo-assinatura {
+  top: 846px;
+  left: 515px;
+  width: 455px;
+  height: 84px;
 }
 
-.certificado-texto {
-  position: absolute;
-  top: 554px;
-  left: 225px;
-  width: 850px;
-  color: #071f3b;
-  font-size: 19px;
-  line-height: 1.35;
-  text-align: center;
-}
-
-.certificado-texto p {
-  margin: 0 0 7px;
-}
-
-.certificado-consagracao .certificado-texto {
-  top: 545px;
-  left: 205px;
-  width: 890px;
-  font-size: 17px;
-  line-height: 1.26;
-}
-
-.certificado-cargo {
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.certificado-versiculo {
-  position: absolute;
-  top: 665px;
-  left: 255px;
-  width: 790px;
-  margin: 0;
-  color: #071f3b;
-  font-size: 19px;
-  font-style: italic;
-  line-height: 1.25;
-  text-align: center;
-}
-
-.certificado-consagracao .certificado-versiculo {
-  top: 682px;
-  font-size: 16px;
-}
-
-.certificado-versiculo::before,
-.certificado-versiculo::after {
-  color: #b98320;
-  font-size: 31px;
-  font-style: normal;
-  line-height: 0;
-}
-
-.certificado-versiculo::before {
-  content: "“";
-  margin-right: 5px;
-}
-
-.certificado-versiculo::after {
-  content: "”";
-  margin-left: 5px;
-}
-
-.certificado-referencia {
-  position: absolute;
-  top: 704px;
-  left: 255px;
-  width: 790px;
-  color: #b98320;
-  font-size: 18px;
-  font-style: italic;
-  text-align: center;
-}
-
-.certificado-consagracao .certificado-referencia {
-  top: 730px;
-  font-size: 16px;
-}
-
-.certificado-ornamento-data {
-  position: absolute;
-  top: 746px;
-  left: 555px;
-  width: 190px;
-  height: 8px;
-  border-top: 2px solid rgba(185, 131, 32, .62);
-}
-
-.certificado-consagracao .certificado-ornamento-data {
-  top: 766px;
-}
-
-.certificado-ornamento-data::after {
-  content: "";
-  position: absolute;
-  top: -6px;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  background: #b98320;
-  transform: translateX(-50%) rotate(45deg);
-}
-
-.certificado-data {
-  position: absolute;
-  top: 773px;
-  left: 215px;
-  width: 870px;
-  margin: 0;
-  color: #071f3b;
-  font-size: 19px;
-  line-height: 1.2;
-  text-align: center;
-}
-
-.certificado-consagracao .certificado-data {
-  top: 792px;
-  font-size: 18px;
-}
-
-.certificado-data strong {
-  font-weight: 400;
-  text-transform: uppercase;
-}
-
-/* Assinatura única do Pastor Presidente */
-
-.certificado-assinatura {
-  position: absolute;
-  top: 827px;
-  left: 420px;
-  width: 460px;
-  height: 144px;
-  text-align: center;
-}
-
-.certificado-assinatura img {
+.certificado-batismo .certificado-campo-assinatura img {
   display: block;
   width: auto;
-  max-width: 410px;
-  height: 82px;
-  margin: 0 auto -4px;
+  max-width: 430px;
+  height: 80px;
   object-fit: contain;
 }
 
-.certificado-assinatura-linha {
-  width: 410px;
-  margin: 0 auto;
-  border-top: 2px solid #071f3b;
-}
-
-.certificado-assinatura-nome {
-  margin-top: 7px;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.1;
-  text-transform: uppercase;
-}
-
-.certificado-assinatura-cargo {
-  margin-top: 2px;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.1;
-  text-transform: uppercase;
-}
-
-/* Registro */
-
-.certificado-registro {
-  position: absolute;
-  left: 190px;
-  bottom: 39px;
-  color: #b98320;
-  font-size: 15px;
+.certificado-batismo .certificado-campo-registro {
+  top: 965px;
+  left: 350px;
+  width: 285px;
+  height: 30px;
+  justify-content: flex-start;
+  padding-left: 5px;
+  font-size: 17px;
   white-space: nowrap;
 }
 
-.certificado-registro strong {
-  color: #071f3b;
-  font-weight: 400;
+.certificado-batismo .certificado-campo-qr {
+  top: 846px;
+  left: 1204px;
+  width: 108px;
+  height: 108px;
+  padding: 4px;
+  background: #fff;
+  box-shadow: 0 0 2px 2px #fff;
 }
 
-/* Painel do certificado digital */
+/* Consagração */
 
-.certificado-digital {
-  position: absolute;
-  top: 635px;
-  right: 58px;
+.certificado-consagracao .certificado-campo-nome {
+  top: 424px;
+  left: 312px;
+  width: 848px;
+  height: 82px;
+  color: #b98320;
+  font-size: 63px;
+  line-height: 1;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.certificado-consagracao .certificado-campo-nome.nome-longo {
+  font-size: 54px;
+}
+
+.certificado-consagracao .certificado-campo-nome.nome-muito-longo {
+  font-size: 45px;
+}
+
+.certificado-consagracao .certificado-campo-cargo {
+  top: 538px;
+  left: 624px;
   width: 235px;
-  height: 326px;
-  padding-left: 22px;
-  border-left: 2px solid rgba(185, 131, 32, .65);
-  text-align: center;
-  font-family: Arial, sans-serif;
-}
-
-.certificado-digital-selo {
-  width: 58px;
-  height: 58px;
-  display: grid;
-  place-items: center;
-  margin: 0 auto;
-  border-radius: 50%;
-  background: #071f3b;
-  color: #fff;
-  font-size: 38px;
+  height: 34px;
+  font-size: 21px;
   font-weight: 700;
   line-height: 1;
-  box-shadow:
-    inset 0 0 0 6px #fff,
-    0 0 0 3px #071f3b;
-}
-
-.certificado-digital-texto {
-  margin-top: 18px;
-  color: #071f3b;
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 1.18;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.certificado-qr {
-  width: 118px;
-  height: 118px;
-  margin: 18px auto 0;
-  padding: 6px;
-  border: 2px solid #b98320;
+.certificado-consagracao .certificado-campo-cargo.cargo-longo {
+  font-size: 17px;
+}
+
+.certificado-consagracao .certificado-campo-data {
+  top: 797px;
+  left: 425px;
+  width: 650px;
+  height: 42px;
+  font-size: 20px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.certificado-consagracao .certificado-campo-assinatura {
+  top: 852px;
+  left: 530px;
+  width: 430px;
+  height: 78px;
+}
+
+.certificado-consagracao .certificado-campo-assinatura img {
+  display: block;
+  width: auto;
+  max-width: 410px;
+  height: 76px;
+  object-fit: contain;
+}
+
+.certificado-consagracao .certificado-campo-registro {
+  top: 965px;
+  left: 302px;
+  width: 300px;
+  height: 30px;
+  justify-content: flex-start;
+  padding-left: 5px;
+  font-size: 17px;
+  white-space: nowrap;
+}
+
+.certificado-consagracao .certificado-campo-qr {
+  top: 846px;
+  left: 1202px;
+  width: 108px;
+  height: 108px;
+  padding: 4px;
   background: #fff;
+  box-shadow: 0 0 2px 2px #fff;
 }
 
-.certificado-qr canvas,
-.certificado-qr img {
+.certificado-campo-qr canvas,
+.certificado-campo-qr img {
   display: block;
   width: 100% !important;
   height: 100% !important;
 }
-
-.certificado-codigo {
-  width: 208px;
-  margin: 17px auto 0;
-  padding: 7px 8px 8px;
-  border: 2px solid #b98320;
-  border-radius: 5px;
-  background: #071f3b;
-  color: #fff;
-  font-size: 11px;
-  line-height: 1.15;
-  text-transform: uppercase;
-}
-
-.certificado-codigo strong {
-  display: block;
-  margin-top: 3px;
-  font-size: 14px;
-  overflow-wrap: anywhere;
-}
-
-/* Responsividade da Central */
 
 @media (max-width: 1180px) {
   .certificados-grid {
@@ -772,8 +578,6 @@
   }
 }
 
-/* Impressão */
-
 @page {
   size: A4 landscape;
   margin: 0;
@@ -811,9 +615,9 @@
   }
 
   #previewCertificado .certificado-canvas {
-    width: 1448px !important;
-    height: 1024px !important;
-    transform: scale(.7748618785) !important;
+    width: 1492px !important;
+    height: 1054px !important;
+    transform: scale(.7513404826) !important;
     transform-origin: top left !important;
   }
 
