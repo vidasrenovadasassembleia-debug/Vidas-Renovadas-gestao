@@ -1,15 +1,9 @@
 "use strict";
 
-/* =========================================================
-   CERTIFICADOS — VIDAS RENOVADAS GESTÃO
-   Arquivo oficial: js/certificados.js
-
-   Arquitetura desta versão:
-   - formulários separados para Batismo e Consagração;
-   - uma única área de pré-visualização: #previewCertificado;
-   - um único template visual, com conteúdo variável por tipo;
-   - histórico e reimpressão preservados.
-   ========================================================= */
+/* ==========================================================================
+   CERTIFICADOS — VERSÃO OFICIAL 1.0
+   Pesquisa, emissão, histórico, reimpressão, prévia e impressão.
+   ========================================================================== */
 
 const TIPOS_CERTIFICADO = Object.freeze({
   BATISMO: "batismo",
@@ -41,13 +35,14 @@ const ESTADO_CERTIFICADOS = {
   historico: [],
   certificadoAtual: null,
   tipoAtivo: TIPOS_CERTIFICADO.BATISMO,
-  tipoEmImpressao: null
+  observadorPreview: null
 };
 
 const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
-
 const $$ = (seletor, raiz = document) =>
   Array.from(raiz.querySelectorAll(seletor));
+
+document.addEventListener("DOMContentLoaded", iniciarModuloCertificados);
 
 function obterAuthCertificados() {
   const auth = window.VRGAuth || window.Auth;
@@ -60,11 +55,6 @@ function obterAuthCertificados() {
 
   return auth;
 }
-
-document.addEventListener(
-  "DOMContentLoaded",
-  iniciarModuloCertificados
-);
 
 async function iniciarModuloCertificados() {
   const sessao =
@@ -82,16 +72,12 @@ async function iniciarModuloCertificados() {
   }
 
   configurarEventos();
+  configurarEscalaPreview();
   sincronizarAbaInicial();
 
   await carregarDadosIniciais();
-
   atualizarPreviewAtivo();
 }
-
-/* =========================================================
-   EVENTOS
-   ========================================================= */
 
 function configurarEventos() {
   $$(".aba-certificado").forEach((botao) => {
@@ -100,17 +86,9 @@ function configurarEventos() {
     });
   });
 
-  $("#botaoSair")?.addEventListener("click", () => {
-    if (typeof CHAVE_SESSAO !== "undefined") {
-      sessionStorage.removeItem(CHAVE_SESSAO);
-    }
-
-    window.location.href = "index.html";
-  });
-
   Object.values(CONFIGURACAO_TIPOS_CERTIFICADO).forEach((configuracao) => {
     configurarPesquisaMembro(configuracao);
-    configurarFormularioCertificado(configuracao);
+    configurarFormulario(configuracao);
   });
 
   $$("[data-visualizar]").forEach((botao) => {
@@ -125,11 +103,10 @@ function configurarEventos() {
   });
 
   $("#filtroHistorico")?.addEventListener("input", renderizarHistorico);
-
   window.addEventListener("afterprint", limparEstadoImpressao);
 }
 
-function configurarFormularioCertificado(configuracao) {
+function configurarFormulario(configuracao) {
   const formulario = $(configuracao.formulario);
 
   if (!formulario) {
@@ -156,9 +133,7 @@ function configurarPesquisaMembro(configuracao) {
   const campo = $(configuracao.campoPesquisa);
   const botao = $(configuracao.botaoPesquisa);
 
-  botao?.addEventListener("click", () => {
-    pesquisarMembro(configuracao);
-  });
+  botao?.addEventListener("click", () => pesquisarMembro(configuracao));
 
   campo?.addEventListener("keydown", (evento) => {
     if (evento.key === "Enter") {
@@ -168,18 +143,40 @@ function configurarPesquisaMembro(configuracao) {
   });
 }
 
+function configurarEscalaPreview() {
+  const folha = $("#previewCertificado");
+
+  if (!folha) {
+    return;
+  }
+
+  const atualizarEscala = () => {
+    const canvas = $(".certificado-canvas", folha);
+
+    if (!canvas) {
+      return;
+    }
+
+    const escala = folha.clientWidth / 1448;
+    canvas.style.setProperty("--certificado-escala", String(escala));
+  };
+
+  ESTADO_CERTIFICADOS.observadorPreview?.disconnect();
+  ESTADO_CERTIFICADOS.observadorPreview =
+    new ResizeObserver(atualizarEscala);
+
+  ESTADO_CERTIFICADOS.observadorPreview.observe(folha);
+  window.addEventListener("resize", atualizarEscala);
+}
+
 function sincronizarAbaInicial() {
-  const abaAtiva = $(".aba-certificado.active")?.dataset.aba;
-  const tipo = normalizarTipoInterface(abaAtiva);
+  const ativa = $(".aba-certificado.active")?.dataset.aba;
+  const tipo = normalizarTipoInterface(ativa);
 
   if (tipo) {
     ESTADO_CERTIFICADOS.tipoAtivo = tipo;
   }
 }
-
-/* =========================================================
-   CARREGAMENTO INICIAL
-   ========================================================= */
 
 async function carregarDadosIniciais() {
   definirMensagem("Carregando dados do módulo...", "info");
@@ -187,23 +184,20 @@ async function carregarDadosIniciais() {
   try {
     const auth = obterAuthCertificados();
 
-const [dados, historico] = await Promise.all([
-  auth.chamarApi({
-    acao: "obterDadosCertificados"
-  }),
-  auth.chamarApi({
-    acao: "listarCertificados"
-  })
-]);
+    const [dados, historico] = await Promise.all([
+      auth.chamarApi({ acao: "obterDadosCertificados" }),
+      auth.chamarApi({ acao: "listarCertificados" })
+    ]);
 
     ESTADO_CERTIFICADOS.configuracoes = dados.configuracoes || {};
     ESTADO_CERTIFICADOS.arquivos = dados.arquivos || {};
     ESTADO_CERTIFICADOS.cargos = Array.isArray(dados.cargos)
       ? dados.cargos
       : [];
-    ESTADO_CERTIFICADOS.historico = Array.isArray(historico.certificados)
-      ? historico.certificados
-      : [];
+    ESTADO_CERTIFICADOS.historico =
+      Array.isArray(historico.certificados)
+        ? historico.certificados
+        : [];
 
     preencherCargos();
     preencherPadroes();
@@ -217,10 +211,11 @@ const [dados, historico] = await Promise.all([
       if (mensagem?.dataset.tipo === "success") {
         mensagem.hidden = true;
       }
-    }, 1800);
+    }, 1600);
   } catch (erro) {
     definirMensagem(
-      erro?.message || "Não foi possível carregar o módulo de certificados.",
+      erro?.message ||
+        "Não foi possível carregar o módulo de certificados.",
       "error"
     );
   }
@@ -233,76 +228,40 @@ function preencherCargos() {
     return;
   }
 
-  const valorAtual = select.value;
-
+  const atual = select.value;
   select.innerHTML = '<option value="">Selecione</option>';
 
   ESTADO_CERTIFICADOS.cargos.forEach((item) => {
-    const cargo = normalizarCargo(item);
+    const texto =
+      typeof item === "string"
+        ? item.trim()
+        : String(
+            item?.nome ||
+            item?.cargo ||
+            item?.descricao ||
+            item?.titulo ||
+            item?.label ||
+            item?.valor ||
+            item?.value ||
+            ""
+          ).trim();
 
-    if (!cargo.valor || !cargo.texto) {
+    if (!texto) {
       return;
     }
 
     const opcao = document.createElement("option");
-
-    opcao.value = cargo.valor;
-    opcao.textContent = cargo.texto;
-
+    opcao.value = texto;
+    opcao.textContent = texto;
     select.appendChild(opcao);
   });
 
   if (
-    valorAtual &&
-    Array.from(select.options).some(
-      (opcao) => opcao.value === valorAtual
-    )
+    atual &&
+    Array.from(select.options).some((opcao) => opcao.value === atual)
   ) {
-    select.value = valorAtual;
+    select.value = atual;
   }
-}
-
-function normalizarCargo(item) {
-  if (typeof item === "string" || typeof item === "number") {
-    const valor = String(item).trim();
-
-    return {
-      valor,
-      texto: valor
-    };
-  }
-
-  if (!item || typeof item !== "object") {
-    return {
-      valor: "",
-      texto: ""
-    };
-  }
-
-  const texto = String(
-    item.nome ||
-    item.cargo ||
-    item.descricao ||
-    item.titulo ||
-    item.label ||
-    item.valor ||
-    item.value ||
-    ""
-  ).trim();
-
-  const valor = String(
-    item.valor ||
-    item.value ||
-    item.nome ||
-    item.cargo ||
-    item.id ||
-    texto
-  ).trim();
-
-  return {
-    valor,
-    texto
-  };
 }
 
 function preencherPadroes() {
@@ -315,15 +274,15 @@ function preencherPadroes() {
       return;
     }
 
-    definirValorCampoFormulario(
+    definirValorSeVazio(
       formulario,
       "pastor",
       configuracoes.pastorPresidente ||
       configuracoes.pastorLocal ||
-      ""
+      "Rogério Lemos da Silva"
     );
 
-    definirValorCampoFormulario(
+    definirValorSeVazio(
       formulario,
       "local",
       [
@@ -333,26 +292,16 @@ function preencherPadroes() {
         .filter(Boolean)
         .join(" - ")
     );
-
-    definirValorCampoFormulario(
-      formulario,
-      "congregacao",
-      configuracoes.congregacaoPadrao || ""
-    );
   });
 }
 
-function definirValorCampoFormulario(formulario, nome, valor) {
+function definirValorSeVazio(formulario, nome, valor) {
   const campo = formulario.elements.namedItem(nome);
 
   if (campo && !String(campo.value || "").trim()) {
-    campo.value = valor;
+    campo.value = valor || "";
   }
 }
-
-/* =========================================================
-   ABAS
-   ========================================================= */
 
 function abrirAba(aba) {
   const tipo = normalizarTipoInterface(aba);
@@ -364,23 +313,25 @@ function abrirAba(aba) {
   ESTADO_CERTIFICADOS.tipoAtivo = tipo;
 
   $$(".aba-certificado").forEach((botao) => {
-    const ativa = normalizarTipoInterface(botao.dataset.aba) === tipo;
+    const ativa =
+      normalizarTipoInterface(botao.dataset.aba) === tipo;
 
     botao.classList.toggle("active", ativa);
     botao.setAttribute("aria-selected", String(ativa));
   });
 
   $$(".painel-certificado").forEach((painel) => {
-    const ativo = normalizarTipoInterface(painel.dataset.painel) === tipo;
+    const ativo =
+      normalizarTipoInterface(painel.dataset.painel) === tipo;
 
     painel.classList.toggle("active", ativo);
     painel.hidden = !ativo;
   });
 
-  const areaPreview = $("#areaPreviewCertificado");
+  const preview = $("#areaPreviewCertificado");
 
-  if (areaPreview) {
-    areaPreview.hidden = tipo === TIPOS_CERTIFICADO.HISTORICO;
+  if (preview) {
+    preview.hidden = tipo === TIPOS_CERTIFICADO.HISTORICO;
   }
 
   if (tipo === TIPOS_CERTIFICADO.HISTORICO) {
@@ -410,14 +361,10 @@ function normalizarTipoInterface(tipo) {
 }
 
 function obterConfiguracaoTipo(tipo = ESTADO_CERTIFICADOS.tipoAtivo) {
-  const tipoNormalizado = normalizarTipoInterface(tipo);
-
-  return CONFIGURACAO_TIPOS_CERTIFICADO[tipoNormalizado] || null;
+  return CONFIGURACAO_TIPOS_CERTIFICADO[
+    normalizarTipoInterface(tipo)
+  ] || null;
 }
-
-/* =========================================================
-   PESQUISA E SELEÇÃO DE MEMBROS
-   ========================================================= */
 
 async function pesquisarMembro(configuracao) {
   const campo = $(configuracao.campoPesquisa);
@@ -437,11 +384,11 @@ async function pesquisarMembro(configuracao) {
   }
 
   try {
-    const resposta = await 
-      obterAuthCertificados().chamarApi({
-  acao: "pesquisarMembrosCertificado",
-  termo
-});
+    const resposta =
+      await obterAuthCertificados().chamarApi({
+        acao: "pesquisarMembrosCertificado",
+        termo
+      });
 
     const membros = Array.isArray(resposta.membros)
       ? resposta.membros
@@ -511,7 +458,6 @@ function mostrarResultadosMembros(membros, configuracao) {
         <strong>${esc(nome)}</strong><br>
         ${esc(congregacao)}
       </span>
-
       <span>
         ${esc(numero)}<br>
         ${esc(membro.situacao || "")}
@@ -529,58 +475,55 @@ function mostrarResultadosMembros(membros, configuracao) {
 function selecionarMembro(membro, configuracao) {
   const formulario = $(configuracao.formulario);
   const area = $(configuracao.areaResultados);
-  const campoPesquisa = $(configuracao.campoPesquisa);
+  const pesquisa = $(configuracao.campoPesquisa);
 
   if (!formulario) {
     return;
   }
 
   const nome = membro.nomeCompleto || membro.nome || "";
-  const codigoMembro = membro.codigo || membro.id || membro.idMembro || "";
-  const numeroCarteirinha =
-    membro.numeroCarteirinha || membro.numero || codigoMembro || "";
+  const codigo = membro.codigo || membro.id || membro.idMembro || "";
+  const numero =
+    membro.numeroCarteirinha || membro.numero || codigo || "";
   const congregacao =
     membro.congregacao || membro.nomeCongregacao || "";
 
-  preencherCampoSeExistir(formulario, "idMembro", codigoMembro);
-  preencherCampoSeExistir(formulario, "codigoMembro", codigoMembro);
-  preencherCampoSeExistir(
-    formulario,
-    "numeroCarteirinha",
-    numeroCarteirinha
-  );
-  preencherCampoSeExistir(formulario, "nome", nome);
-  preencherCampoSeExistir(formulario, "sexo", membro.sexo || "");
-  preencherCampoSeExistir(
+  preencherCampo(formulario, "idMembro", codigo);
+  preencherCampo(formulario, "codigoMembro", codigo);
+  preencherCampo(formulario, "numeroCarteirinha", numero);
+  preencherCampo(formulario, "nome", nome);
+  preencherCampo(formulario, "sexo", membro.sexo || "");
+  preencherCampo(
     formulario,
     "dataNascimento",
     membro.dataNascimento || ""
   );
-  preencherCampoSeExistir(
+  preencherCampo(
     formulario,
     "nomePai",
     membro.nomePai || membro.pai || ""
   );
-  preencherCampoSeExistir(
+  preencherCampo(
     formulario,
     "nomeMae",
     membro.nomeMae || membro.mae || ""
   );
 
   if (congregacao) {
-    preencherCampoSeExistir(formulario, "congregacao", congregacao);
+    preencherCampo(formulario, "congregacao", congregacao);
   }
 
   if (area) {
     area.hidden = true;
   }
 
-  if (campoPesquisa) {
-    campoPesquisa.value = numeroCarteirinha || nome;
+  if (pesquisa) {
+    pesquisa.value = numero || nome;
   }
 
-  const tipo = normalizarTipoInterface(configuracao.tipoApi);
-  ESTADO_CERTIFICADOS.tipoAtivo = tipo;
+  ESTADO_CERTIFICADOS.tipoAtivo =
+    normalizarTipoInterface(configuracao.tipoApi);
+
   atualizarPreviewAtivo();
 
   definirMensagem(
@@ -589,7 +532,7 @@ function selecionarMembro(membro, configuracao) {
   );
 }
 
-function preencherCampoSeExistir(formulario, nome, valor) {
+function preencherCampo(formulario, nome, valor) {
   const campo = formulario.elements.namedItem(nome);
 
   if (campo) {
@@ -597,13 +540,10 @@ function preencherCampoSeExistir(formulario, nome, valor) {
   }
 }
 
-/* =========================================================
-   DADOS DO FORMULÁRIO
-   ========================================================= */
-
 function obterDadosFormulario(formulario, tipo) {
-  const dadosFormulario = new FormData(formulario);
-  const dados = Object.fromEntries(dadosFormulario.entries());
+  const dados = Object.fromEntries(
+    new FormData(formulario).entries()
+  );
 
   dados.tipo = String(tipo || "").toUpperCase();
 
@@ -616,31 +556,11 @@ function obterDadosFormulario(formulario, tipo) {
   return dados;
 }
 
-function obterDadosTipoAtivo() {
-  const configuracao = obterConfiguracaoTipo();
-
-  if (!configuracao) {
-    return null;
-  }
-
-  const formulario = $(configuracao.formulario);
-
-  if (!formulario) {
-    return null;
-  }
-
-  return obterDadosFormulario(formulario, configuracao.tipoApi);
-}
-
-/* =========================================================
-   REGISTRO E IMPRESSÃO
-   ========================================================= */
-
 async function registrarEImprimir(evento, tipo) {
   evento.preventDefault();
 
   const formulario = evento.currentTarget;
-  const botaoEnviar = formulario.querySelector('button[type="submit"]');
+  const botao = formulario.querySelector('button[type="submit"]');
 
   if (!formulario.reportValidity()) {
     return;
@@ -653,7 +573,7 @@ async function registrarEImprimir(evento, tipo) {
 
   if (!idMembro) {
     definirMensagem(
-      "Pesquise e selecione um membro antes de registrar o certificado.",
+      "Pesquise e selecione um membro antes de emitir o certificado.",
       "error"
     );
     return;
@@ -666,82 +586,49 @@ async function registrarEImprimir(evento, tipo) {
 
   definirMensagem("Registrando certificado...", "info");
 
-  if (botaoEnviar) {
-    botaoEnviar.disabled = true;
+  if (botao) {
+    botao.disabled = true;
   }
 
   try {
-    const resposta = await obterAuthCertificados().chamarApi({
-  acao: "emitirCertificado",
-  dados
-});
+    const resposta =
+      await obterAuthCertificados().chamarApi({
+        acao: "emitirCertificado",
+        dados
+      });
 
-    const certificadoRegistrado = resposta.certificado || {};
+    const registrado = resposta.certificado || {};
 
-    const dadosCompletos = {
+    const completos = {
       ...dados,
-      ...certificadoRegistrado,
+      ...registrado,
       tipo: tipo.toUpperCase(),
-      numero: certificadoRegistrado.numero || dados.numero || ""
+      numero: registrado.numero || dados.numero || ""
     };
 
-    ESTADO_CERTIFICADOS.certificadoAtual = dadosCompletos;
+    ESTADO_CERTIFICADOS.certificadoAtual = completos;
 
-    atualizarPreview(tipoInterface, dadosCompletos);
+    atualizarPreview(tipoInterface, completos);
 
     definirMensagem(
-      `${dadosCompletos.numero || "Certificado"} registrado com sucesso.`,
+      `${completos.numero || "Certificado"} registrado com sucesso.`,
       "success"
     );
 
     await recarregarHistorico();
 
-    imprimirCertificado(tipoInterface);
+    setTimeout(() => imprimirCertificado(), 400);
   } catch (erro) {
     definirMensagem(
       erro?.message || "Não foi possível registrar o certificado.",
       "error"
     );
   } finally {
-    if (botaoEnviar) {
-      botaoEnviar.disabled = false;
+    if (botao) {
+      botao.disabled = false;
     }
   }
 }
-
-function imprimirCertificado(tipo = ESTADO_CERTIFICADOS.tipoAtivo) {
-  const alvo = obterAlvoPreview();
-
-  if (!alvo || !alvo.innerHTML.trim()) {
-    definirMensagem(
-      "Gere a pré-visualização antes de imprimir.",
-      "error"
-    );
-    return;
-  }
-
-  const tipoNormalizado = normalizarTipoInterface(tipo);
-
-  ESTADO_CERTIFICADOS.tipoEmImpressao = tipoNormalizado;
-  document.body.dataset.imprimindoCertificado = tipoNormalizado;
-  alvo.classList.add("certificado-para-impressao");
-
-  setTimeout(() => {
-    window.print();
-  }, 250);
-}
-
-function limparEstadoImpressao() {
-  ESTADO_CERTIFICADOS.tipoEmImpressao = null;
-
-  delete document.body.dataset.imprimindoCertificado;
-
-  obterAlvoPreview()?.classList.remove("certificado-para-impressao");
-}
-
-/* =========================================================
-   PRÉ-VISUALIZAÇÃO ÚNICA
-   ========================================================= */
 
 function atualizarPreviewAtivo() {
   if (ESTADO_CERTIFICADOS.tipoAtivo === TIPOS_CERTIFICADO.HISTORICO) {
@@ -752,9 +639,8 @@ function atualizarPreviewAtivo() {
 }
 
 function atualizarPreview(tipo, dadosForcados) {
-  const tipoNormalizado = normalizarTipoInterface(tipo);
-  const configuracao = obterConfiguracaoTipo(tipoNormalizado);
-  const alvo = obterAlvoPreview();
+  const configuracao = obterConfiguracaoTipo(tipo);
+  const alvo = $("#previewCertificado");
 
   if (!configuracao || !alvo) {
     return;
@@ -766,108 +652,157 @@ function atualizarPreview(tipo, dadosForcados) {
     return;
   }
 
-  ESTADO_CERTIFICADOS.tipoAtivo = tipoNormalizado;
-
   const dados =
     dadosForcados ||
     obterDadosFormulario(formulario, configuracao.tipoApi);
 
-  alvo.dataset.tipo = tipoNormalizado;
   alvo.innerHTML = montarCertificado(dados);
+
+  requestAnimationFrame(() => {
+    atualizarEscalaImediata();
+    gerarQrCode(dados);
+  });
 }
 
-function obterAlvoPreview() {
-  return (
-    $("#previewCertificado") ||
-    $("#previewConsagracao") ||
-    $("#previewBatismo")
+function atualizarEscalaImediata() {
+  const folha = $("#previewCertificado");
+  const canvas = $(".certificado-canvas", folha);
+
+  if (!folha || !canvas) {
+    return;
+  }
+
+  canvas.style.setProperty(
+    "--certificado-escala",
+    String(folha.clientWidth / 1448)
   );
 }
 
 function montarCertificado(dados) {
   const configuracoes = ESTADO_CERTIFICADOS.configuracoes;
-  const arquivos = ESTADO_CERTIFICADOS.arquivos;
   const consagracao =
     String(dados.tipo || "").toUpperCase() === "CONSAGRACAO";
 
-  const igreja =
-    configuracoes.nomeIgreja ||
-    "Assembleia de Deus Ministério Vidas Renovadas";
-
-  const caminhoLogo =
-    arquivos.logo ||
-    arquivos.logoIgreja ||
-    "logo.png";
-
-  const caminhoAssinatura =
-    arquivos.assinatura ||
-    arquivos.assinaturaPastor ||
-    configuracoes.assinaturaPastor ||
-    "assets/assinaturas/assinatura-pastor-presidente.png"
-
-  const logo = caminhoLogo
-    ? `<img class="cert-logo" src="${escAttr(caminhoLogo)}" alt="Logo da igreja">`
-    : "";
-
-  const assinatura = caminhoAssinatura
-    ? `<img class="cert-assinatura-imagem" src="${escAttr(caminhoAssinatura)}" alt="Assinatura do pastor presidente">`
-    : "";
+  const nome = String(dados.nome || "NOME COMPLETO").trim();
+  const classeNome =
+    nome.length > 42
+      ? "nome-muito-longo"
+      : nome.length > 31
+        ? "nome-longo"
+        : "";
 
   const pastor =
     dados.pastor ||
     configuracoes.pastorPresidente ||
     configuracoes.pastorLocal ||
-    "Pastor presidente";
+    "Rogério Lemos da Silva";
 
   const cidade = obterCidadeCertificado(dados, configuracoes);
   const data = dataExtenso(dados.dataCerimonia);
   const conteudo = consagracao
     ? montarConteudoConsagracao(dados)
-    : montarConteudoBatismo(dados);
-  const certificadoDigital = montarBlocoCertificadoDigital(dados);
-  const nomeCertificado = String(dados.nome || "NOME COMPLETO").trim();
-  const classeNome =
-    nomeCertificado.length > 42
-      ? "certificado-nome-muito-longo"
-      : nomeCertificado.length > 31
-        ? "certificado-nome-longo"
-        : "";
+    : montarConteudoBatismo();
+
+  const numero = dados.numero || "PRÉVIA";
 
   return `
-    <article class="certificado-modelo ${
-      consagracao ? "certificado-consagracao" : "certificado-batismo"
+    <article class="certificado-canvas ${
+      consagracao
+        ? "certificado-consagracao"
+        : "certificado-batismo"
     }">
-      <div class="certificado-canto-superior" aria-hidden="true"></div>
-      <div class="certificado-canto-inferior" aria-hidden="true"></div>
-      <img class="certificado-marca-dagua" src="${escAttr(caminhoLogo)}" alt="" aria-hidden="true">
-      <div class="certificado-corpo">
-        <header class="certificado-cabecalho">${logo}<span class="certificado-nome-igreja">${esc(igreja)}</span></header>
-        <div class="certificado-titulo-faixa"><h1 class="certificado-titulo">${esc(conteudo.titulo)}</h1></div>
-        <div class="certificado-ornamento-titulo" aria-hidden="true"></div>
-        <p class="certificado-introducao">Certificamos que</p>
-        <div class="certificado-nome ${classeNome}">${esc(nomeCertificado)}</div>
-        <div class="certificado-separador-nome" aria-hidden="true"></div>
-        <div class="certificado-texto-principal">${conteudo.textoPrincipal}</div>
-        <blockquote class="certificado-versiculo"><p>${esc(conteudo.versiculo)}</p><cite>${esc(conteudo.referencia)}</cite></blockquote>
-        <div class="certificado-ornamento-data" aria-hidden="true"></div>
-        <p class="certificado-data-local">${consagracao ? "Realizada" : "Realizado"} na cidade de <strong>${esc(cidade || "CIDADE")}</strong>, aos <strong>${esc(data || "DATA POR EXTENSO")}</strong>.</p>
-        <div class="certificado-assinatura">${assinatura}<div class="certificado-linha-assinatura"></div><strong>${esc(pastor)}</strong><span>Pastor Presidente</span></div>
-        <div class="certificado-registro">REGISTRO Nº <strong>${esc(dados.numero || "PRÉVIA")}</strong></div>
+      <h1 class="certificado-titulo">
+        ${esc(conteudo.titulo)}
+      </h1>
+
+      <div class="certificado-ornamento-titulo"></div>
+
+      <p class="certificado-introducao">
+        Certificamos que
+      </p>
+
+      <div class="certificado-nome ${classeNome}">
+        ${esc(nome)}
       </div>
-      ${certificadoDigital}
+
+      <div class="certificado-linha-nome"></div>
+
+      <div class="certificado-texto">
+        ${conteudo.textoPrincipal}
+      </div>
+
+      <blockquote class="certificado-versiculo">
+        ${esc(conteudo.versiculo)}
+      </blockquote>
+
+      <div class="certificado-referencia">
+        ${esc(conteudo.referencia)}
+      </div>
+
+      <div class="certificado-ornamento-data"></div>
+
+      <p class="certificado-data">
+        ${consagracao ? "Realizada" : "Realizado"}
+        na cidade de
+        <strong>${esc(cidade || "CIDADE")}</strong>,
+        aos
+        <strong>${esc(data || "DATA POR EXTENSO")}</strong>.
+      </p>
+
+      <div class="certificado-assinatura">
+        <img
+          src="assets/assinaturas/assinatura-pastor-presidente.png"
+          alt="Assinatura do Pastor Presidente"
+        >
+        <div class="certificado-assinatura-linha"></div>
+        <div class="certificado-assinatura-nome">
+          ${esc(pastor)}
+        </div>
+        <div class="certificado-assinatura-cargo">
+          Pastor Presidente
+        </div>
+      </div>
+
+      <div class="certificado-registro">
+        REGISTRO Nº
+        <strong>${esc(numero)}</strong>
+      </div>
+
+      <aside class="certificado-digital">
+        <div class="certificado-digital-selo">✓</div>
+
+        <div class="certificado-digital-texto">
+          Baixe seu<br>
+          certificado digital.
+        </div>
+
+        <div
+          class="certificado-qr"
+          id="qrCertificadoAtual"
+          aria-label="QR Code do certificado digital"
+        ></div>
+
+        <div class="certificado-codigo">
+          CÓDIGO:
+          <strong>${esc(numero)}</strong>
+        </div>
+      </aside>
     </article>
   `;
 }
 
-function montarConteudoBatismo(dados) {
+function montarConteudoBatismo() {
   return {
     titulo: "Certificado de Batismo",
     textoPrincipal: `
       <p>
         recebeu o Santo Batismo nas Águas, por imersão, em nome do Pai,
-        do Filho e do Espírito Santo, conforme o mandamento de nosso Senhor
-        Jesus Cristo, tornando pública a sua fé e o compromisso de viver
-        segundo os ensinamentos do Evangelho.
+        do Filho e do Espírito Santo, conforme o mandamento de nosso
+        Senhor Jesus Cristo,
+      </p>
+      <p>
+        tornando pública a sua fé e o compromisso de viver segundo os
+        ensinamentos do Evangelho.
       </p>
     `,
     versiculo:
@@ -885,13 +820,14 @@ function montarConteudoConsagracao(dados) {
       <p>
         foi consagrado(a) ao ministério de
         <strong class="certificado-cargo">${esc(cargo)}</strong>,
-        em reconhecimento ao chamado de Deus, à sua vida cristã e ao compromisso
-        assumido com a obra do Senhor, conforme os princípios das Sagradas
-        Escrituras e a decisão da liderança desta igreja.
+        em reconhecimento ao chamado de Deus, à sua vida cristã e ao
+        compromisso assumido com a obra do Senhor,
       </p>
       <p>
-        Oramos para que Deus o(a) fortaleça, concedendo sabedoria, fidelidade
-        e graça para exercer o ministério que lhe foi confiado.
+        conforme os princípios das Sagradas Escrituras e a decisão da
+        liderança desta igreja. Oramos para que Deus o(a) fortaleça,
+        concedendo sabedoria, fidelidade e graça para exercer o
+        ministério que lhe foi confiado.
       </p>
     `,
     versiculo:
@@ -900,58 +836,95 @@ function montarConteudoConsagracao(dados) {
   };
 }
 
-function montarBlocoCertificadoDigital(dados) {
-  const token = String(dados.tokenPublico || dados.token || "").trim();
-  const numero = String(dados.numero || "PRÉVIA").trim();
-  const linkDigitalInformado = String(dados.linkDigital || dados.urlDigital || dados.link || "").trim();
-  const linkDigital = linkDigitalInformado || construirLinkCertificadoDigital(token);
-  const caminhoQrInformado = String(dados.qrCodeUrl || dados.urlQrCode || dados.qrCode || "").trim();
-  const caminhoQr = caminhoQrInformado || construirUrlImagemQr(linkDigital);
-  return `
-    <aside class="certificado-digital">
-      <span class="certificado-digital-selo" aria-hidden="true">✓</span>
-      <div class="certificado-digital-texto">Baixe seu<br>certificado digital.</div>
-      <img class="certificado-qrcode" src="${escAttr(caminhoQr)}" alt="QR Code para acessar o certificado digital">
-      <div class="certificado-codigo">CÓDIGO:<strong>${esc(numero)}</strong></div>
-    </aside>
-  `;
+function gerarQrCode(dados) {
+  const alvo = $("#qrCertificadoAtual");
+
+  if (!alvo) {
+    return;
+  }
+
+  alvo.innerHTML = "";
+
+  const link = construirLinkDigital(dados);
+
+  if (typeof QRCode !== "function") {
+    alvo.textContent = "QR";
+    return;
+  }
+
+  new QRCode(alvo, {
+    text: link,
+    width: 106,
+    height: 106,
+    colorDark: "#071f3b",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
 }
 
-function construirLinkCertificadoDigital(token) {
-  const url = new URL("certificado-digital.html", window.location.href);
-  if (token) url.searchParams.set("token", token);
-  else url.searchParams.set("modo", "previa");
+function construirLinkDigital(dados) {
+  const url = new URL(
+    "certificado-digital.html",
+    window.location.href
+  );
+
+  const token = String(
+    dados.tokenPublico ||
+    dados.token ||
+    ""
+  ).trim();
+
+  if (token) {
+    url.searchParams.set("token", token);
+  } else {
+    url.searchParams.set("modo", "previa");
+  }
+
   return url.href;
 }
 
-function construirUrlImagemQr(conteudo) {
-  return "https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=" + encodeURIComponent(conteudo);
-}
-
 function obterCidadeCertificado(dados, configuracoes) {
-  const cidadeInformada =
+  const informada =
     dados.cidade ||
     dados.local ||
     configuracoes.cidadeIgreja ||
     "";
 
-  return String(cidadeInformada)
-    .split("-")[0]
-    .trim();
+  return String(informada).split("-")[0].trim();
 }
 
-/* =========================================================
-   HISTÓRICO
-   ========================================================= */
+function imprimirCertificado() {
+  const alvo = $("#previewCertificado");
+
+  if (!alvo || !alvo.innerHTML.trim()) {
+    definirMensagem(
+      "Gere a pré-visualização antes de imprimir.",
+      "error"
+    );
+    return;
+  }
+
+  alvo.classList.add("certificado-para-impressao");
+  setTimeout(() => window.print(), 250);
+}
+
+function limparEstadoImpressao() {
+  $("#previewCertificado")?.classList.remove(
+    "certificado-para-impressao"
+  );
+  atualizarEscalaImediata();
+}
 
 async function recarregarHistorico() {
- const resposta = await obterAuthCertificados().chamarApi({
-  acao: "listarCertificados"
-});
+  const resposta =
+    await obterAuthCertificados().chamarApi({
+      acao: "listarCertificados"
+    });
 
-  ESTADO_CERTIFICADOS.historico = Array.isArray(resposta.certificados)
-    ? resposta.certificados
-    : [];
+  ESTADO_CERTIFICADOS.historico =
+    Array.isArray(resposta.certificados)
+      ? resposta.certificados
+      : [];
 
   renderizarHistorico();
 }
@@ -963,15 +936,16 @@ function renderizarHistorico() {
     return;
   }
 
-  const filtro = normalizar($("#filtroHistorico")?.value || "");
+  const filtro = normalizar(
+    $("#filtroHistorico")?.value || ""
+  );
 
-  const itens = ESTADO_CERTIFICADOS.historico.filter((item) => {
-    return normalizar(
-      `${item.numero || ""} ${item.nome || ""} ${item.tipo || ""} ${
-        item.cargo || ""
-      }`
-    ).includes(filtro);
-  });
+  const itens = ESTADO_CERTIFICADOS.historico.filter((item) =>
+    normalizar(
+      `${item.numero || ""} ${item.nome || ""} ` +
+      `${item.tipo || ""} ${item.cargo || ""}`
+    ).includes(filtro)
+  );
 
   corpo.innerHTML = "";
 
@@ -991,7 +965,7 @@ function renderizarHistorico() {
 
     linha.innerHTML = `
       <td><strong>${esc(item.numero || "")}</strong></td>
-      <td>${esc(nomeTipoCertificado(item.tipo))}</td>
+      <td>${esc(nomeTipo(item.tipo))}</td>
       <td>${esc(item.nome || "")}</td>
       <td>${esc(dataBr(item.dataCerimonia || item.data))}</td>
       <td>${esc(item.emitidoPor || "")}</td>
@@ -1010,12 +984,6 @@ function renderizarHistorico() {
   });
 }
 
-function nomeTipoCertificado(tipo) {
-  return String(tipo || "").toUpperCase() === "CONSAGRACAO"
-    ? "Consagração"
-    : "Batismo";
-}
-
 function reimprimir(item) {
   const tipo =
     String(item.tipo || "").toUpperCase() === "CONSAGRACAO"
@@ -1032,15 +1000,17 @@ function reimprimir(item) {
   };
 
   ESTADO_CERTIFICADOS.certificadoAtual = dados;
-
   abrirAba(tipo);
   atualizarPreview(tipo, dados);
-  imprimirCertificado(tipo);
+
+  setTimeout(() => imprimirCertificado(), 400);
 }
 
-/* =========================================================
-   MENSAGENS E UTILITÁRIOS
-   ========================================================= */
+function nomeTipo(tipo) {
+  return String(tipo || "").toUpperCase() === "CONSAGRACAO"
+    ? "Consagração"
+    : "Batismo";
+}
 
 function definirMensagem(texto, tipo) {
   const elemento = $("#mensagemModulo");
@@ -1083,38 +1053,36 @@ function dataExtenso(valor) {
     return "";
   }
 
-  const texto = String(valor);
-  const dataSomente = texto.includes("T")
-    ? texto.split("T")[0]
-    : texto;
+  const partes = String(valor).split("-");
 
-  const data = new Date(`${dataSomente}T12:00:00`);
+  if (partes.length !== 3) {
+    return "";
+  }
+
+  const data = new Date(
+    Number(partes[0]),
+    Number(partes[1]) - 1,
+    Number(partes[2])
+  );
 
   if (Number.isNaN(data.getTime())) {
-    return dataBr(valor);
+    return "";
   }
 
   return new Intl.DateTimeFormat("pt-BR", {
-    day: "numeric",
+    day: "2-digit",
     month: "long",
     year: "numeric"
-  }).format(data);
+  })
+    .format(data)
+    .toUpperCase();
 }
 
 function esc(valor) {
-  return String(valor ?? "").replace(
-    /[&<>"']/g,
-    (caractere) =>
-      ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-      })[caractere]
-  );
-}
-
-function escAttr(valor) {
-  return esc(valor);
+  return String(valor ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
