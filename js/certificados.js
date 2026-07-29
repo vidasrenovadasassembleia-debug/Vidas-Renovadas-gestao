@@ -705,8 +705,7 @@ function montarCertificado(dados) {
 
   const imagemBase = consagracao
     ? "assets/certificados/certificado-consagracao-base.jpg"
-    : "assets/certificados/certificado-batismo-base.jpg";
-
+    assets/certificados/certificado-batismo-base.png
   return `
     <article class="certificado-canvas ${
       consagracao
