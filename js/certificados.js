@@ -157,7 +157,7 @@ function configurarEscalaPreview() {
       return;
     }
 
-    const escala = folha.clientWidth / 1448;
+    const escala = folha.clientWidth / 1492;
     canvas.style.setProperty("--certificado-escala", String(escala));
   };
 
@@ -674,16 +674,16 @@ function atualizarEscalaImediata() {
 
   canvas.style.setProperty(
     "--certificado-escala",
-    String(folha.clientWidth / 1448)
+    String(folha.clientWidth / 1492)
   );
 }
 
 function montarCertificado(dados) {
-  const configuracoes = ESTADO_CERTIFICADOS.configuracoes;
   const consagracao =
     String(dados.tipo || "").toUpperCase() === "CONSAGRACAO";
 
   const nome = String(dados.nome || "NOME COMPLETO").trim();
+
   const classeNome =
     nome.length > 42
       ? "nome-muito-longo"
@@ -691,19 +691,21 @@ function montarCertificado(dados) {
         ? "nome-longo"
         : "";
 
-  const pastor =
-    dados.pastor ||
-    configuracoes.pastorPresidente ||
-    configuracoes.pastorLocal ||
-    "Rogério Lemos da Silva";
+  const cargo = String(dados.cargo || "CARGO").trim();
+  const classeCargo = cargo.length > 18 ? "cargo-longo" : "";
 
-  const cidade = obterCidadeCertificado(dados, configuracoes);
-  const data = dataExtenso(dados.dataCerimonia);
-  const conteudo = consagracao
-    ? montarConteudoConsagracao(dados)
-    : montarConteudoBatismo();
+  const configuracoes = ESTADO_CERTIFICADOS.configuracoes;
+  const cidade =
+    obterCidadeCertificado(dados, configuracoes) || "CIDADE";
+
+  const data =
+    dataExtenso(dados.dataCerimonia) || "DATA POR EXTENSO";
 
   const numero = dados.numero || "PRÉVIA";
+
+  const imagemBase = consagracao
+    ? "assets/certificados/certificado-consagracao-base.jpg"
+    : "assets/certificados/certificado-batismo-base.jpg";
 
   return `
     <article class="certificado-canvas ${
@@ -711,82 +713,84 @@ function montarCertificado(dados) {
         ? "certificado-consagracao"
         : "certificado-batismo"
     }">
-      <h1 class="certificado-titulo">
-        ${esc(conteudo.titulo)}
-      </h1>
+      <img
+        class="certificado-imagem-base"
+        src="${imagemBase}"
+        alt="${
+          consagracao
+            ? "Certificado de Consagração"
+            : "Certificado de Batismo"
+        }"
+      >
 
-      <div class="certificado-ornamento-titulo"></div>
-
-      <p class="certificado-introducao">
-        Certificamos que
-      </p>
-
-      <div class="certificado-nome ${classeNome}">
+      <div
+        class="
+          certificado-campo-dinamico
+          certificado-campo-cobertura
+          certificado-campo-nome
+          ${classeNome}
+        "
+      >
         ${esc(nome)}
       </div>
 
-      <div class="certificado-linha-nome"></div>
+      ${
+        consagracao
+          ? `
+            <div
+              class="
+                certificado-campo-dinamico
+                certificado-campo-cobertura
+                certificado-campo-cargo
+                ${classeCargo}
+              "
+            >
+              ${esc(cargo)}
+            </div>
+          `
+          : ""
+      }
 
-      <div class="certificado-texto">
-        ${conteudo.textoPrincipal}
+      <div
+        class="
+          certificado-campo-dinamico
+          certificado-campo-cobertura
+          certificado-campo-data
+        "
+      >
+        ${esc(cidade.toUpperCase())}, aos ${esc(data)}.
       </div>
 
-      <blockquote class="certificado-versiculo">
-        ${esc(conteudo.versiculo)}
-      </blockquote>
-
-      <div class="certificado-referencia">
-        ${esc(conteudo.referencia)}
-      </div>
-
-      <div class="certificado-ornamento-data"></div>
-
-      <p class="certificado-data">
-        ${consagracao ? "Realizada" : "Realizado"}
-        na cidade de
-        <strong>${esc(cidade || "CIDADE")}</strong>,
-        aos
-        <strong>${esc(data || "DATA POR EXTENSO")}</strong>.
-      </p>
-
-      <div class="certificado-assinatura">
+      <div
+        class="
+          certificado-campo-dinamico
+          certificado-campo-assinatura
+        "
+      >
         <img
           src="assets/assinaturas/assinatura-pastor-presidente.png"
           alt="Assinatura do Pastor Presidente"
         >
-        <div class="certificado-assinatura-linha"></div>
-        <div class="certificado-assinatura-nome">
-          ${esc(pastor)}
-        </div>
-        <div class="certificado-assinatura-cargo">
-          Pastor Presidente
-        </div>
       </div>
 
-      <div class="certificado-registro">
-        REGISTRO Nº
-        <strong>${esc(numero)}</strong>
+      <div
+        class="
+          certificado-campo-dinamico
+          certificado-campo-cobertura
+          certificado-campo-registro
+        "
+      >
+        ${esc(numero)}
       </div>
 
-      <aside class="certificado-digital">
-        <div class="certificado-digital-selo">✓</div>
-
-        <div class="certificado-digital-texto">
-          Baixe seu<br>
-          certificado digital.
-        </div>
-
-        <div
-          class="certificado-qr"
-          id="qrCertificadoAtual"
-          aria-label="QR Code do certificado digital"
-        ></div>
-
-        <div class="certificado-codigo">
-          CÓDIGO:
-          <strong>${esc(numero)}</strong>
-        </div>
-      </aside>
+      <div
+        id="qrCertificadoAtual"
+        class="
+          certificado-campo-dinamico
+          certificado-campo-qr
+        "
+        aria-label="QR Code do certificado digital"
+      ></div>
     </article>
   `;
 }
@@ -854,8 +858,8 @@ function gerarQrCode(dados) {
 
   new QRCode(alvo, {
     text: link,
-    width: 106,
-    height: 106,
+    width: 100,
+    height: 100,
     colorDark: "#071f3b",
     colorLight: "#ffffff",
     correctLevel: QRCode.CorrectLevel.M
