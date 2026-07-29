@@ -803,7 +803,7 @@ function montarCertificado(dados) {
     arquivos.assinatura ||
     arquivos.assinaturaPastor ||
     configuracoes.assinaturaPastor ||
-    "img/assinatura-pastor-presidente.png";
+    "assets/assinaturas/assinatura-pastor-presidente.png"
 
   const logo = caminhoLogo
     ? `<img class="cert-logo" src="${escAttr(caminhoLogo)}" alt="Logo da igreja">`
