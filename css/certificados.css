@@ -319,18 +319,33 @@
 .folha-certificado {
   position: relative;
   width: 100%;
-  aspect-ratio: 1492 / 1054;
+  aspect-ratio: 1448 / 1024;
   overflow: hidden;
   background: #fffdf7;
   box-shadow: 0 16px 34px rgba(7, 31, 59, .18);
 }
 
 /* ==========================================================================
-   CERTIFICADOS V3.0 — VERSÃO CONGELADA
+   CERTIFICADOS V4.0 — RENDERIZADOR ÚNICO
+   Um HTML, um CSS e um JavaScript para Batismo e Consagração.
    A arte PNG contém todo o conteúdo fixo.
-   O sistema posiciona somente os dados realmente variáveis.
-   Canvas nativo: 1492 × 1054 px.
    ========================================================================== */
+
+.certificado-preview-corpo {
+  padding: 14px;
+}
+
+.certificado-preview-palco {
+  width: 100%;
+  overflow: hidden;
+  padding: 14px;
+  border-radius: 10px;
+  background:
+    linear-gradient(45deg, #e9eef4 25%, transparent 25%) 0 0 / 18px 18px,
+    linear-gradient(45deg, transparent 75%, #e9eef4 75%) 0 0 / 18px 18px,
+    linear-gradient(45deg, transparent 75%, #e9eef4 75%) 9px -9px / 18px 18px,
+    linear-gradient(45deg, #e9eef4 25%, #f7f9fc 25%) 9px -9px / 18px 18px;
+}
 
 .folha-certificado {
   position: relative;
@@ -341,21 +356,21 @@
   box-shadow: 0 16px 34px rgba(7, 31, 59, .18);
 }
 
-.certificado-canvas {
-  --certificado-escala: 1;
+.certificado-render {
+  --escala-certificado: 1;
   position: absolute;
   top: 0;
   left: 0;
   width: 1492px;
   height: 1054px;
   overflow: hidden;
-  transform: scale(var(--certificado-escala));
+  transform: scale(var(--escala-certificado));
   transform-origin: top left;
   background: #fbf8ef;
   font-family: Georgia, "Times New Roman", serif;
 }
 
-.certificado-imagem-base {
+.certificado-arte {
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -367,27 +382,23 @@
   pointer-events: none;
 }
 
-.certificado-dado {
+.certificado-valor {
   position: absolute;
   z-index: 3;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   color: #071f3b;
   line-height: 1;
   text-align: center;
   background: transparent;
 }
 
-/* Nome — campo amplo para nomes extensos */
+/* Nome */
 
-.certificado-dado-nome {
-  top: 400px;
-  left: 235px;
-  width: 900px;
-  height: 86px;
-  overflow: hidden;
+.certificado-valor[data-campo="nome"] {
   color: #b98320;
   font-size: 61px;
   letter-spacing: 2px;
@@ -395,140 +406,75 @@
   white-space: nowrap;
 }
 
-.certificado-dado-nome.nome-longo {
+.certificado-valor[data-campo="nome"].nome-longo {
   font-size: 52px;
 }
 
-.certificado-dado-nome.nome-muito-longo {
+.certificado-valor[data-campo="nome"].nome-muito-longo {
   font-size: 43px;
 }
 
-/* Cargo — utilizado somente em Consagração */
+/* Cargo */
 
-.certificado-dado-cargo {
-  top: 498px;
-  left: 560px;
-  width: 340px;
-  height: 36px;
-  font-size: 22px;
+.certificado-valor[data-campo="cargo"] {
+  font-size: 21px;
   font-weight: 700;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.certificado-dado-cargo.cargo-longo {
-  font-size: 17px;
+.certificado-valor[data-campo="cargo"].cargo-longo {
+  font-size: 16px;
 }
 
-/* Data — os textos fixos e as linhas já pertencem à arte */
+/* Data e local */
 
-.certificado-dado-cidade {
-  top: 721px;
-  left: 395px;
-  width: 325px;
-  height: 34px;
+.certificado-valor[data-campo="cidade"],
+.certificado-valor[data-campo="dia"],
+.certificado-valor[data-campo="mes"],
+.certificado-valor[data-campo="ano"] {
   font-size: 18px;
+  white-space: nowrap;
+}
+
+.certificado-valor[data-campo="cidade"],
+.certificado-valor[data-campo="mes"] {
   text-transform: uppercase;
-  white-space: nowrap;
 }
 
-.certificado-dado-dia {
-  top: 721px;
-  left: 742px;
-  width: 70px;
-  height: 34px;
-  font-size: 18px;
-  white-space: nowrap;
-}
+/* Assinatura */
 
-.certificado-dado-mes {
-  top: 721px;
-  left: 844px;
-  width: 210px;
-  height: 34px;
-  font-size: 18px;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.certificado-dado-ano {
-  top: 721px;
-  left: 1085px;
-  width: 90px;
-  height: 34px;
-  font-size: 18px;
-  white-space: nowrap;
-}
-
-/* Assinatura oficial */
-
-.certificado-dado-assinatura {
-  top: 802px;
-  left: 485px;
-  width: 500px;
-  height: 102px;
-}
-
-.certificado-dado-assinatura img {
+.certificado-valor[data-campo="assinatura"] img {
   display: block;
   width: auto;
-  max-width: 455px;
-  height: 94px;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
 }
 
-/* Registro — a legenda REGISTRO Nº já está na arte */
+/* Registro */
 
-.certificado-dado-registro {
-  top: 929px;
-  left: 350px;
-  width: 250px;
-  height: 34px;
+.certificado-valor[data-campo="registro"] {
   justify-content: flex-start;
   font-size: 17px;
   white-space: nowrap;
 }
 
-/* QR real — único QR exibido */
+/* QR */
 
-.certificado-dado-qr {
-  top: 627px;
-  left: 1226px;
-  width: 142px;
-  height: 142px;
+.certificado-valor[data-campo="qr"] {
   padding: 4px;
   background: #fff;
 }
 
-.certificado-dado-qr canvas,
-.certificado-dado-qr img {
+.certificado-valor[data-campo="qr"] canvas,
+.certificado-valor[data-campo="qr"] img {
   display: block;
   width: 100% !important;
   height: 100% !important;
 }
 
-/* Ajustes específicos da Consagração */
-
-.certificado-consagracao .certificado-dado-nome {
-  top: 402px;
-}
-
-.certificado-consagracao .certificado-dado-cidade,
-.certificado-consagracao .certificado-dado-dia,
-.certificado-consagracao .certificado-dado-mes,
-.certificado-consagracao .certificado-dado-ano {
-  top: 724px;
-}
-
-.certificado-consagracao .certificado-dado-assinatura {
-  top: 806px;
-}
-
-.certificado-consagracao .certificado-dado-registro {
-  top: 932px;
-}
-
-/* Responsividade da Central */
+/* Responsividade */
 
 @media (max-width: 1180px) {
   .certificados-grid {
@@ -575,7 +521,7 @@
   }
 }
 
-/* Impressão A4 horizontal */
+/* Impressão */
 
 @page {
   size: A4 landscape;
@@ -613,15 +559,15 @@
     background: #fff !important;
   }
 
-  #previewCertificado .certificado-canvas {
+  #previewCertificado .certificado-render {
     width: 1492px !important;
     height: 1054px !important;
     transform: scale(.7513404826) !important;
     transform-origin: top left !important;
   }
 
-  .certificado-canvas,
-  .certificado-canvas * {
+  .certificado-render,
+  .certificado-render * {
     print-color-adjust: exact !important;
     -webkit-print-color-adjust: exact !important;
   }
