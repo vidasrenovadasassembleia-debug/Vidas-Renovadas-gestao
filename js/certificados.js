@@ -726,7 +726,6 @@ function montarCertificado(dados) {
       <div
         class="
           certificado-campo-dinamico
-          certificado-campo-cobertura
           certificado-campo-nome
           ${classeNome}
         "
@@ -740,8 +739,7 @@ function montarCertificado(dados) {
             <div
               class="
                 certificado-campo-dinamico
-                certificado-campo-cobertura
-                certificado-campo-cargo
+                      certificado-campo-cargo
                 ${classeCargo}
               "
             >
@@ -754,7 +752,6 @@ function montarCertificado(dados) {
       <div
         class="
           certificado-campo-dinamico
-          certificado-campo-cobertura
           certificado-campo-data
         "
       >
@@ -780,7 +777,6 @@ function montarCertificado(dados) {
       <div
         class="
           certificado-campo-dinamico
-          certificado-campo-cobertura
           certificado-campo-registro
         "
       >
