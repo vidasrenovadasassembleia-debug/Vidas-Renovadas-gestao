@@ -652,7 +652,7 @@ function montarValores(dados) {
           ? "nome-longo"
           : "",
     cargo,
-    classeCargo: cargo.length > 20 ? "cargo-longo" : "",
+    classeCargo: cargo.length > 9 ? "cargo-longo" : "",
     cidade:
       obterCidade(dados.local) ||
       ESTADO.configuracoes.cidadeIgreja ||
