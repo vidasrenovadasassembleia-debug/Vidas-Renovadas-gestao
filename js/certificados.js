@@ -80,6 +80,9 @@ function obterApiCertificados() {
 }
 
 async function iniciarCertificados() {
+   if (MODO_CALIBRACAO) {
+    document.body.classList.add("modo-calibracao");
+}
   const sessao =
     typeof obterSessao === "function"
       ? obterSessao()
