@@ -1,0 +1,184 @@
+/* ==========================================================================
+   CERTIFICADO DIGITAL
+   ========================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    background: #f5f6f8;
+
+    color: #222;
+
+    min-height: 100vh;
+
+}
+
+.pagina-certificado {
+
+    max-width: 1200px;
+
+    margin: 0 auto;
+
+    padding: 24px;
+
+}
+
+.cabecalho {
+
+    text-align: center;
+
+    margin-bottom: 24px;
+
+}
+
+.cabecalho h1 {
+
+    font-size: 30px;
+
+    margin-bottom: 8px;
+
+}
+
+.subtitulo {
+
+    color: #666;
+
+    font-size: 16px;
+
+}
+
+.mensagem {
+
+    background: white;
+
+    border-radius: 10px;
+
+    padding: 40px;
+
+    text-align: center;
+
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+
+}
+
+.certificado {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    margin: 30px 0;
+
+}
+
+.certificado canvas,
+.certificado img {
+
+    max-width: 100%;
+
+    height: auto;
+
+    display: block;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,.18);
+
+    border-radius: 6px;
+
+}
+
+.acoes {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+
+    margin-top: 24px;
+
+}
+
+.acoes button {
+
+    border: none;
+
+    cursor: pointer;
+
+    padding: 12px 22px;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+}
+
+#btnBaixar {
+
+    background: #0d6efd;
+
+    color: white;
+
+}
+
+#btnCompartilhar {
+
+    background: #198754;
+
+    color: white;
+
+}
+
+#btnImprimir {
+
+    background: #6c757d;
+
+    color: white;
+
+}
+
+.acoes button:hover {
+
+    opacity: .92;
+
+}
+
+@media (max-width:768px){
+
+    .pagina-certificado{
+
+        padding:16px;
+
+    }
+
+    .cabecalho h1{
+
+        font-size:24px;
+
+    }
+
+    .acoes{
+
+        flex-direction:column;
+
+    }
+
+    .acoes button{
+
+        width:100%;
+
+    }
+
+}
