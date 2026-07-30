@@ -21,10 +21,10 @@ const MODELOS_CERTIFICADO = Object.freeze({
     imagem: "assets/certificados/certificado-batismo-base.png",
     campos: {
       nome: { top: 394, left: 235, width: 900, height: 86 },
-      cidade: { top: 735, left: 385, width: 330, height: 32 },
-      dia: { top: 735, left: 744, width: 65, height: 32 },
-      mes: { top: 735, left: 838, width: 215, height: 32 },
-      ano: { top: 735, left: 1080, width: 92, height: 32 },
+     cidade: { top: 773, left: 410, width: 327, height: 32 },
+     dia:    { top: 773, left: 786, width: 58,  height: 32 },
+     mes:    { top: 773, left: 880, width: 195, height: 32 },
+     ano:    { top: 773, left: 1110, width: 84, height: 32 },
       assinatura: { top: 803, left: 490, width: 500, height: 96 },
       registro: { top: 931, left: 350, width: 255, height: 32 },
       qr: { top: 622, left: 1273, width: 143, height: 147 }
