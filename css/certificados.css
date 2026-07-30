@@ -572,36 +572,6 @@
     -webkit-print-color-adjust: exact !important;
   }
 }
-/* ===========================================================
-   MODO CALIBRAÇÃO
-   =========================================================== */
-
-body.modo-calibracao .certificado-valor{
-    box-sizing:border-box;
-}
-
-body.modo-calibracao .certificado-valor[data-campo="nome"]{
-    border:2px dashed #0066ff;
-}
-
-body.modo-calibracao .certificado-valor[data-campo="cargo"]{
-    border:2px dashed #00aa44;
-}
-
-body.modo-calibracao .certificado-valor[data-campo="cidade"],
-body.modo-calibracao .certificado-valor[data-campo="dia"],
-body.modo-calibracao .certificado-valor[data-campo="mes"],
-body.modo-calibracao .certificado-valor[data-campo="ano"]{
-    border:2px dashed #ff8800;
-}
-
-body.modo-calibracao .certificado-valor[data-campo="assinatura"]{
-    border:2px dashed #9933ff;
-}
-
-body.modo-calibracao .certificado-valor[data-campo="registro"]{
-    border:2px dashed #888;
-}
 
 body.modo-calibracao .certificado-valor[data-campo="qr"]{
     border:2px dashed red;
