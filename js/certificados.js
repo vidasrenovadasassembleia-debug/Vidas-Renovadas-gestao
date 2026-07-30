@@ -661,7 +661,7 @@ function montarValores(dados) {
     ano: data.ano,
     assinatura:
       "assets/assinaturas/assinatura-pastor-presidente.png",
-    registro: dados.numero || "PRÉVIA",
+    registro: dados.numero || "",
     qr: ""
   };
 }
