@@ -407,7 +407,7 @@
 }
 
 .certificado-valor[data-campo="nome"].nome-longo {
-  font-size: 52px;
+  font-size: 48px;
 }
 
 .certificado-valor[data-campo="nome"].nome-muito-longo {
