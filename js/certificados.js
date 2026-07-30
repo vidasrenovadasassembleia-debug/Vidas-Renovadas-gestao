@@ -40,7 +40,7 @@ const MODELOS_CERTIFICADO = Object.freeze({
     imagem: "assets/certificados/certificado-consagracao-base.png",
     campos: {
       nome: { top: 402, left: 235, width: 900, height: 82 },
-      cargo: { top: 505, left: 548, width: 360, height: 38 },
+      cargo: { top: 418, left: 470, width: 500, height: 58 },
       cidade: { top: 830, left: 468, width: 261, height: 32 },
       dia:    { top: 830, left: 779, width: 70,  height: 32 },
       mes:    { top: 830, left: 887, width: 133, height: 32 },
