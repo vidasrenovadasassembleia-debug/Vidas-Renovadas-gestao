@@ -596,3 +596,8 @@ body.modo-calibracao .certificado-valor[data-campo="qr"]{
     white-space: nowrap;
     text-align: center;
 }
+
+.certificado-consagracao
+.certificado-valor[data-campo="cargo"].cargo-longo {
+    font-size: 38px;
+}
