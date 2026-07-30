@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Certificado Digital</title>
+
+    <link rel="stylesheet" href="css/certificado-digital.css">
+
+</head>
+
+<body>
+
+    <main class="pagina-certificado">
+
+        <header class="cabecalho">
+
+            <h1>Certificado Digital</h1>
+
+            <p class="subtitulo">
+                Igreja Assembleia de Deus Vidas Renovadas
+            </p>
+
+        </header>
+
+        <section id="mensagem"
+                 class="mensagem">
+
+            Carregando certificado...
+
+        </section>
+
+        <section id="certificado"
+                 class="certificado"
+                 hidden>
+
+            <!--
+                O certificado será renderizado aqui
+                pelo JavaScript.
+            -->
+
+        </section>
+
+        <footer class="acoes">
+
+            <button
+                id="btnBaixar"
+                type="button">
+
+                Baixar PDF
+
+            </button>
+
+            <button
+                id="btnCompartilhar"
+                type="button">
+
+                Compartilhar
+
+            </button>
+
+            <button
+                id="btnImprimir"
+                type="button">
+
+                Imprimir
+
+            </button>
+
+        </footer>
+
+    </main>
+
+    <script src="js/api.js"></script>
+
+    <script src="js/certificado-digital.js"></script>
+
+</body>
+</html>
