@@ -41,10 +41,10 @@ const MODELOS_CERTIFICADO = Object.freeze({
     campos: {
       nome: { top: 402, left: 235, width: 900, height: 82 },
       cargo: { top: 505, left: 548, width: 360, height: 38 },
-      cidade: { top: 738, left: 385, width: 330, height: 32 },
-      dia: { top: 738, left: 744, width: 65, height: 32 },
-      mes: { top: 738, left: 838, width: 215, height: 32 },
-      ano: { top: 738, left: 1080, width: 92, height: 32 },
+      cidade: { top: 830, left: 468, width: 261, height: 32 },
+      dia:    { top: 830, left: 779, width: 70,  height: 32 },
+      mes:    { top: 830, left: 887, width: 133, height: 32 },
+      ano:    { top: 830, left: 1058, width: 78, height: 32 },
       assinatura: { top: 806, left: 490, width: 500, height: 96 },
       registro: { top: 934, left: 350, width: 255, height: 32 },
       qr: { top: 865, left: 1224, width: 127, height: 125 }
