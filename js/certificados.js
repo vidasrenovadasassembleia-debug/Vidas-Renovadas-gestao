@@ -649,7 +649,7 @@ console.log("QUANTIDADE DE CARACTERES:", nome.length);
     classeNome:
       nome.length > 42
         ? "nome-muito-longo"
-        : nome.length > 31
+        : nome.length > 24
           ? "nome-longo"
           : "",
     cargo,
