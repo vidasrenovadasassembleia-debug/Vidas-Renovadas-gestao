@@ -80,8 +80,6 @@ function obterApiCertificados() {
 }
 
 async function iniciarCertificados() {
-  
-}
   const sessao =
     typeof obterSessao === "function"
       ? obterSessao()
@@ -663,7 +661,7 @@ function montarValores(dados) {
     ano: data.ano,
     assinatura:
       "assets/assinaturas/assinatura-pastor-presidente.png",
-    registro: dados.numero || "",
+    registro: dados.numero || "PRÉVIA",
     qr: ""
   };
 }
