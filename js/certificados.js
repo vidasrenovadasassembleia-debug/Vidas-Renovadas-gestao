@@ -1,5 +1,5 @@
 "use strict";
-const MODO_CALIBRACAO = true;
+
 /* ==========================================================================
    CERTIFICADOS V4.0 — RENDERIZADOR ÚNICO
    Batismo e Consagração utilizam a mesma Central e o mesmo renderizador.
@@ -80,8 +80,7 @@ function obterApiCertificados() {
 }
 
 async function iniciarCertificados() {
-   if (MODO_CALIBRACAO) {
-    document.body.classList.add("modo-calibracao");
+  
 }
   const sessao =
     typeof obterSessao === "function"
