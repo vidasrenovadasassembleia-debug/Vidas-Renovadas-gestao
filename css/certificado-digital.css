@@ -182,3 +182,174 @@ body {
     }
 
 }
+/* ==========================================================================
+   RENDERIZAÇÃO DO CERTIFICADO
+   ========================================================================== */
+
+.certificado-render {
+
+    position: relative;
+
+    width: 1492px;
+
+    height: 1055px;
+
+    transform-origin: top center;
+
+    transform: scale(var(--escala-certificado,1));
+
+}
+
+.certificado-arte{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+
+    height:100%;
+
+    display:block;
+
+}
+
+.certificado-valor{
+
+    position:absolute;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    line-height:1;
+
+    color:#111;
+
+}
+
+/* Nome */
+
+.certificado-valor[data-campo="nome"]{
+
+    font-family:"Times New Roman",serif;
+
+    font-size:58px;
+
+    font-weight:bold;
+
+}
+
+/* Nome muito grande */
+
+.nome-longo{
+
+    font-size:50px !important;
+
+}
+
+.nome-muito-longo{
+
+    font-size:42px !important;
+
+}
+
+/* Cargo */
+
+.certificado-valor[data-campo="cargo"]{
+
+    font-family:"Times New Roman",serif;
+
+    font-size:40px;
+
+    font-style:italic;
+
+}
+
+.cargo-longo{
+
+    font-size:34px !important;
+
+}
+
+/* Cidade */
+
+.certificado-valor[data-campo="cidade"]{
+
+    font-size:24px;
+
+}
+
+/* Dia */
+
+.certificado-valor[data-campo="dia"]{
+
+    font-size:24px;
+
+}
+
+/* Mês */
+
+.certificado-valor[data-campo="mes"]{
+
+    font-size:24px;
+
+}
+
+/* Ano */
+
+.certificado-valor[data-campo="ano"]{
+
+    font-size:24px;
+
+}
+
+/* Registro */
+
+.certificado-valor[data-campo="registro"]{
+
+    justify-content:flex-start;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+}
+
+/* Assinatura */
+
+.certificado-valor[data-campo="assinatura"] img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:contain;
+
+}
+
+/* QR */
+
+.certificado-valor[data-campo="qr"]{
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.certificado-valor[data-campo="qr"] img{
+
+    width:100% !important;
+
+    height:100% !important;
+
+}
