@@ -640,8 +640,7 @@ function renderizarCertificado(dados) {
 function montarValores(dados) {
   const data = separarData(dados.dataCerimonia);
   const nome = String(dados.nome || "NOME COMPLETO").trim();
-   console.log("NOME COMPLETO RECEBIDO:", nome);
-console.log("QUANTIDADE DE CARACTERES:", nome.length);
+   
   const cargo = String(dados.cargo || "").trim();
 
   return {
