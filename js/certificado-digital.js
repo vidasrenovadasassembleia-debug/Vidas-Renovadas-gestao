@@ -54,17 +54,18 @@ const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
 
 document.addEventListener("DOMContentLoaded", iniciarCertificadoDigital);
 
-ffunction obterApiCertificados() {
-  const api = window.VR_API;
+function obterApiCertificados() {
+  const api = window.VRGAuth || window.Auth;
 
-  if (!api || typeof api.enviar !== "function") {
+  if (!api || typeof api.chamarApi !== "function") {
     throw new Error(
-      "O módulo da API não foi carregado corretamente."
+      "O módulo de autenticação/API não foi carregado corretamente."
     );
   }
 
   return api;
 }
+
 async function iniciarCertificadoDigital() {
   configurarEscala();
 
@@ -93,12 +94,10 @@ async function carregarCertificadoDigital(token) {
   mostrarMensagem("Carregando certificado...", "info");
 
   try {
-    const resposta = await obterApiCertificados().enviar(
-  "obterCertificadoPublico",
-  {
-    token
-  }
-);
+    const resposta = await obterApiCertificados().chamarApi({
+      acao: "obterCertificadoPublico",
+      token
+    });
 
     const certificado = resposta?.certificado || null;
 
