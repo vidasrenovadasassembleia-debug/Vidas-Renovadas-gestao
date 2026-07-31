@@ -21,7 +21,7 @@ const MODELOS_CERTIFICADO = Object.freeze({
       mes: { top: 773, left: 880, width: 195, height: 32 },
       ano: { top: 773, left: 1110, width: 84, height: 32 },
       assinatura: { top: 803, left: 490, width: 500, height: 96 },
-      registro: { top: 931, left: 350, width: 255, height: 32 },
+      registro: { top: 950, left: 350, width: 255, height: 32 },
       qr: { top: 622, left: 1273, width: 143, height: 147 }
     }
   },
