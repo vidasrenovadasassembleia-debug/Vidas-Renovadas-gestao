@@ -54,7 +54,7 @@ const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
 
 document.addEventListener("DOMContentLoaded", iniciarCertificadoDigital);
 
-function obterApiCertificados() {
+ffunction obterApiCertificados() {
   const api = window.VR_API;
 
   if (!api || typeof api.enviar !== "function") {
@@ -65,7 +65,6 @@ function obterApiCertificados() {
 
   return api;
 }
-
 async function iniciarCertificadoDigital() {
   configurarEscala();
 
