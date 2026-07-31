@@ -8,390 +8,327 @@
     box-sizing: border-box;
 }
 
+[hidden] {
+    display: none !important;
+}
+
+html,
 body {
+    width: 100%;
+    min-height: 100%;
+}
 
+body {
     font-family: Arial, Helvetica, sans-serif;
-
     background: #f5f6f8;
-
     color: #222;
-
-    min-height: 100vh;
-
 }
 
 .pagina-certificado {
-
-    max-width: 1200px;
-
+    width: 100%;
+    max-width: 1600px;
     margin: 0 auto;
-
     padding: 24px;
-
 }
 
 .cabecalho {
-
     text-align: center;
-
     margin-bottom: 24px;
-
 }
 
 .cabecalho h1 {
-
-    font-size: 30px;
-
     margin-bottom: 8px;
-
+    font-size: 30px;
 }
 
 .subtitulo {
-
     color: #666;
-
     font-size: 16px;
-
 }
 
-.mensagem {
+/* ==========================================================================
+   MENSAGENS
+   ========================================================================== */
 
-    background: white;
-
+.mensagem-certificado {
+    width: 100%;
+    margin: 24px 0;
+    padding: 24px;
+    background: #fff;
     border-radius: 10px;
-
-    padding: 40px;
-
     text-align: center;
-
-    box-shadow: 0 3px 12px rgba(0,0,0,.08);
-
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
 }
+
+.mensagem-certificado[data-tipo="error"] {
+    color: #842029;
+    background: #f8d7da;
+}
+
+.mensagem-certificado[data-tipo="info"] {
+    color: #055160;
+    background: #cff4fc;
+}
+
+/* ==========================================================================
+   ÁREA DO CERTIFICADO
+   ========================================================================== */
 
 .certificado {
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    margin: 30px 0;
-
+    position: relative;
+    width: 100%;
+    max-width: 1492px;
+    aspect-ratio: 1492 / 1055;
+    margin: 30px auto;
+    overflow: hidden;
 }
 
-.certificado canvas,
-.certificado img {
-
-    max-width: 100%;
-
-    height: auto;
-
-    display: block;
-
-    box-shadow: 0 8px 25px rgba(0,0,0,.18);
-
-    border-radius: 6px;
-
-}
-
-.acoes {
-
-    display: flex;
-
-    justify-content: center;
-
-    gap: 12px;
-
-    flex-wrap: wrap;
-
-    margin-top: 24px;
-
-}
-
-.acoes button {
-
-    border: none;
-
-    cursor: pointer;
-
-    padding: 12px 22px;
-
-    border-radius: 8px;
-
-    font-size: 15px;
-
-    font-weight: bold;
-
-}
-
-#btnBaixar {
-
-    background: #0d6efd;
-
-    color: white;
-
-}
-
-#btnCompartilhar {
-
-    background: #198754;
-
-    color: white;
-
-}
-
-#btnImprimir {
-
-    background: #6c757d;
-
-    color: white;
-
-}
-
-.acoes button:hover {
-
-    opacity: .92;
-
-}
-
-@media (max-width:768px){
-
-    .pagina-certificado{
-
-        padding:16px;
-
-    }
-
-    .cabecalho h1{
-
-        font-size:24px;
-
-    }
-
-    .acoes{
-
-        flex-direction:column;
-
-    }
-
-    .acoes button{
-
-        width:100%;
-
-    }
-
-}
 /* ==========================================================================
    RENDERIZAÇÃO DO CERTIFICADO
    ========================================================================== */
 
 .certificado-render {
-
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 50%;
 
     width: 1492px;
-
     height: 1055px;
 
     transform-origin: top center;
 
-    transform: scale(var(--escala-certificado,1));
+    transform:
+        translateX(-50%)
+        scale(var(--escala-certificado, 1));
+}
+
+.certificado-arte {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    border-radius: 6px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+}
+
+.certificado-valor {
+    position: absolute;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    color: #111;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   NOME
+   ========================================================================== */
+
+.certificado-valor[data-campo="nome"] {
+    font-family: "Times New Roman", serif;
+    font-size: 58px;
+    font-weight: bold;
+}
+
+.nome-longo {
+    font-size: 50px !important;
+}
+
+.nome-muito-longo {
+    font-size: 42px !important;
+}
+
+/* ==========================================================================
+   CARGO
+   ========================================================================== */
+
+.certificado-valor[data-campo="cargo"] {
+    font-family: "Times New Roman", serif;
+    font-size: 40px;
+    font-style: italic;
+}
+
+.cargo-longo {
+    font-size: 34px !important;
+}
+
+/* ==========================================================================
+   DATA E LOCAL
+   ========================================================================== */
+
+.certificado-valor[data-campo="cidade"],
+.certificado-valor[data-campo="dia"],
+.certificado-valor[data-campo="mes"],
+.certificado-valor[data-campo="ano"] {
+    font-size: 24px;
+}
+
+/* ==========================================================================
+   REGISTRO
+   ========================================================================== */
+
+.certificado-valor[data-campo="registro"] {
+    justify-content: flex-start;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   ASSINATURA
+   ========================================================================== */
+
+.certificado-valor[data-campo="assinatura"] img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    box-shadow: none;
+    border-radius: 0;
+}
+
+/* ==========================================================================
+   QR CODE
+   ========================================================================== */
+
+.certificado-valor[data-campo="qr"] {
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+    background: #fff;
+}
+
+.certificado-valor[data-campo="qr"] canvas,
+.certificado-valor[data-campo="qr"] img {
+    display: block !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    max-width: none !important;
+
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
+/* ==========================================================================
+   AÇÕES
+   ========================================================================== */
+
+.acoes {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+.acoes[hidden] {
+    display: none !important;
+}
+
+.acoes button {
+    padding: 12px 22px;
+
+    border: none;
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#btnBaixar {
+    color: #fff;
+    background: #0d6efd;
+}
+
+#btnCompartilhar {
+    color: #fff;
+    background: #198754;
+}
+
+#botaoImprimirCertificado {
+    color: #fff;
+    background: #6c757d;
+}
+
+.acoes button:hover {
+    opacity: 0.92;
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+    .pagina-certificado {
+        padding: 16px;
+    }
+
+    .cabecalho h1 {
+        font-size: 24px;
+    }
+
+    .acoes {
+        flex-direction: column;
+    }
+
+    .acoes button {
+        width: 100%;
+    }
 
 }
 
-.certificado-arte{
-
-    position:absolute;
-
-    inset:0;
-
-    width:100%;
-
-    height:100%;
-
-    display:block;
-
-}
-
-.certificado-valor{
-
-    position:absolute;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    text-align:center;
-
-    overflow:hidden;
-
-    white-space:nowrap;
-
-    line-height:1;
-
-    color:#111;
-
-}
-
-/* Nome */
-
-.certificado-valor[data-campo="nome"]{
-
-    font-family:"Times New Roman",serif;
-
-    font-size:58px;
-
-    font-weight:bold;
-
-}
-
-/* Nome muito grande */
-
-.nome-longo{
-
-    font-size:50px !important;
-
-}
-
-.nome-muito-longo{
-
-    font-size:42px !important;
-
-}
-
-/* Cargo */
-
-.certificado-valor[data-campo="cargo"]{
-
-    font-family:"Times New Roman",serif;
-
-    font-size:40px;
-
-    font-style:italic;
-
-}
-
-.cargo-longo{
-
-    font-size:34px !important;
-
-}
-
-/* Cidade */
-
-.certificado-valor[data-campo="cidade"]{
-
-    font-size:24px;
-
-}
-
-/* Dia */
-
-.certificado-valor[data-campo="dia"]{
-
-    font-size:24px;
-
-}
-
-/* Mês */
-
-.certificado-valor[data-campo="mes"]{
-
-    font-size:24px;
-
-}
-
-/* Ano */
-
-.certificado-valor[data-campo="ano"]{
-
-    font-size:24px;
-
-}
-
-/* Registro */
-
-.certificado-valor[data-campo="registro"]{
-
-    justify-content:flex-start;
-
-    font-size:22px;
-
-    font-weight:bold;
-
-}
-
-/* Assinatura */
-
-.certificado-valor[data-campo="assinatura"] img{
-
-    width:100%;
-
-    height:100%;
-
-    object-fit:contain;
-
-}
-
-/* QR */
-
-.certificado-valor[data-campo="qr"]{
-
-    align-items:center;
-
-    justify-content:center;
-
-}
-
-.certificado-valor[data-campo="qr"] img{
-
-    width:100% !important;
-
-    height:100% !important;
-
-}
 /* ==========================================================================
    IMPRESSÃO
    ========================================================================== */
 
-@media print{
+@media print {
 
-    body{
+    @page {
+        size: A4 landscape;
+        margin: 0;
+    }
 
-        background:white;
-
+    body {
+        background: #fff;
     }
 
     .cabecalho,
-    .acoes{
-
-        display:none;
-
+    .mensagem-certificado,
+    .acoes {
+        display: none !important;
     }
 
-    .pagina-certificado{
+    .pagina-certificado {
+        width: 100%;
+        max-width: none;
 
-        max-width:none;
-
-        padding:0;
-
-        margin:0;
-
+        margin: 0;
+        padding: 0;
     }
 
-    .certificado{
-
-        margin:0;
-
-    }
-
-    .certificado-render{
-
-        transform:none !important;
-
+    .certificado {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        overflow: visible;
     }
 
 }
