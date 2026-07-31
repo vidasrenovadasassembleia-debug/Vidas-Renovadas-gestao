@@ -108,7 +108,11 @@ async function iniciarCertificadoDigital() {
 
   await carregarCertificadoDigital(token);
 }
+async function carregarCertificadoDigital(token) {
+  exibirAcoes(false);
+  mostrarMensagem("Carregando certificado...", "info");
 
+  try {
 renderizarCertificado(certificado);
 mostrarMensagem("", "success");
 exibirAcoes(true);
