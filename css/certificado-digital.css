@@ -134,11 +134,12 @@ body {
    NOME
    ========================================================================== */
 
-.certificado-valor[data-campo="nome"] {
+.certificado-valor[data-campo="nome"]{
     font-family: "Times New Roman", serif;
     font-size: 58px;
-    font-weight: bold;
-   color: #b8841d;
+    font-weight: 700;
+    color: #b8841d;
+    letter-spacing: 0.5px;
 }
 
 .nome-longo {
