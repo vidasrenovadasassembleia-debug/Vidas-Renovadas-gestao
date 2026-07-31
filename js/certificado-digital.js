@@ -325,7 +325,7 @@ function gerarQr(dados) {
 
   const tamanho = Math.max(
   96,
-  Math.min(alvo.clientWidth, alvo.clientHeight) - 8
+  Math.min(alvo.clientWidth, alvo.clientHeight) - 16
 );
 
 new QRCode(alvo, {
@@ -334,7 +334,7 @@ new QRCode(alvo, {
   height: tamanho,
   colorDark: "#071f3b",
   colorLight: "#ffffff",
-  correctLevel: QRCode.CorrectLevel.L
+  correctLevel: QRCode.CorrectLevel.M
 });
 }
 
