@@ -108,14 +108,10 @@ async function iniciarCertificadoDigital() {
 
   await carregarCertificadoDigital(token);
 }
+
 async function carregarCertificadoDigital(token) {
-  exibirAcoes(false);
   mostrarMensagem("Carregando certificado...", "info");
 
-  try {
-renderizarCertificado(certificado);
-mostrarMensagem("", "success");
-exibirAcoes(true);
   try {
     const resposta = await obterApiCertificados().enviar(
   "obterCertificadoPublico",
@@ -130,16 +126,7 @@ exibirAcoes(true);
       mostrarMensagem("Certificado não encontrado.", "error");
       return;
     }
-if (!certificado) {
-  exibirAcoes(false);
 
-  mostrarMensagem(
-    "Certificado não encontrado.",
-    "error"
-  );
-
-  return;
-}
     certificado.tipo = normalizarTipoCertificado(certificado.tipo);
 
     ESTADO.tipo = certificado.tipo;
@@ -149,18 +136,13 @@ if (!certificado) {
     renderizarCertificado(certificado);
     mostrarMensagem("", "success");
   } catch (erro) {
-  console.error(
-    "Erro ao carregar certificado digital:",
-    erro
-  );
+    console.error("Erro ao carregar certificado digital:", erro);
 
-  exibirAcoes(false);
-
-  mostrarMensagem(
-    erro?.message ||
-      "Não foi possível carregar o certificado.",
-    "error"
-  );
+    mostrarMensagem(
+      erro?.message || "Não foi possível carregar o certificado.",
+      "error"
+    );
+  }
 }
 
 function normalizarTipoCertificado(tipo) {
@@ -407,254 +389,7 @@ function separarData(valor) {
 function obterCidade(valor) {
   return String(valor || "").split("-")[0].trim();
 }
-function exibirAcoes(exibir) {
-  const acoes = $("#acoesCertificado");
 
-  if (!acoes) {
-    return;
-  }
-
-  acoes.hidden = !exibir;
-}
-
-function obterCertificadoRenderizado() {
-  const render = $(".certificado-render");
-
-  if (!render) {
-    mostrarMensagem(
-      "O certificado ainda não foi carregado.",
-      "error"
-    );
-
-    return null;
-  }
-
-  return render;
-}
-
-function nomeArquivoCertificado(extensao) {
-  const nome = String(
-    ESTADO.certificadoAtual?.nome ||
-      "certificado-digital"
-  )
-    .trim()
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
-  return `${nome || "certificado-digital"}.${extensao}`;
-}
-
-async function gerarImagemCertificado() {
-  const render = obterCertificadoRenderizado();
-
-  if (!render) {
-    return null;
-  }
-
-  if (typeof html2canvas !== "function") {
-    throw new Error(
-      "O recurso de geração da imagem não foi carregado."
-    );
-  }
-
-  const transformAnterior = render.style.transform;
-  const leftAnterior = render.style.left;
-
-  try {
-    render.style.transform = "none";
-    render.style.left = "0";
-
-    return await html2canvas(render, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-      logging: false
-    });
-  } finally {
-    render.style.transform = transformAnterior;
-    render.style.left = leftAnterior;
-
-    atualizarEscalaImediata();
-  }
-}
-
-async function baixarCertificadoPDF() {
-  const botao = $("#btnBaixar");
-
-  try {
-    if (botao) {
-      botao.disabled = true;
-      botao.textContent = "Gerando PDF...";
-    }
-
-    const canvas = await gerarImagemCertificado();
-
-    if (!canvas) {
-      return;
-    }
-
-    const jsPDF = window.jspdf?.jsPDF;
-
-    if (typeof jsPDF !== "function") {
-      throw new Error(
-        "O recurso de geração do PDF não foi carregado."
-      );
-    }
-
-    const pdf = new jsPDF({
-      orientation: "landscape",
-      unit: "mm",
-      format: "a4"
-    });
-
-    const larguraPagina = pdf.internal.pageSize.getWidth();
-    const alturaPagina = pdf.internal.pageSize.getHeight();
-
-    const proporcao = Math.min(
-      larguraPagina / canvas.width,
-      alturaPagina / canvas.height
-    );
-
-    const larguraImagem = canvas.width * proporcao;
-    const alturaImagem = canvas.height * proporcao;
-
-    const posicaoX =
-      (larguraPagina - larguraImagem) / 2;
-
-    const posicaoY =
-      (alturaPagina - alturaImagem) / 2;
-
-    pdf.addImage(
-      canvas.toDataURL("image/png"),
-      "PNG",
-      posicaoX,
-      posicaoY,
-      larguraImagem,
-      alturaImagem
-    );
-
-    pdf.save(nomeArquivoCertificado("pdf"));
-  } catch (erro) {
-    console.error(
-      "Erro ao gerar PDF:",
-      erro
-    );
-
-    mostrarMensagem(
-      erro?.message ||
-        "Não foi possível gerar o PDF.",
-      "error"
-    );
-  } finally {
-    if (botao) {
-      botao.disabled = false;
-      botao.textContent = "Baixar PDF";
-    }
-  }
-}
-
-async function compartilharCertificado() {
-  const botao = $("#btnCompartilhar");
-
-  try {
-    if (botao) {
-      botao.disabled = true;
-      botao.textContent = "Preparando...";
-    }
-
-    const canvas = await gerarImagemCertificado();
-
-    if (!canvas) {
-      return;
-    }
-
-    const blob = await new Promise((resolver) => {
-      canvas.toBlob(
-        resolver,
-        "image/png",
-        1
-      );
-    });
-
-    if (!blob) {
-      throw new Error(
-        "Não foi possível preparar o certificado."
-      );
-    }
-
-    const arquivo = new File(
-      [blob],
-      nomeArquivoCertificado("png"),
-      {
-        type: "image/png"
-      }
-    );
-
-    const dadosCompartilhamento = {
-      title: "Certificado Digital",
-      text:
-        "Certificado digital da Igreja Assembleia de Deus Vidas Renovadas.",
-      url: window.location.href
-    };
-
-    if (
-      navigator.share &&
-      navigator.canShare?.({
-        files: [arquivo]
-      })
-    ) {
-      await navigator.share({
-        ...dadosCompartilhamento,
-        files: [arquivo]
-      });
-
-      return;
-    }
-
-    if (navigator.share) {
-      await navigator.share(
-        dadosCompartilhamento
-      );
-
-      return;
-    }
-
-    await navigator.clipboard.writeText(
-      window.location.href
-    );
-
-    mostrarMensagem(
-      "Link do certificado copiado.",
-      "success"
-    );
-
-    window.setTimeout(() => {
-      mostrarMensagem("", "success");
-    }, 2500);
-  } catch (erro) {
-    if (erro?.name === "AbortError") {
-      return;
-    }
-
-    console.error(
-      "Erro ao compartilhar certificado:",
-      erro
-    );
-
-    mostrarMensagem(
-      "Não foi possível compartilhar o certificado.",
-      "error"
-    );
-  } finally {
-    if (botao) {
-      botao.disabled = false;
-      botao.textContent = "Compartilhar";
-    }
-  }
-}
 function imprimirCertificado() {
   if (!$("#previewCertificado")?.innerHTML.trim()) {
     mostrarMensagem(
