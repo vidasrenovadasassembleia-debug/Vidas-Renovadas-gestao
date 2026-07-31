@@ -68,7 +68,37 @@ const $$ = (seletor, raiz = document) =>
 document.addEventListener("DOMContentLoaded", iniciar);
 
 async function iniciar() {
+async function carregarCertificadoPublico(token) {
 
+    try {
+
+        const api = obterApiCertificados();
+
+        const resposta = await api.chamarApi({
+            acao: "obterCertificadoPublico",
+            token
+        });
+
+        if (!resposta.certificado) {
+            mostrarMensagem("Certificado não encontrado.", "error");
+            return;
+        }
+
+        ESTADO.certificadoAtual = resposta.certificado;
+        ESTADO.tipo = resposta.certificado.tipo;
+
+        renderizarCertificado(resposta.certificado);
+
+    } catch (erro) {
+
+        mostrarMensagem(
+            erro.message || "Erro ao carregar certificado.",
+            "error"
+        );
+
+    }
+
+}
     configurarEscala();
 
     const token = new URLSearchParams(window.location.search).get("token");
