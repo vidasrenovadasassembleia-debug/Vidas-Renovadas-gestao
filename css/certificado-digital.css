@@ -141,8 +141,6 @@ body {
     color: #b8841d;
     text-transform: uppercase;
     letter-spacing: 1px;
-
-    transform: translateX(12px);
 }
 .nome-longo {
     font-size: 58px !important;
