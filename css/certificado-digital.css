@@ -135,22 +135,15 @@ body {
    ========================================================================== */
 
 .certificado-valor[data-campo="nome"] {
-
     font-family: "Times New Roman", serif;
     font-size: 58px;
     font-weight: normal;
     color: #b8841d;
-
     text-transform: uppercase;
     letter-spacing: 1px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 100%;
+    transform: translateX(12px);
 }
-
 .nome-longo {
     font-size: 58px !important;
 }
