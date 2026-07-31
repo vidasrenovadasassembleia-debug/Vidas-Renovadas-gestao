@@ -94,10 +94,12 @@ async function carregarCertificadoDigital(token) {
   mostrarMensagem("Carregando certificado...", "info");
 
   try {
-    const resposta = await obterApiCertificados().chamarApi({
-      acao: "obterCertificadoPublico",
-      token
-    });
+    const resposta = await obterApiCertificados().enviar(
+  "obterCertificadoPublico",
+  {
+    token
+  }
+);
 
     const certificado = resposta?.certificado || null;
 
