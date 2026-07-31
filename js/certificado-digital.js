@@ -130,7 +130,16 @@ exibirAcoes(true);
       mostrarMensagem("Certificado não encontrado.", "error");
       return;
     }
+if (!certificado) {
+  exibirAcoes(false);
 
+  mostrarMensagem(
+    "Certificado não encontrado.",
+    "error"
+  );
+
+  return;
+}
     certificado.tipo = normalizarTipoCertificado(certificado.tipo);
 
     ESTADO.tipo = certificado.tipo;
