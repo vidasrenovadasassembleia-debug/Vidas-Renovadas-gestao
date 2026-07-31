@@ -55,11 +55,11 @@ const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
 document.addEventListener("DOMContentLoaded", iniciarCertificadoDigital);
 
 function obterApiCertificados() {
-  const api = window.VRGAuth || window.Auth;
+  const api = window.VR_API;
 
-  if (!api || typeof api.chamarApi !== "function") {
+  if (!api || typeof api.enviar !== "function") {
     throw new Error(
-      "O módulo de autenticação/API não foi carregado corretamente."
+      "O módulo da API não foi carregado corretamente."
     );
   }
 
