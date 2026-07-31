@@ -736,14 +736,22 @@ function gerarQr(dados) {
     url.searchParams.set("modo", "previa");
   }
 
-  new QRCode(alvo, {
-    text: url.href,
-    width: Math.max(96, alvo.clientWidth - 8),
-    height: Math.max(96, alvo.clientHeight - 8),
-    colorDark: "#071f3b",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.M
-  });
+  const tamanho = Math.max(
+  96,
+  Math.min(
+    alvo.clientWidth,
+    alvo.clientHeight
+  ) - 16
+);
+
+new QRCode(alvo, {
+  text: url.href,
+  width: tamanho,
+  height: tamanho,
+  colorDark: "#071f3b",
+  colorLight: "#ffffff",
+  correctLevel: QRCode.CorrectLevel.M
+});
 }
 
 function separarData(valor) {
