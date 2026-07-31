@@ -334,7 +334,7 @@ new QRCode(alvo, {
   height: tamanho,
   colorDark: "#071f3b",
   colorLight: "#ffffff",
-  correctLevel: QRCode.CorrectLevel.M
+  correctLevel: QRCode.CorrectLevel.L
 });
 }
 
