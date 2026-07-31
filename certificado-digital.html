@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
 
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Certificado Digital</title>
 
-    <link rel="stylesheet" href="css/certificado-digital.css">
-
+    <link
+        rel="stylesheet"
+        href="css/certificado-digital.css?v=2"
+    >
 </head>
 
 <body>
@@ -25,47 +31,42 @@
 
         </header>
 
-        <<section
-  id="mensagemCertificadoDigital"
-  class="mensagem-certificado"
->
-  Carregando certificado...
-</section>
-
-<section
-  id="previewCertificado"
-  class="certificado"
-></section>
+        <section
+            id="mensagemCertificadoDigital"
+            class="mensagem-certificado"
+        >
+            Carregando certificado...
+        </section>
 
         <section
-  id="previewCertificado"
-  class="certificado"
-></section>
+            id="previewCertificado"
+            class="certificado"
+        ></section>
 
-       <footer id="acoesCertificado" class="acoes" hidden>
+        <footer
+            id="acoesCertificado"
+            class="acoes"
+        >
 
             <button
                 id="btnBaixar"
-                type="button">
-
+                type="button"
+            >
                 Baixar PDF
-
             </button>
 
             <button
                 id="btnCompartilhar"
-                type="button">
-
+                type="button"
+            >
                 Compartilhar
-
             </button>
 
             <button
-                id="btnImprimir"
-                type="button">
-
+                id="botaoImprimirCertificado"
+                type="button"
+            >
                 Imprimir
-
             </button>
 
         </footer>
@@ -73,13 +74,14 @@
     </main>
 
     <script src="js/configuracoes.js?v=2"></script>
-<script src="js/api.js?v=2"></script>
+    <script src="js/api.js?v=2"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<script src="js/certificado-digital.js?v=1"></script>
+    <script src="js/certificado-digital.js?v=2"></script>
 
 </body>
+
 </html>
