@@ -109,9 +109,9 @@ async function iniciarCertificadoDigital() {
   await carregarCertificadoDigital(token);
 }
 
-async function carregarCertificadoDigital(token) {
-  mostrarMensagem("Carregando certificado...", "info");
-
+renderizarCertificado(certificado);
+mostrarMensagem("", "success");
+exibirAcoes(true);
   try {
     const resposta = await obterApiCertificados().enviar(
   "obterCertificadoPublico",
