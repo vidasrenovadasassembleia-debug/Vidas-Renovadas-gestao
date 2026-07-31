@@ -211,8 +211,17 @@ body {
     background: #fff;
 }
 
-.certificado-valor[data-campo="qr"] canvas,
-.certificado-valor[data-campo="qr"] img {
+.certificado-valor[data-campo="qr"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 8px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.certificado-valor[data-campo="qr"] canvas {
     display: block !important;
 
     width: auto !important;
@@ -223,6 +232,10 @@ body {
 
     box-shadow: none !important;
     border-radius: 0 !important;
+}
+
+.certificado-valor[data-campo="qr"] img {
+    display: none !important;
 }
 
 /* ==========================================================================
