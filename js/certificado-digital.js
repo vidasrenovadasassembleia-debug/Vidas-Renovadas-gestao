@@ -54,7 +54,7 @@ const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
 
 document.addEventListener("DOMContentLoaded", iniciarCertificadoDigital);
 
-ffunction obterApiCertificados() {
+function obterApiCertificados() {
   const api = window.VR_API;
 
   if (!api || typeof api.enviar !== "function") {
