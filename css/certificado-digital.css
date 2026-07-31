@@ -296,7 +296,7 @@ body {
 }
 
 /* ==========================================================================
-   IMPRESSÃO
+   IMPRESSÃO — A4 HORIZONTAL EM PÁGINA INTEIRA
    ========================================================================== */
 
 @media print {
@@ -306,8 +306,14 @@ body {
         margin: 0;
     }
 
+    html,
     body {
+        width: 297mm;
+        height: 210mm;
+        margin: 0;
+        padding: 0;
         background: #fff;
+        overflow: hidden;
     }
 
     .cabecalho,
@@ -317,18 +323,38 @@ body {
     }
 
     .pagina-certificado {
-        width: 100%;
+        width: 297mm;
+        height: 210mm;
         max-width: none;
-
         margin: 0;
         padding: 0;
     }
 
     .certificado {
-        width: 100%;
+        position: relative;
+        width: 297mm;
+        height: 210mm;
         max-width: none;
         margin: 0;
-        overflow: visible;
+        padding: 0;
+        overflow: hidden;
+        aspect-ratio: auto;
     }
 
+    .certificado-render {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        width: 1492px;
+        height: 1055px;
+
+        transform-origin: top left;
+        transform: scale(0.752) !important;
+    }
+
+    .certificado-arte {
+        box-shadow: none;
+        border-radius: 0;
+    }
 }
