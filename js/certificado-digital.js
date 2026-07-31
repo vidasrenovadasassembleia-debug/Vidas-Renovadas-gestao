@@ -15,7 +15,7 @@ const MODELOS_CERTIFICADO = Object.freeze({
     aba: "batismo",
     imagem: "assets/certificados/certificado-batismo-base.png",
     campos: {
-      nome: { top: 394, left: 235, width: 900, height: 86 },
+      nome: { top: 394, left: 236, width: 900, height: 86 },
       cidade: { top: 773, left: 410, width: 327, height: 32 },
       dia: { top: 773, left: 786, width: 58, height: 32 },
       mes: { top: 773, left: 880, width: 195, height: 32 },
