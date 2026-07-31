@@ -140,13 +140,18 @@ exibirAcoes(true);
     renderizarCertificado(certificado);
     mostrarMensagem("", "success");
   } catch (erro) {
-    console.error("Erro ao carregar certificado digital:", erro);
+  console.error(
+    "Erro ao carregar certificado digital:",
+    erro
+  );
 
-    mostrarMensagem(
-      erro?.message || "Não foi possível carregar o certificado.",
-      "error"
-    );
-  }
+  exibirAcoes(false);
+
+  mostrarMensagem(
+    erro?.message ||
+      "Não foi possível carregar o certificado.",
+    "error"
+  );
 }
 
 function normalizarTipoCertificado(tipo) {
