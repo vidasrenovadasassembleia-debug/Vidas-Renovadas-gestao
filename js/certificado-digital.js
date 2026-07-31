@@ -67,22 +67,42 @@ function obterApiCertificados() {
 }
 async function iniciarCertificadoDigital() {
   configurarEscala();
+  exibirAcoes(false);
+
+  $("#btnBaixar")?.addEventListener(
+    "click",
+    baixarCertificadoPDF
+  );
+
+  $("#btnCompartilhar")?.addEventListener(
+    "click",
+    compartilharCertificado
+  );
 
   $("#botaoImprimirCertificado")?.addEventListener(
     "click",
     imprimirCertificado
   );
 
-  window.addEventListener("afterprint", atualizarEscalaImediata);
+  window.addEventListener(
+    "afterprint",
+    atualizarEscalaImediata
+  );
 
-  const parametros = new URLSearchParams(window.location.search);
-  const token = String(parametros.get("token") || "").trim();
+  const parametros = new URLSearchParams(
+    window.location.search
+  );
+
+  const token = String(
+    parametros.get("token") || ""
+  ).trim();
 
   if (!token) {
     mostrarMensagem(
       "O endereço deste certificado é inválido.",
       "error"
     );
+
     return;
   }
 
