@@ -15,7 +15,7 @@
 
     API: Object.freeze({
       URL: "https://script.google.com/macros/s/AKfycbzwbSdAn5cyek9DrBy4SVGEZKI5odv6IW5ayjBLEfW1S1JL6dbTPGYqPU23nFM9rTrM/exec",
-      TIMEOUT_MS: 30000
+      TIMEOUT_MS: 90000
     }),
 
     GOOGLE: Object.freeze({
