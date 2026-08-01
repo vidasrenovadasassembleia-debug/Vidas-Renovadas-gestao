@@ -534,10 +534,16 @@ a {
 
 .qrcode {
   display: grid;
-  width: 100%;
-  aspect-ratio: 1;
   place-items: center;
+
+  width: 174px;
+  height: 174px;
+
+  padding: 7px;
+  box-sizing: border-box;
+
   overflow: hidden;
+
   border: 5px solid var(--branco);
   border-radius: 7px;
   background: var(--branco);
@@ -545,9 +551,13 @@ a {
 
 .qrcode img,
 .qrcode canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
+  display: block !important;
+
+  width: 150px !important;
+  height: 150px !important;
+
+  max-width: none !important;
+  max-height: none !important;
 }
 
 .versiculo-cartao {
