@@ -58,12 +58,13 @@
     }),
 
     PERFIS_ADMINISTRATIVOS: Object.freeze([
-      "administradora",
-      "administrador",
-      "admin",
-      "superadministradora",
-      "superadministrador"
-    ])
+  "administradora",
+  "administrador",
+  "admin",
+  "superadministradora",
+  "superadministrador",
+  "pastor"
+])
   });
 
   window.VR_CONFIG = VR_CONFIG;
