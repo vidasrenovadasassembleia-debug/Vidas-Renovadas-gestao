@@ -549,7 +549,6 @@ a {
   background: var(--branco);
 }
 
-.qrcode img,
 .qrcode canvas {
   display: block !important;
 
@@ -558,8 +557,10 @@ a {
 
   max-width: none !important;
   max-height: none !important;
+}
 
-  object-fit: contain;
+.qrcode img {
+  display: none !important;
 }
 
 .versiculo-cartao {
