@@ -573,7 +573,7 @@ async function emitirCertificado(evento, tipo) {
     );
 
     await recarregarHistorico();
-    setTimeout(imprimirCertificado, 350);
+    setTimeout(imprimirCertificado, 1000);
   } catch (erro) {
     mostrarMensagem(
       erro?.message || "Não foi possível registrar o certificado.",
