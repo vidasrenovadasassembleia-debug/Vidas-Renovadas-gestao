@@ -6,7 +6,7 @@
 
 (function (window, document) {
   "use strict";
-
+console.log("[HISTÓRICO] membro-historico.js carregado");
   function texto(valor) {
     return String(valor ?? "").trim();
   }
