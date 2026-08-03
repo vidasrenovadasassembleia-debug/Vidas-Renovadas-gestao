@@ -603,6 +603,8 @@ function atualizarPreview() {
 }
 
 function renderizarCertificado(dados) {
+   console.log("[CERTIFICADO] Dados recebidos:", dados);
+console.log("[CERTIFICADO] Número recebido:", dados?.numero);
   const modelo = MODELOS_CERTIFICADO[dados.tipo] || modeloAtual();
   const alvo = $("#previewCertificado");
 
