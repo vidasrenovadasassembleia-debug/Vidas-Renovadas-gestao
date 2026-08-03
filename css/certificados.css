@@ -602,3 +602,13 @@ body.modo-calibracao .certificado-valor[data-campo="qr"]{
     font-size: 40px;
     transform: translateY(3px);
 }
+/* Histórico ocupando toda a largura disponível */
+
+.certificados-grid.modo-historico {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.certificados-grid.modo-historico .certificados-operacao {
+  width: 100%;
+  max-width: none;
+}
