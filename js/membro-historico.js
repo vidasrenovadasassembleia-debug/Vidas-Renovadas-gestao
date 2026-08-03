@@ -169,7 +169,9 @@ function formatarValorHistorico(valor) {
 
   return resultado;
 }
-
+function valorExibicao(valor) {
+  return formatarValorHistorico(valor);
+}
 function obterPrioridadeCampo(alteracao) {
   const campo = texto(
     alteracao?.rotulo ||
