@@ -800,11 +800,64 @@ function obterCidade(valor) {
   return String(valor || "").split("-")[0].trim();
 }
 
-function imprimirCertificado() {
-  if (!$("#previewCertificado")?.innerHTML.trim()) {
+fuasync function imprimirCertificado() {
+  const preview = $("#previewCertificado");
+
+  if (!preview?.innerHTML.trim()) {
     mostrarMensagem("Gere a prévia antes de imprimir.", "error");
     return;
   }
+
+  const arte = $(".certificado-arte", preview);
+
+  if (arte && (!arte.complete || arte.naturalWidth === 0)) {
+    mostrarMensagem(
+      "Preparando a arte do certificado para impressão...",
+      "info"
+    );
+
+    await new Promise((resolve, reject) => {
+      const tempoLimite = setTimeout(() => {
+        reject(
+          new Error(
+            "A arte do certificado demorou muito para carregar."
+          )
+        );
+      }, 10000);
+
+      arte.addEventListener(
+        "load",
+        () => {
+          clearTimeout(tempoLimite);
+          resolve();
+        },
+        { once: true }
+      );
+
+      arte.addEventListener(
+        "error",
+        () => {
+          clearTimeout(tempoLimite);
+          reject(
+            new Error(
+              "Não foi possível carregar a arte do certificado."
+            )
+          );
+        },
+        { once: true }
+      );
+    });
+  }
+
+  if (document.fonts?.ready) {
+    await document.fonts.ready;
+  }
+
+  await new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(resolve);
+    });
+  });
 
   window.print();
 }
