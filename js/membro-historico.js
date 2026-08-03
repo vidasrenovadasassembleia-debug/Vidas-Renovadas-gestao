@@ -123,10 +123,99 @@ console.log("[HISTÓRICO] membro-historico.js carregado");
     return {};
   }
 
-  function valorExibicao(valor) {
-    const resultado = texto(valor);
-    return resultado || "Não informado";
+  function valorSemInformacao(valor) {
+  const resultado = texto(valor).toUpperCase();
+
+  return (
+    !resultado ||
+    resultado === "NÃO INFORMADO" ||
+    resultado === "NAO INFORMADO" ||
+    resultado === "NULL" ||
+    resultado === "UNDEFINED"
+  );
+}
+
+function valoresIguais(anterior, novo) {
+  return (
+    texto(anterior).toLocaleLowerCase("pt-BR") ===
+    texto(novo).toLocaleLowerCase("pt-BR")
+  );
+}
+
+function formatarValorHistorico(valor) {
+  const resultado = texto(valor);
+
+  if (!resultado) {
+    return "";
   }
+
+  /*
+   * Converte datas no formato AAAA-MM-DD para DD/MM/AAAA.
+   * Não altera números, telefones ou textos comuns.
+   */
+  const dataSimples = resultado.match(
+    /^(\d{4})-(\d{2})-(\d{2})$/
+  );
+
+  if (dataSimples) {
+    return (
+      dataSimples[3] +
+      "/" +
+      dataSimples[2] +
+      "/" +
+      dataSimples[1]
+    );
+  }
+
+  return resultado;
+}
+
+function obterPrioridadeCampo(alteracao) {
+  const campo = texto(
+    alteracao?.rotulo ||
+    alteracao?.campo
+  )
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase();
+
+  const prioridades = {
+    "NOME": 1,
+    "NOME COMPLETO": 1,
+
+    "SITUACAO": 2,
+
+    "CARGO": 3,
+
+    "CONGREGACAO": 4,
+
+    "DATA DE ADMISSAO": 5,
+
+    "BATISMO": 6,
+    "DATA DE BATISMO": 6,
+    "BATISMO NAS AGUAS": 6,
+
+    "CONSAGRACAO": 7,
+    "DATA DE CONSAGRACAO": 7,
+
+    "ESTADO CIVIL": 8,
+
+    "CONJUGE": 9,
+
+    "TELEFONE": 10,
+
+    "WHATSAPP": 11,
+
+    "E-MAIL": 12,
+    "EMAIL": 12,
+
+    "ENDERECO": 13,
+
+    "OBSERVACOES": 14
+  };
+
+  return prioridades[campo] || 100;
+}
 
   function montarComparacao(rotulo, anterior, novo) {
     return `
