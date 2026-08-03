@@ -26,7 +26,7 @@ const MODELOS_CERTIFICADO = Object.freeze({
      mes:    { top: 773, left: 880, width: 195, height: 32 },
      ano:    { top: 773, left: 1110, width: 84, height: 32 },
       assinatura: { top: 803, left: 490, width: 500, height: 96 },
-      registro: { top: 930, left: 325, width: 240, height: 34 },
+      registro: { top: 955, left: 320, width: 240, height: 28 },
       qr: { top: 622, left: 1273, width: 143, height: 147 }
     }
   },
@@ -46,7 +46,7 @@ const MODELOS_CERTIFICADO = Object.freeze({
       mes:    { top: 830, left: 887, width: 133, height: 32 },
       ano:    { top: 830, left: 1058, width: 78, height: 32 },
       assinatura: { top: 884, left: 505, width: 430, height: 85 },
-      registro: { top: 930, left: 325, width: 240, height: 34 },
+      registro: { top: 982, left: 320, width: 205, height: 28 },
       qr: { top: 850, left: 1208, width: 150, height: 150 }
     }
   }
