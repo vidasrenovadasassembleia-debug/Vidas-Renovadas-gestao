@@ -882,7 +882,7 @@ function reimprimir(item) {
 
   ESTADO.certificadoAtual = dados;
   renderizarCertificado(dados);
-  setTimeout(imprimirCertificado, 350);
+  setTimeout(imprimirCertificado, 1000);
 }
 
 function nomeTipo(tipo) {
