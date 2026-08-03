@@ -326,7 +326,14 @@ function abrirAba(aba) {
   if (preview) {
     preview.hidden = tipo === CERTIFICADOS.HISTORICO;
   }
+const grade = $(".certificados-grid");
 
+if (grade) {
+  grade.classList.toggle(
+    "modo-historico",
+    tipo === CERTIFICADOS.HISTORICO
+  );
+}
   if (tipo === CERTIFICADOS.HISTORICO) {
     renderizarHistorico();
     return;
