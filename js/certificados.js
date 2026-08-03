@@ -95,10 +95,15 @@ async function iniciarCertificados() {
   }
 
   configurarEventos();
-  configurarEscala();
-  await carregarDados();
-  abrirAba("batismo");
-}
+configurarEscala();
+
+/*
+ * Abre a aba inicial antes do carregamento assíncrono.
+ * Assim, carregarDados() não desfaz uma escolha feita pelo usuário.
+ */
+abrirAba("batismo");
+
+await carregarDados();
 
 function configurarEventos() {
   $$(".aba-certificado").forEach((botao) => {
