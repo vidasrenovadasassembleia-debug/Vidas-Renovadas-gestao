@@ -940,8 +940,12 @@ function reimprimir(item) {
 
   ESTADO.certificadoAtual = dados;
   renderizarCertificado(dados);
-  setTimeout(imprimirCertificado, 1000);
-}
+  imprimirCertificado().catch((erro) => {
+  mostrarMensagem(
+    erro?.message || "Não foi possível preparar a impressão.",
+    "error"
+  );
+});
 
 function nomeTipo(tipo) {
   return String(tipo || "").toUpperCase() === CERTIFICADOS.CONSAGRACAO
