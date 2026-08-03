@@ -104,7 +104,7 @@ configurarEscala();
 abrirAba("batismo");
 
 await carregarDados();
-
+}
 function configurarEventos() {
   $$(".aba-certificado").forEach((botao) => {
     botao.addEventListener("click", () => abrirAba(botao.dataset.aba));
