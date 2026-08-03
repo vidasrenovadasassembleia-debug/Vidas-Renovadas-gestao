@@ -242,24 +242,102 @@ function obterPrioridadeCampo(alteracao) {
   }
 
   function montarDetalhes(evento) {
-    const dados = obterDadosEvento(evento);
+  const dados = obterDadosEvento(evento);
 
-    if (
-      Array.isArray(dados.alteracoes) &&
-      dados.alteracoes.length
-    ) {
-      return `
-        <div class="historico-alteracoes">
-          ${dados.alteracoes
-            .map(function (alteracao) {
-              return montarComparacao(
-                alteracao.rotulo ||
-                  alteracao.campo ||
-                  "Informação",
-                alteracao.anterior,
+  if (
+    Array.isArray(dados.alteracoes) &&
+    dados.alteracoes.length
+  ) {
+    const alteracoesValidas = dados.alteracoes
+      .filter(function (alteracao) {
+        const anterior = alteracao?.anterior;
+        const novo = alteracao?.novo;
+
+        /*
+         * A alteração só aparece quando:
+         * 1. o valor anterior contém informação;
+         * 2. o valor novo contém informação;
+         * 3. os dois valores são realmente diferentes.
+         */
+        return (
+          !valorSemInformacao(anterior) &&
+          !valorSemInformacao(novo) &&
+          !valoresIguais(anterior, novo)
+        );
+      })
+      .sort(function (a, b) {
+        return (
+          obterPrioridadeCampo(a) -
+          obterPrioridadeCampo(b)
+        );
+      });
+
+    if (!alteracoesValidas.length) {
+      return "";
+    }
+
+    return `
+      <div class="historico-alteracoes">
+        ${alteracoesValidas
+          .map(function (alteracao) {
+            return montarComparacao(
+              alteracao.rotulo ||
+                alteracao.campo ||
+                "Informação",
+
+              formatarValorHistorico(
+                alteracao.anterior
+              ),
+
+              formatarValorHistorico(
                 alteracao.novo
-              );
-            })
+              )
+            );
+          })
+          .join("")}
+      </div>
+    `;
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      dados,
+      "anterior"
+    ) ||
+    Object.prototype.hasOwnProperty.call(
+      dados,
+      "novo"
+    )
+  ) {
+    if (
+      valorSemInformacao(dados.anterior) ||
+      valorSemInformacao(dados.novo) ||
+      valoresIguais(dados.anterior, dados.novo)
+    ) {
+      return "";
+    }
+
+    return `
+      <div class="historico-alteracoes">
+        ${montarComparacao(
+          dados.rotulo ||
+            dados.campo ||
+            "Informação",
+
+          formatarValorHistorico(
+            dados.anterior
+          ),
+
+          formatarValorHistorico(
+            dados.novo
+          )
+        )}
+      </div>
+    `;
+  }
+
+  return "";
+}
             .join("")}
         </div>
       `;
