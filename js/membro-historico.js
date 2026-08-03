@@ -337,7 +337,67 @@ function obterPrioridadeCampo(alteracao) {
       </div>
     `;
   }
+/* ==========================================================
+   EVENTOS MINISTERIAIS
+========================================================== */
 
+if (texto(evento?.tipo).toUpperCase() === "BATISMO") {
+
+  const detalhes = [];
+
+  if (!valorSemInformacao(dados.dataBatismo)) {
+    detalhes.push(`
+      <div class="historico-alteracao">
+        <strong class="historico-alteracao-titulo">
+          Data do batismo
+        </strong>
+        <div class="historico-comparacao">
+          <div class="historico-valor historico-valor-novo">
+            <strong>${escaparHtml(formatarValorHistorico(dados.dataBatismo))}</strong>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+
+  if (!valorSemInformacao(dados.local)) {
+    detalhes.push(`
+      <div class="historico-alteracao">
+        <strong class="historico-alteracao-titulo">
+          Local
+        </strong>
+        <div class="historico-comparacao">
+          <div class="historico-valor historico-valor-novo">
+            <strong>${escaparHtml(dados.local)}</strong>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+
+  if (!valorSemInformacao(dados.certificado)) {
+    detalhes.push(`
+      <div class="historico-alteracao">
+        <strong class="historico-alteracao-titulo">
+          Certificado
+        </strong>
+        <div class="historico-comparacao">
+          <div class="historico-valor historico-valor-novo">
+            <strong>${escaparHtml(dados.certificado)}</strong>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+
+  if (detalhes.length) {
+    return `
+      <div class="historico-alteracoes">
+        ${detalhes.join("")}
+      </div>
+    `;
+  }
+}
   return "";
 }
   function criarEvento(evento) {
