@@ -398,6 +398,100 @@ if (texto(evento?.tipo).toUpperCase() === "BATISMO") {
     `;
   }
 }
+    if (texto(evento?.tipo).toUpperCase() === "CONSAGRACAO") {
+
+  const detalhes = [];
+
+  if (!valorSemInformacao(dados.dataConsagracao)) {
+    detalhes.push(`
+      <div class="historico-alteracao">
+        <strong class="historico-alteracao-titulo">
+          Data da consagração
+        </strong>
+
+        <div class="historico-comparacao">
+          <div class="historico-valor historico-valor-novo">
+            <strong>${escaparHtml(
+              formatarValorHistorico(dados.dataConsagracao)
+            )}</strong>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+
+  if (!valorSemInformacao(dados.cargo)) {
+    detalhes.push(`
+      <div class="historico-alteracao">
+        <strong class="historico-alteracao-titulo">
+          Cargo
+        </strong>
+
+        <div class="historico-comparacao">
+          <div class="historico-valor historico-valor-novo">
+            <strong>${escaparHtml(dados.cargo)}</strong>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+
+  if (!valorSemInformacao(dados.local)) {
+    detalhes.push(`
+      <div class="historico-alteracao">
+        <strong class="historico-alteracao-titulo">
+          Local
+        </strong>
+
+        <div class="historico-comparacao">
+          <div class="historico-valor historico-valor-novo">
+            <strong>${escaparHtml(dados.local)}</strong>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+
+  if (!valorSemInformacao(dados.certificado)) {
+    detalhes.push(`
+      <div class="historico-alteracao">
+        <strong class="historico-alteracao-titulo">
+          Certificado
+        </strong>
+
+        <div class="historico-comparacao">
+          <div class="historico-valor historico-valor-novo">
+            <strong>${escaparHtml(dados.certificado)}</strong>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+
+  if (!valorSemInformacao(dados.pastor)) {
+    detalhes.push(`
+      <div class="historico-alteracao">
+        <strong class="historico-alteracao-titulo">
+          Pastor Presidente
+        </strong>
+
+        <div class="historico-comparacao">
+          <div class="historico-valor historico-valor-novo">
+            <strong>${escaparHtml(dados.pastor)}</strong>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+
+  if (detalhes.length) {
+    return `
+      <div class="historico-alteracoes">
+        ${detalhes.join("")}
+      </div>
+    `;
+  }
+}
   return "";
 }
   function criarEvento(evento) {
