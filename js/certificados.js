@@ -946,7 +946,7 @@ function reimprimir(item) {
     "error"
   );
 });
-
+}
 function nomeTipo(tipo) {
   return String(tipo || "").toUpperCase() === CERTIFICADOS.CONSAGRACAO
     ? "Consagração"
