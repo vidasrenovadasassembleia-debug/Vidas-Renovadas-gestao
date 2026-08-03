@@ -800,7 +800,7 @@ function obterCidade(valor) {
   return String(valor || "").split("-")[0].trim();
 }
 
-fuasync function imprimirCertificado() {
+async function imprimirCertificado() {
   const preview = $("#previewCertificado");
 
   if (!preview?.innerHTML.trim()) {
