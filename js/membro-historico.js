@@ -338,29 +338,6 @@ function obterPrioridadeCampo(alteracao) {
 
   return "";
 }
-            .join("")}
-        </div>
-      `;
-    }
-
-    if (
-      Object.prototype.hasOwnProperty.call(dados, "anterior") ||
-      Object.prototype.hasOwnProperty.call(dados, "novo")
-    ) {
-      return `
-        <div class="historico-alteracoes">
-          ${montarComparacao(
-            dados.rotulo || dados.campo || "Informação",
-            dados.anterior,
-            dados.novo
-          )}
-        </div>
-      `;
-    }
-
-    return "";
-  }
-
   function criarEvento(evento) {
     const tipo = texto(evento?.tipo).toUpperCase();
     const titulo =
