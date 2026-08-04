@@ -740,7 +740,14 @@
   window.encerrarSessao = logout;
   window.usuarioAdministrador = usuarioAdministrador;
   window.chamarApi = chamarApi;
-
+document.addEventListener(
+  "vrg:layout-pronto",
+  function () {
+    if (typeof aplicarIdentidadeUsuario === "function") {
+      aplicarIdentidadeUsuario();
+    }
+  }
+);
   if (document.readyState === "loading") {
     document.addEventListener(
       "DOMContentLoaded",
