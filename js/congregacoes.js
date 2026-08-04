@@ -154,13 +154,21 @@ const Congregacoes = (() => {
 
         <td class="congregacoes-codigo">${item.codigo}</td>
 
-        <td class="congregacoes-nome">${item.nome}</td>
+       <td class="congregacoes-nome">
+  ${item.nome}
+</td>
 
-        <td>${item.pastorResponsavel}</td>
+<td>
+  ${item.tipo || "-"}
+</td>
 
-        <td>${item.telefone || "-"}</td>
+<td>
+  ${item.responsavel || item.pastorResponsavel || "-"}
+</td>
 
-        <td>
+<td>
+  ${item.telefone || "-"}
+</td>
           <span class="congregacoes-quantidade">--</span>
         </td>
 
