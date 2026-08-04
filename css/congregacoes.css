@@ -320,3 +320,141 @@
     padding: 12px 10px;
   }
 }
+/* ==========================================================================
+   FORMULÁRIO DE CONGREGAÇÃO
+   Novo, Editar e Visualizar
+   ========================================================================== */
+
+.formulario-padrao {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formulario-padrao .painel {
+  overflow: hidden;
+}
+
+.formulario-padrao .painel-corpo {
+  padding: 20px;
+}
+
+.formulario-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.formulario-padrao .campo {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.formulario-padrao .campo label {
+  color: var(--azul-900, #071f3b);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.formulario-padrao .campo input,
+.formulario-padrao .campo select,
+.formulario-padrao .campo textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--borda-sistema, #d9e2ec);
+  border-radius: 10px;
+  background: var(--superficie, #ffffff);
+  color: var(--texto-principal, #14213d);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.formulario-padrao .campo textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.formulario-padrao .campo input::placeholder,
+.formulario-padrao .campo textarea::placeholder {
+  color: #8a97aa;
+}
+
+.formulario-padrao .campo input:focus,
+.formulario-padrao .campo select:focus,
+.formulario-padrao .campo textarea:focus {
+  border-color: var(--dourado-500, #d7a625);
+  box-shadow: 0 0 0 3px rgba(215, 166, 37, 0.14);
+}
+
+.formulario-padrao .campo input[readonly] {
+  background: var(--superficie-suave, #f4f7fb);
+  color: var(--texto-suave, #607089);
+  cursor: default;
+}
+
+.formulario-padrao .campo input:disabled,
+.formulario-padrao .campo select:disabled,
+.formulario-padrao .campo textarea:disabled {
+  border-color: var(--borda-sistema, #d9e2ec);
+  background: #f5f7fa;
+  color: var(--texto-principal, #14213d);
+  opacity: 1;
+  cursor: default;
+  -webkit-text-fill-color: var(--texto-principal, #14213d);
+}
+
+.formulario-padrao .painel:nth-of-type(4) .painel-corpo {
+  display: grid;
+  grid-template-columns: minmax(200px, 0.4fr) minmax(320px, 1.6fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.formulario-acoes {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+.formulario-acoes .btn {
+  min-height: 42px;
+  padding: 10px 18px;
+}
+
+@media (max-width: 900px) {
+  .formulario-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .formulario-padrao .painel:nth-of-type(4) .painel-corpo {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .formulario-padrao .painel-corpo {
+    padding: 16px;
+  }
+
+  .formulario-acoes {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .formulario-acoes .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
