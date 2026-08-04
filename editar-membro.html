@@ -691,17 +691,26 @@ data-subtitulo="Atualização completa da ficha ministerial">
 <div class="sistema-conteudo">
 <form class="edicao-formulario" id="formEditarMembro" novalidate=""><input id="ID" name="ID" type="hidden"/>
 <input id="FOTO_URL" name="FOTO_URL" type="hidden"/>
-<section class="visualizar-apresentacao">
-<div>
-<p class="visualizar-etiqueta">Secretaria</p>
-<h2 class="visualizar-titulo">Editar ficha digital</h2>
-<p class="visualizar-descricao">Atualize os mesmos dados disponíveis no cadastro e salve as alterações.</p>
+<div class="visualizar-acoes visualizar-acoes-topo">
+
+  <a
+    class="ficha-botao"
+    href="membros.html"
+    id="botaoCancelarEdicao"
+  >
+    ← Cancelar
+  </a>
+
+  <button
+    class="ficha-botao ficha-botao-primario"
+    data-permissao="membros-editar"
+    id="botaoSalvarEdicao"
+    type="submit"
+  >
+    ✓ Salvar alterações
+  </button>
+
 </div>
-<div class="visualizar-acoes">
-<a class="ficha-botao" href="membros.html" id="botaoCancelarEdicao">← Cancelar</a>
-<button class="ficha-botao ficha-botao-primario" data-permissao="membros-editar" id="botaoSalvarEdicao" type="submit">✓ Salvar alterações</button>
-</div>
-</section>
 <div aria-live="polite" class="ficha-aviso ativo" id="avisoFicha" role="status">Carregando os dados do membro...</div>
 <section aria-label="Resumo do novo membro" class="membro-resumo">
 <div>
