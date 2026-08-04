@@ -209,7 +209,7 @@ const Congregacoes = (() => {
 
   function editar(codigo) {
     window.location.href =
-      `editar-congregacao.html?codigo=${encodeURIComponent(codigo)}`;
+  `congregacao.html?modo=editar&codigo=${encodeURIComponent(codigo)}`;
   }
 
   return {
