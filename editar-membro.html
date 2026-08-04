@@ -676,7 +676,35 @@
         grid-template-columns: 1fr;
       }
     }
+/* ==========================================================================
+   AJUSTE PARA O LAYOUT COMPARTILHADO
+   ========================================================================== */
 
+.sistema-conteudo {
+  width: 100%;
+  max-width: none;
+}
+
+.visualizar-apresentacao,
+.ficha-aviso,
+.membro-resumo,
+.ficha-grid,
+.edicao-acoes-rodape,
+.visualizar-rodape {
+  width: 100%;
+  max-width: none;
+}
+
+.edicao-formulario {
+  width: 100%;
+}
+
+@media (min-width: 1200px) {
+  .sistema-conteudo {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+}
   </style>
 </head>
 <body
