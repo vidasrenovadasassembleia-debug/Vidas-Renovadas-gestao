@@ -688,7 +688,24 @@
   box-sizing: border-box;
 }
 
-.edicao-formulario,
+/*
+ * Remove a largura máxima e a centralização aplicadas
+ * aos elementos internos da área de conteúdo.
+ */
+.sistema-main > .sistema-conteudo > * {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box;
+}
+
+.edicao-formulario {
+  display: block;
+  width: 100% !important;
+  max-width: none !important;
+}
+
 .visualizar-apresentacao,
 .ficha-aviso,
 .membro-resumo,
@@ -697,8 +714,27 @@
 .visualizar-rodape {
   width: 100% !important;
   max-width: none !important;
-  margin-left: 0;
-  margin-right: 0;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box;
+}
+
+@media (max-width: 760px) {
+  .sistema-main > .sistema-conteudo {
+    padding: 18px !important;
+  }
+}
+
+.visualizar-apresentacao,
+.ficha-aviso,
+.membro-resumo,
+.ficha-grid,
+.edicao-acoes-rodape,
+.visualizar-rodape {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
   box-sizing: border-box;
 }
 
