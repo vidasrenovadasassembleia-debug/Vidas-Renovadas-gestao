@@ -13,11 +13,8 @@ const CongregacaoFormulario = (() => {
 
   const params = new URLSearchParams(window.location.search);
   const codigo = params.get("codigo");
-  const modo = window.location.pathname.includes("visualizar")
-    ? "visualizar"
-    : window.location.pathname.includes("editar")
-      ? "editar"
-      : "novo";
+  const modo =
+  params.get("modo") || "novo";
 
   async function iniciar() {
     configurarEventos();
