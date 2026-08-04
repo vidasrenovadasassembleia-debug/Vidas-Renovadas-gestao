@@ -677,32 +677,34 @@
       }
     }
 /* ==========================================================================
-   AJUSTE PARA O LAYOUT COMPARTILHADO
+   AJUSTE DO FORMULÁRIO PARA O LAYOUT COMPARTILHADO
    ========================================================================== */
 
-.sistema-conteudo {
-  width: 100%;
-  max-width: none;
+.sistema-main > .sistema-conteudo {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 28px !important;
+  box-sizing: border-box;
 }
 
+.edicao-formulario,
 .visualizar-apresentacao,
 .ficha-aviso,
 .membro-resumo,
 .ficha-grid,
 .edicao-acoes-rodape,
 .visualizar-rodape {
-  width: 100%;
-  max-width: none;
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0;
+  margin-right: 0;
+  box-sizing: border-box;
 }
 
-.edicao-formulario {
-  width: 100%;
-}
-
-@media (min-width: 1200px) {
-  .sistema-conteudo {
-    padding-left: 28px;
-    padding-right: 28px;
+@media (max-width: 760px) {
+  .sistema-main > .sistema-conteudo {
+    padding: 18px !important;
   }
 }
   </style>
