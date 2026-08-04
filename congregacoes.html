@@ -53,7 +53,200 @@
 
       <div class="sistema-conteudo">
 
-        <!-- Conteúdo do módulo Congregações será inserido aqui. -->
+        <section class="congregacoes-cabecalho">
+
+  <div>
+    <p class="pagina-selo">ADMINISTRAÇÃO</p>
+
+    <h2 class="pagina-titulo">
+      Gestão de congregações
+    </h2>
+
+    <p class="pagina-descricao">
+      Cadastre, consulte e gerencie as congregações da igreja.
+    </p>
+  </div>
+
+</section>
+
+<div
+  id="mensagemCongregacoes"
+  class="alerta"
+  role="status"
+  aria-live="polite"
+  hidden
+></div>
+
+<section
+  class="painel congregacoes-filtros-painel"
+  aria-labelledby="tituloFiltrosCongregacoes"
+>
+
+  <div class="painel-cabecalho">
+
+    <div>
+      <h3
+        id="tituloFiltrosCongregacoes"
+        class="painel-titulo"
+      >
+        Pesquisa e filtros
+      </h3>
+
+      <p class="painel-subtitulo">
+        Localize congregações pelo código, nome ou responsável.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="painel-corpo">
+
+    <div class="congregacoes-filtros">
+
+      <div class="congregacoes-filtro congregacoes-filtro-pesquisa">
+
+        <label for="pesquisaCongregacoes">
+          Pesquisar
+        </label>
+
+        <input
+          id="pesquisaCongregacoes"
+          type="search"
+          autocomplete="off"
+          placeholder="Código, nome ou pastor responsável"
+        >
+
+      </div>
+
+      <div class="congregacoes-filtro">
+
+        <label for="filtroSituacaoCongregacoes">
+          Situação
+        </label>
+
+        <select id="filtroSituacaoCongregacoes">
+          <option value="">Todas as situações</option>
+          <option value="ativa">Ativas</option>
+          <option value="inativa">Inativas</option>
+        </select>
+
+      </div>
+
+      <div class="congregacoes-filtro">
+
+        <label for="filtroPastorCongregacoes">
+          Pastor responsável
+        </label>
+
+        <input
+          id="filtroPastorCongregacoes"
+          type="search"
+          autocomplete="off"
+          placeholder="Todos os responsáveis"
+        >
+
+      </div>
+
+      <div class="congregacoes-filtro-acao">
+
+        <button
+          id="botaoNovaCongregacao"
+          type="button"
+          class="btn btn-dourado"
+          data-permissao="membros-editar"
+        >
+          ＋ Nova congregação
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section
+  class="painel congregacoes-listagem-painel"
+  aria-labelledby="tituloListaCongregacoes"
+>
+
+  <div class="painel-cabecalho">
+
+    <div>
+      <h3
+        id="tituloListaCongregacoes"
+        class="painel-titulo"
+      >
+        Congregações cadastradas
+      </h3>
+
+      <p class="painel-subtitulo">
+        Selecione uma congregação para visualizar ou editar seus dados.
+      </p>
+    </div>
+
+    <span
+      id="totalCongregacoes"
+      class="congregacoes-total"
+      aria-live="polite"
+    >
+      0 congregações
+    </span>
+
+  </div>
+
+  <div class="painel-corpo congregacoes-tabela-area">
+
+    <table class="congregacoes-tabela">
+
+      <thead>
+        <tr>
+          <th scope="col">Código</th>
+          <th scope="col">Congregação</th>
+          <th scope="col">Pastor responsável</th>
+          <th scope="col">Telefone</th>
+          <th scope="col">Membros</th>
+          <th scope="col">Situação</th>
+          <th scope="col">Ações</th>
+        </tr>
+      </thead>
+
+      <tbody id="corpoTabelaCongregacoes">
+
+        <tr>
+          <td
+            colspan="7"
+            class="congregacoes-estado-tabela"
+          >
+            <div class="estado-vazio">
+
+              <div
+                class="estado-vazio-icone"
+                aria-hidden="true"
+              >
+                …
+              </div>
+
+              <p class="estado-vazio-titulo">
+                Carregando congregações
+              </p>
+
+              <p class="estado-vazio-texto">
+                Aguarde enquanto consultamos os dados.
+              </p>
+
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
 
       </div>
 
