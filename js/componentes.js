@@ -55,44 +55,64 @@
   }
 
   async function iniciarComponentes() {
-    const alvoSidebar = document.querySelector("#layoutSidebar");
-    const alvoTopbar = document.querySelector("#layoutTopbar");
+  const alvoSidebar = document.querySelector("#layoutSidebar");
+  const alvoTopbar = document.querySelector("#layoutTopbar");
 
-    if (!alvoSidebar || !alvoTopbar) {
-      return;
-    }
-
-    try {
-      const [sidebarHtml, topbarHtml] = await Promise.all([
-        carregarComponente(CONFIGURACAO_LAYOUT.sidebar),
-        carregarComponente(CONFIGURACAO_LAYOUT.topbar)
-      ]);
-
-      alvoSidebar.innerHTML = sidebarHtml;
-      alvoTopbar.innerHTML = topbarHtml;
-
-      const dadosPagina = obterDadosPagina();
-      preencherTopbar(dadosPagina);
-
-      document.dispatchEvent(
-        new CustomEvent("vrg:layout-pronto", {
-          detail: dadosPagina
-        })
-      );
-    } catch (erro) {
-      console.error("[LAYOUT] Erro ao carregar componentes:", erro);
-
-      document.dispatchEvent(
-        new CustomEvent("vrg:layout-erro", {
-          detail: {
-            mensagem:
-              erro?.message ||
-              "Não foi possível carregar o layout do sistema."
-          }
-        })
-      );
-    }
+  if (!alvoSidebar && !alvoTopbar) {
+    return;
   }
+
+  try {
+    const tarefas = [];
+
+    if (alvoSidebar) {
+      tarefas.push(
+        carregarComponente(CONFIGURACAO_LAYOUT.sidebar)
+          .then(function (sidebarHtml) {
+            alvoSidebar.innerHTML = sidebarHtml;
+          })
+      );
+    }
+
+    if (alvoTopbar) {
+      tarefas.push(
+        carregarComponente(CONFIGURACAO_LAYOUT.topbar)
+          .then(function (topbarHtml) {
+            alvoTopbar.innerHTML = topbarHtml;
+          })
+      );
+    }
+
+    await Promise.all(tarefas);
+
+    const dadosPagina = obterDadosPagina();
+
+    if (alvoTopbar) {
+      preencherTopbar(dadosPagina);
+    }
+
+    document.dispatchEvent(
+      new CustomEvent("vrg:layout-pronto", {
+        detail: dadosPagina
+      })
+    );
+  } catch (erro) {
+    console.error(
+      "[LAYOUT] Erro ao carregar componentes:",
+      erro
+    );
+
+    document.dispatchEvent(
+      new CustomEvent("vrg:layout-erro", {
+        detail: {
+          mensagem:
+            erro?.message ||
+            "Não foi possível carregar o layout do sistema."
+        }
+      })
+    );
+  }
+}
 
   window.VRGComponentes = Object.freeze({
     iniciar: iniciarComponentes
