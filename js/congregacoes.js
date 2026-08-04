@@ -15,25 +15,23 @@ const Congregacoes = (() => {
     raiz.querySelector(seletor);
 
   async function iniciar() {
-    const sessao =
-      typeof obterSessao === "function"
-        ? obterSessao()
-        : null;
+  const sessao =
+    typeof obterSessao === "function"
+      ? obterSessao()
+      : null;
 
-    if (!sessao || !sessao.credencial) {
-      window.location.replace("index.html");
-      return;
-    }
-
-    if (
-      typeof aplicarIdentidadeUsuario === "function"
-    ) {
-      aplicarIdentidadeUsuario();
-    }
-
-    configurarEventos();
-    await carregarCongregacoes();
+  if (!sessao?.credential) {
+    window.location.replace("index.html");
+    return;
   }
+
+  if (typeof aplicarUsuarioNaInterface === "function") {
+    aplicarUsuarioNaInterface();
+  }
+
+  configurarEventos();
+  await carregarCongregacoes();
+}
 
   function obterApiCongregacoes() {
     const api = window.VRAuth || window.Auth;
