@@ -34,7 +34,7 @@ const Congregacoes = (() => {
     document
       .getElementById("botaoNovaCongregacao")
       ?.addEventListener("click", () => {
-        window.location.href = "nova-congregacao.html";
+        window.location.href = "congregacao.html?modo=novo";
       });
 
   }
