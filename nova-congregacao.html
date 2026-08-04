@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova Congregação | Vidas Renovadas Gestão</title>
+
+  <link rel="stylesheet" href="css/estilo.css?v=50">
+  <link rel="stylesheet" href="css/congregacoes.css?v=1">
+</head>
+
+<body
+  class="sistema-page"
+  data-page="congregacoes"
+  data-titulo="Nova Congregação"
+  data-subtitulo="Cadastre uma nova congregação do Ministério Vidas Renovadas."
+>
+
+<div class="sistema-layout">
+
+  <div id="layoutSidebar"></div>
+
+  <div class="overlay-menu" data-acao="fechar-menu"></div>
+
+  <main class="sistema-main">
+
+    <div id="layoutTopbar"></div>
+
+    <div class="sistema-conteudo">
+
+      <section class="congregacoes-cabecalho">
+        <div>
+          <p class="pagina-selo">CONGREGAÇÕES</p>
+          <h2 class="pagina-titulo">Nova Congregação</h2>
+          <p class="pagina-descricao">
+            Cadastre uma nova congregação do Ministério Vidas Renovadas.
+          </p>
+        </div>
+      </section>
+
+      <form id="formCongregacao" class="formulario-padrao">
+
+        <section class="painel">
+          <div class="painel-cabecalho">
+            <h3 class="painel-titulo">Identificação</h3>
+          </div>
+
+          <div class="painel-corpo formulario-grid">
+
+            <div class="campo">
+              <label>Código</label>
+              <input id="codigo" readonly placeholder="Gerado automaticamente">
+            </div>
+
+            <div class="campo">
+              <label>Nome da Congregação *</label>
+              <input id="nome" required>
+            </div>
+
+            <div class="campo">
+              <label>Tipo</label>
+              <select id="tipo">
+                <option>Sede</option>
+                <option>Congregação</option>
+                <option>Ponto de Pregação</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label>Situação</label>
+              <select id="ativa">
+                <option value="true">Ativa</option>
+                <option value="false">Inativa</option>
+              </select>
+            </div>
+
+          </div>
+        </section>
+
+        <section class="painel">
+          <div class="painel-cabecalho">
+            <h3 class="painel-titulo">Responsável pela Congregação</h3>
+          </div>
+
+          <div class="painel-corpo formulario-grid">
+
+            <div class="campo">
+              <label>Responsável</label>
+              <input id="responsavel">
+            </div>
+
+            <div class="campo">
+              <label>Telefone</label>
+              <input id="telefone">
+            </div>
+
+            <div class="campo">
+              <label>E-mail</label>
+              <input id="email" type="email">
+            </div>
+
+          </div>
+        </section>
+
+        <section class="painel">
+          <div class="painel-cabecalho">
+            <h3 class="painel-titulo">Endereço</h3>
+          </div>
+
+          <div class="painel-corpo formulario-grid">
+
+            <div class="campo"><label>CEP</label><input id="cep"></div>
+            <div class="campo"><label>Endereço</label><input id="endereco"></div>
+            <div class="campo"><label>Número</label><input id="numero"></div>
+            <div class="campo"><label>Complemento</label><input id="complemento"></div>
+            <div class="campo"><label>Bairro</label><input id="bairro"></div>
+            <div class="campo"><label>Cidade</label><input id="cidade"></div>
+            <div class="campo"><label>Estado</label><input id="estado"></div>
+
+          </div>
+        </section>
+
+        <section class="painel">
+          <div class="painel-cabecalho">
+            <h3 class="painel-titulo">Informações adicionais</h3>
+          </div>
+
+          <div class="painel-corpo">
+            <div class="campo">
+              <label>Data de Fundação</label>
+              <input id="fundacao" type="date">
+            </div>
+
+            <div class="campo">
+              <label>Observações</label>
+              <textarea id="observacoes" rows="5"></textarea>
+            </div>
+          </div>
+        </section>
+
+        <div class="formulario-acoes">
+          <a class="btn btn-contorno" href="congregacoes.html">Cancelar</a>
+          <button type="submit" class="btn btn-dourado">
+            Salvar Congregação
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </main>
+
+</div>
+
+<script src="js/configuracoes.js?v=2"></script>
+<script src="js/api.js?v=2"></script>
+<script src="js/auth.js?v=3"></script>
+<script src="js/componentes.js?v=3"></script>
+<script src="js/app.js?v=2"></script>
+<script src="js/congregacao-formulario.js?v=1"></script>
+
+</body>
+</html>
