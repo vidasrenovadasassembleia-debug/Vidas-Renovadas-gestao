@@ -1,8 +1,8 @@
 "use strict";
 
 /* ==========================================================================
-   CONGREGAÇÕES — LISTAGEM OFICIAL
-   Vidas Renovadas Gestão 2.0
+   CONGREGAÇÕES — LISTAGEM OFICIAL V3
+   Integração com autenticação oficial do sistema.
    ========================================================================== */
 
 const Congregacoes = (() => {
@@ -11,44 +11,93 @@ const Congregacoes = (() => {
     filtradas: []
   };
 
-  const $ = (seletor, raiz = document) => raiz.querySelector(seletor);
+  const $ = (seletor, raiz = document) =>
+    raiz.querySelector(seletor);
 
-  function iniciar() {
+  async function iniciar() {
+    const sessao =
+      typeof obterSessao === "function"
+        ? obterSessao()
+        : null;
+
+    if (!sessao || !sessao.credencial) {
+      window.location.replace("index.html");
+      return;
+    }
+
+    if (
+      typeof aplicarIdentidadeUsuario === "function"
+    ) {
+      aplicarIdentidadeUsuario();
+    }
+
     configurarEventos();
-    carregarCongregacoes();
+    await carregarCongregacoes();
+  }
+
+  function obterApiCongregacoes() {
+    const api = window.VRAuth || window.Auth;
+
+    if (!api || typeof api.chamarApi !== "function") {
+      throw new Error(
+        "O módulo de autenticação/API não foi carregado corretamente."
+      );
+    }
+
+    return api;
   }
 
   function configurarEventos() {
-    $("#pesquisaCongregacoes")?.addEventListener("input", aplicarFiltros);
-    $("#filtroSituacaoCongregacoes")?.addEventListener("change", aplicarFiltros);
-    $("#filtroPastorCongregacoes")?.addEventListener("input", aplicarFiltros);
+    $("#pesquisaCongregacoes")
+      ?.addEventListener("input", aplicarFiltros);
 
-    $("#botaoNovaCongregacao")?.addEventListener("click", () => {
-      window.location.href = "congregacao.html?modo=novo";
-    });
+    $("#filtroSituacaoCongregacoes")
+      ?.addEventListener("change", aplicarFiltros);
 
-    $("#corpoTabelaCongregacoes")?.addEventListener("click", (evento) => {
-      const botao = evento.target.closest("[data-acao-congregacao]");
+    $("#filtroPastorCongregacoes")
+      ?.addEventListener("input", aplicarFiltros);
 
-      if (!botao) {
-        return;
-      }
+    $("#botaoNovaCongregacao")
+      ?.addEventListener("click", () => {
+        window.location.href =
+          "congregacao.html?modo=novo";
+      });
 
-      const codigo = String(botao.dataset.codigo || "").trim();
-      const acao = botao.dataset.acaoCongregacao;
+    $("#corpoTabelaCongregacoes")
+      ?.addEventListener("click", (evento) => {
+        const botao = evento.target.closest(
+          "[data-acao-congregacao]"
+        );
 
-      if (!codigo) {
-        return;
-      }
+        if (!botao) {
+          return;
+        }
 
-      if (acao === "visualizar") {
-        abrirFormulario("visualizar", codigo);
-      }
+        const codigo = String(
+          botao.dataset.codigo || ""
+        ).trim();
 
-      if (acao === "editar") {
-        abrirFormulario("editar", codigo);
-      }
-    });
+        const acao =
+          botao.dataset.acaoCongregacao;
+
+        if (!codigo) {
+          return;
+        }
+
+        if (acao === "visualizar") {
+          abrirFormulario(
+            "visualizar",
+            codigo
+          );
+        }
+
+        if (acao === "editar") {
+          abrirFormulario(
+            "editar",
+            codigo
+          );
+        }
+      });
   }
 
   async function carregarCongregacoes() {
@@ -59,23 +108,33 @@ const Congregacoes = (() => {
     );
 
     try {
-      const resposta = await obterApi().enviar("listarCongregacoes");
+      const api = obterApiCongregacoes();
 
-      ESTADO.congregacoes = Array.isArray(resposta.congregacoes)
-        ? resposta.congregacoes
-        : [];
+      const resposta = await api.chamarApi({
+        acao: "listarCongregacoes"
+      });
+
+      ESTADO.congregacoes =
+        Array.isArray(resposta.congregacoes)
+          ? resposta.congregacoes
+          : [];
 
       esconderMensagem();
       aplicarFiltros();
     } catch (erro) {
-      console.error("[CONGREGAÇÕES] Erro ao carregar:", erro);
+      console.error(
+        "[CONGREGAÇÕES] Erro ao carregar:",
+        erro
+      );
 
       ESTADO.congregacoes = [];
       ESTADO.filtradas = [];
 
       atualizarTotal(0);
+
       mostrarMensagem(
-        erro?.message || "Não foi possível carregar as congregações.",
+        erro?.message ||
+          "Não foi possível carregar as congregações.",
         "erro"
       );
 
@@ -88,58 +147,80 @@ const Congregacoes = (() => {
   }
 
   function aplicarFiltros() {
-    const pesquisa = normalizar($("#pesquisaCongregacoes")?.value || "");
+    const pesquisa = normalizar(
+      $("#pesquisaCongregacoes")?.value || ""
+    );
+
     const responsavel = normalizar(
       $("#filtroPastorCongregacoes")?.value || ""
     );
+
     const situacao = String(
       $("#filtroSituacaoCongregacoes")?.value || ""
     );
 
-    ESTADO.filtradas = ESTADO.congregacoes.filter((item) => {
-      const alvoPesquisa = normalizar(
-        [
-          item.codigo,
-          item.nome,
-          item.tipo,
-          item.responsavel,
-          item.pastorResponsavel,
-          item.telefone,
-          item.cidade
-        ]
-          .filter(Boolean)
-          .join(" ")
-      );
+    ESTADO.filtradas =
+      ESTADO.congregacoes.filter((item) => {
+        const alvoPesquisa = normalizar(
+          [
+            item.codigo,
+            item.nome,
+            item.tipo,
+            item.responsavel,
+            item.pastorResponsavel,
+            item.telefone,
+            item.cidade
+          ]
+            .filter(Boolean)
+            .join(" ")
+        );
 
-      const alvoResponsavel = normalizar(
-        item.responsavel || item.pastorResponsavel || ""
-      );
+        const alvoResponsavel = normalizar(
+          item.responsavel ||
+          item.pastorResponsavel ||
+          ""
+        );
 
-      const pesquisaOk =
-        !pesquisa || alvoPesquisa.includes(pesquisa);
+        const pesquisaOk =
+          !pesquisa ||
+          alvoPesquisa.includes(pesquisa);
 
-      const responsavelOk =
-        !responsavel || alvoResponsavel.includes(responsavel);
+        const responsavelOk =
+          !responsavel ||
+          alvoResponsavel.includes(responsavel);
 
-      const situacaoOk =
-        !situacao ||
-        (situacao === "ativa" && Boolean(item.ativa)) ||
-        (situacao === "inativa" && !Boolean(item.ativa));
+        const situacaoOk =
+          !situacao ||
+          (
+            situacao === "ativa" &&
+            Boolean(item.ativa)
+          ) ||
+          (
+            situacao === "inativa" &&
+            !Boolean(item.ativa)
+          );
 
-      return pesquisaOk && responsavelOk && situacaoOk;
-    });
+        return (
+          pesquisaOk &&
+          responsavelOk &&
+          situacaoOk
+        );
+      });
 
     renderizarTabela();
   }
 
   function renderizarTabela() {
-    const corpo = $("#corpoTabelaCongregacoes");
+    const corpo =
+      $("#corpoTabelaCongregacoes");
 
     if (!corpo) {
       return;
     }
 
-    atualizarTotal(ESTADO.filtradas.length);
+    atualizarTotal(
+      ESTADO.filtradas.length
+    );
 
     if (!ESTADO.filtradas.length) {
       mostrarEstadoTabela(
@@ -152,30 +233,55 @@ const Congregacoes = (() => {
       return;
     }
 
-    corpo.innerHTML = ESTADO.filtradas
-      .map((item) => montarLinha(item))
-      .join("");
+    corpo.innerHTML =
+      ESTADO.filtradas
+        .map(montarLinha)
+        .join("");
   }
 
   function montarLinha(item) {
-    const codigo = String(item.codigo || "").trim();
-    const nome = String(item.nome || "").trim();
-    const tipo = String(item.tipo || "").trim() || "—";
-    const responsavel = String(
-      item.responsavel || item.pastorResponsavel || ""
+    const codigo = String(
+      item.codigo || ""
+    ).trim();
+
+    const nome = String(
+      item.nome || ""
+    ).trim();
+
+    const tipo = String(
+      item.tipo || ""
     ).trim() || "—";
-    const telefone = String(item.telefone || "").trim() || "—";
+
+    const responsavel = String(
+      item.responsavel ||
+      item.pastorResponsavel ||
+      ""
+    ).trim() || "—";
+
+    const telefone = String(
+      item.telefone || ""
+    ).trim() || "—";
+
     const ativa = Boolean(item.ativa);
 
     return `
       <tr>
-        <td class="congregacoes-codigo">${esc(codigo)}</td>
+        <td class="congregacoes-codigo">
+          ${esc(codigo)}
+        </td>
 
         <td>
-          <span class="congregacoes-nome">${esc(nome)}</span>
+          <span class="congregacoes-nome">
+            ${esc(nome)}
+          </span>
+
           ${
             item.cidade
-              ? `<span class="congregacoes-secundario">${esc(item.cidade)}</span>`
+              ? `
+                <span class="congregacoes-secundario">
+                  ${esc(item.cidade)}
+                </span>
+              `
               : ""
           }
         </td>
@@ -194,7 +300,9 @@ const Congregacoes = (() => {
         </td>
 
         <td>
-          <span class="congregacoes-status ${ativa ? "ativa" : "inativa"}">
+          <span
+            class="congregacoes-status ${ativa ? "ativa" : "inativa"}"
+          >
             ${ativa ? "Ativa" : "Inativa"}
           </span>
         </td>
@@ -225,8 +333,13 @@ const Congregacoes = (() => {
     `;
   }
 
-  function mostrarEstadoTabela(titulo, texto, icone) {
-    const corpo = $("#corpoTabelaCongregacoes");
+  function mostrarEstadoTabela(
+    titulo,
+    texto,
+    icone
+  ) {
+    const corpo =
+      $("#corpoTabelaCongregacoes");
 
     if (!corpo) {
       return;
@@ -234,9 +347,15 @@ const Congregacoes = (() => {
 
     corpo.innerHTML = `
       <tr>
-        <td colspan="8" class="congregacoes-estado-tabela">
+        <td
+          colspan="8"
+          class="congregacoes-estado-tabela"
+        >
           <div class="estado-vazio">
-            <div class="estado-vazio-icone" aria-hidden="true">
+            <div
+              class="estado-vazio-icone"
+              aria-hidden="true"
+            >
               ${esc(icone)}
             </div>
 
@@ -254,7 +373,8 @@ const Congregacoes = (() => {
   }
 
   function atualizarTotal(quantidade) {
-    const total = $("#totalCongregacoes");
+    const total =
+      $("#totalCongregacoes");
 
     if (!total) {
       return;
@@ -266,15 +386,34 @@ const Congregacoes = (() => {
         : `${quantidade} congregações`;
   }
 
-  function abrirFormulario(modo, codigo) {
-    const url = new URL("congregacao.html", window.location.href);
-    url.searchParams.set("modo", modo);
-    url.searchParams.set("codigo", codigo);
+  function abrirFormulario(
+    modo,
+    codigo
+  ) {
+    const url = new URL(
+      "congregacao.html",
+      window.location.href
+    );
+
+    url.searchParams.set(
+      "modo",
+      modo
+    );
+
+    url.searchParams.set(
+      "codigo",
+      codigo
+    );
+
     window.location.href = url.href;
   }
 
-  function mostrarMensagem(texto, tipo) {
-    const elemento = $("#mensagemCongregacoes");
+  function mostrarMensagem(
+    texto,
+    tipo
+  ) {
+    const elemento =
+      $("#mensagemCongregacoes");
 
     if (!elemento) {
       return;
@@ -282,11 +421,13 @@ const Congregacoes = (() => {
 
     elemento.hidden = false;
     elemento.textContent = texto;
-    elemento.className = `alerta alerta-${tipo}`;
+    elemento.className =
+      `alerta alerta-${tipo}`;
   }
 
   function esconderMensagem() {
-    const elemento = $("#mensagemCongregacoes");
+    const elemento =
+      $("#mensagemCongregacoes");
 
     if (elemento) {
       elemento.hidden = true;
@@ -294,21 +435,14 @@ const Congregacoes = (() => {
     }
   }
 
-  function obterApi() {
-    if (!window.VR_API || typeof window.VR_API.enviar !== "function") {
-      throw new Error(
-        "O módulo de comunicação com a API não foi carregado corretamente."
-      );
-    }
-
-    return window.VR_API;
-  }
-
   function normalizar(valor) {
     return String(valor || "")
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
+      .replace(
+        /[\u0300-\u036f]/g,
+        ""
+      )
       .trim();
   }
 
