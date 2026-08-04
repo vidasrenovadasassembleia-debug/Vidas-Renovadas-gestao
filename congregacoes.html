@@ -1,30 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Congregações | Vidas Renovadas Gestão</title>
+
+  <meta
+    name="description"
+    content="Cadastro, consulta e gerenciamento das congregações."
+  >
+
+  <meta name="theme-color" content="#071f3b">
+
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <link
+    rel="stylesheet"
+    href="css/estilo.css?v=50"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/congregacoes.css?v=1"
+  >
+</head>
+
 <body
+  class="sistema-page"
   data-page="congregacoes"
   data-titulo="Congregações"
   data-subtitulo="Cadastro, consulta e gerenciamento das congregações"
 >
-<div class="sistema-layout">
+
+  <div class="sistema-layout">
 
     <div id="layoutSidebar"></div>
 
-    <div class="overlay-menu" data-acao="fechar-menu"></div>
+    <div
+      class="overlay-menu"
+      data-acao="fechar-menu"
+    ></div>
 
     <main class="sistema-main">
 
-        <div id="layoutTopbar"></div>
+      <div id="layoutTopbar"></div>
 
-        <div class="sistema-conteudo">
+      <div class="sistema-conteudo">
 
-            <!-- conteúdo da página -->
+        <!-- Conteúdo do módulo Congregações será inserido aqui. -->
 
-        </div>
+      </div>
 
     </main>
 
-</div>
-<script src="js/configuracoes.js?v=2"></script>
-<script src="js/api.js?v=2"></script>
-<script src="js/auth.js?v=3"></script>
-<script src="js/componentes.js?v=3"></script>
-<script src="js/app.js?v=2"></script>
-<script src="js/congregacoes.js?v=1"></script>
+  </div>
+
+  <div
+    id="carregamentoGlobal"
+    class="carregamento-global"
+    aria-hidden="true"
+  >
+    <div
+      class="carregamento-caixa"
+      role="status"
+      aria-live="polite"
+    >
+      <span class="spinner" aria-hidden="true"></span>
+      <span>Carregando...</span>
+    </div>
+  </div>
+
+  <script src="js/configuracoes.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
+  <script src="js/auth.js?v=3"></script>
+  <script src="js/componentes.js?v=3"></script>
+  <script src="js/app.js?v=2"></script>
+  <script src="js/congregacoes.js?v=1"></script>
+
+</body>
+
+</html>
