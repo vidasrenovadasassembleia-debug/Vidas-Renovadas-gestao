@@ -204,7 +204,7 @@ const Congregacoes = (() => {
 
   function visualizar(codigo) {
     window.location.href =
-      `visualizar-congregacao.html?codigo=${encodeURIComponent(codigo)}`;
+  `congregacao.html?modo=visualizar&codigo=${encodeURIComponent(codigo)}`;
   }
 
   function editar(codigo) {
