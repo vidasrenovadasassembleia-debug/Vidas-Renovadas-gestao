@@ -743,9 +743,8 @@
 document.addEventListener(
   "vrg:layout-pronto",
   function () {
-    if (typeof aplicarIdentidadeUsuario === "function") {
-      aplicarIdentidadeUsuario();
-    }
+    aplicarUsuarioNaInterface();
+    aplicarPermissoes();
   }
 );
   if (document.readyState === "loading") {
