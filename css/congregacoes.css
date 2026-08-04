@@ -1,1 +1,322 @@
+/* ==========================================================================
+   CONGREGAÇÕES — ESTILOS OFICIAIS
+   Vidas Renovadas Gestão 2.0
+   ========================================================================== */
 
+.congregacoes-cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.pagina-selo {
+  margin: 0 0 6px;
+  color: var(--dourado-700, #b98218);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pagina-titulo {
+  margin: 0;
+  color: var(--azul-900, #071f3b);
+  font-size: clamp(28px, 3vw, 36px);
+  line-height: 1.1;
+}
+
+.pagina-descricao {
+  margin: 8px 0 0;
+  color: var(--texto-suave, #607089);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+#mensagemCongregacoes {
+  margin-bottom: 18px;
+}
+
+.congregacoes-filtros-painel,
+.congregacoes-listagem-painel {
+  margin-bottom: 20px;
+}
+
+.congregacoes-filtros {
+  display: grid;
+  grid-template-columns: minmax(260px, 2fr) minmax(180px, 0.8fr) minmax(220px, 1fr) auto;
+  gap: 16px;
+  align-items: end;
+}
+
+.congregacoes-filtro {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.congregacoes-filtro label {
+  color: var(--azul-900, #071f3b);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.congregacoes-filtro input,
+.congregacoes-filtro select {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--borda-sistema, #d9e2ec);
+  border-radius: 10px;
+  background: var(--superficie, #ffffff);
+  color: var(--texto-principal, #14213d);
+  font: inherit;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.congregacoes-filtro input::placeholder {
+  color: #8a97aa;
+}
+
+.congregacoes-filtro input:focus,
+.congregacoes-filtro select:focus {
+  border-color: var(--dourado-500, #d7a625);
+  box-shadow: 0 0 0 3px rgba(215, 166, 37, 0.14);
+}
+
+.congregacoes-filtro-acao {
+  display: flex;
+  align-items: flex-end;
+}
+
+.congregacoes-filtro-acao .btn {
+  min-height: 42px;
+  white-space: nowrap;
+}
+
+.congregacoes-total {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--superficie-suave, #f4f7fb);
+  color: var(--azul-900, #071f3b);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.congregacoes-tabela-area {
+  overflow-x: auto;
+}
+
+.congregacoes-tabela {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+}
+
+.congregacoes-tabela th,
+.congregacoes-tabela td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--borda-sistema, #d9e2ec);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.congregacoes-tabela th {
+  background: var(--superficie-suave, #f4f7fb);
+  color: var(--azul-900, #071f3b);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.congregacoes-tabela td {
+  color: var(--texto-principal, #14213d);
+  font-size: 14px;
+}
+
+.congregacoes-tabela tbody tr {
+  transition: background-color 0.16s ease;
+}
+
+.congregacoes-tabela tbody tr:hover {
+  background: rgba(7, 31, 59, 0.025);
+}
+
+.congregacoes-codigo,
+.congregacoes-nome {
+  color: var(--azul-900, #071f3b);
+  font-weight: 800;
+}
+
+.congregacoes-codigo {
+  white-space: nowrap;
+}
+
+.congregacoes-secundario {
+  display: block;
+  margin-top: 3px;
+  color: var(--texto-suave, #607089);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.congregacoes-quantidade {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  min-height: 30px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--superficie-suave, #f4f7fb);
+  color: var(--azul-900, #071f3b);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.congregacoes-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 28px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.congregacoes-status::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 8px;
+}
+
+.congregacoes-status.ativa {
+  border: 1px solid #b7e4cf;
+  background: #eaf8f1;
+  color: #157347;
+}
+
+.congregacoes-status.ativa::before {
+  background: #239b62;
+}
+
+.congregacoes-status.inativa {
+  border: 1px solid #e7c5c5;
+  background: #fff1f1;
+  color: #a53434;
+}
+
+.congregacoes-status.inativa::before {
+  background: #c94b4b;
+}
+
+.congregacoes-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.congregacoes-acoes .btn {
+  min-height: 34px;
+  padding: 7px 10px;
+  font-size: 12px;
+}
+
+.congregacoes-estado-tabela {
+  padding: 32px 18px !important;
+  text-align: center !important;
+}
+
+.congregacoes-estado-tabela .estado-vazio {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.congregacoes-estado-tabela .estado-vazio-icone {
+  margin-bottom: 10px;
+  color: var(--dourado-600, #c18d1c);
+  font-size: 26px;
+}
+
+.congregacoes-estado-tabela .estado-vazio-titulo {
+  margin: 0;
+  color: var(--azul-900, #071f3b);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.congregacoes-estado-tabela .estado-vazio-texto {
+  margin: 6px 0 0;
+  color: var(--texto-suave, #607089);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1180px) {
+  .congregacoes-filtros {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .congregacoes-filtro-pesquisa {
+    grid-column: 1 / -1;
+  }
+
+  .congregacoes-filtro-acao {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 760px) {
+  .congregacoes-cabecalho {
+    flex-direction: column;
+  }
+
+  .congregacoes-filtros {
+    grid-template-columns: 1fr;
+  }
+
+  .congregacoes-filtro-pesquisa {
+    grid-column: auto;
+  }
+
+  .congregacoes-filtro-acao {
+    justify-content: stretch;
+  }
+
+  .congregacoes-filtro-acao .btn {
+    width: 100%;
+  }
+
+  .congregacoes-listagem-painel .painel-cabecalho {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .congregacoes-total {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .pagina-titulo {
+    font-size: 28px;
+  }
+
+  .congregacoes-tabela th,
+  .congregacoes-tabela td {
+    padding: 12px 10px;
+  }
+}
