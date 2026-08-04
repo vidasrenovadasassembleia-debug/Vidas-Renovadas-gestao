@@ -475,17 +475,23 @@ const CongregacaoFormulario = (() => {
   }
 
   function obterApi() {
-    if (
-      !window.VR_API ||
-      typeof window.VR_API.enviar !== "function"
-    ) {
-      throw new Error(
-        "O módulo de comunicação com a API não foi carregado corretamente."
-      );
-    }
+  const api = window.VRAuth || window.Auth;
 
-    return window.VR_API;
+  if (!api || typeof api.chamarApi !== "function") {
+    throw new Error(
+      "O módulo de autenticação/API não foi carregado corretamente."
+    );
   }
+
+  return {
+    enviar: function (acao, dados = {}) {
+      return api.chamarApi({
+        acao,
+        ...dados
+      });
+    }
+  };
+}
 
   function obterValor(id) {
     return String($(`#${id}`)?.value || "").trim();
