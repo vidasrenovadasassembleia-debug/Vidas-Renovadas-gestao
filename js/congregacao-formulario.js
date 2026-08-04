@@ -195,7 +195,10 @@ const CongregacaoFormulario = (() => {
   }
 
   function preencherFormulario(dados) {
-    definirCampo(CAMPOS.codigo, dados.codigo);
+    definirCampo(
+  CAMPOS.codigo,
+  dados.codigo || ESTADO.codigo
+);
     definirCampo(CAMPOS.nome, dados.nome);
     definirCampo(
       CAMPOS.tipo,
