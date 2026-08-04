@@ -740,6 +740,10 @@
   window.encerrarSessao = logout;
   window.usuarioAdministrador = usuarioAdministrador;
   window.chamarApi = chamarApi;
+/*
+ * Reaplica usuário e permissões depois que
+ * Sidebar e Topbar compartilhadas forem carregadas.
+ */
 document.addEventListener(
   "vrg:layout-pronto",
   function () {
