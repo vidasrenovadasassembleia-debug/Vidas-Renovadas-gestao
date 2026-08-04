@@ -232,35 +232,34 @@ const CongregacaoFormulario = (() => {
       dados.observacoes
     );
   }
+  function coletarDados() {
+  return {
+    codigo:
+      ESTADO.modo === MODOS.NOVO
+        ? ""
+        : ESTADO.codigo || obterValor(CAMPOS.codigo),
 
-  codigo:
-  ESTADO.modo === MODOS.NOVO
-    ? ""
-    : ESTADO.codigo || obterValor(CAMPOS.codigo),
-    return {
-      codigo:
-  ESTADO.modo === MODOS.NOVO
-    ? ""
-    : ESTADO.codigo || obterValor(CAMPOS.codigo),
-      nome: obterValor(CAMPOS.nome),
-      tipo:
-        obterValor(CAMPOS.tipo) ||
-        "Congregação",
-      responsavel: obterValor(CAMPOS.responsavel),
-      telefone: obterValor(CAMPOS.telefone),
-      email: obterValor(CAMPOS.email),
-      cep: obterValor(CAMPOS.cep),
-      endereco: obterValor(CAMPOS.endereco),
-      numero: obterValor(CAMPOS.numero),
-      complemento: obterValor(CAMPOS.complemento),
-      bairro: obterValor(CAMPOS.bairro),
-      cidade: obterValor(CAMPOS.cidade),
-      estado: obterValor(CAMPOS.estado),
-      dataFundacao: obterValor(CAMPOS.dataFundacao),
-      observacoes: obterValor(CAMPOS.observacoes),
-      ativa: obterValor(CAMPOS.ativa) === "true"
-    };
-  }
+    nome: obterValor(CAMPOS.nome),
+
+    tipo:
+      obterValor(CAMPOS.tipo) ||
+      "Congregação",
+
+    responsavel: obterValor(CAMPOS.responsavel),
+    telefone: obterValor(CAMPOS.telefone),
+    email: obterValor(CAMPOS.email),
+    cep: obterValor(CAMPOS.cep),
+    endereco: obterValor(CAMPOS.endereco),
+    numero: obterValor(CAMPOS.numero),
+    complemento: obterValor(CAMPOS.complemento),
+    bairro: obterValor(CAMPOS.bairro),
+    cidade: obterValor(CAMPOS.cidade),
+    estado: obterValor(CAMPOS.estado),
+    dataFundacao: obterValor(CAMPOS.dataFundacao),
+    observacoes: obterValor(CAMPOS.observacoes),
+    ativa: obterValor(CAMPOS.ativa) === "true"
+  };
+}
 
   function validar(dados) {
     if (!dados.nome) {
