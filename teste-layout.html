@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Teste de Layout | Vidas Renovadas Gestão</title>
+
+  <meta name="theme-color" content="#071f3b">
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="logo.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/estilo.css?v=50"
+  >
+</head>
+
+<body
+  class="sistema-page"
+  data-page="teste-layout"
+  data-titulo="Teste do Layout Compartilhado"
+  data-subtitulo="Ambiente isolado para validar Sidebar e Topbar"
+>
+
+  <div class="sistema-layout">
+
+    <div id="layoutSidebar"></div>
+
+    <div
+      class="overlay-menu"
+      data-acao="fechar-menu"
+    ></div>
+
+    <main class="sistema-main">
+
+      <div id="layoutTopbar"></div>
+
+      <div class="sistema-conteudo">
+
+        <article class="painel">
+
+          <div class="painel-cabecalho">
+            <div>
+              <h2 class="painel-titulo">
+                Teste dos componentes
+              </h2>
+
+              <p class="painel-subtitulo">
+                Esta página não altera nenhum módulo ativo.
+              </p>
+            </div>
+          </div>
+
+          <div class="painel-corpo">
+
+            <p>
+              Se a barra lateral e o cabeçalho aparecerem corretamente,
+              o carregamento inicial dos componentes foi aprovado.
+            </p>
+
+            <div
+              id="resultadoTesteLayout"
+              class="alerta alerta-info"
+              role="status"
+              aria-live="polite"
+            >
+              Aguardando o carregamento dos componentes...
+            </div>
+
+          </div>
+
+        </article>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <script src="js/componentes.js?v=1"></script>
+
+  <script>
+    "use strict";
+
+    document.addEventListener(
+      "vrg:layout-pronto",
+      function (evento) {
+        const resultado =
+          document.querySelector("#resultadoTesteLayout");
+
+        if (resultado) {
+          resultado.textContent =
+            "Sidebar e Topbar carregadas com sucesso.";
+          resultado.className = "alerta alerta-sucesso";
+        }
+
+        console.info(
+          "[TESTE DE LAYOUT] Componentes carregados:",
+          evento.detail
+        );
+      },
+      { once: true }
+    );
+
+    document.addEventListener(
+      "vrg:layout-erro",
+      function (evento) {
+        const resultado =
+          document.querySelector("#resultadoTesteLayout");
+
+        if (resultado) {
+          resultado.textContent =
+            evento.detail?.mensagem ||
+            "Ocorreu um erro ao carregar os componentes.";
+          resultado.className = "alerta alerta-erro";
+        }
+
+        console.error(
+          "[TESTE DE LAYOUT] Falha:",
+          evento.detail
+        );
+      },
+      { once: true }
+    );
+  </script>
+
+</body>
+
+</html>
