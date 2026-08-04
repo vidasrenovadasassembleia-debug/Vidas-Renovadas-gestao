@@ -1395,9 +1395,34 @@
   window.VRG = APP;
   window.App = APP;
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", inicializar, { once: true });
-  } else {
-    inicializar();
+  function paginaUsaLayoutCompartilhado() {
+  return Boolean(
+    document.querySelector("#layoutSidebar") ||
+    document.querySelector("#layoutTopbar")
+  );
+}
+
+function prepararInicializacao() {
+  if (paginaUsaLayoutCompartilhado()) {
+    document.addEventListener(
+      "vrg:layout-pronto",
+      inicializar,
+      { once: true }
+    );
+
+    return;
   }
+
+  inicializar();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    prepararInicializacao,
+    { once: true }
+  );
+} else {
+  prepararInicializacao();
+}
 })(window, document);
