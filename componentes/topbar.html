@@ -13,24 +13,39 @@
           </button>
 
           <div>
-            <h1 class="topbar-titulo" data-layout-titulo>
-  Página
-</h1>
+<header class="topbar">
 
-<p class="topbar-subtitulo" data-layout-subtitulo>
-  Carregando informações...
-</p>
-          </div>
+  <div class="topbar-esquerda">
 
-        </div>
+    <button
+      type="button"
+      class="botao-menu-mobile"
+      data-acao="alternar-menu"
+      aria-label="Abrir menu"
+      aria-expanded="false"
+    >
+      ☰
+    </button>
 
-        <div class="topbar-direita">
-          <div class="topbar-data">
-            <strong id="dataAtual">—</strong><br>
-            <span id="horaAtual">—</span>
-          </div>
+    <div>
+      <h1 class="topbar-titulo" data-layout-titulo>
+        Página
+      </h1>
 
-          <div class="topbar-avatar" data-usuario-iniciais>VR</div>
-        </div>
+      <p class="topbar-subtitulo" data-layout-subtitulo>
+        Carregando informações...
+      </p>
+    </div>
 
-      </header>
+  </div>
+
+  <div class="topbar-direita">
+    <div class="topbar-data">
+      <strong id="dataAtual">—</strong><br>
+      <span id="horaAtual">—</span>
+    </div>
+
+    <div class="topbar-avatar" data-usuario-iniciais>VR</div>
+  </div>
+
+</header>
