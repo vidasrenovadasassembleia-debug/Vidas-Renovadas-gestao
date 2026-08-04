@@ -238,7 +238,10 @@ const CongregacaoFormulario = (() => {
     ? ""
     : ESTADO.codigo || obterValor(CAMPOS.codigo),
     return {
-      codigo: obterValor(CAMPOS.codigo),
+      codigo:
+  ESTADO.modo === MODOS.NOVO
+    ? ""
+    : ESTADO.codigo || obterValor(CAMPOS.codigo),
       nome: obterValor(CAMPOS.nome),
       tipo:
         obterValor(CAMPOS.tipo) ||
