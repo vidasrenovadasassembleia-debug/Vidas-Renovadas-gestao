@@ -777,7 +777,64 @@
 <div class="sistema-conteudo">
 <form class="edicao-formulario" id="formVisualizarMembro" novalidate=""><input id="ID" name="ID" type="hidden"/>
 <input id="FOTO_URL" name="FOTO_URL" type="hidden"/>
-
+<section class="visualizar-apresentacao">
+<div>
+<p class="visualizar-etiqueta">Secretaria</p>
+<h2 class="visualizar-titulo">Ficha digital do membro</h2>
+<p class="visualizar-descricao">Consulte os mesmos dados e agrupamentos utilizados no cadastro e na edição.</p>
+</div>
+<div class="visualizar-acoes"><a class="ficha-botao" href="membros.html">← Voltar</a><a class="ficha-botao ficha-botao-primario" data-permissao="membros-editar" href="#" id="botaoEditarMembro">✎ Editar membro</a></div>
+</section>
+<div aria-live="polite" class="ficha-aviso ativo" id="avisoFicha" role="status">Carregando a ficha do membro...</div>
+<section aria-label="Resumo do novo membro" class="membro-resumo">
+<div>
+<div class="membro-foto-box">
+<div class="membro-foto-placeholder" id="fotoMembroPlaceholder">
+                  FOTO DO<br/>MEMBRO
+                </div>
+<img alt="Foto do membro" class="membro-foto" hidden="" id="fotoMembro"/>
+<div class="edicao-foto-acoes" hidden="">
+<label class="edicao-foto-botao" for="arquivoFotoMembro">
+                    Selecionar foto
+                  </label>
+<input accept="image/jpeg,image/png,image/webp" data-campo-foto="true" hidden="" id="arquivoFotoMembro" name="arquivoFotoMembro" type="file"/>
+</div>
+</div>
+<p aria-live="polite" class="edicao-foto-status" hidden="" id="statusFoto"></p>
+</div>
+<div class="membro-resumo-conteudo edicao-resumo">
+<p class="membro-resumo-etiqueta">Identificação ministerial</p>
+<div>
+<label class="dado-label" for="NOME_COMPLETO">Nome completo</label>
+<input class="edicao-campo" id="NOME_COMPLETO" name="NOME_COMPLETO" placeholder="Nome completo do membro" required="" type="text"/>
+</div>
+<div class="edicao-resumo-linha">
+<div>
+<label class="dado-label" for="resumoCongregacao">Congregação</label>
+<select class="edicao-campo" data-espelho-campo="CONGREGACAO" id="resumoCongregacao"><option value="">Selecione</option><option value="Independência / Petrópolis">Independência / Petrópolis</option><option value="Km 51 / Xerém">Km 51 / Xerém</option></select>
+</div>
+<div>
+<label class="dado-label" for="resumoCargo">Cargo</label>
+<select class="edicao-campo" data-espelho-campo="CARGO" id="resumoCargo"><option value="">Selecione</option><option value="PASTOR">PASTOR</option><option value="PASTORA">PASTORA</option><option value="PRESBÍTERO">PRESBÍTERO</option><option value="EVANGELISTA">EVANGELISTA</option><option value="DIÁCONO">DIÁCONO</option><option value="DIACONISA">DIACONISA</option><option value="MISSIONÁRIO">MISSIONÁRIO</option><option value="MISSIONÁRIA">MISSIONÁRIA</option><option value="OBREIRO">OBREIRO</option><option value="OBREIRA">OBREIRA</option><option value="AUXILIAR DE TRABALHO">AUXILIAR DE TRABALHO</option><option value="MEMBRO">MEMBRO</option><option value="MEMBRA">MEMBRA</option></select>
+</div>
+</div>
+<div class="membro-identificadores">
+<span class="ficha-badge ficha-badge-codigo">
+                  ID: <strong id="resumoCodigo">Será gerado</strong>
+</span>
+<span class="ficha-badge ficha-badge-situacao">
+<span aria-hidden="true" class="ficha-badge-ponto"></span>
+<span id="resumoSituacao">ATIVO</span>
+</span>
+</div>
+</div>
+<div class="membro-resumo-lateral">
+<div class="resumo-dado">
+<span class="resumo-dado-label">Data de cadastro</span>
+<span class="resumo-dado-valor" id="resumoDataCadastro">Será registrada</span>
+</div>
+</div>
+</section>
 <div class="ficha-grid">
 <section class="ficha-card ficha-card-largo">
 <header class="ficha-card-cabecalho">
