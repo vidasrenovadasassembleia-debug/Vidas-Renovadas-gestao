@@ -808,6 +808,31 @@ document.getElementById("membroSelecionadoNome").value = "";
       "click",
       function (evento) {
         const botao = evento.target.closest(
+          const botaoNaoCadastrado = evento.target.closest(
+  "#botaoUsarDizimistaNaoCadastrado"
+);
+
+if (botaoNaoCadastrado) {
+  const nomeDigitado = texto(
+    elementos.pesquisaMembro.value
+  );
+
+  fecharResultadosPesquisa();
+
+  document.getElementById(
+    "painelDizimistaNaoCadastrado"
+  ).hidden = false;
+
+  document.getElementById(
+    "nomeDizimistaNaoCadastrado"
+  ).value = nomeDigitado;
+
+  document.getElementById(
+    "nomeDizimistaNaoCadastrado"
+  ).focus();
+
+  return;
+}
           "[data-indice-resultado]"
         );
 
