@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financeiro | Vidas Renovadas Gestão</title>
+  <meta name="description" content="Conferência e aprovação de dízimos e ofertas.">
+  <meta name="theme-color" content="#071f3b">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="css/estilo.css?v=50">
+  <link rel="stylesheet" href="css/financeiro.css?v=3">
+</head>
+<body>
+  <div class="sistema-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo-area">
+        <img src="logo.png" alt="Assembleia de Deus Ministério Vidas Renovadas" class="sidebar-logo">
+        <div class="sidebar-logo-texto">
+          <strong>Vidas Renovadas Gestão</strong>
+          <span>Ministério Vidas Renovadas</span>
+        </div>
+      </div>
+      <nav class="sidebar-menu" aria-label="Menu principal">
+        <p class="sidebar-menu-titulo">Visão Geral</p>
+        <a href="dashboard.html" class="sidebar-link"><span class="sidebar-link-icone">◇</span><span>Dashboard</span></a>
+        <p class="sidebar-menu-titulo">Pessoas</p>
+        <a href="membros.html" class="sidebar-link"><span class="sidebar-link-icone">♟</span><span>Membros</span></a>
+        <a href="congregacoes.html" class="sidebar-link"><span class="sidebar-link-icone">⌂</span><span>Congregações</span></a>
+        <p class="sidebar-menu-titulo">Documentos</p>
+        <a href="certificados.html" class="sidebar-link"><span class="sidebar-link-icone">◇</span><span>Certificados</span></a>
+        <p class="sidebar-menu-titulo">Gestão</p>
+        <a href="financeiro.html" class="sidebar-link ativo" aria-current="page"><span class="sidebar-link-icone">R$</span><span>Financeiro</span></a>
+        <a href="relatorios.html" class="sidebar-link"><span class="sidebar-link-icone">▤</span><span>Relatórios</span></a>
+        <a href="administracao.html" class="sidebar-link"><span class="sidebar-link-icone">⚙</span><span>Administração</span></a>
+      </nav>
+      <div class="sidebar-usuario">
+        <div class="sidebar-avatar" data-usuario-iniciais>LL</div>
+        <div class="sidebar-usuario-dados">
+          <strong data-usuario-nome>Usuário</strong>
+          <span data-usuario-perfil>Perfil</span>
+        </div>
+        <button type="button" class="sidebar-sair" data-acao="logout" data-confirmar-logout="true" aria-label="Sair" title="Sair">↪</button>
+      </div>
+    </aside>
+
+    <div class="sistema-main">
+      <header class="topbar">
+        <div>
+          <h1 class="topbar-titulo">Financeiro</h1>
+          <p class="topbar-subtitulo">Conferência e aprovação de dízimos e ofertas</p>
+        </div>
+        <div class="topbar-direita">
+          <button type="button" class="topbar-menu-botao" id="botaoAlternarSidebar" aria-label="Alternar menu" title="Alternar menu">☰</button>
+          <div class="topbar-avatar" data-usuario-iniciais>LL</div>
+        </div>
+      </header>
+
+      <main class="sistema-conteudo financeiro-admin-pagina">
+        <section class="financeiro-admin-cabecalho">
+          <div>
+            <p class="financeiro-admin-selo">Painel do Pastor</p>
+            <h2 class="financeiro-admin-titulo">Conferência de Dízimos e Ofertas</h2>
+            <p class="financeiro-admin-subtitulo">Analise os lançamentos enviados pela Tesouraria antes de liberá-los para os relatórios.</p>
+          </div>
+          <button type="button" class="btn btn-contorno" id="botaoAtualizarFinanceiro">Atualizar</button>
+        </section>
+
+        <div id="avisoFinanceiro" class="alerta" role="status" aria-live="polite" hidden></div>
+
+        <section class="financeiro-admin-resumo" aria-label="Resumo financeiro">
+          <article class="financeiro-admin-indicador">
+            <div class="financeiro-admin-indicador-topo"><span class="financeiro-admin-indicador-icone">!</span><span class="financeiro-admin-indicador-etiqueta pendente">Pendências</span></div>
+            <span class="financeiro-admin-indicador-label">Aguardando aprovação</span>
+            <strong id="resumoQuantidadePendentes" class="financeiro-admin-indicador-valor">0</strong>
+            <small>Lançamentos da Tesouraria</small>
+          </article>
+          <article class="financeiro-admin-indicador">
+            <div class="financeiro-admin-indicador-topo"><span class="financeiro-admin-indicador-icone">✓</span><span class="financeiro-admin-indicador-etiqueta aprovado">Aprovados</span></div>
+            <span class="financeiro-admin-indicador-label">Aprovados no mês</span>
+            <strong id="resumoQuantidadeAprovados" class="financeiro-admin-indicador-valor">0</strong>
+            <small>Lançamentos confirmados</small>
+          </article>
+          <article class="financeiro-admin-indicador">
+            <div class="financeiro-admin-indicador-topo"><span class="financeiro-admin-indicador-icone">R$</span><span class="financeiro-admin-indicador-etiqueta">Dízimos</span></div>
+            <span class="financeiro-admin-indicador-label">Dízimos aprovados no mês</span>
+            <strong id="resumoTotalDizimos" class="financeiro-admin-indicador-valor financeiro-admin-valor-moeda">R$ 0,00</strong>
+            <small>Somente lançamentos aprovados</small>
+          </article>
+          <article class="financeiro-admin-indicador">
+            <div class="financeiro-admin-indicador-topo"><span class="financeiro-admin-indicador-icone">R$</span><span class="financeiro-admin-indicador-etiqueta">Ofertas</span></div>
+            <span class="financeiro-admin-indicador-label">Ofertas aprovadas no mês</span>
+            <strong id="resumoTotalOfertas" class="financeiro-admin-indicador-valor financeiro-admin-valor-moeda">R$ 0,00</strong>
+            <small>Somente lançamentos aprovados</small>
+          </article>
+        </section>
+
+        <section class="painel financeiro-admin-filtros-painel" aria-labelledby="tituloFiltrosFinanceiro">
+          <div class="painel-cabecalho">
+            <div>
+              <h2 id="tituloFiltrosFinanceiro" class="painel-titulo">Filtros</h2>
+              <p class="painel-subtitulo">Localize lançamentos por status, período ou congregação.</p>
+            </div>
+          </div>
+          <div class="painel-corpo">
+            <form id="formFiltrosFinanceiro" class="financeiro-admin-filtros" autocomplete="off">
+              <div class="campo"><label for="filtroStatus">Status</label><select id="filtroStatus" name="status"><option value="">Todos</option><option value="PENDENTE">Pendentes</option><option value="APROVADO">Aprovados</option><option value="REJEITADO">Rejeitados</option></select></div>
+              <div class="campo"><label for="filtroMes">Mês</label><input type="month" id="filtroMes" name="mes"></div>
+              <div class="campo"><label for="filtroCongregacao">Congregação</label><select id="filtroCongregacao" name="congregacao"><option value="">Todas</option></select></div>
+              <div class="campo financeiro-admin-pesquisa"><label for="filtroPesquisa">Pesquisar</label><input type="search" id="filtroPesquisa" name="pesquisa" placeholder="Responsável, congregação ou código"></div>
+              <div class="financeiro-admin-filtros-acoes">
+                <button type="button" class="btn btn-contorno" id="botaoLimparFiltrosFinanceiro">Limpar</button>
+                <button type="submit" class="btn btn-dourado">Aplicar</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="painel financeiro-admin-lista-painel" aria-labelledby="tituloLancamentosFinanceiro">
+          <div class="painel-cabecalho">
+            <div>
+              <h2 id="tituloLancamentosFinanceiro" class="painel-titulo">Lançamentos</h2>
+              <p class="painel-subtitulo">Os pendentes aparecem primeiro para facilitar a conferência.</p>
+            </div>
+            <span id="contadorLancamentosFinanceiro" class="financeiro-admin-contador">0 lançamentos</span>
+          </div>
+          <div class="painel-corpo financeiro-admin-lista-corpo">
+            <div id="estadoCarregandoFinanceiro" class="financeiro-admin-estado"><span class="spinner" aria-hidden="true"></span><p>Carregando lançamentos...</p></div>
+            <div id="estadoVazioFinanceiro" class="financeiro-admin-estado" hidden><strong>Nenhum lançamento encontrado</strong><p>Ajuste os filtros ou aguarde novos lançamentos da Tesouraria.</p></div>
+            <div id="tabelaFinanceiroArea" class="financeiro-admin-tabela-area" hidden>
+              <table class="financeiro-admin-tabela">
+                <thead><tr><th>Data</th><th>Congregação</th><th>Responsável</th><th>Oferta</th><th>Dízimos</th><th>Total</th><th>Status</th><th class="financeiro-admin-coluna-acoes">Ações</th></tr></thead>
+                <tbody id="corpoTabelaFinanceiro"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="financeiroDetalhes" class="financeiro-detalhes" hidden>
+    <button type="button" class="financeiro-detalhes-fundo" id="botaoFecharDetalhesFundo" aria-label="Fechar detalhes"></button>
+    <aside class="financeiro-detalhes-painel" role="dialog" aria-modal="true" aria-labelledby="tituloDetalhesFinanceiro">
+      <header class="financeiro-detalhes-cabecalho">
+        <div><span class="financeiro-detalhes-selo">Lançamento</span><h2 id="tituloDetalhesFinanceiro">Conferência financeira</h2><p id="codigoDetalhesFinanceiro">—</p></div>
+        <button type="button" class="financeiro-detalhes-fechar" id="botaoFecharDetalhes" aria-label="Fechar" title="Fechar">×</button>
+      </header>
+      <div class="financeiro-detalhes-conteudo">
+        <section class="financeiro-detalhes-resumo">
+          <div><span>Data</span><strong id="detalheData">—</strong></div>
+          <div><span>Congregação</span><strong id="detalheCongregacao">—</strong></div>
+          <div><span>Responsável</span><strong id="detalheResponsavel">—</strong></div>
+          <div><span>Status</span><strong id="detalheStatus">—</strong></div>
+        </section>
+        <section class="financeiro-detalhes-valores">
+          <div><span>Oferta Geral</span><strong id="detalheOferta">R$ 0,00</strong></div>
+          <div><span>Dízimos</span><strong id="detalheTotalDizimos">R$ 0,00</strong></div>
+          <div class="financeiro-detalhes-total"><span>Total Geral</span><strong id="detalheTotalGeral">R$ 0,00</strong></div>
+        </section>
+        <section class="financeiro-detalhes-secao">
+          <div class="financeiro-detalhes-secao-cabecalho"><h3>Dizimistas</h3><span id="detalheQuantidadeDizimos">0 registros</span></div>
+          <div class="financeiro-detalhes-dizimos-area">
+            <table class="financeiro-detalhes-dizimos-tabela"><thead><tr><th>Dizimista</th><th>Valor</th></tr></thead><tbody id="corpoTabelaDetalheDizimos"></tbody></table>
+          </div>
+        </section>
+        <section class="financeiro-detalhes-secao"><h3>Observações</h3><p id="detalheObservacoes" class="financeiro-detalhes-observacoes">Nenhuma observação registrada.</p></section>
+      </div>
+      <footer id="financeiroDetalhesAcoes" class="financeiro-detalhes-acoes">
+        <button type="button" class="btn btn-contorno" id="botaoEditarLancamento">Editar</button>
+        <button type="button" class="btn financeiro-botao-rejeitar" id="botaoRejeitarLancamento">Rejeitar</button>
+        <button type="button" class="btn btn-dourado" id="botaoAprovarLancamento">Aprovar</button>
+      </footer>
+    </aside>
+  </div>
+
+  <div id="dialogoAprovarFinanceiro" class="tesouraria-dialogo" hidden>
+    <div class="tesouraria-dialogo-fundo" data-acao="fechar-dialogo-aprovacao"></div>
+    <section class="tesouraria-dialogo-caixa" role="dialog" aria-modal="true" aria-labelledby="tituloAprovarFinanceiro">
+      <div class="tesouraria-dialogo-icone">✓</div>
+      <h2 id="tituloAprovarFinanceiro">Aprovar lançamento</h2>
+      <p>Depois de aprovado, este lançamento poderá entrar nos relatórios financeiros.</p>
+      <div class="tesouraria-dialogo-acoes"><button type="button" class="btn btn-contorno" id="botaoCancelarAprovacao">Cancelar</button><button type="button" class="btn btn-dourado" id="botaoConfirmarAprovacao">Confirmar Aprovação</button></div>
+    </section>
+  </div>
+
+  <div id="dialogoRejeitarFinanceiro" class="tesouraria-dialogo" hidden>
+    <div class="tesouraria-dialogo-fundo" data-acao="fechar-dialogo-rejeicao"></div>
+    <section class="tesouraria-dialogo-caixa" role="dialog" aria-modal="true" aria-labelledby="tituloRejeitarFinanceiro">
+      <h2 id="tituloRejeitarFinanceiro">Rejeitar lançamento</h2>
+      <p>Informe uma observação curta para registrar o motivo.</p>
+      <div class="campo financeiro-dialogo-campo"><label for="motivoRejeicaoFinanceiro">Motivo</label><textarea id="motivoRejeicaoFinanceiro" rows="4" maxlength="300" placeholder="Digite o motivo da rejeição"></textarea></div>
+      <div class="tesouraria-dialogo-acoes"><button type="button" class="btn btn-contorno" id="botaoCancelarRejeicao">Cancelar</button><button type="button" class="btn financeiro-botao-rejeitar" id="botaoConfirmarRejeicao">Confirmar Rejeição</button></div>
+    </section>
+  </div>
+
+  <div id="carregamentoGlobal" class="carregamento-global" aria-hidden="true">
+    <div class="carregamento-caixa" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span><span>Carregando...</span></div>
+  </div>
+
+  <script src="js/configuracoes.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
+  <script src="js/auth.js?v=5"></script>
+  <script src="js/app.js?v=2"></script>
+  <script src="js/financeiro.js?v=1"></script>
+</body>
+</html>
