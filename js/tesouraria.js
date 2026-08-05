@@ -460,12 +460,25 @@
     estado.indiceResultadoAtivo = -1;
 
     if (!resultados.length) {
-      elementos.resultadosPesquisaMembro.innerHTML = `
-        <div class="tesouraria-resultado-vazio">
-          Nenhum membro encontrado.
-        </div>
-      `;
-    } else {
+  const nomeDigitado = texto(
+    elementos.pesquisaMembro.value
+  );
+
+  elementos.resultadosPesquisaMembro.innerHTML = `
+    <div class="tesouraria-resultado-vazio">
+      <p>Nenhum membro encontrado.</p>
+
+      <button
+        type="button"
+        class="btn btn-contorno"
+        id="botaoUsarDizimistaNaoCadastrado"
+      >
+        Registrar "${escaparHtml(nomeDigitado)}" como não cadastrado
+      </button>
+    </div>
+  `;
+}
+    else {
       elementos.resultadosPesquisaMembro.innerHTML = resultados
         .map(
           (membro, indice) => `
