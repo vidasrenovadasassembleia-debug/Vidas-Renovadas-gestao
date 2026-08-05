@@ -92,6 +92,10 @@
       document.getElementById("membroSelecionadoId");
     elementos.membroSelecionadoNome =
       document.getElementById("membroSelecionadoNome");
+    elementos.painelDizimistaNaoCadastrado =
+  document.getElementById("painelDizimistaNaoCadastrado");
+elementos.nomeDizimistaNaoCadastrado =
+  document.getElementById("nomeDizimistaNaoCadastrado");
     elementos.valorDizimo = document.getElementById("valorDizimo");
     elementos.observacoes = document.getElementById("observacoes");
     elementos.corpoTabelaDizimos =
@@ -113,7 +117,9 @@
       elementos.pesquisaMembro &&
       elementos.membroSelecionadoId &&
       elementos.membroSelecionadoNome &&
-      elementos.valorDizimo &&
+elementos.painelDizimistaNaoCadastrado &&
+elementos.nomeDizimistaNaoCadastrado &&
+elementos.valorDizimo &&
       elementos.observacoes &&
       elementos.corpoTabelaDizimos &&
       elementos.contadorDizimos &&
