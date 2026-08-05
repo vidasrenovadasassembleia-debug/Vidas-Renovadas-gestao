@@ -230,44 +230,109 @@ elementos.valorDizimo &&
   }
 
   function adicionarDizimo(dados = {}) {
-    const membroId = texto(
-      dados.membroId ?? elementos.membroSelecionadoId.value
+  const membroId = texto(
+    dados.membroId ??
+    elementos.membroSelecionadoId.value
+  );
+
+  const nomeMembroCadastrado = texto(
+    dados.nomeMembro ??
+    elementos.membroSelecionadoNome.value
+  );
+
+  const nomeNaoCadastrado = texto(
+    dados.nomeNaoCadastrado ??
+    elementos.nomeDizimistaNaoCadastrado.value
+  );
+
+  const valor = moedaParaNumero(
+    dados.valor ??
+    elementos.valorDizimo.value
+  );
+
+  const ehMembroCadastrado = Boolean(
+    membroId && nomeMembroCadastrado
+  );
+
+  const tipo = ehMembroCadastrado
+    ? "MEMBRO"
+    : "NAO_CADASTRADO";
+
+  const nomeMembro = ehMembroCadastrado
+    ? nomeMembroCadastrado
+    : nomeNaoCadastrado;
+
+  if (!nomeMembro) {
+    throw new Error(
+      "Selecione um membro ou informe o nome do dizimista não cadastrado."
     );
-
-    const nomeMembro = texto(
-      dados.nomeMembro ?? elementos.membroSelecionadoNome.value
-    );
-
-    const valor = moedaParaNumero(
-      dados.valor ?? elementos.valorDizimo.value
-    );
-
-    if (!membroId || !nomeMembro) {
-      throw new Error("Selecione um membro cadastrado.");
-    }
-
-    if (!(valor > 0)) {
-      throw new Error("Informe um valor de dízimo maior que zero.");
-    }
-
-    if (estado.dizimos.some((item) => item.membroId === membroId)) {
-      throw new Error("Este membro já foi adicionado ao lançamento.");
-    }
-
-    const novoDizimo = {
-      idTemporario: gerarIdTemporario(),
-      membroId,
-      nomeMembro,
-      valor
-    };
-
-    estado.dizimos.push(novoDizimo);
-    limparMembroSelecionado();
-    renderizarDizimos();
-    elementos.pesquisaMembro.focus();
-
-    return { ...novoDizimo };
   }
+
+  if (!(valor > 0)) {
+    throw new Error(
+      "Informe um valor de dízimo maior que zero."
+    );
+  }
+
+  const nomeNormalizado = nomeMembro
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase();
+
+  const jaAdicionado = estado.dizimos.some(
+    function (item) {
+      if (
+        tipo === "MEMBRO" &&
+        item.tipo === "MEMBRO"
+      ) {
+        return item.membroId === membroId;
+      }
+
+      if (
+        tipo === "NAO_CADASTRADO" &&
+        item.tipo === "NAO_CADASTRADO"
+      ) {
+        const nomeExistente = texto(item.nomeMembro)
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim()
+          .toLowerCase();
+
+        return nomeExistente === nomeNormalizado;
+      }
+
+      return false;
+    }
+  );
+
+  if (jaAdicionado) {
+    throw new Error(
+      "Este dizimista já foi incluído neste lançamento."
+    );
+  }
+
+  const novoDizimo = {
+    idTemporario: gerarIdTemporario(),
+    tipo: tipo,
+    membroId: ehMembroCadastrado ? membroId : "",
+    nomeMembro: nomeMembro,
+    valor: valor
+  };
+
+  estado.dizimos.push(novoDizimo);
+
+  limparMembroSelecionado();
+
+  elementos.nomeDizimistaNaoCadastrado.value = "";
+  elementos.painelDizimistaNaoCadastrado.hidden = true;
+
+  renderizarDizimos();
+
+  elementos.pesquisaMembro.focus();
+
+  return { ...novoDizimo };
+}
 
   function removerDizimo(idTemporario) {
     const id = texto(idTemporario);
