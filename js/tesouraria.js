@@ -500,7 +500,8 @@
       elementos.pesquisaMembro.value
     );
 
-    obterFormularioLancamento().limparMembroSelecionado();
+    document.getElementById("membroSelecionadoId").value = "";
+document.getElementById("membroSelecionadoNome").value = "";
 
     if (termo.length < 2) {
       fecharResultadosPesquisa();
