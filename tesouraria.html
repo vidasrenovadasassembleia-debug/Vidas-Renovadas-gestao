@@ -2,112 +2,703 @@
 <html lang="pt-BR">
 
 <head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel da Tesouraria | Vidas Renovadas Gestão</title>
 
-    <title>Painel da Tesouraria | Vidas Renovadas Gestão</title>
+  <meta
+    name="description"
+    content="Lançamento de dízimos e ofertas da Assembleia de Deus Ministério Vidas Renovadas."
+  >
 
-    <link rel="stylesheet" href="css/estilo.css?v=50">
-    <link rel="stylesheet" href="css/financeiro.css?v=1">
+  <meta name="theme-color" content="#071f3b">
 
+  <link
+    rel="icon"
+    type="image/png"
+    href="logo.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/estilo.css?v=50"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/financeiro.css?v=1"
+  >
 </head>
 
 <body class="tesouraria-page">
-<div class="tesouraria-container">
+
+  <div class="tesouraria-container">
 
     <header class="tesouraria-topo">
 
-        <div class="tesouraria-logo-area">
+      <div class="tesouraria-identidade">
 
-            <img
-                src="imagens/logo.png"
-                alt="Assembleia de Deus Ministério Vidas Renovadas"
-                class="tesouraria-logo"
-            >
-
-            <h1>ASSEMBLEIA DE DEUS MINISTÉRIO VIDAS RENOVADAS</h1>
-
-            <h2>Painel da Tesouraria</h2>
-
-            <p>Lançamento de Dízimos e Ofertas</p>
-
+        <div class="tesouraria-logo-box">
+          <img
+            class="tesouraria-logo"
+            src="logo.png"
+            alt="Logo da Assembleia de Deus Ministério Vidas Renovadas"
+          >
         </div>
 
-        <div class="tesouraria-usuario">
+        <div class="tesouraria-identidade-texto">
+          <p class="tesouraria-igreja">
+            Assembleia de Deus Ministério Vidas Renovadas
+          </p>
 
-            <span id="usuarioLogado">
-                Usuário
-            </span>
+          <p class="tesouraria-area">
+            Painel da Tesouraria
+          </p>
 
-            <button
-                type="button"
-                class="btn btn-contorno"
-                id="btnSair">
-
-                Sair
-
-            </button>
-
+          <h1 class="tesouraria-titulo">
+            Lançamento de Dízimos e Ofertas
+          </h1>
         </div>
+
+      </div>
+
+      <div class="tesouraria-usuario">
+
+        <div class="tesouraria-usuario-dados">
+          <span class="tesouraria-usuario-label">
+            Usuário
+          </span>
+
+          <strong
+            class="tesouraria-usuario-nome"
+            id="usuarioLogado"
+            data-usuario-nome
+          >
+            Carregando...
+          </strong>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-contorno"
+          id="botaoSair"
+          data-acao="logout"
+          data-confirmar-logout="true"
+        >
+          Sair
+        </button>
+
+      </div>
 
     </header>
 
     <main class="tesouraria-conteudo">
-<form id="formTesouraria" class="formulario-padrao" autocomplete="off">
 
-    <section class="painel">
+      <div
+        id="mensagemTesouraria"
+        class="alerta"
+        role="status"
+        aria-live="polite"
+        hidden
+      ></div>
 
-        <div class="painel-cabecalho">
-            <h3 class="painel-titulo">
+      <form
+        id="formTesouraria"
+        class="formulario-padrao tesouraria-formulario"
+        autocomplete="off"
+        novalidate
+      >
+
+        <section
+          class="painel tesouraria-informacoes-painel"
+          aria-labelledby="tituloInformacoesCulto"
+        >
+
+          <div class="painel-cabecalho">
+
+            <div>
+              <h2
+                id="tituloInformacoesCulto"
+                class="painel-titulo"
+              >
                 Informações do Culto
-            </h3>
-        </div>
+              </h2>
 
-        <div class="painel-corpo formulario-grid">
-
-            <div class="campo">
-                <label for="dataCulto">Data</label>
-                <input
-                    type="date"
-                    id="dataCulto"
-                    name="dataCulto"
-                    required>
+              <p class="painel-subtitulo">
+                Informe a data, a congregação e confira o responsável pelo lançamento.
+              </p>
             </div>
 
-            <div class="campo">
-                <label for="congregacao">Congregação</label>
+          </div>
+
+          <div class="painel-corpo">
+
+            <div class="tesouraria-informacoes-grid">
+
+              <div class="campo">
+                <label for="dataCulto">
+                  Data
+                </label>
+
+                <input
+                  type="date"
+                  id="dataCulto"
+                  name="dataCulto"
+                  required
+                >
+              </div>
+
+              <div class="campo">
+                <label for="congregacao">
+                  Congregação
+                </label>
 
                 <select
-                    id="congregacao"
-                    name="congregacao"
-                    required>
-
-                    <option value="">
-                        Selecione...
-                    </option>
-
+                  id="congregacao"
+                  name="congregacao"
+                  required
+                >
+                  <option value="">
+                    Selecione a congregação
+                  </option>
                 </select>
-            </div>
+              </div>
 
-            <div class="campo">
-                <label for="responsavel">Responsável</label>
+              <div class="campo">
+                <label for="responsavel">
+                  Responsável
+                </label>
 
                 <input
-                    type="text"
-                    id="responsavel"
-                    name="responsavel"
-                    readonly>
+                  type="text"
+                  id="responsavel"
+                  name="responsavel"
+                  readonly
+                  tabindex="-1"
+                  placeholder="Preenchido automaticamente"
+                >
+              </div>
+
             </div>
+
+          </div>
+
+        </section>
+
+        <section
+          class="painel tesouraria-oferta-painel"
+          aria-labelledby="tituloOfertaGeral"
+        >
+
+          <div class="painel-cabecalho">
+
+            <div>
+              <h2
+                id="tituloOfertaGeral"
+                class="painel-titulo"
+              >
+                Oferta Geral
+              </h2>
+
+              <p class="painel-subtitulo">
+                Informe o valor total das ofertas recebidas.
+              </p>
+            </div>
+
+          </div>
+
+          <div class="painel-corpo">
+
+            <div class="campo campo-valor-principal">
+
+              <label for="valorOferta">
+                Valor da oferta
+              </label>
+
+              <div class="campo-moeda">
+
+                <span
+                  class="campo-moeda-prefixo"
+                  aria-hidden="true"
+                >
+                  R$
+                </span>
+
+                <input
+                  type="text"
+                  id="valorOferta"
+                  name="valorOferta"
+                  inputmode="decimal"
+                  autocomplete="off"
+                  placeholder="0,00"
+                  aria-describedby="ajudaValorOferta"
+                >
+
+              </div>
+
+              <small
+                id="ajudaValorOferta"
+                class="campo-ajuda"
+              >
+                Deixe em branco quando não houver oferta.
+              </small>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <section
+          class="painel tesouraria-dizimos-painel"
+          aria-labelledby="tituloDizimos"
+        >
+
+          <div class="painel-cabecalho">
+
+            <div>
+              <h2
+                id="tituloDizimos"
+                class="painel-titulo"
+              >
+                Dízimos
+              </h2>
+
+              <p class="painel-subtitulo">
+                Pesquise o membro cadastrado, informe o valor e adicione à lista.
+              </p>
+            </div>
+
+            <span
+              id="contadorDizimos"
+              class="tesouraria-contador"
+              aria-live="polite"
+            >
+              0 registros
+            </span>
+
+          </div>
+
+          <div class="painel-corpo">
+
+            <div class="tesouraria-dizimo-adicionar">
+
+              <div class="campo tesouraria-membro-pesquisa">
+
+                <label for="pesquisaMembro">
+                  Pesquisar membro
+                </label>
+
+                <div class="tesouraria-pesquisa-area">
+
+                  <input
+                    type="search"
+                    id="pesquisaMembro"
+                    name="pesquisaMembro"
+                    autocomplete="off"
+                    placeholder="Digite o nome do membro"
+                    aria-controls="resultadosPesquisaMembro"
+                    aria-expanded="false"
+                  >
+
+                  <div
+                    id="resultadosPesquisaMembro"
+                    class="tesouraria-resultados-pesquisa"
+                    role="listbox"
+                    hidden
+                  ></div>
+
+                </div>
+
+                <input
+                  type="hidden"
+                  id="membroSelecionadoId"
+                  name="membroSelecionadoId"
+                >
+
+                <input
+                  type="hidden"
+                  id="membroSelecionadoNome"
+                  name="membroSelecionadoNome"
+                >
+
+              </div>
+
+              <div class="campo">
+
+                <label for="valorDizimo">
+                  Valor do dízimo
+                </label>
+
+                <div class="campo-moeda">
+
+                  <span
+                    class="campo-moeda-prefixo"
+                    aria-hidden="true"
+                  >
+                    R$
+                  </span>
+
+                  <input
+                    type="text"
+                    id="valorDizimo"
+                    name="valorDizimo"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    placeholder="0,00"
+                  >
+
+                </div>
+
+              </div>
+
+              <div class="tesouraria-dizimo-acao">
+
+                <button
+                  type="button"
+                  class="btn btn-dourado"
+                  id="botaoAdicionarDizimo"
+                >
+                  Adicionar
+                </button>
+
+              </div>
+
+            </div>
+
+            <div class="tesouraria-dizimos-lista-area">
+
+              <table class="tesouraria-dizimos-tabela">
+
+                <thead>
+                  <tr>
+                    <th scope="col">
+                      Membro
+                    </th>
+
+                    <th scope="col">
+                      Valor
+                    </th>
+
+                    <th
+                      scope="col"
+                      class="tesouraria-coluna-acao"
+                    >
+                      Ação
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody id="corpoTabelaDizimos">
+
+                  <tr id="linhaDizimosVazia">
+                    <td
+                      colspan="3"
+                      class="tesouraria-dizimos-vazio"
+                    >
+                      Nenhum dízimo adicionado.
+                    </td>
+                  </tr>
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <div class="tesouraria-blocos-finais">
+
+          <section
+            class="painel tesouraria-observacoes-painel"
+            aria-labelledby="tituloObservacoes"
+          >
+
+            <div class="painel-cabecalho">
+
+              <div>
+                <h2
+                  id="tituloObservacoes"
+                  class="painel-titulo"
+                >
+                  Observações
+                </h2>
+
+                <p class="painel-subtitulo">
+                  Registre informações adicionais quando necessário.
+                </p>
+              </div>
+
+            </div>
+
+            <div class="painel-corpo">
+
+              <div class="campo">
+
+                <label
+                  class="sr-only"
+                  for="observacoes"
+                >
+                  Observações
+                </label>
+
+                <textarea
+                  id="observacoes"
+                  name="observacoes"
+                  rows="7"
+                  placeholder="Digite uma observação, se necessário."
+                ></textarea>
+
+              </div>
+
+            </div>
+
+          </section>
+
+          <section
+            class="painel tesouraria-resumo-painel"
+            aria-labelledby="tituloResumoLancamento"
+          >
+
+            <div class="painel-cabecalho">
+
+              <div>
+                <h2
+                  id="tituloResumoLancamento"
+                  class="painel-titulo"
+                >
+                  Resumo do Lançamento
+                </h2>
+
+                <p class="painel-subtitulo">
+                  Confira os valores antes de registrar.
+                </p>
+              </div>
+
+            </div>
+
+            <div class="painel-corpo">
+
+              <div class="tesouraria-resumo">
+
+                <div class="tesouraria-resumo-item">
+                  <span class="tesouraria-resumo-label">
+                    Oferta Geral
+                  </span>
+
+                  <strong
+                    class="tesouraria-resumo-valor"
+                    id="resumoOferta"
+                  >
+                    R$ 0,00
+                  </strong>
+                </div>
+
+                <div class="tesouraria-resumo-item">
+                  <span class="tesouraria-resumo-label">
+                    Dízimos
+                  </span>
+
+                  <span
+                    class="tesouraria-resumo-detalhe"
+                    id="resumoQuantidadeDizimos"
+                  >
+                    0 registros
+                  </span>
+
+                  <strong
+                    class="tesouraria-resumo-valor"
+                    id="resumoDizimos"
+                  >
+                    R$ 0,00
+                  </strong>
+                </div>
+
+                <div class="tesouraria-resumo-total">
+                  <span class="tesouraria-resumo-total-label">
+                    Total
+                  </span>
+
+                  <strong
+                    class="tesouraria-resumo-total-valor"
+                    id="resumoTotal"
+                  >
+                    R$ 0,00
+                  </strong>
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
 
         </div>
 
-    </section>
+        <div class="tesouraria-acoes">
 
-</form>
+          <button
+            type="button"
+            class="btn btn-contorno"
+            id="botaoLimpar"
+          >
+            Limpar
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-dourado tesouraria-botao-registrar"
+            id="botaoRegistrarLancamento"
+          >
+            Registrar Lançamento
+          </button>
+
+        </div>
+
+      </form>
+
     </main>
 
-</div>
+    <footer class="tesouraria-rodape">
+      Vidas Renovadas Gestão 2.0
+    </footer>
+
+  </div>
+
+  <div
+    id="carregamentoGlobal"
+    class="carregamento-global"
+    aria-hidden="true"
+  >
+    <div
+      class="carregamento-caixa"
+      role="status"
+      aria-live="polite"
+    >
+      <span
+        class="spinner"
+        aria-hidden="true"
+      ></span>
+
+      <span>Carregando...</span>
+    </div>
+  </div>
+
+  <div
+    id="dialogoConfirmacaoLancamento"
+    class="tesouraria-dialogo"
+    hidden
+  >
+    <div
+      class="tesouraria-dialogo-fundo"
+      data-acao="fechar-confirmacao"
+    ></div>
+
+    <section
+      class="tesouraria-dialogo-caixa"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tituloConfirmacaoLancamento"
+    >
+
+      <h2 id="tituloConfirmacaoLancamento">
+        Confirmar lançamento
+      </h2>
+
+      <div
+        id="resumoConfirmacaoLancamento"
+        class="tesouraria-dialogo-resumo"
+      ></div>
+
+      <div class="tesouraria-dialogo-acoes">
+
+        <button
+          type="button"
+          class="btn btn-contorno"
+          id="botaoCancelarConfirmacao"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-dourado"
+          id="botaoConfirmarLancamento"
+        >
+          Confirmar
+        </button>
+
+      </div>
+
+    </section>
+  </div>
+
+  <div
+    id="dialogoSucessoLancamento"
+    class="tesouraria-dialogo"
+    hidden
+  >
+    <div class="tesouraria-dialogo-fundo"></div>
+
+    <section
+      class="tesouraria-dialogo-caixa"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tituloSucessoLancamento"
+    >
+
+      <div
+        class="tesouraria-dialogo-icone"
+        aria-hidden="true"
+      >
+        ✓
+      </div>
+
+      <h2 id="tituloSucessoLancamento">
+        Lançamento registrado com sucesso
+      </h2>
+
+      <p>
+        Escolha como deseja continuar.
+      </p>
+
+      <div class="tesouraria-dialogo-acoes">
+
+        <button
+          type="button"
+          class="btn btn-contorno"
+          id="botaoEncerrarTesouraria"
+        >
+          Encerrar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-dourado"
+          id="botaoNovoLancamento"
+        >
+          Novo Lançamento
+        </button>
+
+      </div>
+
+    </section>
+  </div>
+
+  <script src="js/configuracoes.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
+  <script src="js/auth.js?v=5"></script>
+  <script src="js/app.js?v=2"></script>
+  <script src="js/lancamento-formulario.js?v=1"></script>
+  <script src="js/tesouraria.js?v=1"></script>
+
 </body>
 
 </html>
