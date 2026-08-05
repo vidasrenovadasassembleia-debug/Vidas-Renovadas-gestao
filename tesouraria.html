@@ -54,7 +54,57 @@
     </header>
 
     <main class="tesouraria-conteudo">
+<form id="formTesouraria" class="formulario-padrao" autocomplete="off">
 
+    <section class="painel">
+
+        <div class="painel-cabecalho">
+            <h3 class="painel-titulo">
+                Informações do Culto
+            </h3>
+        </div>
+
+        <div class="painel-corpo formulario-grid">
+
+            <div class="campo">
+                <label for="dataCulto">Data</label>
+                <input
+                    type="date"
+                    id="dataCulto"
+                    name="dataCulto"
+                    required>
+            </div>
+
+            <div class="campo">
+                <label for="congregacao">Congregação</label>
+
+                <select
+                    id="congregacao"
+                    name="congregacao"
+                    required>
+
+                    <option value="">
+                        Selecione...
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="responsavel">Responsável</label>
+
+                <input
+                    type="text"
+                    id="responsavel"
+                    name="responsavel"
+                    readonly>
+            </div>
+
+        </div>
+
+    </section>
+
+</form>
     </main>
 
 </div>
