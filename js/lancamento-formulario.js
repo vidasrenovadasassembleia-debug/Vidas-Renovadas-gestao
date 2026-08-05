@@ -365,10 +365,11 @@ elementos.valorDizimo &&
       quantidadeDizimos: estado.dizimos.length,
       status: "PENDENTE",
       dizimos: estado.dizimos.map((item) => ({
-        membroId: item.membroId,
-        nomeMembro: item.nomeMembro,
-        valor: item.valor
-      }))
+  tipo: item.tipo || "MEMBRO",
+  membroId: item.membroId || "",
+  nomeMembro: item.nomeMembro,
+  valor: item.valor
+}))
     };
   }
 
