@@ -811,7 +811,21 @@ document.getElementById("membroSelecionadoNome").value = "";
           const botaoNaoCadastrado = evento.target.closest(
   "#botaoUsarDizimistaNaoCadastrado"
 );
+document
+  .getElementById("botaoCancelarNaoCadastrado")
+  .addEventListener("click", function () {
 
+    document.getElementById(
+      "painelDizimistaNaoCadastrado"
+    ).hidden = true;
+
+    document.getElementById(
+      "nomeDizimistaNaoCadastrado"
+    ).value = "";
+
+    elementos.pesquisaMembro.focus();
+
+  });
 if (botaoNaoCadastrado) {
   const nomeDigitado = texto(
     elementos.pesquisaMembro.value
