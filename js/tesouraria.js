@@ -794,150 +794,172 @@ document.getElementById("membroSelecionadoNome").value = "";
   }
 
   function configurarEventos() {
-    elementos.pesquisaMembro.addEventListener(
-      "input",
-      pesquisarMembros
-    );
-
-    elementos.pesquisaMembro.addEventListener(
-      "keydown",
-      tratarTecladoPesquisa
-    );
-
-    elementos.resultadosPesquisaMembro.addEventListener(
-      "click",
-      function (evento) {
-        const botao = evento.target.closest(
-          const botaoNaoCadastrado = evento.target.closest(
-  "#botaoUsarDizimistaNaoCadastrado"
-);
-document
-  .getElementById("botaoCancelarNaoCadastrado")
-  .addEventListener("click", function () {
-
-    document.getElementById(
-      "painelDizimistaNaoCadastrado"
-    ).hidden = true;
-
-    document.getElementById(
-      "nomeDizimistaNaoCadastrado"
-    ).value = "";
-
-    elementos.pesquisaMembro.focus();
-
-  });
-if (botaoNaoCadastrado) {
-  const nomeDigitado = texto(
-    elementos.pesquisaMembro.value
+  elementos.pesquisaMembro.addEventListener(
+    "input",
+    pesquisarMembros
   );
 
-  fecharResultadosPesquisa();
+  elementos.pesquisaMembro.addEventListener(
+    "keydown",
+    tratarTecladoPesquisa
+  );
 
-  document.getElementById(
-    "painelDizimistaNaoCadastrado"
-  ).hidden = false;
+  elementos.resultadosPesquisaMembro.addEventListener(
+    "click",
+    function (evento) {
+      const botaoNaoCadastrado = evento.target.closest(
+        "#botaoUsarDizimistaNaoCadastrado"
+      );
 
-  document.getElementById(
-    "nomeDizimistaNaoCadastrado"
-  ).value = nomeDigitado;
-
-  document.getElementById(
-    "nomeDizimistaNaoCadastrado"
-  ).focus();
-
-  return;
-}
-          "[data-indice-resultado]"
+      if (botaoNaoCadastrado) {
+        const nomeDigitado = texto(
+          elementos.pesquisaMembro.value
         );
-
-        if (!botao) {
-          return;
-        }
-
-        const indice = Number(
-          botao.dataset.indiceResultado
-        );
-
-        const membro = estado.resultadosPesquisa[indice];
-
-        if (membro) {
-          selecionarMembro(membro);
-        }
-      }
-    );
-
-    elementos.botaoAdicionarDizimo.addEventListener(
-      "click",
-      adicionarDizimo
-    );
-
-    elementos.valorDizimo.addEventListener(
-      "keydown",
-      function (evento) {
-        if (evento.key !== "Enter") {
-          return;
-        }
-
-        evento.preventDefault();
-        adicionarDizimo();
-      }
-    );
-
-    elementos.formulario.addEventListener(
-      "submit",
-      function (evento) {
-        evento.preventDefault();
-        abrirDialogoConfirmacao();
-      }
-    );
-
-    elementos.botaoLimpar.addEventListener(
-      "click",
-      limparFormularioComConfirmacao
-    );
-
-    elementos.botaoCancelarConfirmacao.addEventListener(
-      "click",
-      fecharDialogoConfirmacao
-    );
-
-    elementos.botaoConfirmarLancamento.addEventListener(
-      "click",
-      enviarLancamento
-    );
-
-    elementos.botaoNovoLancamento.addEventListener(
-      "click",
-      iniciarNovoLancamento
-    );
-
-    elementos.botaoEncerrarTesouraria.addEventListener(
-      "click",
-      encerrarTesouraria
-    );
-
-    document.addEventListener(
-      "click",
-      function (evento) {
-        if (
-          evento.target.closest(".tesouraria-pesquisa-area")
-        ) {
-          return;
-        }
 
         fecharResultadosPesquisa();
+
+        const painelNaoCadastrado = document.getElementById(
+          "painelDizimistaNaoCadastrado"
+        );
+
+        const campoNomeNaoCadastrado = document.getElementById(
+          "nomeDizimistaNaoCadastrado"
+        );
+
+        if (painelNaoCadastrado) {
+          painelNaoCadastrado.hidden = false;
+        }
+
+        if (campoNomeNaoCadastrado) {
+          campoNomeNaoCadastrado.value = nomeDigitado;
+          campoNomeNaoCadastrado.focus();
+        }
+
+        return;
+      }
+
+      const botao = evento.target.closest(
+        "[data-indice-resultado]"
+      );
+
+      if (!botao) {
+        return;
+      }
+
+      const indice = Number(
+        botao.dataset.indiceResultado
+      );
+
+      const membro = estado.resultadosPesquisa[indice];
+
+      if (membro) {
+        selecionarMembro(membro);
+      }
+    }
+  );
+
+  const botaoCancelarNaoCadastrado = document.getElementById(
+    "botaoCancelarNaoCadastrado"
+  );
+
+  if (botaoCancelarNaoCadastrado) {
+    botaoCancelarNaoCadastrado.addEventListener(
+      "click",
+      function () {
+        const painelNaoCadastrado = document.getElementById(
+          "painelDizimistaNaoCadastrado"
+        );
+
+        const campoNomeNaoCadastrado = document.getElementById(
+          "nomeDizimistaNaoCadastrado"
+        );
+
+        if (painelNaoCadastrado) {
+          painelNaoCadastrado.hidden = true;
+        }
+
+        if (campoNomeNaoCadastrado) {
+          campoNomeNaoCadastrado.value = "";
+        }
+
+        elementos.pesquisaMembro.value = "";
+        elementos.pesquisaMembro.focus();
       }
     );
-
-    document
-      .querySelectorAll('[data-acao="fechar-confirmacao"]')
-      .forEach((elemento) => {
-        elemento.addEventListener(
-          "click",
-          fecharDialogoConfirmacao
-        );
-      });
   }
+
+  elementos.botaoAdicionarDizimo.addEventListener(
+    "click",
+    adicionarDizimo
+  );
+
+  elementos.valorDizimo.addEventListener(
+    "keydown",
+    function (evento) {
+      if (evento.key !== "Enter") {
+        return;
+      }
+
+      evento.preventDefault();
+      adicionarDizimo();
+    }
+  );
+
+  elementos.formulario.addEventListener(
+    "submit",
+    function (evento) {
+      evento.preventDefault();
+      abrirDialogoConfirmacao();
+    }
+  );
+
+  elementos.botaoLimpar.addEventListener(
+    "click",
+    limparFormularioComConfirmacao
+  );
+
+  elementos.botaoCancelarConfirmacao.addEventListener(
+    "click",
+    fecharDialogoConfirmacao
+  );
+
+  elementos.botaoConfirmarLancamento.addEventListener(
+    "click",
+    enviarLancamento
+  );
+
+  elementos.botaoNovoLancamento.addEventListener(
+    "click",
+    iniciarNovoLancamento
+  );
+
+  elementos.botaoEncerrarTesouraria.addEventListener(
+    "click",
+    encerrarTesouraria
+  );
+
+  document.addEventListener(
+    "click",
+    function (evento) {
+      if (
+        evento.target.closest(".tesouraria-pesquisa-area")
+      ) {
+        return;
+      }
+
+      fecharResultadosPesquisa();
+    }
+  );
+
+  document
+    .querySelectorAll('[data-acao="fechar-confirmacao"]')
+    .forEach(function (elemento) {
+      elemento.addEventListener(
+        "click",
+        fecharDialogoConfirmacao
+      );
+    });
+}
 
   async function inicializar() {
     if (!capturarElementos()) {
