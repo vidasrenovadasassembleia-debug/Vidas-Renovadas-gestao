@@ -1,62 +1,63 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>Financeiro | Vidas Renovadas Gestão</title>
-  <meta name="description" content="Conferência e aprovação de dízimos e ofertas.">
+
+  <meta
+    name="description"
+    content="Conferência e aprovação de dízimos e ofertas."
+  >
+
   <meta name="theme-color" content="#071f3b">
-  <link rel="icon" type="image/png" href="logo.png">
-  <link rel="stylesheet" href="css/estilo.css?v=50">
-  <link rel="stylesheet" href="css/financeiro.css?v=3">
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="logo.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/estilo.css?v=50"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/financeiro.css?v=3"
+  >
 </head>
-<body>
+
+<body
+  class="sistema-page"
+  data-page="financeiro"
+  data-titulo="Financeiro"
+  data-subtitulo="Conferência e aprovação de dízimos e ofertas"
+>
+
   <div class="sistema-layout">
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-logo-area">
-        <img src="logo.png" alt="Assembleia de Deus Ministério Vidas Renovadas" class="sidebar-logo">
-        <div class="sidebar-logo-texto">
-          <strong>Vidas Renovadas Gestão</strong>
-          <span>Ministério Vidas Renovadas</span>
-        </div>
-      </div>
-      <nav class="sidebar-menu" aria-label="Menu principal">
-        <p class="sidebar-menu-titulo">Visão Geral</p>
-        <a href="dashboard.html" class="sidebar-link"><span class="sidebar-link-icone">◇</span><span>Dashboard</span></a>
-        <p class="sidebar-menu-titulo">Pessoas</p>
-        <a href="membros.html" class="sidebar-link"><span class="sidebar-link-icone">♟</span><span>Membros</span></a>
-        <a href="congregacoes.html" class="sidebar-link"><span class="sidebar-link-icone">⌂</span><span>Congregações</span></a>
-        <p class="sidebar-menu-titulo">Documentos</p>
-        <a href="certificados.html" class="sidebar-link"><span class="sidebar-link-icone">◇</span><span>Certificados</span></a>
-        <p class="sidebar-menu-titulo">Gestão</p>
-        <a href="financeiro.html" class="sidebar-link ativo" aria-current="page"><span class="sidebar-link-icone">R$</span><span>Financeiro</span></a>
-        <a href="relatorios.html" class="sidebar-link"><span class="sidebar-link-icone">▤</span><span>Relatórios</span></a>
-        <a href="administracao.html" class="sidebar-link"><span class="sidebar-link-icone">⚙</span><span>Administração</span></a>
-      </nav>
-      <div class="sidebar-usuario">
-        <div class="sidebar-avatar" data-usuario-iniciais>LL</div>
-        <div class="sidebar-usuario-dados">
-          <strong data-usuario-nome>Usuário</strong>
-          <span data-usuario-perfil>Perfil</span>
-        </div>
-        <button type="button" class="sidebar-sair" data-acao="logout" data-confirmar-logout="true" aria-label="Sair" title="Sair">↪</button>
-      </div>
-    </aside>
 
-    <div class="sistema-main">
-      <header class="topbar">
-        <div>
-          <h1 class="topbar-titulo">Financeiro</h1>
-          <p class="topbar-subtitulo">Conferência e aprovação de dízimos e ofertas</p>
-        </div>
-        <div class="topbar-direita">
-          <button type="button" class="topbar-menu-botao" id="botaoAlternarSidebar" aria-label="Alternar menu" title="Alternar menu">☰</button>
-          <div class="topbar-avatar" data-usuario-iniciais>LL</div>
-        </div>
-      </header>
+    <div id="layoutSidebar"></div>
 
-      <main class="sistema-conteudo financeiro-admin-pagina">
-        <section class="financeiro-admin-cabecalho">
+    <div
+      class="overlay-menu"
+      data-acao="fechar-menu"
+    ></div>
+
+    <main class="sistema-main">
+
+      <div id="layoutTopbar"></div>
+
+      <div class="sistema-conteudo financeiro-admin-pagina">
+
+<section class="financeiro-admin-cabecalho">
           <div>
             <p class="financeiro-admin-selo">Painel do Pastor</p>
             <h2 class="financeiro-admin-titulo">Conferência de Dízimos e Ofertas</h2>
@@ -134,11 +135,14 @@
             </div>
           </div>
         </section>
-      </main>
-    </div>
+
+      </div>
+
+    </main>
+
   </div>
 
-  <div id="financeiroDetalhes" class="financeiro-detalhes" hidden>
+<div id="financeiroDetalhes" class="financeiro-detalhes" hidden>
     <button type="button" class="financeiro-detalhes-fundo" id="botaoFecharDetalhesFundo" aria-label="Fechar detalhes"></button>
     <aside class="financeiro-detalhes-painel" role="dialog" aria-modal="true" aria-labelledby="tituloDetalhesFinanceiro">
       <header class="financeiro-detalhes-cabecalho">
@@ -197,10 +201,13 @@
     <div class="carregamento-caixa" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span><span>Carregando...</span></div>
   </div>
 
+  <script src="js/componentes.js?v=2"></script>
   <script src="js/configuracoes.js?v=2"></script>
   <script src="js/api.js?v=2"></script>
-  <script src="js/auth.js?v=5"></script>
   <script src="js/app.js?v=2"></script>
-  <script src="js/financeiro.js?v=1"></script>
+  <script src="js/auth.js?v=5"></script>
+  <script src="js/financeiro.js?v=2"></script>
+
 </body>
+
 </html>
