@@ -1,1 +1,832 @@
+/* ==========================================================================
+   RELATÓRIOS — ESTILOS OFICIAIS
+   Vidas Renovadas Gestão 2.0
+   ========================================================================== */
 
+:root {
+  --relatorios-azul-900: var(--azul-900, #071f3b);
+  --relatorios-azul-800: var(--azul-800, #0b2d53);
+  --relatorios-azul-700: var(--azul-700, #144b7f);
+
+  --relatorios-dourado-700: var(--dourado-700, #a97816);
+  --relatorios-dourado-600: var(--dourado-600, #c18d1c);
+  --relatorios-dourado-500: var(--dourado-500, #d7a625);
+  --relatorios-dourado-100: #fff6d8;
+
+  --relatorios-verde-700: #157347;
+  --relatorios-verde-100: #eaf8f1;
+
+  --relatorios-vermelho-700: #a53434;
+  --relatorios-vermelho-100: #fff1f1;
+
+  --relatorios-texto: var(--texto-principal, #1f2f46);
+  --relatorios-texto-suave: var(--texto-suave-sistema, #66768a);
+
+  --relatorios-superficie: #ffffff;
+  --relatorios-superficie-suave: #f7f9fc;
+
+  --relatorios-borda: var(--borda-sistema, #d9e2ec);
+  --relatorios-borda-forte: #c5d1de;
+
+  --relatorios-raio: 16px;
+  --relatorios-raio-menor: 11px;
+
+  --relatorios-sombra:
+    0 14px 34px rgba(7, 31, 59, 0.08);
+
+  --relatorios-sombra-suave:
+    0 8px 22px rgba(7, 31, 59, 0.055);
+
+  --relatorios-transicao:
+    180ms ease;
+}
+
+/* ==========================================================================
+   1. BASE DO MÓDULO
+   ========================================================================== */
+
+.relatorios-pagina {
+  display: grid;
+  gap: 20px;
+}
+
+.relatorios-pagina [hidden] {
+  display: none !important;
+}
+
+.relatorios-pagina * {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   2. CABEÇALHO
+   ========================================================================== */
+
+.relatorios-cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 26px;
+  border: 1px solid var(--relatorios-borda);
+  border-radius: var(--relatorios-raio);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(7, 31, 59, 0.035),
+      rgba(215, 166, 37, 0.07)
+    ),
+    #ffffff;
+  box-shadow: var(--relatorios-sombra-suave);
+}
+
+.relatorios-selo {
+  display: inline-flex;
+  margin: 0 0 7px;
+  padding: 5px 10px;
+  border: 1px solid #ead49a;
+  border-radius: 999px;
+  background: var(--relatorios-dourado-100);
+  color: var(--relatorios-dourado-700);
+  font-size: 0.67rem;
+  font-weight: 900;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.relatorios-titulo {
+  margin: 0;
+  color: var(--relatorios-azul-900);
+  font-size: clamp(1.45rem, 2.5vw, 2.1rem);
+  font-weight: 950;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+}
+
+.relatorios-subtitulo {
+  max-width: 780px;
+  margin: 8px 0 0;
+  color: var(--relatorios-texto-suave);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   3. CABEÇALHOS INTERNOS
+   ========================================================================== */
+
+.relatorios-secao-cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+.relatorios-secao-cabecalho h3 {
+  margin: 0;
+  color: var(--relatorios-azul-900);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.relatorios-secao-cabecalho p {
+  margin: 4px 0 0;
+  color: var(--relatorios-texto-suave);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   4. CATEGORIAS
+   ========================================================================== */
+
+.relatorios-categorias {
+  display: grid;
+  gap: 4px;
+}
+
+.relatorios-categorias-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.relatorios-categoria-card {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 15px;
+  min-height: 138px;
+  padding: 19px;
+  border: 1px solid var(--relatorios-borda);
+  border-radius: 15px;
+  background: #ffffff;
+  color: var(--relatorios-texto);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  box-shadow: var(--relatorios-sombra-suave);
+  transition:
+    transform var(--relatorios-transicao),
+    border-color var(--relatorios-transicao),
+    box-shadow var(--relatorios-transicao),
+    background var(--relatorios-transicao);
+}
+
+.relatorios-categoria-card:hover,
+.relatorios-categoria-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--relatorios-azul-700);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(7, 31, 59, 0.025),
+      rgba(215, 166, 37, 0.045)
+    ),
+    #ffffff;
+  box-shadow: var(--relatorios-sombra);
+  outline: none;
+}
+
+.relatorios-categoria-card.destaque {
+  border-color: #ead49a;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(215, 166, 37, 0.11),
+      rgba(255, 246, 216, 0.55)
+    ),
+    #ffffff;
+}
+
+.relatorios-categoria-card.ativo {
+  border-color: var(--relatorios-dourado-500);
+  box-shadow:
+    0 0 0 4px rgba(215, 166, 37, 0.12),
+    var(--relatorios-sombra);
+}
+
+.relatorios-categoria-icone {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  background: #edf3f8;
+  color: var(--relatorios-azul-900);
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.relatorios-categoria-card.destaque .relatorios-categoria-icone {
+  background: var(--relatorios-dourado-100);
+  color: var(--relatorios-dourado-700);
+}
+
+.relatorios-categoria-conteudo {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.relatorios-categoria-conteudo strong {
+  color: var(--relatorios-azul-900);
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.relatorios-categoria-conteudo small {
+  color: var(--relatorios-texto-suave);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.relatorios-categoria-seta {
+  color: var(--relatorios-dourado-700);
+  font-size: 1.1rem;
+  font-weight: 900;
+  transition: transform var(--relatorios-transicao);
+}
+
+.relatorios-categoria-card:hover .relatorios-categoria-seta {
+  transform: translateX(3px);
+}
+
+/* ==========================================================================
+   5. ÁREA DINÂMICA
+   ========================================================================== */
+
+.relatorios-area {
+  display: grid;
+  gap: 20px;
+}
+
+.relatorios-area-selo {
+  margin: 0 0 5px;
+  color: var(--relatorios-dourado-700);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   6. TIPOS E GRUPOS DE RELATÓRIO
+   ========================================================================== */
+
+.relatorios-tipos-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.relatorios-tipo-card {
+  display: grid;
+  min-height: 108px;
+  align-content: start;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--relatorios-borda);
+  border-radius: 13px;
+  background: var(--relatorios-superficie-suave);
+  color: var(--relatorios-texto);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition:
+    transform var(--relatorios-transicao),
+    border-color var(--relatorios-transicao),
+    background var(--relatorios-transicao),
+    box-shadow var(--relatorios-transicao);
+}
+
+.relatorios-tipo-card:hover,
+.relatorios-tipo-card:focus-visible,
+.relatorios-tipo-card.ativo {
+  transform: translateY(-1px);
+  border-color: var(--relatorios-dourado-500);
+  background: var(--relatorios-dourado-100);
+  box-shadow: 0 8px 18px rgba(7, 31, 59, 0.07);
+  outline: none;
+}
+
+.relatorios-tipo-card strong {
+  color: var(--relatorios-azul-900);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.relatorios-tipo-card small {
+  color: var(--relatorios-texto-suave);
+  font-size: 0.67rem;
+  line-height: 1.45;
+}
+
+.relatorios-tipo-quantidade {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 23px;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #edf3f8;
+  color: var(--relatorios-azul-900);
+  font-size: 0.6rem;
+  font-weight: 900;
+}
+
+/* ==========================================================================
+   7. PAINÉIS
+   ========================================================================== */
+
+.relatorios-pagina .painel {
+  overflow: visible;
+  margin: 0;
+  border: 1px solid var(--relatorios-borda);
+  border-radius: var(--relatorios-raio);
+  background: #ffffff;
+  box-shadow: var(--relatorios-sombra-suave);
+}
+
+.relatorios-pagina .painel-cabecalho {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 17px 20px;
+  border-bottom: 1px solid var(--relatorios-borda);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(7, 31, 59, 0.035),
+      transparent 55%
+    ),
+    #ffffff;
+}
+
+.relatorios-pagina .painel-titulo {
+  margin: 0;
+  color: var(--relatorios-azul-900);
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.relatorios-pagina .painel-subtitulo {
+  margin: 4px 0 0;
+  color: var(--relatorios-texto-suave);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.relatorios-pagina .painel-corpo {
+  padding: 20px;
+}
+
+/* ==========================================================================
+   8. FILTROS
+   ========================================================================== */
+
+.relatorios-filtros {
+  display: grid;
+  gap: 18px;
+}
+
+.relatorios-filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.relatorios-pagina .campo {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.relatorios-pagina .campo label {
+  color: var(--relatorios-azul-900);
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.relatorios-pagina .campo input,
+.relatorios-pagina .campo select,
+.relatorios-pagina .campo textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--relatorios-borda);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--relatorios-texto);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  outline: none;
+  transition:
+    border-color var(--relatorios-transicao),
+    box-shadow var(--relatorios-transicao);
+}
+
+.relatorios-pagina .campo input:focus,
+.relatorios-pagina .campo select:focus,
+.relatorios-pagina .campo textarea:focus {
+  border-color: var(--relatorios-dourado-500);
+  box-shadow: 0 0 0 4px rgba(215, 166, 37, 0.14);
+}
+
+.relatorios-filtros-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   9. EXPORTAÇÕES
+   ========================================================================== */
+
+.relatorios-exportacoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.relatorios-exportacoes .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  transform: none;
+}
+
+/* ==========================================================================
+   10. RESUMO EXECUTIVO
+   ========================================================================== */
+
+.relatorios-resumo-executivo {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.relatorios-resumo-card {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid var(--relatorios-borda);
+  border-radius: 12px;
+  background: var(--relatorios-superficie-suave);
+}
+
+.relatorios-resumo-card.destaque {
+  border-color: #ead49a;
+  background: var(--relatorios-dourado-100);
+}
+
+.relatorios-resumo-label {
+  color: var(--relatorios-texto-suave);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.relatorios-resumo-valor {
+  color: var(--relatorios-azul-900);
+  font-size: 1.18rem;
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+
+.relatorios-resumo-card.destaque .relatorios-resumo-valor {
+  color: var(--relatorios-dourado-700);
+}
+
+/* ==========================================================================
+   11. RESULTADO E ESTADOS
+   ========================================================================== */
+
+.relatorios-resultado-corpo {
+  min-height: 240px;
+}
+
+.relatorios-estado {
+  display: grid;
+  min-height: 200px;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  color: var(--relatorios-texto-suave);
+  text-align: center;
+}
+
+.relatorios-estado .spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #d9e2ec;
+  border-top-color: var(--relatorios-dourado-500);
+  border-radius: 50%;
+  animation: relatorios-girar 0.8s linear infinite;
+}
+
+.relatorios-estado strong {
+  color: var(--relatorios-azul-900);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.relatorios-estado p {
+  max-width: 440px;
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+@keyframes relatorios-girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================================================
+   12. TABELA
+   ========================================================================== */
+
+.relatorios-tabela-area {
+  overflow-x: auto;
+  border: 1px solid var(--relatorios-borda);
+  border-radius: 13px;
+}
+
+.relatorios-tabela {
+  width: 100%;
+  min-width: 920px;
+  border-collapse: collapse;
+}
+
+.relatorios-tabela th,
+.relatorios-tabela td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--relatorios-borda);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.relatorios-tabela th {
+  background: var(--relatorios-azul-900);
+  color: #ffffff;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.relatorios-tabela td {
+  color: var(--relatorios-texto);
+  font-size: 0.77rem;
+}
+
+.relatorios-tabela tbody tr:nth-child(even) {
+  background: rgba(7, 31, 59, 0.018);
+}
+
+.relatorios-tabela tbody tr:hover {
+  background: rgba(215, 166, 37, 0.07);
+}
+
+.relatorios-tabela tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.relatorios-tabela .valor {
+  color: var(--relatorios-azul-900);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.relatorios-tabela tfoot td {
+  border-top: 2px solid var(--relatorios-borda-forte);
+  border-bottom: 0;
+  background: #f3f6f9;
+  color: var(--relatorios-azul-900);
+  font-weight: 900;
+}
+
+/* ==========================================================================
+   13. ALERTAS
+   ========================================================================== */
+
+.relatorios-pagina .alerta {
+  padding: 13px 15px;
+  border: 1px solid var(--relatorios-borda);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--relatorios-texto);
+  font-size: 0.77rem;
+  font-weight: 750;
+  line-height: 1.5;
+  box-shadow: var(--relatorios-sombra-suave);
+}
+
+.relatorios-pagina .alerta.sucesso {
+  border-color: #b8dfca;
+  background: var(--relatorios-verde-100);
+  color: var(--relatorios-verde-700);
+}
+
+.relatorios-pagina .alerta.erro {
+  border-color: #e4bcbc;
+  background: var(--relatorios-vermelho-100);
+  color: var(--relatorios-vermelho-700);
+}
+
+.relatorios-pagina .alerta.aviso {
+  border-color: #ead49a;
+  background: var(--relatorios-dourado-100);
+  color: #735815;
+}
+
+/* ==========================================================================
+   14. CARREGAMENTO GLOBAL
+   ========================================================================== */
+
+body > .carregamento-global {
+  position: fixed;
+  z-index: 1100;
+  inset: 0;
+  display: none;
+  place-items: center;
+  background: rgba(7, 31, 59, 0.44);
+  backdrop-filter: blur(3px);
+}
+
+body > .carregamento-global.ativo,
+body > .carregamento-global[aria-hidden="false"] {
+  display: grid;
+}
+
+body > .carregamento-global .carregamento-caixa {
+  display: inline-flex;
+  min-width: 190px;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  padding: 15px 18px;
+  border-radius: 13px;
+  background: #ffffff;
+  color: var(--relatorios-azul-900);
+  box-shadow: 0 18px 46px rgba(7, 31, 59, 0.22);
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+body > .carregamento-global .spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid #d9e2ec;
+  border-top-color: var(--relatorios-dourado-500);
+  border-radius: 50%;
+  animation: relatorios-girar 0.8s linear infinite;
+}
+
+/* ==========================================================================
+   15. RESPONSIVIDADE
+   ========================================================================== */
+
+@media (max-width: 1280px) {
+  .relatorios-categorias-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .relatorios-tipos-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .relatorios-filtros-grid,
+  .relatorios-resumo-executivo {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .relatorios-cabecalho {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .relatorios-cabecalho .btn {
+    align-self: flex-start;
+  }
+
+  .relatorios-pagina .painel-cabecalho {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .relatorios-exportacoes {
+    justify-content: flex-start;
+  }
+
+  .relatorios-tipos-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .relatorios-categorias-grid,
+  .relatorios-tipos-grid,
+  .relatorios-filtros-grid,
+  .relatorios-resumo-executivo {
+    grid-template-columns: 1fr;
+  }
+
+  .relatorios-categoria-card {
+    min-height: 118px;
+  }
+
+  .relatorios-filtros-acoes,
+  .relatorios-exportacoes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .relatorios-filtros-acoes .btn,
+  .relatorios-exportacoes .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 440px) {
+  .relatorios-cabecalho {
+    padding: 18px;
+  }
+
+  .relatorios-categoria-card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .relatorios-categoria-seta {
+    display: none;
+  }
+
+  .relatorios-filtros-acoes,
+  .relatorios-exportacoes {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   16. IMPRESSÃO
+   ========================================================================== */
+
+@media print {
+  .relatorios-cabecalho .btn,
+  .relatorios-categorias,
+  #painelFiltrosRelatorio,
+  .relatorios-exportacoes,
+  .sidebar,
+  .topbar,
+  .overlay-menu,
+  body > .carregamento-global {
+    display: none !important;
+  }
+
+  .sistema-main,
+  .sistema-conteudo,
+  .relatorios-pagina {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .relatorios-pagina .painel {
+    border: 0;
+    box-shadow: none;
+  }
+
+  .relatorios-tabela-area {
+    overflow: visible;
+    border: 0;
+  }
+
+  .relatorios-tabela {
+    min-width: 0;
+    font-size: 9pt;
+  }
+
+  .relatorios-resumo-executivo {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
