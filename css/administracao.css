@@ -1,0 +1,940 @@
+/* ==========================================================================
+   ADMINISTRAÇÃO — ESTILOS OFICIAIS
+   Vidas Renovadas Gestão 2.0
+   ========================================================================== */
+
+:root {
+  --administracao-azul-900: var(--azul-900, #071f3b);
+  --administracao-azul-800: var(--azul-800, #0b2d53);
+  --administracao-azul-700: var(--azul-700, #144b7f);
+
+  --administracao-dourado-700: var(--dourado-700, #a97816);
+  --administracao-dourado-600: var(--dourado-600, #c18d1c);
+  --administracao-dourado-500: var(--dourado-500, #d7a625);
+  --administracao-dourado-100: #fff6d8;
+
+  --administracao-verde-700: #157347;
+  --administracao-verde-100: #eaf8f1;
+
+  --administracao-vermelho-700: #a53434;
+  --administracao-vermelho-100: #fff1f1;
+
+  --administracao-texto: var(--texto-principal, #1f2f46);
+  --administracao-texto-suave: var(--texto-suave-sistema, #66768a);
+
+  --administracao-superficie: #ffffff;
+  --administracao-superficie-suave: #f7f9fc;
+
+  --administracao-borda: var(--borda-sistema, #d9e2ec);
+  --administracao-borda-forte: #c5d1de;
+
+  --administracao-raio: 16px;
+  --administracao-raio-menor: 11px;
+
+  --administracao-sombra:
+    0 14px 34px rgba(7, 31, 59, 0.08);
+
+  --administracao-sombra-suave:
+    0 8px 22px rgba(7, 31, 59, 0.055);
+
+  --administracao-transicao:
+    180ms ease;
+}
+
+/* ==========================================================================
+   1. BASE DO MÓDULO
+   ========================================================================== */
+
+.administracao-pagina {
+  display: grid;
+  gap: 20px;
+}
+
+.administracao-pagina [hidden],
+.administracao-dialogo[hidden] {
+  display: none !important;
+}
+
+.administracao-pagina * {
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   2. CABEÇALHO
+   ========================================================================== */
+
+.administracao-cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 26px;
+  border: 1px solid var(--administracao-borda);
+  border-radius: var(--administracao-raio);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(7, 31, 59, 0.035),
+      rgba(215, 166, 37, 0.07)
+    ),
+    #ffffff;
+  box-shadow: var(--administracao-sombra-suave);
+}
+
+.administracao-selo {
+  display: inline-flex;
+  margin: 0 0 7px;
+  padding: 5px 10px;
+  border: 1px solid #ead49a;
+  border-radius: 999px;
+  background: var(--administracao-dourado-100);
+  color: var(--administracao-dourado-700);
+  font-size: 0.67rem;
+  font-weight: 900;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.administracao-titulo {
+  margin: 0;
+  color: var(--administracao-azul-900);
+  font-size: clamp(1.45rem, 2.5vw, 2.1rem);
+  font-weight: 950;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+}
+
+.administracao-subtitulo {
+  max-width: 780px;
+  margin: 8px 0 0;
+  color: var(--administracao-texto-suave);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   3. INDICADORES
+   ========================================================================== */
+
+.administracao-resumo {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.administracao-indicador {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid var(--administracao-borda);
+  border-radius: 15px;
+  background: #ffffff;
+  box-shadow: var(--administracao-sombra-suave);
+  transition:
+    transform var(--administracao-transicao),
+    border-color var(--administracao-transicao),
+    box-shadow var(--administracao-transicao);
+}
+
+.administracao-indicador:hover {
+  transform: translateY(-2px);
+  border-color: var(--administracao-borda-forte);
+  box-shadow: var(--administracao-sombra);
+}
+
+.administracao-indicador-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.administracao-indicador-icone {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #edf3f8;
+  color: var(--administracao-azul-900);
+  font-size: 0.67rem;
+  font-weight: 950;
+  letter-spacing: 0.02em;
+}
+
+.administracao-indicador-etiqueta {
+  display: inline-flex;
+  min-height: 25px;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #eef3f8;
+  color: var(--administracao-azul-900);
+  font-size: 0.61rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.administracao-indicador-etiqueta.aviso {
+  border: 1px solid #ead49a;
+  background: var(--administracao-dourado-100);
+  color: #735815;
+}
+
+.administracao-indicador-etiqueta.sucesso {
+  border: 1px solid #b8dfca;
+  background: var(--administracao-verde-100);
+  color: var(--administracao-verde-700);
+}
+
+.administracao-indicador-label {
+  margin: 0;
+  color: var(--administracao-texto-suave);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.administracao-indicador-valor {
+  overflow: hidden;
+  margin: 0;
+  color: var(--administracao-azul-900);
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.administracao-indicador-data {
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  letter-spacing: -0.02em;
+}
+
+.administracao-indicador small {
+  color: var(--administracao-texto-suave);
+  font-size: 0.65rem;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   4. CABEÇALHOS INTERNOS
+   ========================================================================== */
+
+.administracao-secao-cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+.administracao-secao-cabecalho h3 {
+  margin: 0;
+  color: var(--administracao-azul-900);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.administracao-secao-cabecalho p {
+  margin: 4px 0 0;
+  color: var(--administracao-texto-suave);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   5. CARDS DAS ÁREAS
+   ========================================================================== */
+
+.administracao-areas {
+  display: grid;
+  gap: 4px;
+}
+
+.administracao-areas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.administracao-area-card {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 15px;
+  min-height: 138px;
+  padding: 19px;
+  border: 1px solid var(--administracao-borda);
+  border-radius: 15px;
+  background: #ffffff;
+  color: var(--administracao-texto);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  box-shadow: var(--administracao-sombra-suave);
+  transition:
+    transform var(--administracao-transicao),
+    border-color var(--administracao-transicao),
+    background var(--administracao-transicao),
+    box-shadow var(--administracao-transicao);
+}
+
+.administracao-area-card:hover,
+.administracao-area-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--administracao-azul-700);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(7, 31, 59, 0.025),
+      rgba(215, 166, 37, 0.045)
+    ),
+    #ffffff;
+  box-shadow: var(--administracao-sombra);
+  outline: none;
+}
+
+.administracao-area-card.destaque {
+  border-color: #ead49a;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(215, 166, 37, 0.11),
+      rgba(255, 246, 216, 0.55)
+    ),
+    #ffffff;
+}
+
+.administracao-area-card.ativo {
+  border-color: var(--administracao-dourado-500);
+  box-shadow:
+    0 0 0 4px rgba(215, 166, 37, 0.12),
+    var(--administracao-sombra);
+}
+
+.administracao-area-icone {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  background: #edf3f8;
+  color: var(--administracao-azul-900);
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.administracao-area-card.destaque .administracao-area-icone {
+  background: var(--administracao-dourado-100);
+  color: var(--administracao-dourado-700);
+}
+
+.administracao-area-conteudo {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.administracao-area-conteudo strong {
+  color: var(--administracao-azul-900);
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.administracao-area-conteudo small {
+  color: var(--administracao-texto-suave);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.administracao-area-seta {
+  color: var(--administracao-dourado-700);
+  font-size: 1.1rem;
+  font-weight: 900;
+  transition: transform var(--administracao-transicao);
+}
+
+.administracao-area-card:hover .administracao-area-seta {
+  transform: translateX(3px);
+}
+
+/* ==========================================================================
+   6. ÁREA DINÂMICA
+   ========================================================================== */
+
+.administracao-conteudo {
+  display: grid;
+  gap: 20px;
+}
+
+.administracao-area-selo {
+  margin: 0 0 5px;
+  color: var(--administracao-dourado-700);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.administracao-pagina .painel {
+  overflow: visible;
+  margin: 0;
+  border: 1px solid var(--administracao-borda);
+  border-radius: var(--administracao-raio);
+  background: #ffffff;
+  box-shadow: var(--administracao-sombra-suave);
+}
+
+.administracao-pagina .painel-cabecalho {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 17px 20px;
+  border-bottom: 1px solid var(--administracao-borda);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(7, 31, 59, 0.035),
+      transparent 55%
+    ),
+    #ffffff;
+}
+
+.administracao-pagina .painel-titulo {
+  margin: 0;
+  color: var(--administracao-azul-900);
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.administracao-pagina .painel-subtitulo {
+  margin: 4px 0 0;
+  color: var(--administracao-texto-suave);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.administracao-pagina .painel-corpo {
+  padding: 20px;
+}
+
+/* ==========================================================================
+   7. COMPONENTES INTERNOS PREPARADOS PARA O JS
+   ========================================================================== */
+
+.administracao-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.administracao-toolbar-filtros {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+}
+
+.administracao-toolbar-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.administracao-pagina .campo {
+  display: flex;
+  min-width: 180px;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.administracao-pagina .campo label {
+  color: var(--administracao-azul-900);
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.administracao-pagina .campo input,
+.administracao-pagina .campo select,
+.administracao-pagina .campo textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--administracao-borda);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--administracao-texto);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  outline: none;
+  transition:
+    border-color var(--administracao-transicao),
+    box-shadow var(--administracao-transicao);
+}
+
+.administracao-pagina .campo textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.administracao-pagina .campo input:focus,
+.administracao-pagina .campo select:focus,
+.administracao-pagina .campo textarea:focus {
+  border-color: var(--administracao-dourado-500);
+  box-shadow: 0 0 0 4px rgba(215, 166, 37, 0.14);
+}
+
+.administracao-tabela-area {
+  overflow-x: auto;
+  border: 1px solid var(--administracao-borda);
+  border-radius: 13px;
+}
+
+.administracao-tabela {
+  width: 100%;
+  min-width: 920px;
+  border-collapse: collapse;
+}
+
+.administracao-tabela th,
+.administracao-tabela td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--administracao-borda);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.administracao-tabela th {
+  background: #f4f7fa;
+  color: var(--administracao-azul-900);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.administracao-tabela td {
+  color: var(--administracao-texto);
+  font-size: 0.77rem;
+}
+
+.administracao-tabela tbody tr:hover {
+  background: rgba(215, 166, 37, 0.06);
+}
+
+.administracao-tabela tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.administracao-status {
+  display: inline-flex;
+  min-height: 27px;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 9px;
+  border: 1px solid var(--administracao-borda);
+  border-radius: 999px;
+  background: #eef3f8;
+  color: var(--administracao-azul-900);
+  font-size: 0.61rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.administracao-status.ativo,
+.administracao-status.sucesso {
+  border-color: #b8dfca;
+  background: var(--administracao-verde-100);
+  color: var(--administracao-verde-700);
+}
+
+.administracao-status.bloqueado,
+.administracao-status.erro {
+  border-color: #e4bcbc;
+  background: var(--administracao-vermelho-100);
+  color: var(--administracao-vermelho-700);
+}
+
+.administracao-status.pendente,
+.administracao-status.aviso {
+  border-color: #ead49a;
+  background: var(--administracao-dourado-100);
+  color: #735815;
+}
+
+.administracao-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.administracao-form-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.administracao-bloco {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--administracao-borda);
+  border-radius: 13px;
+  background: var(--administracao-superficie-suave);
+}
+
+.administracao-bloco-titulo {
+  margin: 0;
+  color: var(--administracao-azul-900);
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.administracao-bloco-descricao {
+  margin: 0;
+  color: var(--administracao-texto-suave);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   8. ESTADOS
+   ========================================================================== */
+
+.administracao-estado {
+  display: grid;
+  min-height: 210px;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  color: var(--administracao-texto-suave);
+  text-align: center;
+}
+
+.administracao-estado .spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #d9e2ec;
+  border-top-color: var(--administracao-dourado-500);
+  border-radius: 50%;
+  animation: administracao-girar 0.8s linear infinite;
+}
+
+.administracao-estado strong {
+  color: var(--administracao-azul-900);
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.administracao-estado p {
+  max-width: 440px;
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
+@keyframes administracao-girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================================================
+   9. ALERTAS
+   ========================================================================== */
+
+.administracao-pagina .alerta {
+  padding: 13px 15px;
+  border: 1px solid var(--administracao-borda);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--administracao-texto);
+  font-size: 0.77rem;
+  font-weight: 750;
+  line-height: 1.5;
+  box-shadow: var(--administracao-sombra-suave);
+}
+
+.administracao-pagina .alerta.sucesso {
+  border-color: #b8dfca;
+  background: var(--administracao-verde-100);
+  color: var(--administracao-verde-700);
+}
+
+.administracao-pagina .alerta.erro {
+  border-color: #e4bcbc;
+  background: var(--administracao-vermelho-100);
+  color: var(--administracao-vermelho-700);
+}
+
+.administracao-pagina .alerta.aviso {
+  border-color: #ead49a;
+  background: var(--administracao-dourado-100);
+  color: #735815;
+}
+
+/* ==========================================================================
+   10. DIÁLOGO
+   ========================================================================== */
+
+.administracao-dialogo {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+}
+
+.administracao-dialogo-fundo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  background: rgba(7, 31, 59, 0.58);
+  cursor: default;
+  backdrop-filter: blur(4px);
+}
+
+.administracao-dialogo-caixa {
+  position: relative;
+  z-index: 1;
+  width: min(520px, 100%);
+  max-height: calc(100vh - 44px);
+  overflow-y: auto;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(7, 31, 59, 0.26);
+  text-align: center;
+}
+
+.administracao-dialogo-caixa h2 {
+  margin: 0;
+  color: var(--administracao-azul-900);
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+
+.administracao-dialogo-caixa p {
+  margin: 9px 0 0;
+  color: var(--administracao-texto-suave);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.administracao-dialogo-acoes {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* ==========================================================================
+   11. CARREGAMENTO GLOBAL
+   ========================================================================== */
+
+body > .carregamento-global {
+  position: fixed;
+  z-index: 1100;
+  inset: 0;
+  display: none;
+  place-items: center;
+  background: rgba(7, 31, 59, 0.44);
+  backdrop-filter: blur(3px);
+}
+
+body > .carregamento-global.ativo,
+body > .carregamento-global[aria-hidden="false"] {
+  display: grid;
+}
+
+body > .carregamento-global .carregamento-caixa {
+  display: inline-flex;
+  min-width: 190px;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  padding: 15px 18px;
+  border-radius: 13px;
+  background: #ffffff;
+  color: var(--administracao-azul-900);
+  box-shadow: 0 18px 46px rgba(7, 31, 59, 0.22);
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+body > .carregamento-global .spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid #d9e2ec;
+  border-top-color: var(--administracao-dourado-500);
+  border-radius: 50%;
+  animation: administracao-girar 0.8s linear infinite;
+}
+
+/* ==========================================================================
+   12. RESPONSIVIDADE
+   ========================================================================== */
+
+@media (max-width: 1280px) {
+  .administracao-resumo {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .administracao-areas-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .administracao-cabecalho {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .administracao-cabecalho .btn {
+    align-self: flex-start;
+  }
+
+  .administracao-pagina .painel-cabecalho {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .administracao-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .administracao-toolbar-filtros,
+  .administracao-toolbar-acoes {
+    width: 100%;
+  }
+
+  .administracao-toolbar-acoes {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 680px) {
+  .administracao-resumo,
+  .administracao-areas-grid,
+  .administracao-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .administracao-area-card {
+    min-height: 118px;
+  }
+
+  .administracao-form-acoes,
+  .administracao-dialogo-acoes {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .administracao-form-acoes .btn,
+  .administracao-dialogo-acoes .btn {
+    width: 100%;
+  }
+
+  .administracao-toolbar-filtros {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .administracao-pagina .campo {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 440px) {
+  .administracao-cabecalho {
+    padding: 18px;
+  }
+
+  .administracao-area-card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .administracao-area-seta {
+    display: none;
+  }
+
+  .administracao-dialogo {
+    padding: 14px;
+  }
+
+  .administracao-dialogo-caixa {
+    padding: 20px;
+  }
+}
+
+/* ==========================================================================
+   13. IMPRESSÃO
+   ========================================================================== */
+
+@media print {
+  .administracao-cabecalho .btn,
+  .administracao-areas,
+  .administracao-toolbar,
+  .administracao-dialogo,
+  .sidebar,
+  .topbar,
+  .overlay-menu,
+  body > .carregamento-global {
+    display: none !important;
+  }
+
+  .sistema-main,
+  .sistema-conteudo,
+  .administracao-pagina {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .administracao-pagina .painel,
+  .administracao-indicador {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+
+  .administracao-tabela-area {
+    overflow: visible;
+    border: 0;
+  }
+
+  .administracao-tabela {
+    min-width: 0;
+    font-size: 9pt;
+  }
+}
