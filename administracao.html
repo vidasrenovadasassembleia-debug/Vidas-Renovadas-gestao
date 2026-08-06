@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Administração | Vidas Renovadas Gestão</title>
+
+  <meta
+    name="description"
+    content="Administração de usuários, permissões, configurações, logs e backups do sistema."
+  >
+
+  <meta name="theme-color" content="#071f3b">
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="logo.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/estilo.css?v=50"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/administracao.css?v=1"
+  >
+</head>
+
+<body
+  class="sistema-page"
+  data-page="configuracoes"
+  data-titulo="Administração"
+  data-subtitulo="Usuários, permissões, configurações, auditoria e segurança"
+>
+
+  <div class="sistema-layout">
+
+    <div id="layoutSidebar"></div>
+
+    <div
+      class="overlay-menu"
+      data-acao="fechar-menu"
+    ></div>
+
+    <main class="sistema-main">
+
+      <div id="layoutTopbar"></div>
+
+      <div class="sistema-conteudo administracao-pagina">
+
+        <!-- =====================================================
+             CABEÇALHO
+             ===================================================== -->
+
+        <section class="administracao-cabecalho">
+
+          <div>
+
+            <p class="administracao-selo">
+              Centro Administrativo
+            </p>
+
+            <h2 class="administracao-titulo">
+              Administração do sistema
+            </h2>
+
+            <p class="administracao-subtitulo">
+              Gerencie acessos, configurações institucionais, registros de auditoria e rotinas de segurança.
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-contorno"
+            id="botaoAtualizarAdministracao"
+          >
+            Atualizar
+          </button>
+
+        </section>
+
+        <div
+          id="avisoAdministracao"
+          class="alerta"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+
+        <!-- =====================================================
+             RESUMO
+             ===================================================== -->
+
+        <section
+          class="administracao-resumo"
+          aria-label="Resumo administrativo"
+        >
+
+          <article class="administracao-indicador">
+
+            <div class="administracao-indicador-topo">
+              <span class="administracao-indicador-icone">US</span>
+              <span class="administracao-indicador-etiqueta">Usuários</span>
+            </div>
+
+            <p class="administracao-indicador-label">
+              Usuários ativos
+            </p>
+
+            <strong
+              class="administracao-indicador-valor"
+              id="resumoUsuariosAtivos"
+            >
+              —
+            </strong>
+
+            <small>
+              Contas com acesso liberado
+            </small>
+
+          </article>
+
+          <article class="administracao-indicador">
+
+            <div class="administracao-indicador-topo">
+              <span class="administracao-indicador-icone">!</span>
+              <span class="administracao-indicador-etiqueta aviso">Atenção</span>
+            </div>
+
+            <p class="administracao-indicador-label">
+              Acessos bloqueados
+            </p>
+
+            <strong
+              class="administracao-indicador-valor"
+              id="resumoUsuariosBloqueados"
+            >
+              —
+            </strong>
+
+            <small>
+              Contas temporariamente impedidas
+            </small>
+
+          </article>
+
+          <article class="administracao-indicador">
+
+            <div class="administracao-indicador-topo">
+              <span class="administracao-indicador-icone">LG</span>
+              <span class="administracao-indicador-etiqueta">Auditoria</span>
+            </div>
+
+            <p class="administracao-indicador-label">
+              Ações registradas hoje
+            </p>
+
+            <strong
+              class="administracao-indicador-valor"
+              id="resumoLogsHoje"
+            >
+              —
+            </strong>
+
+            <small>
+              Movimentações registradas no sistema
+            </small>
+
+          </article>
+
+          <article class="administracao-indicador">
+
+            <div class="administracao-indicador-topo">
+              <span class="administracao-indicador-icone">BK</span>
+              <span class="administracao-indicador-etiqueta sucesso">Backup</span>
+            </div>
+
+            <p class="administracao-indicador-label">
+              Último backup
+            </p>
+
+            <strong
+              class="administracao-indicador-valor administracao-indicador-data"
+              id="resumoUltimoBackup"
+            >
+              —
+            </strong>
+
+            <small>
+              Última cópia registrada
+            </small>
+
+          </article>
+
+        </section>
+
+        <!-- =====================================================
+             ÁREAS ADMINISTRATIVAS
+             ===================================================== -->
+
+        <section
+          id="secaoAreasAdministracao"
+          class="administracao-areas"
+          aria-labelledby="tituloAreasAdministracao"
+        >
+
+          <div class="administracao-secao-cabecalho">
+
+            <div>
+
+              <h3 id="tituloAreasAdministracao">
+                Áreas administrativas
+              </h3>
+
+              <p>
+                Escolha uma área para consultar ou alterar as configurações.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="administracao-areas-grid">
+
+            <button
+              type="button"
+              class="administracao-area-card"
+              data-area-administracao="usuarios"
+            >
+
+              <span
+                class="administracao-area-icone"
+                aria-hidden="true"
+              >
+                ♙
+              </span>
+
+              <span class="administracao-area-conteudo">
+
+                <strong>
+                  Usuários
+                </strong>
+
+                <small>
+                  Contas, perfis, situação de acesso e último login.
+                </small>
+
+              </span>
+
+              <span
+                class="administracao-area-seta"
+                aria-hidden="true"
+              >
+                →
+              </span>
+
+            </button>
+
+            <button
+              type="button"
+              class="administracao-area-card"
+              data-area-administracao="permissoes"
+            >
+
+              <span
+                class="administracao-area-icone"
+                aria-hidden="true"
+              >
+                ◈
+              </span>
+
+              <span class="administracao-area-conteudo">
+
+                <strong>
+                  Perfis e permissões
+                </strong>
+
+                <small>
+                  Defina quais módulos e ações cada perfil pode acessar.
+                </small>
+
+              </span>
+
+              <span
+                class="administracao-area-seta"
+                aria-hidden="true"
+              >
+                →
+              </span>
+
+            </button>
+
+            <button
+              type="button"
+              class="administracao-area-card destaque"
+              data-area-administracao="configuracoes"
+            >
+
+              <span
+                class="administracao-area-icone"
+                aria-hidden="true"
+              >
+                ⚙
+              </span>
+
+              <span class="administracao-area-conteudo">
+
+                <strong>
+                  Configurações
+                </strong>
+
+                <small>
+                  Dados da igreja, documentos, arquivos e parâmetros gerais.
+                </small>
+
+              </span>
+
+              <span
+                class="administracao-area-seta"
+                aria-hidden="true"
+              >
+                →
+              </span>
+
+            </button>
+
+            <button
+              type="button"
+              class="administracao-area-card"
+              data-area-administracao="logs"
+            >
+
+              <span
+                class="administracao-area-icone"
+                aria-hidden="true"
+              >
+                ▤
+              </span>
+
+              <span class="administracao-area-conteudo">
+
+                <strong>
+                  Logs e auditoria
+                </strong>
+
+                <small>
+                  Consulte ações, alterações e registros realizados no sistema.
+                </small>
+
+              </span>
+
+              <span
+                class="administracao-area-seta"
+                aria-hidden="true"
+              >
+                →
+              </span>
+
+            </button>
+
+            <button
+              type="button"
+              class="administracao-area-card"
+              data-area-administracao="backup"
+            >
+
+              <span
+                class="administracao-area-icone"
+                aria-hidden="true"
+              >
+                ⌁
+              </span>
+
+              <span class="administracao-area-conteudo">
+
+                <strong>
+                  Backup
+                </strong>
+
+                <small>
+                  Execute e acompanhe as cópias de segurança do sistema.
+                </small>
+
+              </span>
+
+              <span
+                class="administracao-area-seta"
+                aria-hidden="true"
+              >
+                →
+              </span>
+
+            </button>
+
+          </div>
+
+        </section>
+
+        <!-- =====================================================
+             ÁREA DINÂMICA
+             ===================================================== -->
+
+        <section
+          id="secaoConteudoAdministracao"
+          class="administracao-conteudo"
+          hidden
+        >
+
+          <article class="painel">
+
+            <div class="painel-cabecalho">
+
+              <div>
+
+                <p
+                  id="administracaoAreaSelo"
+                  class="administracao-area-selo"
+                >
+                  Administração
+                </p>
+
+                <h3
+                  id="administracaoAreaTitulo"
+                  class="painel-titulo"
+                >
+                  Área administrativa
+                </h3>
+
+                <p
+                  id="administracaoAreaDescricao"
+                  class="painel-subtitulo"
+                >
+                  Carregando informações...
+                </p>
+
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-contorno"
+                id="botaoVoltarAreasAdministracao"
+              >
+                Voltar
+              </button>
+
+            </div>
+
+            <div
+              id="administracaoAreaCorpo"
+              class="painel-corpo"
+            >
+              <!-- Preenchido por js/administracao.js -->
+            </div>
+
+          </article>
+
+        </section>
+
+        <!-- =====================================================
+             MODELOS INTERNOS
+             ===================================================== -->
+
+        <template id="templateAdministracaoCarregando">
+
+          <div class="administracao-estado">
+
+            <span
+              class="spinner"
+              aria-hidden="true"
+            ></span>
+
+            <p>
+              Carregando informações...
+            </p>
+
+          </div>
+
+        </template>
+
+        <template id="templateAdministracaoVazio">
+
+          <div class="administracao-estado">
+
+            <strong>
+              Nenhum registro encontrado
+            </strong>
+
+            <p>
+              Não existem informações disponíveis para esta área.
+            </p>
+
+          </div>
+
+        </template>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- =========================================================
+       DIÁLOGO DE CONFIRMAÇÃO
+       ========================================================= -->
+
+  <div
+    id="dialogoConfirmacaoAdministracao"
+    class="administracao-dialogo"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="tituloDialogoConfirmacaoAdministracao"
+    hidden
+  >
+
+    <button
+      type="button"
+      class="administracao-dialogo-fundo"
+      data-acao="fechar-dialogo-administracao"
+      aria-label="Fechar"
+    ></button>
+
+    <div class="administracao-dialogo-caixa">
+
+      <h2 id="tituloDialogoConfirmacaoAdministracao">
+        Confirmar ação
+      </h2>
+
+      <p id="textoDialogoConfirmacaoAdministracao">
+        Confirme para continuar.
+      </p>
+
+      <div class="administracao-dialogo-acoes">
+
+        <button
+          type="button"
+          class="btn btn-contorno"
+          id="botaoCancelarConfirmacaoAdministracao"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-dourado"
+          id="botaoConfirmarAcaoAdministracao"
+        >
+          Confirmar
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- =========================================================
+       CARREGAMENTO GLOBAL
+       ========================================================= -->
+
+  <div
+    id="carregamentoGlobal"
+    class="carregamento-global"
+    aria-hidden="true"
+  >
+
+    <div
+      class="carregamento-caixa"
+      role="status"
+      aria-live="polite"
+    >
+
+      <span
+        class="spinner"
+        aria-hidden="true"
+      ></span>
+
+      <span>
+        Carregando...
+      </span>
+
+    </div>
+
+  </div>
+
+  <script src="js/componentes.js?v=2"></script>
+  <script src="js/configuracoes.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
+  <script src="js/auth.js?v=5"></script>
+  <script src="js/administracao.js?v=1"></script>
+
+</body>
+
+</html>
