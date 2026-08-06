@@ -1,1 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatórios | Vidas Renovadas Gestão</title>
+  <meta name="description" content="Central de consultas, filtros, impressões e exportações do sistema.">
+  <meta name="theme-color" content="#071f3b">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="css/estilo.css?v=50">
+  <link rel="stylesheet" href="css/relatorios.css?v=1">
+</head>
+
+<body
+  class="sistema-page"
+  data-page="relatorios"
+  data-titulo="Relatórios"
+  data-subtitulo="Consulte, filtre e exporte informações do sistema"
+>
+
+  <div class="sistema-layout">
+    <div id="layoutSidebar"></div>
+    <div class="overlay-menu" data-acao="fechar-menu"></div>
+
+    <main class="sistema-main">
+      <div id="layoutTopbar"></div>
+
+      <div class="sistema-conteudo relatorios-pagina">
+        <section class="relatorios-cabecalho">
+          <div>
+            <p class="relatorios-selo">Central de Relatórios</p>
+            <h2 class="relatorios-titulo">Consultas e exportações</h2>
+            <p class="relatorios-subtitulo">
+              Escolha uma categoria, aplique os filtros e visualize os dados antes de exportar.
+            </p>
+          </div>
+
+          <button type="button" class="btn btn-contorno" id="botaoVoltarCategorias" hidden>
+            Voltar às categorias
+          </button>
+        </section>
+
+        <div id="avisoRelatorios" class="alerta" role="status" aria-live="polite" hidden></div>
+
+        <section id="secaoCategoriasRelatorios" class="relatorios-categorias" aria-labelledby="tituloCategoriasRelatorios">
+          <div class="relatorios-secao-cabecalho">
+            <div>
+              <h3 id="tituloCategoriasRelatorios">Categorias</h3>
+              <p>Selecione a área que deseja consultar.</p>
+            </div>
+          </div>
+
+          <div class="relatorios-categorias-grid">
+            <button type="button" class="relatorios-categoria-card" data-categoria-relatorio="membros">
+              <span class="relatorios-categoria-icone" aria-hidden="true">♙</span>
+              <span class="relatorios-categoria-conteudo">
+                <strong>Membros</strong>
+                <small>Situação, congregação, cargo, aniversariantes e cadastros.</small>
+              </span>
+              <span class="relatorios-categoria-seta" aria-hidden="true">→</span>
+            </button>
+
+            <button type="button" class="relatorios-categoria-card" data-categoria-relatorio="congregacoes">
+              <span class="relatorios-categoria-icone" aria-hidden="true">⌂</span>
+              <span class="relatorios-categoria-conteudo">
+                <strong>Congregações</strong>
+                <small>Membros, dirigentes e resumos por congregação.</small>
+              </span>
+              <span class="relatorios-categoria-seta" aria-hidden="true">→</span>
+            </button>
+
+            <button type="button" class="relatorios-categoria-card destaque" data-categoria-relatorio="financeiro">
+              <span class="relatorios-categoria-icone" aria-hidden="true">R$</span>
+              <span class="relatorios-categoria-conteudo">
+                <strong>Financeiro</strong>
+                <small>Dízimos, ofertas, lançamentos e resumos por período.</small>
+              </span>
+              <span class="relatorios-categoria-seta" aria-hidden="true">→</span>
+            </button>
+
+            <button type="button" class="relatorios-categoria-card" data-categoria-relatorio="certificados">
+              <span class="relatorios-categoria-icone" aria-hidden="true">◇</span>
+              <span class="relatorios-categoria-conteudo">
+                <strong>Certificados</strong>
+                <small>Batismos, consagrações e emissões por período.</small>
+              </span>
+              <span class="relatorios-categoria-seta" aria-hidden="true">→</span>
+            </button>
+
+            <button type="button" class="relatorios-categoria-card" data-categoria-relatorio="administracao" data-permissao="administracao">
+              <span class="relatorios-categoria-icone" aria-hidden="true">⚙</span>
+              <span class="relatorios-categoria-conteudo">
+                <strong>Administração</strong>
+                <small>Usuários, acessos, alterações e logs do sistema.</small>
+              </span>
+              <span class="relatorios-categoria-seta" aria-hidden="true">→</span>
+            </button>
+          </div>
+        </section>
+
+        <section id="secaoRelatoriosCategoria" class="relatorios-area" hidden>
+          <article class="painel">
+            <div class="painel-cabecalho">
+              <div>
+                <p id="categoriaRelatorioSelo" class="relatorios-area-selo">Categoria</p>
+                <h3 id="categoriaRelatorioTitulo" class="painel-titulo">Relatórios</h3>
+                <p id="categoriaRelatorioDescricao" class="painel-subtitulo">Escolha um relatório para continuar.</p>
+              </div>
+            </div>
+
+            <div class="painel-corpo">
+              <div id="listaTiposRelatorio" class="relatorios-tipos-grid"></div>
+            </div>
+          </article>
+
+          <article id="painelFiltrosRelatorio" class="painel" hidden>
+            <div class="painel-cabecalho">
+              <div>
+                <h3 id="tituloRelatorioSelecionado" class="painel-titulo">Filtros do relatório</h3>
+                <p id="descricaoRelatorioSelecionado" class="painel-subtitulo">Defina os critérios para visualizar os dados.</p>
+              </div>
+            </div>
+
+            <div class="painel-corpo">
+              <form id="formFiltrosRelatorio" class="relatorios-filtros" autocomplete="off">
+                <div id="camposFiltrosRelatorio" class="relatorios-filtros-grid"></div>
+
+                <div class="relatorios-filtros-acoes">
+                  <button type="button" class="btn btn-contorno" id="botaoLimparFiltrosRelatorio">Limpar</button>
+                  <button type="submit" class="btn btn-dourado" id="botaoVisualizarRelatorio">Visualizar</button>
+                </div>
+              </form>
+            </div>
+          </article>
+
+          <article id="painelResultadoRelatorio" class="painel" hidden>
+            <div class="painel-cabecalho">
+              <div>
+                <h3 class="painel-titulo">Resultado</h3>
+                <p id="resumoResultadoRelatorio" class="painel-subtitulo">Nenhum relatório gerado.</p>
+              </div>
+
+              <div class="relatorios-exportacoes">
+                <button type="button" class="btn btn-contorno" id="botaoExportarPdf">PDF</button>
+                <button type="button" class="btn btn-contorno" id="botaoExportarExcel">Excel</button>
+                <button type="button" class="btn btn-dourado" id="botaoImprimirRelatorio">Imprimir</button>
+              </div>
+            </div>
+
+            <div class="painel-corpo relatorios-resultado-corpo">
+              <div id="estadoCarregandoRelatorio" class="relatorios-estado" hidden>
+                <span class="spinner" aria-hidden="true"></span>
+                <p>Gerando relatório...</p>
+              </div>
+
+              <div id="estadoVazioRelatorio" class="relatorios-estado" hidden>
+                <strong>Nenhum registro encontrado</strong>
+                <p>Ajuste os filtros e tente novamente.</p>
+              </div>
+
+              <div id="tabelaRelatorioArea" class="relatorios-tabela-area" hidden>
+                <table class="relatorios-tabela">
+                  <thead id="cabecalhoTabelaRelatorio"></thead>
+                  <tbody id="corpoTabelaRelatorio"></tbody>
+                  <tfoot id="rodapeTabelaRelatorio"></tfoot>
+                </table>
+              </div>
+            </div>
+          </article>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div id="carregamentoGlobal" class="carregamento-global" aria-hidden="true">
+    <div class="carregamento-caixa" role="status" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <span>Carregando...</span>
+    </div>
+  </div>
+
+  <script src="js/componentes.js?v=2"></script>
+  <script src="js/configuracoes.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
+  <script src="js/auth.js?v=5"></script>
+  <script src="js/relatorios.js?v=1"></script>
+
+</body>
+
+</html>
