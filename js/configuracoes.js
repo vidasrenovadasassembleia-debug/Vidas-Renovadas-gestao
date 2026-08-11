@@ -32,30 +32,40 @@
     }),
 
     PAGINAS: Object.freeze({
-      LOGIN: "index.html",
-      DASHBOARD: "dashboard.html",
-      PUBLICAS: Object.freeze([
-        "",
-        "index.html",
-        "validar.html"
-      ]),
-      PROTEGIDAS: Object.freeze([
-        "dashboard.html",
-        "membros.html",
-        "membro.html",
-        "novo-membro.html",
-        "editar-membro.html",
-        "visualizar-membro.html",
-        "familias.html",
-        "congregacoes.html",
-        "carteirinhas.html",
-        "visualizar-carteirinha.html",
-        "configuracoes.html",
-        "financeiro.html",
-        "relatorios.html",
-        "administracao.html"
-      ])
-    }),
+  LOGIN: "index.html",
+  DASHBOARD: "dashboard.html",
+
+  PUBLICAS: Object.freeze([
+    "",
+    "index.html",
+    "validar.html",
+    "certificado-digital.html",
+    "carteirinha.html"
+  ]),
+
+  PROTEGIDAS: Object.freeze([
+    "dashboard.html",
+    "membros.html",
+    "membro.html",
+    "novo-membro.html",
+    "editar-membro.html",
+    "visualizar-membro.html",
+    "congregacoes.html",
+    "congregacao.html",
+    "certificados.html",
+    "configuracoes.html",
+    "financeiro.html",
+    "tesouraria.html",
+    "relatorios.html",
+    "administracao.html"
+  ]),
+
+  TESOURARIA: Object.freeze([
+    "dashboard.html",
+    "tesouraria.html",
+    "relatorios.html"
+  ])
+}),
 
     PERFIS_ADMINISTRATIVOS: Object.freeze([
   "administrador",
