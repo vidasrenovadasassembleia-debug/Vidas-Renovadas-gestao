@@ -80,7 +80,9 @@
       return App.formatarNumero(Number(valor || 0), 0);
     }
 
-    return new Intl.NumberFormat("pt-BR").format(Number(valor || 0));
+    return new Intl.NumberFormat("pt-BR").format(
+      Number(valor || 0)
+    );
   }
 
   function formatarMoeda(valor) {
@@ -210,6 +212,7 @@
         const nome = membro.nome || "Membro";
         const codigo = membro.codigo || "";
         const congregacao = membro.congregacao || "";
+
         const dataCadastro =
           App?.formatarData?.(membro.dataCadastro) ||
           membro.dataCadastro ||
@@ -269,7 +272,9 @@
 
     if (!lista) return;
 
-    const itens = Array.isArray(pendencias) ? pendencias : [];
+    const itens = Array.isArray(pendencias)
+      ? pendencias
+      : [];
 
     if (!itens.length) {
       lista.innerHTML = `
@@ -296,66 +301,36 @@
           </div>
 
           <div class="pendencia-conteudo">
-            <p class="pendencia-titulo">${escapar(item.titulo || "Pendência")}</p>
-            <p class="pendencia-texto">${escapar(item.descricao || "")}</p>
+            <p class="pendencia-titulo">
+              ${escapar(item.titulo || "Pendência")}
+            </p>
+            <p class="pendencia-texto">
+              ${escapar(item.descricao || "")}
+            </p>
           </div>
         </div>
       `)
       .join("");
   }
 
-  function dadosDemonstracao() {
-    return {
-      membros: {
-        total: 0,
-        ativos: 0
-      },
-      carteirinhas: {
-        vencendo: 0
-      },
-      certificados: {
-        emitidosMes: 0
-      },
-      financeiro: {
-        entradasMes: 0,
-        dizimos: 0,
-        ofertas: 0,
-        saidas: 0,
-        mesFechado: false
-      },
-      membrosRecentes: [],
-      pendencias: []
-    };
-  }
-
   async function buscarDadosDashboard() {
-    /*
-     * A função "obterDashboard" será criada no backend Apps Script.
-     * Enquanto ela ainda não existir, o Dashboard abre normalmente com zeros.
-     */
     if (!Auth?.chamarApi) {
-      return dadosDemonstracao();
+      throw new Error(
+        "O serviço de autenticação/API não está disponível."
+      );
     }
 
-    try {
-      const resposta = await Auth.chamarApi({
-        acao: "obterDashboard"
-      });
+    const resposta = await Auth.chamarApi({
+      acao: "obterDashboard"
+    });
 
-      return resposta.dados || resposta.dashboard || resposta;
-    } catch (erro) {
-      console.warn(
-        "[DASHBOARD] Backend ainda não disponível ou sem dados:",
-        erro
+    if (!resposta?.dados) {
+      throw new Error(
+        "O servidor não retornou os dados do Dashboard."
       );
-
-      App?.info?.(
-        "O painel está pronto. Os indicadores serão preenchidos após conectarmos o backend.",
-        "Dashboard em preparação"
-      );
-
-      return dadosDemonstracao();
     }
+
+    return resposta.dados;
   }
 
   async function carregarDashboard() {
@@ -372,10 +347,14 @@
       renderizarMembrosRecentes(dados.membrosRecentes);
       renderizarPendencias(dados.pendencias);
     } catch (erro) {
-      console.error("[DASHBOARD] Erro ao carregar:", erro);
+      console.error(
+        "[DASHBOARD] Erro ao carregar:",
+        erro
+      );
 
       App?.erro?.(
-        erro.message || "Não foi possível carregar o Dashboard."
+        erro?.message ||
+          "Não foi possível carregar o Dashboard."
       );
     } finally {
       estado.carregando = false;
@@ -387,8 +366,15 @@
     atualizarSaudacao();
     carregarDashboard();
 
-    window.setInterval(atualizarRelogio, 30000);
-    window.setInterval(atualizarSaudacao, 60000);
+    window.setInterval(
+      atualizarRelogio,
+      30000
+    );
+
+    window.setInterval(
+      atualizarSaudacao,
+      60000
+    );
   }
 
   if (document.readyState === "loading") {
