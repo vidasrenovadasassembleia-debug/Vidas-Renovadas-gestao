@@ -297,32 +297,68 @@ function usuarioTesouraria() {
     return permissoes.includes(procurada);
   }
 
-  function exigirSessao() {
-    if (!paginaProtegida()) return true;
-
-    if (!obterSessao()?.credential) {
-      removerSessao();
-      navegar(obterConfig().PAGINAS.LOGIN, true);
-      return false;
-    }
-
+ function exigirSessao() {
+  if (!paginaProtegida()) {
     return true;
   }
 
-  function redirecionarUsuarioLogado() {
-    const config = obterConfig();
+  const sessao = obterSessao();
 
-    if (paginaAtual() !== config.PAGINAS.LOGIN) {
-      return false;
-    }
+  if (!sessao?.credential) {
+    removerSessao();
+    navegar(
+      obterConfig().PAGINAS.LOGIN,
+      true
+    );
+    return false;
+  }
 
-    if (!obterSessao()?.credential) {
-      return false;
-    }
-
-    navegar(config.PAGINAS.DASHBOARD, true);
+  /*
+   * Administrador e Pastor Presidente:
+   * acesso integral.
+   */
+  if (usuarioAdministrador()) {
     return true;
   }
+
+  /*
+   * Tesouraria:
+   * acesso somente às páginas financeiras
+   * oficialmente permitidas.
+   */
+  if (usuarioTesouraria()) {
+    const paginasPermitidas =
+      obterConfig().PAGINAS.TESOURARIA || [];
+
+    if (
+      paginasPermitidas.includes(
+        paginaAtual()
+      )
+    ) {
+      return true;
+    }
+
+    navegar(
+      obterConfig().PAGINAS.DASHBOARD,
+      true
+    );
+
+    return false;
+  }
+
+  /*
+   * Qualquer perfil não reconhecido
+   * não pode navegar no sistema.
+   */
+  removerSessao();
+
+  navegar(
+    obterConfig().PAGINAS.LOGIN,
+    true
+  );
+
+  return false;
+}
 
   function aplicarUsuarioNaInterface() {
     const usuario = usuarioAtual();
