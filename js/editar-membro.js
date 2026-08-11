@@ -2,7 +2,7 @@
 (function(window,document){"use strict";let M,F,id='',salvando=false,preview='',inicial='';
 const serial=()=>JSON.stringify(M.coletar(F));
 function links(){const url='visualizar-membro.html?id='+encodeURIComponent(id);document.querySelectorAll('[id^="botaoCancelarEdicao"]').forEach(a=>a.href=url);}
-function foto(){const i=document.getElementById('arquivoFotoMembro'),s=document.getElementById('statusFoto');if(!i)return;i.addEventListener('change',()=>{const f=i.files?.[0];if(preview)URL.revokeObjectURL(preview);if(!f)return;if(!['image/jpeg','image/png','image/webp'].includes(f.type)||f.size>5*1024*1024){i.value='';M.aviso(f.size>5*1024*1024?'A foto deve ter no máximo 5 MB.':'Use foto JPG, PNG ou WebP.','erro');return;}preview=URL.createObjectURL(f);M.atualizarFoto(preview);if(s){s.textContent='';s.hidden=true;}});}
+function foto(){const i=document.getElementById('arquivoFotoMembro'),s=document.getElementById('statusFoto');if(!i)return;i.addEventListener('change',()=>{const f=i.files?.[0];if(preview)URL.revokeObjectURL(preview);if(!f)return;if(!['image/jpeg','image/png','image/webp'].includes(f.type)||f.size>5*1024*1024){i.value='';M.aviso(f.size>5*1024*1024?'A foto deve ter no máximo 4 MB.':'Use foto JPG, PNG ou WebP.','erro');return;}preview=URL.createObjectURL(f);M.atualizarFoto(preview);if(s){s.textContent='';s.hidden=true;}});}
 async function carregar(){
   M.carregando(true,'Carregando membro...');
 
