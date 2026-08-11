@@ -15,65 +15,108 @@
         </div>
       </div>
 
-      <nav class="menu-navegacao">
+     <nav class="menu-navegacao">
 
-        <div class="menu-grupo">
-          <p class="menu-grupo-titulo">Visão geral</p>
+  <div class="menu-grupo">
+    <p class="menu-grupo-titulo">Visão geral</p>
 
-          <a class="menu-item" href="dashboard.html" data-page="dashboard">
-            <span class="menu-item-icone" aria-hidden="true">⌂</span>
-            <span>Dashboard</span>
-          </a>
-        </div>
+    <a class="menu-item" href="dashboard.html" data-page="dashboard">
+      <span class="menu-item-icone" aria-hidden="true">⌂</span>
+      <span>Dashboard</span>
+    </a>
+  </div>
 
-        <div class="menu-grupo">
-          <p class="menu-grupo-titulo">Pessoas</p>
 
-          <a class="menu-item" href="membros.html" data-page="membros">
-            <span class="menu-item-icone" aria-hidden="true">♙</span>
-            <span>Membros</span>
-          </a>
+  <div class="menu-grupo" data-permissao="administracao">
+    <p class="menu-grupo-titulo">Pessoas</p>
 
-          <a class="menu-item" href="congregacoes.html" data-page="congregacoes">
-            <span class="menu-item-icone" aria-hidden="true">⌂</span>
-            <span>Congregações</span>
-          </a>
-        </div>
+    <a
+      class="menu-item"
+      href="membros.html"
+      data-page="membros"
+    >
+      <span class="menu-item-icone" aria-hidden="true">♙</span>
+      <span>Membros</span>
+    </a>
 
-        <div class="menu-grupo">
-          <p class="menu-grupo-titulo">Documentos</p>
+    <a
+      class="menu-item"
+      href="congregacoes.html"
+      data-page="congregacoes"
+    >
+      <span class="menu-item-icone" aria-hidden="true">⌂</span>
+      <span>Congregações</span>
+    </a>
+  </div>
 
-          <a class="menu-item" href="certificados.html" data-page="certificados">
-            <span class="menu-item-icone" aria-hidden="true">◇</span>
-            <span>Certificados</span>
-          </a>
-        </div>
 
-        <div class="menu-grupo">
-          <p class="menu-grupo-titulo">Gestão</p>
+  <div class="menu-grupo" data-permissao="administracao">
+    <p class="menu-grupo-titulo">Documentos</p>
 
-          <a class="menu-item" href="financeiro.html" data-page="financeiro">
-            <span class="menu-item-icone" aria-hidden="true">R$</span>
-            <span>Financeiro</span>
-          </a>
+    <a
+      class="menu-item"
+      href="certificados.html"
+      data-page="certificados"
+    >
+      <span class="menu-item-icone" aria-hidden="true">◇</span>
+      <span>Certificados</span>
+    </a>
+  </div>
 
-          <a class="menu-item" href="relatorios.html" data-page="relatorios">
-            <span class="menu-item-icone" aria-hidden="true">▤</span>
-            <span>Relatórios</span>
-          </a>
 
-          <a
-            class="menu-item"
-            href="configuracoes.html"
-            data-page="configuracoes"
-            data-permissao="administracao"
-          >
-            <span class="menu-item-icone" aria-hidden="true">⚙</span>
-            <span>Administração</span>
-          </a>
-        </div>
+  <div class="menu-grupo">
+    <p class="menu-grupo-titulo">Gestão</p>
 
-      </nav>
+    <a
+      class="menu-item"
+      href="financeiro.html"
+      data-page="financeiro"
+      data-permissao="administracao"
+    >
+      <span class="menu-item-icone" aria-hidden="true">R$</span>
+      <span>Financeiro</span>
+    </a>
+
+    <a
+      class="menu-item"
+      href="tesouraria.html"
+      data-page="tesouraria"
+    >
+      <span class="menu-item-icone" aria-hidden="true">$</span>
+      <span>Tesouraria</span>
+    </a>
+
+    <a
+      class="menu-item"
+      href="relatorios.html"
+      data-page="relatorios"
+    >
+      <span class="menu-item-icone" aria-hidden="true">▤</span>
+      <span>Relatórios</span>
+    </a>
+
+    <a
+      class="menu-item"
+      href="administracao.html"
+      data-page="administracao"
+      data-permissao="administracao"
+    >
+      <span class="menu-item-icone" aria-hidden="true">⚙</span>
+      <span>Administração</span>
+    </a>
+
+    <a
+      class="menu-item"
+      href="configuracoes.html"
+      data-page="configuracoes"
+      data-permissao="administracao"
+    >
+      <span class="menu-item-icone" aria-hidden="true">⚙</span>
+      <span>Configurações</span>
+    </a>
+  </div>
+
+</nav>
 
       <div class="sidebar-rodape">
         <div class="usuario-sidebar">
