@@ -58,12 +58,8 @@
     }),
 
     PERFIS_ADMINISTRATIVOS: Object.freeze([
-  "administradora",
   "administrador",
-  "admin",
-  "superadministradora",
-  "superadministrador",
-  "pastor"
+  "pastor_presidente"
 ])
   });
 
