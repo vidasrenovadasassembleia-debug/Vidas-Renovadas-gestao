@@ -1,125 +1,146 @@
 <aside class="sidebar" aria-label="Menu principal">
 
-      <div class="sidebar-topo">
-        <div class="sidebar-logo-box">
-          <img
-            class="sidebar-logo"
-            src="logo.png"
-            alt="Logo da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas"
-          >
-        </div>
+  <div class="sidebar-topo">
+    <div class="sidebar-logo-box">
+      <img
+        class="sidebar-logo"
+        src="logo.png"
+        alt="Logo da Igreja Evangélica Assembleia de Deus Ministério Vidas Renovadas"
+      >
+    </div>
 
-        <div class="sidebar-identidade">
-          <p class="sidebar-nome">Vidas Renovadas Gestão</p>
-          <p class="sidebar-ministerio">Ministério Vidas Renovadas</p>
-        </div>
+    <div class="sidebar-identidade">
+      <p class="sidebar-nome">Vidas Renovadas Gestão</p>
+      <p class="sidebar-ministerio">Ministério Vidas Renovadas</p>
+    </div>
+  </div>
+
+  <nav class="menu-navegacao">
+
+    <div class="menu-grupo">
+      <p class="menu-grupo-titulo">Visão geral</p>
+
+      <a
+        class="menu-item"
+        href="dashboard.html"
+        data-page="dashboard"
+      >
+        <span class="menu-item-icone" aria-hidden="true">⌂</span>
+        <span>Dashboard</span>
+      </a>
+    </div>
+
+    <div class="menu-grupo" data-permissao="administracao">
+      <p class="menu-grupo-titulo">Pessoas</p>
+
+      <a
+        class="menu-item"
+        href="membros.html"
+        data-page="membros"
+      >
+        <span class="menu-item-icone" aria-hidden="true">♙</span>
+        <span>Membros</span>
+      </a>
+
+      <a
+        class="menu-item"
+        href="congregacoes.html"
+        data-page="congregacoes"
+      >
+        <span class="menu-item-icone" aria-hidden="true">⌂</span>
+        <span>Congregações</span>
+      </a>
+    </div>
+
+    <div class="menu-grupo" data-permissao="administracao">
+      <p class="menu-grupo-titulo">Documentos</p>
+
+      <a
+        class="menu-item"
+        href="certificados.html"
+        data-page="certificados"
+      >
+        <span class="menu-item-icone" aria-hidden="true">◇</span>
+        <span>Certificados</span>
+      </a>
+    </div>
+
+    <div class="menu-grupo">
+      <p class="menu-grupo-titulo">Gestão</p>
+
+      <a
+        class="menu-item"
+        href="financeiro.html"
+        data-page="financeiro"
+        data-permissao="administracao"
+      >
+        <span class="menu-item-icone" aria-hidden="true">R$</span>
+        <span>Financeiro</span>
+      </a>
+
+      <a
+        class="menu-item"
+        href="tesouraria.html"
+        data-page="tesouraria"
+      >
+        <span class="menu-item-icone" aria-hidden="true">$</span>
+        <span>Tesouraria</span>
+      </a>
+
+      <a
+        class="menu-item"
+        href="relatorios.html"
+        data-page="relatorios"
+      >
+        <span class="menu-item-icone" aria-hidden="true">▤</span>
+        <span>Relatórios</span>
+      </a>
+
+      <a
+        class="menu-item"
+        href="administracao.html"
+        data-page="administracao"
+        data-permissao="administracao"
+      >
+        <span class="menu-item-icone" aria-hidden="true">⚙</span>
+        <span>Administração</span>
+      </a>
+
+      <a
+        class="menu-item"
+        href="configuracoes.html"
+        data-page="configuracoes"
+        data-permissao="administracao"
+      >
+        <span class="menu-item-icone" aria-hidden="true">⚙</span>
+        <span>Configurações</span>
+      </a>
+    </div>
+
+  </nav>
+
+  <div class="sidebar-rodape">
+    <div class="usuario-sidebar">
+
+      <div class="usuario-avatar" data-usuario-iniciais>VR</div>
+
+      <div class="usuario-sidebar-dados">
+        <div class="usuario-sidebar-nome" data-usuario-nome>Usuário</div>
+        <div class="usuario-sidebar-cargo" data-usuario-cargo>Carregando perfil...</div>
       </div>
 
-     <nav class="menu-navegacao">
+      <button
+        type="button"
+        class="botao-sair-sidebar"
+        data-acao="logout"
+        data-confirmar-logout="true"
+        aria-label="Sair do sistema"
+        title="Sair do sistema"
+      >
+        ↪
+      </button>
 
-  <div class="menu-grupo">
-    <p class="menu-grupo-titulo">Visão geral</p>
-
-    <a class="menu-item" href="dashboard.html" data-page="dashboard">
-      <span class="menu-item-icone" aria-hidden="true">⌂</span>
-      <span>Dashboard</span>
-    </a>
+    </div>
   </div>
 
-
-  <div class="menu-grupo" data-permissao="administracao">
-    <p class="menu-grupo-titulo">Pessoas</p>
-
-    <a
-      class="menu-item"
-      href="membros.html"
-      data-page="membros"
-    >
-      <span class="menu-item-icone" aria-hidden="true">♙</span>
-      <span>Membros</span>
-    </a>
-
-    <a
-      class="menu-item"
-      href="congregacoes.html"
-      data-page="congregacoes"
-    >
-      <span class="menu-item-icone" aria-hidden="true">⌂</span>
-      <span>Congregações</span>
-    </a>
-  </div>
-
-
-  <div class="menu-grupo" data-permissao="administracao">
-    <p class="menu-grupo-titulo">Documentos</p>
-
-    <a
-      class="menu-item"
-      href="certificados.html"
-      data-page="certificados"
-    >
-      <span class="menu-item-icone" aria-hidden="true">◇</span>
-      <span>Certificados</span>
-    </a>
-  </div>
-
-
-  <div class="menu-grupo">
-    <p class="menu-grupo-titulo">Gestão</p>
-
-    <a
-      class="menu-item"
-      href="financeiro.html"
-      data-page="financeiro"
-      data-permissao="administracao"
-    >
-      <span class="menu-item-icone" aria-hidden="true">R$</span>
-      <span>Financeiro</span>
-    </a>
-
-    <a
-      class="menu-item"
-      href="tesouraria.html"
-      data-page="tesouraria"
-    >
-      <span class="menu-item-icone" aria-hidden="true">$</span>
-      <span>Tesouraria</span>
-    </a>
-
-    <a
-      class="menu-item"
-      href="relatorios.html"
-      data-page="relatorios"
-    >
-      <span class="menu-item-icone" aria-hidden="true">▤</span>
-      <span>Relatórios</span>
-    </a>
-  </div>
-
-</nav>
-
-      <div class="sidebar-rodape">
-        <div class="usuario-sidebar">
-
-          <div class="usuario-avatar" data-usuario-iniciais>VR</div>
-
-          <div class="usuario-sidebar-dados">
-            <div class="usuario-sidebar-nome" data-usuario-nome>Usuário</div>
-            <div class="usuario-sidebar-cargo" data-usuario-cargo>Carregando perfil...</div>
-          </div>
-
-          <button
-            type="button"
-            class="botao-sair-sidebar"
-            data-acao="logout"
-            data-confirmar-logout="true"
-            aria-label="Sair do sistema"
-            title="Sair do sistema"
-          >
-            ↪
-          </button>
-
-        </div>
-      </div>
-
-    </aside>
+</aside>
