@@ -754,26 +754,27 @@ function usuarioTesouraria() {
   }
 
   const Auth = Object.freeze({
-    inicializar,
-    renderizarBotaoGoogle,
-    tratarRespostaGoogle,
-    chamarApi,
+  inicializar,
+  renderizarBotaoGoogle,
+  tratarRespostaGoogle,
+  chamarApi,
 
-    salvarSessao,
-    obterSessao,
-    removerSessao,
+  salvarSessao,
+  obterSessao,
+  removerSessao,
 
-    usuarioAtual,
-    usuarioAdministrador,
-    usuarioTemPermissao,
+  usuarioAtual,
+  usuarioAdministrador,
+  usuarioTesouraria,
+  usuarioTemPermissao,
 
-    exigirSessao,
-    aplicarUsuarioNaInterface,
-    aplicarPermissoes,
+  exigirSessao,
+  aplicarUsuarioNaInterface,
+  aplicarPermissoes,
 
-    logout,
-    encerrarSessao: logout
-  });
+  logout,
+  encerrarSessao: logout
+});
 
   window.VRGAuth = Auth;
   window.Auth = Auth;
