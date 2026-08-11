@@ -8,16 +8,23 @@
       data-acao="alternar-menu"
       aria-label="Abrir menu"
       aria-expanded="false"
+      aria-controls="sidebar"
     >
       ☰
     </button>
 
-    <div>
-      <h1 class="topbar-titulo" data-layout-titulo>
+    <div class="topbar-identidade-pagina">
+      <h1
+        class="topbar-titulo"
+        data-layout-titulo
+      >
         Página
       </h1>
 
-      <p class="topbar-subtitulo" data-layout-subtitulo>
+      <p
+        class="topbar-subtitulo"
+        data-layout-subtitulo
+      >
         Carregando informações...
       </p>
     </div>
@@ -26,16 +33,41 @@
 
   <div class="topbar-direita">
 
-    <div class="topbar-data">
-      <strong id="dataAtual">—</strong><br>
+    <div
+      class="topbar-data"
+      aria-label="Data e hora atuais"
+    >
+      <strong id="dataAtual">—</strong>
+      <br>
       <span id="horaAtual">—</span>
     </div>
 
-    <div
-      class="topbar-avatar"
-      data-usuario-iniciais
-    >
-      VR
+    <div class="topbar-usuario">
+
+      <div
+        class="topbar-avatar"
+        data-usuario-iniciais
+        aria-hidden="true"
+      >
+        VR
+      </div>
+
+      <div class="topbar-usuario-dados">
+        <span
+          class="topbar-usuario-nome"
+          data-usuario-nome
+        >
+          Usuário
+        </span>
+
+        <span
+          class="topbar-usuario-cargo"
+          data-usuario-cargo
+        >
+          Carregando perfil...
+        </span>
+      </div>
+
     </div>
 
   </div>
