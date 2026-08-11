@@ -264,7 +264,19 @@
       usuario.cargo ||
       usuario.funcao
     );
+function usuarioTesouraria() {
+  const usuario = usuarioAtual();
 
+  if (!usuario) return false;
+
+  const perfil = normalizarTexto(
+    usuario.perfil ||
+    usuario.cargo ||
+    usuario.funcao
+  );
+
+  return perfil === "tesouraria";
+}
     return obterConfig().PERFIS_ADMINISTRATIVOS.includes(perfil);
   }
 
