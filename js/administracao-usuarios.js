@@ -618,11 +618,12 @@
       estado.usuarios = lista
         .map(normalizarUsuario)
         .filter(function (usuario) {
-          return [
-            "ADMINISTRADOR",
-            "PASTOR_PRESIDENTE"
-          ].includes(usuario.perfil);
-        });
+  return [
+    "ADMINISTRADOR",
+    "PASTOR_PRESIDENTE",
+    "TESOURARIA"
+  ].includes(usuario.perfil);
+});
 
       estado.usuariosFiltrados = [...estado.usuarios];
 
