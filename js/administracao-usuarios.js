@@ -764,9 +764,12 @@ congregacao: texto(
     }
 
     if (
-      !["ADMINISTRADOR", "PASTOR_PRESIDENTE"]
-        .includes(dados.perfil)
-    ) {
+  ![
+    "ADMINISTRADOR",
+    "PASTOR_PRESIDENTE",
+    "TESOURARIA"
+  ].includes(dados.perfil)
+) {
       contexto.mostrarAviso(
         "Selecione um perfil válido.",
         "erro"
