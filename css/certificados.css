@@ -417,6 +417,7 @@
 /* Cargo */
 
 .certificado-valor[data-campo="cargo"] {
+  color: #b98230;
   font-size: 21px;
   font-weight: 700;
   text-transform: uppercase;
