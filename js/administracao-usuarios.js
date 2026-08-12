@@ -391,9 +391,31 @@
 
   "botaoCancelarFormularioUsuario",
   "botaoSalvarUsuarioAdministracao"
-].forEach(function (id) {
-  referencias[id] = document.getElementById(id);
-});
+    ].forEach(function (id) {
+      referencias[id] = document.getElementById(id);
+    });
+  }
+
+  function atualizarCampoCongregacao() {
+    const perfil = texto(
+      referencias.administracaoUsuarioPerfilFormulario?.value
+    ).toUpperCase();
+
+    const tesouraria = perfil === "TESOURARIA";
+
+    if (referencias.campoAdministracaoUsuarioCongregacao) {
+      referencias.campoAdministracaoUsuarioCongregacao.hidden =
+        !tesouraria;
+    }
+
+    if (referencias.administracaoUsuarioCongregacao) {
+      referencias.administracaoUsuarioCongregacao.required =
+        tesouraria;
+
+      if (!tesouraria) {
+        referencias.administracaoUsuarioCongregacao.value = "";
+      }
+    }
   }
 
   function normalizarUsuario(item) {
