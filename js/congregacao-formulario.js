@@ -483,7 +483,7 @@ const CongregacaoFormulario = (() => {
   }
 
   function obterApi() {
-  window.VRGAuth || window.Auth
+  const api = window.VRGAuth || window.Auth;
 
   if (!api || typeof api.chamarApi !== "function") {
     throw new Error(
