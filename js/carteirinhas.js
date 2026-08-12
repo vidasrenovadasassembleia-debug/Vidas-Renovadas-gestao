@@ -409,8 +409,8 @@
 
     new window.QRCode(elementos.qrCode, {
       text: urlPublica,
-      width: 135,
-      height: 135,
+      width: 174,
+      height: 174,
       correctLevel: window.QRCode.CorrectLevel.M
     });
 
