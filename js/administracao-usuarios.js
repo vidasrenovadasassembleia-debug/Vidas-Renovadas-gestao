@@ -122,13 +122,6 @@
             >
           </div>
 
-          <div class="campo">
-            <label for="administracaoUsuarioPerfil">
-              Perfil
-            </label>
-
-            <select id="administracaoUsuarioPerfil">
-              <option value="">Todos</option>
 <div class="campo">
   <label for="administracaoUsuarioPerfil">
     Perfil
