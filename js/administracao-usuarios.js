@@ -8,16 +8,19 @@
 (function (window, document) {
 
   const PERFIS = Object.freeze([
-    {
-      valor: "ADMINISTRADOR",
-      rotulo: "Administrador do Sistema"
-    },
-    {
-      valor: "PASTOR_PRESIDENTE",
-      rotulo: "Pastor Presidente"
-    }
-  ]);
-
+  {
+    valor: "ADMINISTRADOR",
+    rotulo: "Administrador do Sistema"
+  },
+  {
+    valor: "PASTOR_PRESIDENTE",
+    rotulo: "Pastor Presidente"
+  },
+  {
+    valor: "TESOURARIA",
+    rotulo: "Tesouraria"
+  }
+]);
   const STATUS = Object.freeze([
     {
       valor: "ATIVO",
