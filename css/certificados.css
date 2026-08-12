@@ -586,7 +586,6 @@ body.modo-calibracao .certificado-valor[data-campo="qr"]{
     color: #b98230;
     font-size: 42px;
     font-weight: 700;
-    font-style: normal;
     line-height: 1;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -599,7 +598,7 @@ body.modo-calibracao .certificado-valor[data-campo="qr"]{
 
 .certificado-consagracao
 .certificado-valor[data-campo="cargo"].cargo-longo {
-    font-size: 40px !important;
+    font-size: 40px;
     transform: translateY(3px);
 }
 /* Histórico ocupando toda a largura disponível */
