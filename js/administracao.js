@@ -223,7 +223,7 @@
 
       const script = document.createElement("script");
 
-      script.src = `${configuracao.arquivo}?v=1`;
+      script.src = `${configuracao.arquivo}?v=2`;
       script.async = true;
       script.dataset.moduloAdministracao = configuracao.arquivo;
 
