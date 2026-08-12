@@ -777,7 +777,17 @@ congregacao: texto(
 
       return;
     }
+if (
+  dados.perfil === "TESOURARIA" &&
+  !dados.congregacao
+) {
+  contexto.mostrarAviso(
+    "Selecione a congregação do usuário da Tesouraria.",
+    "aviso"
+  );
 
+  return;
+}
     estado.processando = true;
     referencias.botaoSalvarUsuarioAdministracao.disabled = true;
 
