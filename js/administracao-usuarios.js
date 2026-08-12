@@ -736,8 +736,12 @@ if (referencias.administracaoUsuarioCongregacao) {
         referencias.administracaoUsuarioPerfilFormulario.value
       ).toUpperCase(),
       status: texto(
-        referencias.administracaoUsuarioStatusFormulario.value
-      ).toUpperCase()
+  referencias.administracaoUsuarioStatusFormulario.value
+).toUpperCase(),
+
+congregacao: texto(
+  referencias.administracaoUsuarioCongregacao?.value
+)
     };
   }
 
