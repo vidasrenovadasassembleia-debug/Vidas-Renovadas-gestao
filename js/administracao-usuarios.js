@@ -305,7 +305,24 @@
                   }).join("")}
                 </select>
               </div>
+              <div
+  class="campo"
+  id="campoAdministracaoUsuarioCongregacao"
+  hidden
+>
+  <label for="administracaoUsuarioCongregacao">
+    Congregação
+  </label>
 
+  <select
+    id="administracaoUsuarioCongregacao"
+    name="congregacao"
+  >
+    <option value="">
+      Selecione a congregação
+    </option>
+  </select>
+</div>
               <div class="campo">
                 <label for="administracaoUsuarioStatusFormulario">
                   Status
