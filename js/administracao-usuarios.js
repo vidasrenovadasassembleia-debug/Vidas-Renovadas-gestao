@@ -419,21 +419,27 @@
   }
 
   function normalizarUsuario(item) {
-    return {
-      id: texto(item?.id ?? item?.ID),
-      nome: texto(item?.nome ?? item?.NOME),
-      email: texto(item?.email ?? item?.EMAIL),
-      telefone: texto(item?.telefone ?? item?.TELEFONE),
-      perfil: texto(item?.perfil ?? item?.PERFIL).toUpperCase(),
-      status: texto(item?.status ?? item?.STATUS).toUpperCase(),
-      ultimoAcesso: texto(
-        item?.ultimoAcesso ??
-        item?.ULTIMO_ACESSO ??
-        item?.ultimoLogin ??
-        item?.ULTIMO_LOGIN
-      )
-    };
-  }
+  return {
+    id: texto(item?.id ?? item?.ID),
+    nome: texto(item?.nome ?? item?.NOME),
+    email: texto(item?.email ?? item?.EMAIL),
+    telefone: texto(item?.telefone ?? item?.TELEFONE),
+    perfil: texto(item?.perfil ?? item?.PERFIL).toUpperCase(),
+    status: texto(item?.status ?? item?.STATUS).toUpperCase(),
+
+    congregacao: texto(
+      item?.congregacao ??
+      item?.CONGREGACAO
+    ),
+
+    ultimoAcesso: texto(
+      item?.ultimoAcesso ??
+      item?.ULTIMO_ACESSO ??
+      item?.ultimoLogin ??
+      item?.ULTIMO_LOGIN
+    )
+  };
+}
 
   function definirEstado(tipo, mensagem) {
     referencias.administracaoUsuariosEstado.hidden =
