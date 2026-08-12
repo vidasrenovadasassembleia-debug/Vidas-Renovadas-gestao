@@ -368,27 +368,32 @@
     `;
 
     [
-      "administracaoUsuarioPesquisa",
-      "administracaoUsuarioPerfil",
-      "administracaoUsuarioStatus",
-      "botaoLimparFiltrosUsuarios",
-      "botaoNovoUsuarioAdministracao",
-      "administracaoUsuariosEstado",
-      "administracaoUsuariosTabelaArea",
-      "administracaoUsuariosTabelaCorpo",
-      "administracaoUsuarioFormularioArea",
-      "formAdministracaoUsuario",
-      "administracaoUsuarioId",
-      "administracaoUsuarioNome",
-      "administracaoUsuarioEmail",
-      "administracaoUsuarioTelefone",
-      "administracaoUsuarioPerfilFormulario",
-      "administracaoUsuarioStatusFormulario",
-      "botaoCancelarFormularioUsuario",
-      "botaoSalvarUsuarioAdministracao"
-    ].forEach(function (id) {
-      referencias[id] = document.getElementById(id);
-    });
+     [
+  "administracaoUsuarioPesquisa",
+  "administracaoUsuarioPerfil",
+  "administracaoUsuarioStatus",
+  "botaoLimparFiltrosUsuarios",
+  "botaoNovoUsuarioAdministracao",
+  "administracaoUsuariosEstado",
+  "administracaoUsuariosTabelaArea",
+  "administracaoUsuariosTabelaCorpo",
+  "administracaoUsuarioFormularioArea",
+  "formAdministracaoUsuario",
+  "administracaoUsuarioId",
+  "administracaoUsuarioNome",
+  "administracaoUsuarioEmail",
+  "administracaoUsuarioTelefone",
+  "administracaoUsuarioPerfilFormulario",
+  "administracaoUsuarioStatusFormulario",
+
+  "campoAdministracaoUsuarioCongregacao",
+  "administracaoUsuarioCongregacao",
+
+  "botaoCancelarFormularioUsuario",
+  "botaoSalvarUsuarioAdministracao"
+].forEach(function (id) {
+  referencias[id] = document.getElementById(id);
+});
   }
 
   function normalizarUsuario(item) {
