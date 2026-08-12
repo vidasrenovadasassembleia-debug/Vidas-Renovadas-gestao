@@ -129,25 +129,13 @@
 
             <select id="administracaoUsuarioPerfil">
               <option value="">Todos</option>
-              <div
-  class="campo"
-  id="campoAdministracaoUsuarioCongregacao"
-  hidden
->
-  <label for="administracaoUsuarioCongregacao">
-    Congregação
+<div class="campo">
+  <label for="administracaoUsuarioPerfil">
+    Perfil
   </label>
 
-  <select
-    id="administracaoUsuarioCongregacao"
-    name="congregacao"
-  >
-    <option value="">
-      Selecione a congregação
-    </option>
-  </select>
-</div>
-
+  <select id="administracaoUsuarioPerfil">
+    <option value="">Todos</option>
               ${PERFIS.map(function (perfil) {
                 return `
                   <option value="${perfil.valor}">
