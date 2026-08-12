@@ -960,15 +960,111 @@ if (
         }
       });
   }
-
-  async function iniciar(novoContexto) {
-    contexto = novoContexto;
-
-    montarEstrutura();
-    configurarEventos();
-
-    await carregarUsuarios();
+async function carregarCongregacoes() {
+  if (!referencias.administracaoUsuarioCongregacao) {
+    return;
   }
+
+  referencias.administracaoUsuarioCongregacao.innerHTML = `
+    <option value="">
+      Carregando congregações...
+    </option>
+  `;
+
+  referencias.administracaoUsuarioCongregacao.disabled = true;
+
+  try {
+    const resposta = await contexto.chamarApi({
+      acao: "listarCongregacoes"
+    });
+
+    const congregacoes = Array.isArray(resposta?.congregacoes)
+      ? resposta.congregacoes
+      : [];
+
+    const lista = congregacoes
+      .map(function (item) {
+        return {
+          codigo: texto(
+            item?.codigo ??
+            item?.CODIGO ??
+            item?.id ??
+            item?.ID
+          ),
+
+          nome: texto(
+            item?.nome ??
+            item?.NOME ??
+            item?.congregacao ??
+            item?.nomeCongregacao
+          ),
+
+          status: texto(
+            item?.status ??
+            item?.STATUS ??
+            item?.situacao ??
+            item?.SITUACAO
+          ).toUpperCase()
+        };
+      })
+      .filter(function (item) {
+        return item.nome;
+      })
+      .filter(function (item) {
+        return (
+          !item.status ||
+          item.status === "ATIVA" ||
+          item.status === "ATIVO"
+        );
+      })
+      .sort(function (a, b) {
+        return a.nome.localeCompare(
+          b.nome,
+          "pt-BR"
+        );
+      });
+
+    referencias.administracaoUsuarioCongregacao.innerHTML = `
+      <option value="">
+        Selecione a congregação
+      </option>
+
+      ${lista.map(function (item) {
+        return `
+          <option value="${escaparHtml(
+            item.codigo || item.nome
+          )}">
+            ${escaparHtml(item.nome)}
+          </option>
+        `;
+      }).join("")}
+    `;
+
+  } catch (erro) {
+    console.error(
+      "[ADMINISTRAÇÃO] Erro ao carregar congregações:",
+      erro
+    );
+
+    referencias.administracaoUsuarioCongregacao.innerHTML = `
+      <option value="">
+        Não foi possível carregar as congregações
+      </option>
+    `;
+
+  } finally {
+    referencias.administracaoUsuarioCongregacao.disabled = false;
+  }
+}
+  async function iniciar(novoContexto) {
+  contexto = novoContexto;
+
+  montarEstrutura();
+  configurarEventos();
+
+  await carregarCongregacoes();
+  await carregarUsuarios();
+}
 
   async function atualizar() {
     await carregarUsuarios();
