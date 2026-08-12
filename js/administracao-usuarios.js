@@ -368,7 +368,6 @@
     `;
 
     [
-     [
   "administracaoUsuarioPesquisa",
   "administracaoUsuarioPerfil",
   "administracaoUsuarioStatus",
