@@ -264,6 +264,20 @@
       usuario.cargo ||
       usuario.funcao
     );
+function usuarioAdministrador() {
+  const usuario = usuarioAtual();
+
+  if (!usuario) return false;
+
+  const perfil = normalizarTexto(
+    usuario.perfil ||
+    usuario.cargo ||
+    usuario.funcao
+  );
+
+  return obterConfig().PERFIS_ADMINISTRATIVOS.includes(perfil);
+}
+
 function usuarioTesouraria() {
   const usuario = usuarioAtual();
 
@@ -277,8 +291,6 @@ function usuarioTesouraria() {
 
   return perfil === "tesouraria";
 }
-    return obterConfig().PERFIS_ADMINISTRATIVOS.includes(perfil);
-  }
 
   function usuarioTemPermissao(permissao) {
     const usuario = usuarioAtual();
