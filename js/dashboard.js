@@ -376,7 +376,10 @@
       60000
     );
   }
-
+document.addEventListener("vrg:layout-pronto", function () {
+  atualizarRelogio();
+  atualizarSaudacao();
+});
   if (document.readyState === "loading") {
     document.addEventListener(
       "DOMContentLoaded",
