@@ -694,7 +694,12 @@
 
     referencias.administracaoUsuarioStatusFormulario.value =
       usuario.status;
+atualizarCampoCongregacao();
 
+if (referencias.administracaoUsuarioCongregacao) {
+  referencias.administracaoUsuarioCongregacao.value =
+    usuario.congregacao || "";
+}
     definirEstado("formulario");
 
     referencias.administracaoUsuarioNome.focus();
