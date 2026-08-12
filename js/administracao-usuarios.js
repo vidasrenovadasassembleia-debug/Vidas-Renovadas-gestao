@@ -658,7 +658,7 @@
       "PASTOR_PRESIDENTE";
     referencias.administracaoUsuarioStatusFormulario.value =
       "ATIVO";
-
+   atualizarCampoCongregacao();
     definirEstado("formulario");
 
     referencias.administracaoUsuarioNome.focus();
