@@ -362,13 +362,25 @@ function usuarioTesouraria() {
 }
 function redirecionarUsuarioLogado() {
   const config = obterConfig();
+  const sessao = obterSessao();
 
   if (paginaAtual() !== config.PAGINAS.LOGIN) {
     return false;
   }
 
-  if (!obterSessao()?.credential) {
+  if (!sessao?.credential) {
     return false;
+  }
+
+  const perfil = normalizarTexto(
+    sessao.usuario?.perfil ||
+    sessao.usuario?.perfilOficial ||
+    ""
+  );
+
+  if (perfil === "tesouraria") {
+    navegar("tesouraria.html", true);
+    return true;
   }
 
   navegar(config.PAGINAS.DASHBOARD, true);
