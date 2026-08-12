@@ -360,7 +360,20 @@ function usuarioTesouraria() {
 
   return false;
 }
+function redirecionarUsuarioLogado() {
+  const config = obterConfig();
 
+  if (paginaAtual() !== config.PAGINAS.LOGIN) {
+    return false;
+  }
+
+  if (!obterSessao()?.credential) {
+    return false;
+  }
+
+  navegar(config.PAGINAS.DASHBOARD, true);
+  return true;
+}
   function aplicarUsuarioNaInterface() {
     const usuario = usuarioAtual();
 
