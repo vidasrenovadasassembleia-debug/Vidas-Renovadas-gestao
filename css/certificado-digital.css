@@ -155,6 +155,7 @@ body {
    ========================================================================== */
 
 .certificado-valor[data-campo="cargo"] {
+    color: #b98230;
     font-family: "Times New Roman", serif;
     font-size: 40px;
     font-style: italic;
