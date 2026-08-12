@@ -534,7 +534,7 @@ body.login-page::after {
 
 :root {
   --sidebar-largura: 270px;
-  --topbar-altura: 72px;
+  --topbar-altura: 62px;
   --fundo-sistema: #f3f6fa;
   --superficie: #ffffff;
   --superficie-suave: #f8fafc;
@@ -778,7 +778,7 @@ body.sistema-page {
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  padding: 11px 26px;
+  padding: 7px 26px;
   border-bottom: 1px solid rgba(217, 226, 236, 0.88);
   background: rgba(255, 255, 255, 0.92);
   box-shadow: 0 2px 12px rgba(7, 31, 59, 0.04);
