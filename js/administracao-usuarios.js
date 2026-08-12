@@ -897,6 +897,12 @@
     referencias.botaoCancelarFormularioUsuario
       .addEventListener("click", cancelarFormulario);
 
+     referencias.administracaoUsuarioPerfilFormulario
+  .addEventListener(
+    "change",
+    atualizarCampoCongregacao
+  );
+     
     referencias.formAdministracaoUsuario
       .addEventListener("submit", salvarUsuario);
 
