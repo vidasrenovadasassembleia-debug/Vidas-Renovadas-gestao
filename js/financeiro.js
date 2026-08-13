@@ -781,7 +781,84 @@
       );
     }
   }
+  async function carregarStatusMesFinanceiro() {
+  const mes =
+    texto(elementos.filtroMes.value) ||
+    mesAtual();
 
+  elementos.botaoAlternarFechamentoMes.disabled = true;
+  elementos.botaoAlternarFechamentoMes.textContent =
+    "Aguarde...";
+
+  elementos.statusCompetenciaFinanceira.textContent =
+    "VERIFICANDO";
+
+  elementos.statusCompetenciaFinanceira.className =
+    "financeiro-status pendente";
+
+  elementos.textoCompetenciaFinanceira.textContent =
+    "Verificando situação do mês...";
+
+  try {
+    const resultado =
+      await obterAuth().chamarApi({
+        acao: ACOES_API.STATUS_MES,
+        mes
+      });
+
+    if (resultado?.sucesso === false) {
+      throw new Error(
+        resultado.mensagem ||
+        "Não foi possível consultar a competência."
+      );
+    }
+
+    const fechado =
+      Boolean(resultado?.fechado);
+
+    estado.mesFechado = fechado;
+
+    elementos.statusCompetenciaFinanceira.textContent =
+      fechado
+        ? "FECHADO"
+        : "EM ABERTO";
+
+    elementos.statusCompetenciaFinanceira.className =
+      fechado
+        ? "financeiro-status rejeitado"
+        : "financeiro-status aprovado";
+
+    elementos.textoCompetenciaFinanceira.textContent =
+      fechado
+        ? "Esta competência está encerrada para movimentações."
+        : "Esta competência está disponível para movimentações.";
+
+    elementos.botaoAlternarFechamentoMes.textContent =
+      fechado
+        ? "Reabrir mês"
+        : "Fechar mês";
+
+    elementos.botaoAlternarFechamentoMes.disabled = false;
+
+  } catch (erro) {
+    estado.mesFechado = false;
+
+    elementos.statusCompetenciaFinanceira.textContent =
+      "ERRO";
+
+    elementos.statusCompetenciaFinanceira.className =
+      "financeiro-status rejeitado";
+
+    elementos.textoCompetenciaFinanceira.textContent =
+      erro?.message ||
+      "Não foi possível consultar a situação do mês.";
+
+    elementos.botaoAlternarFechamentoMes.textContent =
+      "Indisponível";
+
+    elementos.botaoAlternarFechamentoMes.disabled = true;
+  }
+}
   async function carregarLancamentos() {
     estado.carregando = true;
     definirEstadoLista("carregando");
