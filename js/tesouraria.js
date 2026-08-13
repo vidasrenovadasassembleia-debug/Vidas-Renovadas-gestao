@@ -438,35 +438,58 @@ function preencherSelectCongregacoes() {
   }
 
   function preencherSelectCongregacoes() {
-    const valorAtual = elementos.congregacao.value;
+  const auth = obterAuth();
+
+  if (
+    typeof auth.usuarioTesouraria === "function" &&
+    auth.usuarioTesouraria()
+  ) {
+    const congregacao =
+      obterCongregacaoPermitidaUsuario();
+
+    estado.congregacaoPermitida = congregacao;
 
     elementos.congregacao.innerHTML = `
-      <option value="">Selecione a congregação</option>
-      ${estado.congregacoes
-        .map(
-          (congregacao) => `
-            <option value="${escaparHtml(congregacao.nome)}">
-              ${escaparHtml(congregacao.nome)}
-            </option>
-          `
-        )
-        .join("")}
+      <option value="${escaparHtml(congregacao.nome)}">
+        ${escaparHtml(congregacao.nome)}
+      </option>
     `;
 
-    if (
-      valorAtual &&
-      estado.congregacoes.some(
-        (item) => item.nome === valorAtual
-      )
-    ) {
-      elementos.congregacao.value = valorAtual;
-    }
+    elementos.congregacao.value =
+      congregacao.nome;
 
-    if (estado.congregacoes.length === 1) {
-      elementos.congregacao.value =
-        estado.congregacoes[0].nome;
-    }
+    return;
   }
+
+  const valorAtual = elementos.congregacao.value;
+
+  elementos.congregacao.innerHTML = `
+    <option value="">Selecione a congregação</option>
+    ${estado.congregacoes
+      .map(
+        (congregacao) => `
+          <option value="${escaparHtml(congregacao.nome)}">
+            ${escaparHtml(congregacao.nome)}
+          </option>
+        `
+      )
+      .join("")}
+  `;
+
+  if (
+    valorAtual &&
+    estado.congregacoes.some(
+      (item) => item.nome === valorAtual
+    )
+  ) {
+    elementos.congregacao.value = valorAtual;
+  }
+
+  if (estado.congregacoes.length === 1) {
+    elementos.congregacao.value =
+      estado.congregacoes[0].nome;
+  }
+}
 
   async function carregarMembros() {
     const resultado = await obterAuth().chamarApi({
