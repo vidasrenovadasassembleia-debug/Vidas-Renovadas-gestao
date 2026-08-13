@@ -859,6 +859,73 @@
     elementos.botaoAlternarFechamentoMes.disabled = true;
   }
 }
+  async function alternarFechamentoMes() {
+  if (estado.processando) {
+    return;
+  }
+
+  const mes =
+    texto(elementos.filtroMes.value) ||
+    mesAtual();
+
+  const acao = estado.mesFechado
+    ? ACOES_API.REABRIR_MES
+    : ACOES_API.FECHAR_MES;
+
+  const mensagemCarregamento =
+    estado.mesFechado
+      ? "Reabrindo mês..."
+      : "Fechando mês...";
+
+  estado.processando = true;
+  elementos.botaoAlternarFechamentoMes.disabled = true;
+
+  try {
+    definirCarregamentoGlobal(
+      true,
+      mensagemCarregamento
+    );
+
+    const resultado =
+      await obterAuth().chamarApi({
+        acao,
+        mes
+      });
+
+    if (resultado?.sucesso === false) {
+      throw new Error(
+        resultado.mensagem ||
+        "Não foi possível alterar a situação do mês."
+      );
+    }
+
+    mostrarMensagem(
+      resultado?.mensagem ||
+      (
+        estado.mesFechado
+          ? "Mês reaberto com sucesso."
+          : "Mês fechado com sucesso."
+      ),
+      "sucesso"
+    );
+
+    await carregarStatusMesFinanceiro();
+    await carregarLancamentos();
+
+  } catch (erro) {
+    mostrarMensagem(
+      erro?.message ||
+      "Não foi possível alterar a situação do mês.",
+      "erro"
+    );
+
+    await carregarStatusMesFinanceiro();
+
+  } finally {
+    estado.processando = false;
+    definirCarregamentoGlobal(false);
+  }
+}
   async function carregarLancamentos() {
     estado.carregando = true;
     definirEstadoLista("carregando");
