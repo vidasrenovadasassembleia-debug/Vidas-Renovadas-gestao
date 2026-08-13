@@ -969,7 +969,21 @@
       );
     }
   }
+async function abrirLancamentoDaUrl() {
+  const parametros = new URLSearchParams(
+    window.location.search
+  );
 
+  const id = texto(
+    parametros.get("id")
+  );
+
+  if (!id) {
+    return;
+  }
+
+  await abrirDetalhes(id);
+}
   function fecharDetalhes() {
     elementos.financeiroDetalhes.hidden = true;
     estado.lancamentoSelecionado = null;
