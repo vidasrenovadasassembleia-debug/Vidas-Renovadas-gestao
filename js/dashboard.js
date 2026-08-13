@@ -292,26 +292,41 @@
     lista.innerHTML = itens
       .slice(0, 5)
       .map((item) => `
-        <div class="pendencia-item">
-          <div
-            class="pendencia-icone ${classePendencia(item.tipo)}"
-            aria-hidden="true"
-          >
-            ${iconePendencia(item.tipo)}
-          </div>
+  <div class="pendencia-item">
+    <div
+      class="pendencia-icone ${classePendencia(item.tipo)}"
+      aria-hidden="true"
+    >
+      ${iconePendencia(item.tipo)}
+    </div>
 
-          <div class="pendencia-conteudo">
-            <p class="pendencia-titulo">
-              ${escapar(item.titulo || "Pendência")}
-            </p>
-            <p class="pendencia-texto">
-              ${escapar(item.descricao || "")}
-            </p>
-          </div>
-        </div>
-      `)
-      .join("");
-  }
+    <div class="pendencia-conteudo">
+      <p class="pendencia-titulo">
+        ${escapar(item.titulo || "Pendência")}
+      </p>
+
+      <p class="pendencia-texto">
+        ${escapar(item.descricao || "")}
+      </p>
+    </div>
+
+    ${
+      item.categoria === "financeiro" &&
+      item.idLancamento
+        ? `
+          <a
+            class="btn btn-contorno"
+            href="financeiro.html?id=${encodeURIComponent(
+              item.idLancamento
+            )}"
+          >
+            Conferir
+          </a>
+        `
+        : ""
+    }
+  </div>
+`)
 
   async function buscarDadosDashboard() {
     if (!Auth?.chamarApi) {
