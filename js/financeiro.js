@@ -40,7 +40,8 @@
     congregacoes: [],
     lancamentoSelecionado: null,
     carregando: false,
-    processando: false
+    processando: false,
+    mesFechado: false
   };
 
   const elementos = {};
