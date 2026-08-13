@@ -360,7 +360,59 @@
     elementos.usuarioLogado.textContent = nome;
     elementos.responsavel.value = nome;
   }
+function preencherSelectCongregacoes() {
+  const auth = obterAuth();
 
+  if (
+    typeof auth.usuarioTesouraria === "function" &&
+    auth.usuarioTesouraria()
+  ) {
+    const congregacao =
+      obterCongregacaoPermitidaUsuario();
+
+    estado.congregacaoPermitida = congregacao;
+
+    elementos.congregacao.innerHTML = `
+      <option value="${escaparHtml(congregacao.nome)}">
+        ${escaparHtml(congregacao.nome)}
+      </option>
+    `;
+
+    elementos.congregacao.value =
+      congregacao.nome;
+
+    return;
+  }
+
+  const valorAtual = elementos.congregacao.value;
+
+  elementos.congregacao.innerHTML = `
+    <option value="">Selecione a congregação</option>
+    ${estado.congregacoes
+      .map(
+        (congregacao) => `
+          <option value="${escaparHtml(congregacao.nome)}">
+            ${escaparHtml(congregacao.nome)}
+          </option>
+        `
+      )
+      .join("")}
+  `;
+
+  if (
+    valorAtual &&
+    estado.congregacoes.some(
+      (item) => item.nome === valorAtual
+    )
+  ) {
+    elementos.congregacao.value = valorAtual;
+  }
+
+  if (estado.congregacoes.length === 1) {
+    elementos.congregacao.value =
+      estado.congregacoes[0].nome;
+  }
+}
   async function carregarCongregacoes() {
     const resultado = await obterAuth().chamarApi({
       acao: ACOES_API.LISTAR_CONGREGACOES
