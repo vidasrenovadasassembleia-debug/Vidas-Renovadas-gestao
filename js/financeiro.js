@@ -17,13 +17,16 @@
 (function (window, document) {
   "use strict";
 
-  const ACOES_API = Object.freeze({
-    LISTAR: "listarLancamentosTesouraria",
-    BUSCAR: "buscarLancamentoTesouraria",
-    APROVAR: "aprovarLancamentoTesouraria",
-    REJEITAR: "rejeitarLancamentoTesouraria",
-    LISTAR_CONGREGACOES: "listarCongregacoes"
-  });
+ const ACOES_API = Object.freeze({
+  LISTAR: "listarLancamentosTesouraria",
+  BUSCAR: "buscarLancamentoTesouraria",
+  APROVAR: "aprovarLancamentoTesouraria",
+  REJEITAR: "rejeitarLancamentoTesouraria",
+  LISTAR_CONGREGACOES: "listarCongregacoes",
+  STATUS_MES: "obterStatusMesFinanceiro",
+  FECHAR_MES: "fecharMesFinanceiro",
+  REABRIR_MES: "reabrirMesFinanceiro"
+});
 
   const STATUS = Object.freeze({
     PENDENTE: "PENDENTE",
