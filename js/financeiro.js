@@ -1333,7 +1333,10 @@ async function abrirLancamentoDaUrl() {
       "click",
       carregarLancamentos
     );
-
+elementos.botaoAlternarFechamentoMes.addEventListener(
+  "click",
+  alternarFechamentoMes
+);
     elementos.corpoTabelaFinanceiro.addEventListener(
       "click",
       function (evento) {
