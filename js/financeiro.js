@@ -1303,6 +1303,8 @@ async function abrirLancamentoDaUrl() {
         carregarCongregacoes(),
         carregarLancamentos()
       ]);
+      await abrirLancamentoDaUrl();
+      
     } catch (erro) {
       console.error(
         "[FINANCEIRO] Falha na inicialização:",
