@@ -1455,10 +1455,11 @@ elementos.botaoAlternarFechamentoMes.addEventListener(
       configurarEventos();
 
       await Promise.all([
-        carregarCongregacoes(),
-        carregarLancamentos()
-      ]);
-      await abrirLancamentoDaUrl();
+  carregarCongregacoes(),
+  carregarLancamentos()
+]);
+
+await abrirLancamentoDaUrl();
       
     } catch (erro) {
       console.error(
