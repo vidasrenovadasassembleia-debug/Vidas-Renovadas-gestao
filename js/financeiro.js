@@ -1456,7 +1456,8 @@ elementos.botaoAlternarFechamentoMes.addEventListener(
 
       await Promise.all([
   carregarCongregacoes(),
-  carregarLancamentos()
+  carregarLancamentos(),
+  carregarStatusMesFinanceiro()
 ]);
 
 await abrirLancamentoDaUrl();
