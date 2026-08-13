@@ -1168,6 +1168,14 @@
       carregarLancamentos
     );
 
+    elementos.filtroMes.addEventListener(
+  "change",
+  async function () {
+    atualizarResumo();
+    aplicarFiltros();
+    await carregarStatusMesFinanceiro();
+  }
+);
     elementos.corpoTabelaFinanceiro.addEventListener(
       "click",
       function (evento) {
