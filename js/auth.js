@@ -298,19 +298,31 @@
   }
 
   function redirecionarUsuarioLogado() {
-    const config = obterConfig();
+  const config = obterConfig();
+  const sessao = obterSessao();
 
-    if (paginaAtual() !== config.PAGINAS.LOGIN) {
-      return false;
-    }
+  if (paginaAtual() !== config.PAGINAS.LOGIN) {
+    return false;
+  }
 
-    if (!obterSessao()?.credential) {
-      return false;
-    }
+  if (!sessao?.credential) {
+    return false;
+  }
 
-    navegar(config.PAGINAS.DASHBOARD, true);
+  const perfil = normalizarTexto(
+    sessao.usuario?.perfil ||
+    sessao.usuario?.perfilOficial ||
+    ""
+  );
+
+  if (perfil === "tesouraria") {
+    navegar("tesouraria.html", true);
     return true;
   }
+
+  navegar(config.PAGINAS.DASHBOARD, true);
+  return true;
+}
 
   function aplicarUsuarioNaInterface() {
     const usuario = usuarioAtual();
