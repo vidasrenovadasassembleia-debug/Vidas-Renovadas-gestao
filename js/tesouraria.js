@@ -24,14 +24,15 @@
     REGISTRAR_LANCAMENTO: "registrarLancamentoFinanceiro"
   });
 
-  const estado = {
-    membros: [],
-    congregacoes: [],
-    resultadosPesquisa: [],
-    indiceResultadoAtivo: -1,
-    carregando: false,
-    enviando: false
-  };
+ const estado = {
+  membros: [],
+  congregacoes: [],
+  congregacaoPermitida: null,
+  resultadosPesquisa: [],
+  indiceResultadoAtivo: -1,
+  carregando: false,
+  enviando: false
+};
 
   const elementos = {};
 
