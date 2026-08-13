@@ -327,7 +327,8 @@
     }
   </div>
 `)
-
+.join("");
+}
   async function buscarDadosDashboard() {
     if (!Auth?.chamarApi) {
       throw new Error(
