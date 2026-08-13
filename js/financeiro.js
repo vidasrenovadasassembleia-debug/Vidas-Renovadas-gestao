@@ -1294,9 +1294,13 @@
       configurarEventos();
 
       await Promise.all([
-        carregarCongregacoes(),
-        carregarLancamentos()
-      ]);
+  carregarCongregacoes(),
+  carregarLancamentos(),
+  carregarStatusMesFinanceiro()
+]);
+
+await abrirLancamentoDaUrl();
+      
     } catch (erro) {
       console.error(
         "[FINANCEIRO] Falha na inicialização:",
