@@ -360,29 +360,46 @@
     elementos.usuarioLogado.textContent = nome;
     elementos.responsavel.value = nome;
   }
-  async function carregarCongregacoes() {
-    const resultado = await obterAuth().chamarApi({
-      acao: ACOES_API.LISTAR_CONGREGACOES
-    });
+  function obterCongregacaoPermitidaUsuario() {
+  const auth = obterAuth();
+  const usuario = obterUsuarioAtual();
 
-    if (resultado?.sucesso === false) {
-      throw new Error(
-        resultado.mensagem ||
-        "Não foi possível carregar as congregações."
-      );
-    }
-
-    const lista = obterListaDaResposta(
-      resultado,
-      ["congregacoes", "dados", "resultado"]
-    );
-
-    estado.congregacoes = lista
-      .map(normalizarCongregacao)
-      .filter((item) => item.nome);
-
-    preencherSelectCongregacoes();
+  if (
+    typeof auth.usuarioTesouraria !== "function" ||
+    !auth.usuarioTesouraria()
+  ) {
+    return null;
   }
+
+  const congregacaoUsuario = texto(
+    usuario.congregacao ||
+    usuario.CONGREGACAO ||
+    ""
+  );
+
+  if (!congregacaoUsuario) {
+    throw new Error(
+      "Este usuário da Tesouraria não possui uma congregação vinculada."
+    );
+  }
+
+  const congregacao = estado.congregacoes.find(function (item) {
+    return (
+      normalizarTexto(item.id) ===
+        normalizarTexto(congregacaoUsuario) ||
+      normalizarTexto(item.nome) ===
+        normalizarTexto(congregacaoUsuario)
+    );
+  });
+
+  if (!congregacao) {
+    throw new Error(
+      "A congregação vinculada a este usuário não foi localizada."
+    );
+  }
+
+  return congregacao;
+}
 
   function preencherSelectCongregacoes() {
   const auth = obterAuth();
