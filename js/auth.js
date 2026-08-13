@@ -459,12 +459,22 @@
 
       salvarSessao(credential, resultado.usuario);
 
-      definirMensagem(
-        "Acesso autorizado. Abrindo o sistema...",
-        "sucesso"
-      );
+definirMensagem(
+  "Acesso autorizado. Abrindo o sistema...",
+  "sucesso"
+);
 
-      navegar(obterConfig().PAGINAS.DASHBOARD, true);
+const perfil = normalizarTexto(
+  resultado.usuario?.perfil ||
+  resultado.usuario?.perfilOficial ||
+  ""
+);
+
+if (perfil === "tesouraria") {
+  navegar("tesouraria.html", true);
+} else {
+  navegar(obterConfig().PAGINAS.DASHBOARD, true);
+}
     } catch (erro) {
       console.error("[AUTH] Erro de autenticação:", erro);
       removerSessao();
