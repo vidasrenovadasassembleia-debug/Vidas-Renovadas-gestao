@@ -133,8 +133,8 @@
               filtros: [],
               colunas: [
                 ["congregacao", "Congregação"],
-                ["membrosAtivos", "Ativos"],
-                ["membrosInativos", "Inativos"],
+                ["ativos", "Ativos"],
+                ["inativos", "Inativos"],
                 ["total", "Total"]
               ]
             }
