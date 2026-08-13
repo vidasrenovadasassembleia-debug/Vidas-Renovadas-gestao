@@ -383,7 +383,27 @@
 
     preencherSelectCongregacoes();
   }
+function obterCongregacaoPermitidaUsuario() {
+  const usuario = obterUsuarioAtual();
 
+  const congregacao =
+    usuario?.congregacao ??
+    usuario?.CONGREGACAO ??
+    "";
+
+  return {
+    id: texto(
+      congregacao?.id ??
+      congregacao?.ID ??
+      congregacao
+    ),
+    nome: texto(
+      congregacao?.nome ??
+      congregacao?.NOME ??
+      congregacao
+    )
+  };
+}
   function preencherSelectCongregacoes() {
     const valorAtual = elementos.congregacao.value;
 
