@@ -400,7 +400,29 @@
 
   return congregacao;
 }
+async function carregarCongregacoes() {
+  const resultado = await obterAuth().chamarApi({
+    acao: ACOES_API.LISTAR_CONGREGACOES
+  });
 
+  if (resultado?.sucesso === false) {
+    throw new Error(
+      resultado.mensagem ||
+      "Não foi possível carregar as congregações."
+    );
+  }
+
+  const lista = obterListaDaResposta(
+    resultado,
+    ["congregacoes", "dados", "resultado"]
+  );
+
+  estado.congregacoes = lista
+    .map(normalizarCongregacao)
+    .filter((item) => item.nome);
+
+  preencherSelectCongregacoes();
+}
   function preencherSelectCongregacoes() {
   const auth = obterAuth();
 
