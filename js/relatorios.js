@@ -61,11 +61,13 @@
               descricao: "Lista os membros vinculados a cada congregação.",
               filtros: ["congregacao", "situacao"],
               colunas: [
-                ["nome", "Nome"],
                 ["congregacao", "Congregação"],
-                ["cargo", "Cargo"],
-                ["telefone", "Telefone"],
-                ["situacao", "Situação"]
+                ["total", "Total"],
+                ["ativos", "Ativos"],
+                ["inativos", "Inativos"],
+                ["transferidos", "Transferidos"],
+                ["falecidos", "Falecidos"],
+                ["excluidos", "Excluídos"]
               ]
             },
             {
