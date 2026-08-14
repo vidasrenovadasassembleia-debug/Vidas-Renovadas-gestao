@@ -8,9 +8,10 @@
 (function (window, document) {
 
   const ACOES_API = Object.freeze({
-    OBTER: "obterConfiguracoesAdministracao",
-    SALVAR: "salvarConfiguracoesAdministracao"
-  });
+  OBTER: "obterConfiguracoes",
+  SALVAR: "salvarConfiguracoes",
+  UPLOAD: "uploadArquivoSistema"
+});
 
   let contexto = null;
 
