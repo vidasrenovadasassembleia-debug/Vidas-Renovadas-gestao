@@ -17,12 +17,14 @@
 
 (function (window, document) {
   const estado = {
-    inicializado: false,
-    googleRenderizado: false,
-    autenticando: false,
-    tentativasGoogle: 0,
-    temporizadorRedimensionamento: null
-  };
+  inicializado: false,
+  googleRenderizado: false,
+  autenticando: false,
+  tentativasGoogle: 0,
+  temporizadorRedimensionamento: null,
+  temporizadorInatividade: null,
+  ultimaAtividade: Date.now()
+};
 
   function obterConfig() {
     if (!window.VR_CONFIG) {
