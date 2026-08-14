@@ -1125,6 +1125,18 @@
   .tesouraria-dizimos-tabela td {
     padding: 11px 10px;
   }
+   .tesouraria-identidade {
+  width: 100%;
+}
+
+.tesouraria-identidade > div:last-child {
+  width: 100%;
+}
+
+.tesouraria-topo {
+  width: 100%;
+  box-sizing: border-box;
+}
 }
 
 /* ==========================================================================
