@@ -69,8 +69,10 @@
                 ["falecidos", "Falecidos"],
                 ["excluidos", "Excluídos"]
               ]
-            },      
-            {
+            }
+         ]
+      },
+    {
           id: "datas",
           titulo: "Datas e aniversários",
           descricao: "Consultas por aniversário e período.",
