@@ -796,6 +796,8 @@ body > .carregamento-global .spinner {
   .relatorios-cabecalho .btn,
   .relatorios-categorias,
   #painelFiltrosRelatorio,
+  #listaTiposRelatorio,
+  [data-acao-relatorio="voltar-grupos"],
   .relatorios-exportacoes,
   .sidebar,
   .topbar,
