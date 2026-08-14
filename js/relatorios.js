@@ -1154,11 +1154,9 @@
 );
 
     elementos.botaoExportarExcel.addEventListener(
-      "click",
-      function () {
-        exportarAindaNaoDisponivel("Excel");
-      }
-    );
+  "click",
+  exportarExcel
+);
   }
 
   async function iniciar() {
