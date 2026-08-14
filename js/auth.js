@@ -707,7 +707,42 @@ if (perfil === "tesouraria") {
 
     executar();
   }
+  function reiniciarTemporizadorInatividade() {
+  window.clearTimeout(
+    estado.temporizadorInatividade
+  );
 
+  estado.ultimaAtividade = Date.now();
+
+  estado.temporizadorInatividade =
+    window.setTimeout(function () {
+      logout({
+        confirmar: false
+      });
+    }, 60 * 60 * 1000);
+}
+
+function configurarInatividade() {
+  if (!paginaProtegida()) {
+    return;
+  }
+
+  [
+    "click",
+    "keydown",
+    "mousemove",
+    "touchstart",
+    "scroll"
+  ].forEach(function (evento) {
+    document.addEventListener(
+      evento,
+      reiniciarTemporizadorInatividade,
+      { passive: true }
+    );
+  });
+
+  reiniciarTemporizadorInatividade();
+}
   function configurarLogout() {
     document.addEventListener("click", (evento) => {
       const botao = evento.target.closest(
