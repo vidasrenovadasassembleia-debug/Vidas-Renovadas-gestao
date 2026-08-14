@@ -396,6 +396,17 @@ document.addEventListener("vrg:layout-pronto", function () {
   atualizarRelogio();
   atualizarSaudacao();
 });
+  document.addEventListener("visibilitychange", function () {
+  if (!document.hidden) {
+    atualizarRelogio();
+    atualizarSaudacao();
+  }
+});
+
+window.addEventListener("focus", function () {
+  atualizarRelogio();
+  atualizarSaudacao();
+});
   if (document.readyState === "loading") {
     document.addEventListener(
       "DOMContentLoaded",
