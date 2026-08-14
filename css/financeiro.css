@@ -1034,8 +1034,15 @@
   }
 
   .tesouraria-identidade {
-    flex-direction: column;
-  }
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+}
+
+.tesouraria-identidade-texto {
+  flex: 1;
+  min-width: 0;
+}
 
   .tesouraria-logo-box {
     width: 66px;
