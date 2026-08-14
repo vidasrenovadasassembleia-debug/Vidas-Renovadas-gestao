@@ -800,6 +800,7 @@ function configurarInatividade() {
       }
 
       configurarLogout();
+      configurarInatividade();
       aplicarUsuarioNaInterface();
       aplicarPermissoes();
       configurarRedimensionamentoGoogle();
