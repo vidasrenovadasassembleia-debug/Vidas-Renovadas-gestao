@@ -311,7 +311,7 @@
               descricao: "Apresenta as últimas ações registradas no sistema.",
               filtros: ["dataInicial", "dataFinal", "pesquisa"],
               colunas: [
-                ["data", "Data e hora"],
+                ["dataHora", "Data e hora"],
                 ["usuario", "Usuário"],
                 ["acao", "Ação"],
                 ["modulo", "Módulo"],
