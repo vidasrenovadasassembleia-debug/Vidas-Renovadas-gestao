@@ -449,10 +449,10 @@
       return;
     }
 
-    if (
-      dados.estado_igreja &&
-      dados.estado_igreja.length !== 2
-    ) {
+   if (
+  dados.estadoIgreja &&
+  dados.estadoIgreja.length !== 2
+) {
       contexto.mostrarAviso(
         "Informe o estado com 2 letras, por exemplo RJ.",
         "aviso"
