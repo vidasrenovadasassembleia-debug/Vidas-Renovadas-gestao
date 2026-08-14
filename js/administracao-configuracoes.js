@@ -308,65 +308,65 @@
       texto(configuracoes.validadePadraoMeses);
   }
 
-  function coletarFormulario() {
-    return {
-      nome_igreja:
-        texto(referencias.configNomeIgreja.value),
+ function coletarFormulario() {
+  return {
+    nomeIgreja:
+      texto(referencias.configNomeIgreja.value),
 
-      cnpj:
-        texto(referencias.configCnpj.value),
+    cnpj:
+      texto(referencias.configCnpj.value),
 
-      pastor_presidente:
-        texto(
-          referencias.configPastorPresidente.value
-        ),
+    pastorPresidente:
+      texto(
+        referencias.configPastorPresidente.value
+      ),
 
-      telefone_igreja:
-        texto(
-          referencias.configTelefoneIgreja.value
-        ),
+    telefoneIgreja:
+      texto(
+        referencias.configTelefoneIgreja.value
+      ),
 
-      whatsapp_igreja:
-        texto(
-          referencias.configWhatsappIgreja.value
-        ),
+    whatsappIgreja:
+      texto(
+        referencias.configWhatsappIgreja.value
+      ),
 
-      email_igreja:
-        texto(
-          referencias.configEmailIgreja.value
-        ),
+    emailIgreja:
+      texto(
+        referencias.configEmailIgreja.value
+      ),
 
-      endereco_igreja:
-        texto(
-          referencias.configEnderecoIgreja.value
-        ),
+    enderecoIgreja:
+      texto(
+        referencias.configEnderecoIgreja.value
+      ),
 
-      cidade_igreja:
-        texto(
-          referencias.configCidadeIgreja.value
-        ),
+    cidadeIgreja:
+      texto(
+        referencias.configCidadeIgreja.value
+      ),
 
-      estado_igreja:
-        texto(
-          referencias.configEstadoIgreja.value
-        ).toUpperCase(),
+    estadoIgreja:
+      texto(
+        referencias.configEstadoIgreja.value
+      ).toUpperCase(),
 
-      cep_igreja:
-        texto(
-          referencias.configCepIgreja.value
-        ),
+    cepIgreja:
+      texto(
+        referencias.configCepIgreja.value
+      ),
 
-      congregacao_padrao:
-        texto(
-          referencias.configCongregacaoPadrao.value
-        ),
+    congregacaoPadrao:
+      texto(
+        referencias.configCongregacaoPadrao.value
+      ),
 
-      validade_carteirinha_meses:
-        texto(
-          referencias.configValidadeCarteirinha.value
-        )
-    };
-  }
+    validadePadraoMeses:
+      texto(
+        referencias.configValidadeCarteirinha.value
+      )
+  };
+}
 
   async function carregarConfiguracoes() {
     if (estado.carregando) {
