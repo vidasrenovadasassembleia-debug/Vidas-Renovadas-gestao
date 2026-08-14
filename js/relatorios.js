@@ -1041,11 +1041,15 @@
     );
 
     elementos.botaoExportarPdf.addEventListener(
-      "click",
-      function () {
-        exportarAindaNaoDisponivel("PDF");
-      }
-    );
+  "click",
+  function () {
+    if (!estado.resultadoAtual) {
+      return;
+    }
+
+    window.print();
+  }
+);
 
     elementos.botaoExportarExcel.addEventListener(
       "click",
