@@ -271,43 +271,41 @@
         : {};
 
     referencias.configNomeIgreja.value =
-      texto(configuracoes.nome_igreja);
+      texto(configuracoes.nomeIgreja);
 
     referencias.configCnpj.value =
       texto(configuracoes.cnpj);
 
     referencias.configPastorPresidente.value =
-      texto(configuracoes.pastor_presidente);
+      texto(configuracoes.pastorPresidente);
 
     referencias.configTelefoneIgreja.value =
-      texto(configuracoes.telefone_igreja);
+      texto(configuracoes.telefoneIgreja);
 
     referencias.configWhatsappIgreja.value =
-      texto(configuracoes.whatsapp_igreja);
+      texto(configuracoes.whatsappIgreja);
 
     referencias.configEmailIgreja.value =
-      texto(configuracoes.email_igreja);
+      texto(configuracoes.emailIgreja);
 
     referencias.configEnderecoIgreja.value =
-      texto(configuracoes.endereco_igreja);
+      texto(configuracoes.enderecoIgreja);
 
     referencias.configCidadeIgreja.value =
-      texto(configuracoes.cidade_igreja);
+      texto(configuracoes.cidadeIgreja);
 
     referencias.configEstadoIgreja.value =
-      texto(configuracoes.estado_igreja)
+      texto(configuracoes.estadoIgreja)
         .toUpperCase();
 
     referencias.configCepIgreja.value =
-      texto(configuracoes.cep_igreja);
+      texto(configuracoes.cepIgreja);
 
     referencias.configCongregacaoPadrao.value =
-      texto(configuracoes.congregacao_padrao);
+      texto(configuracoes.congregacaoPadrao);
 
     referencias.configValidadeCarteirinha.value =
-      texto(
-        configuracoes.validade_carteirinha_meses
-      );
+      texto(configuracoes.validadePadraoMeses);
   }
 
   function coletarFormulario() {
