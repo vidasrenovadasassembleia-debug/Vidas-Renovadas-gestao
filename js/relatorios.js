@@ -69,22 +69,8 @@
                 ["falecidos", "Falecidos"],
                 ["excluidos", "Excluídos"]
               ]
-            },
+            },      
             {
-              id: "membros_cadastros_incompletos",
-              titulo: "Cadastros incompletos",
-              descricao: "Identifica registros com informações essenciais ausentes.",
-              filtros: ["congregacao"],
-              colunas: [
-                ["codigo", "Código"],
-                ["nome", "Nome"],
-                ["congregacao", "Congregação"],
-                ["pendencias", "Informações pendentes"]
-              ]
-            }
-          ]
-        },
-        {
           id: "datas",
           titulo: "Datas e aniversários",
           descricao: "Consultas por aniversário e período.",
