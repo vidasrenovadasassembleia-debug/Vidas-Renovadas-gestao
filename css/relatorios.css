@@ -792,6 +792,7 @@ body > .carregamento-global .spinner {
    ========================================================================== */
 
 @media print {
+   .relatorios-cabecalho,
   .relatorios-cabecalho .btn,
   .relatorios-categorias,
   #painelFiltrosRelatorio,
