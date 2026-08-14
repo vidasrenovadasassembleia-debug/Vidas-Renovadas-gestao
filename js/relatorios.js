@@ -926,7 +926,109 @@
 
     window.print();
   }
+ function exportarExcel() {
+  if (!estado.resultadoAtual) {
+    return;
+  }
 
+  const relatorio = obterRelatorioAtual();
+
+  const registros = Array.isArray(
+    estado.resultadoAtual?.registros
+  )
+    ? estado.resultadoAtual.registros
+    : [];
+
+  if (!registros.length) {
+    mostrarAviso(
+      "Não há registros para exportar.",
+      "aviso"
+    );
+    return;
+  }
+
+  const colunas = Array.isArray(relatorio?.colunas)
+    ? relatorio.colunas
+    : [];
+
+  if (!colunas.length) {
+    mostrarAviso(
+      "Não foi possível identificar as colunas do relatório.",
+      "erro"
+    );
+    return;
+  }
+
+  function escaparCsv(valor) {
+    const texto = String(
+      valor === null || valor === undefined
+        ? ""
+        : valor
+    ).replace(/"/g, '""');
+
+    return `"${texto}"`;
+  }
+
+  const linhas = [];
+
+  linhas.push(
+    colunas
+      .map(function (coluna) {
+        return escaparCsv(coluna[1] || coluna[0]);
+      })
+      .join(";")
+  );
+
+  registros.forEach(function (registro) {
+    const linha = colunas.map(function (coluna) {
+      const chave = coluna[0];
+      const tipo = coluna[2] || "";
+
+      return escaparCsv(
+        formatarCelula(
+          registro[chave],
+          tipo
+        )
+      );
+    });
+
+    linhas.push(linha.join(";"));
+  });
+
+  const conteudo =
+    "\uFEFF" + linhas.join("\r\n");
+
+  const blob = new Blob(
+    [conteudo],
+    {
+      type: "text/csv;charset=utf-8;"
+    }
+  );
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+
+  const nomeBase = String(
+    relatorio?.titulo ||
+    "relatorio"
+  )
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .toLowerCase();
+
+  link.href = url;
+  link.download =
+    `${nomeBase || "relatorio"}.csv`;
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  URL.revokeObjectURL(url);
+}
   function exportarAindaNaoDisponivel(formato) {
     mostrarAviso(
       `A exportação para ${formato} será conectada ao backend na próxima etapa.`,
