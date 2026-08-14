@@ -1024,10 +1024,19 @@
     `${nomeBase || "relatorio"}.csv`;
 
   document.body.appendChild(link);
-  link.click();
-  link.remove();
 
+link.dispatchEvent(
+  new MouseEvent("click", {
+    bubbles: true,
+    cancelable: true,
+    view: window
+  })
+);
+
+window.setTimeout(function () {
+  link.remove();
   URL.revokeObjectURL(url);
+}, 1000);
 }
   function exportarAindaNaoDisponivel(formato) {
     mostrarAviso(
