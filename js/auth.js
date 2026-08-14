@@ -719,7 +719,7 @@ if (perfil === "tesouraria") {
       logout({
         confirmar: false
       });
-    }, 60 * 1000);
+    }, 60 * 60 * 1000);
 }
 
 function configurarInatividade() {
