@@ -439,7 +439,7 @@
 
     const dados = coletarFormulario();
 
-    if (!dados.nome_igreja) {
+    if (!dados.nomeIgreja) {
       contexto.mostrarAviso(
         "Informe o nome da igreja.",
         "aviso"
