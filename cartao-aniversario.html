@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -14,12 +15,21 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --azul: #0f2f48;
+      --azul-escuro: #08243b;
+      --dourado: #b98a45;
+      --dourado-claro: #d8b56c;
+      --creme: #fffaf0;
+      --texto: #17324a;
+    }
+
     html,
     body {
       margin: 0;
       padding: 0;
       background: #edf2f7;
-      color: #082f49;
+      color: var(--azul);
       font-family: Georgia, "Times New Roman", serif;
     }
 
@@ -32,6 +42,10 @@
       margin: 24px auto;
     }
 
+    /* =========================================================
+       BOTÕES DA TELA
+       ========================================================= */
+
     .acoes {
       display: flex;
       justify-content: flex-end;
@@ -42,308 +56,46 @@
 
     .btn {
       min-height: 44px;
-      padding: 0 18px;
+      padding: 0 20px;
       border-radius: 10px;
       border: 1px solid #cfd9e6;
       background: #ffffff;
-      color: #082f49;
+      color: var(--azul);
       font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
       text-decoration: none;
+
       display: inline-flex;
       align-items: center;
       justify-content: center;
     }
 
+    .btn:hover {
+      filter: brightness(0.98);
+    }
+
     .btn-imprimir {
       border-color: #d5a529;
       background: #d5a529;
-      color: #082f49;
+      color: var(--azul);
     }
 
-    .cartao {
-      position: relative;
-      width: 297mm;
-      height: 210mm;
-      margin: 0 auto;
-      overflow: hidden;
-      background:
-        radial-gradient(
-          circle at 82% 22%,
-          rgba(213, 165, 41, 0.08),
-          transparent 28%
-        ),
-        linear-gradient(
-          135deg,
-          #fffdf8 0%,
-          #ffffff 60%,
-          #f8f4ea 100%
-        );
-      box-shadow: 0 16px 45px rgba(8, 47, 73, 0.18);
-      border: 3px solid #0f2f48;
-    }
-
-    .cartao::before {
-      content: "";
-      position: absolute;
-      inset: 10mm;
-      border: 1.5px solid #b98a45;
-      pointer-events: none;
-    }
-
-    .faixa-superior {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 14mm;
-      background: #0f2f48;
-    }
-
-    .faixa-dourada {
-      position: absolute;
-      top: 14mm;
-      left: 0;
-      right: 0;
-      height: 2.5mm;
-      background: #b98a45;
-    }
-
-    .conteudo {
-      position: relative;
-      z-index: 2;
-      height: 100%;
-      display: grid;
-      grid-template-columns: 78mm 1fr;
-      gap: 14mm;
-      padding: 26mm 20mm 18mm 20mm;
-    }
-
-    .coluna-foto {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8mm;
-    }
-
-    .logo-box {
-      width: 48mm;
-      min-height: 28mm;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .logo {
-      display: block;
-      max-width: 100%;
-      max-height: 28mm;
-      object-fit: contain;
-    }
-
-    .foto-moldura {
-      width: 62mm;
-      height: 82mm;
-      padding: 2.5mm;
-      border: 2px solid #b98a45;
-      border-radius: 8mm;
-      background: #ffffff;
-      box-shadow: 0 8px 20px rgba(8, 47, 73, 0.10);
-    }
-
-    .foto-area {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      border-radius: 5.5mm;
-      background:
-        linear-gradient(
-          145deg,
-          #eef3f8,
-          #ffffff
-        );
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .foto-membro {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-    }
-
-    .foto-placeholder {
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 18mm;
-      font-weight: 800;
-      color: #0f2f48;
-      letter-spacing: -1mm;
-    }
-
-    .versiculo-lateral {
-      width: 62mm;
-      text-align: center;
-      color: #0f2f48;
-      font-size: 4.1mm;
-      font-style: italic;
-      line-height: 1.45;
-    }
-
-    .versiculo-lateral strong {
-      display: block;
-      margin-top: 2mm;
-      color: #b98a45;
-      font-size: 3.7mm;
-      font-style: normal;
-      text-transform: uppercase;
-      letter-spacing: 0.4mm;
-    }
-
-    .coluna-mensagem {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding-right: 8mm;
-    }
-
-    .igreja {
-      margin: 0;
-      color: #0f2f48;
-      font-size: 5mm;
-      font-weight: 700;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 1.2mm;
-    }
-
-    .ministerio {
-      margin: 1.5mm 0 8mm;
-      color: #b98a45;
-      font-size: 4.2mm;
-      font-weight: 700;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 0.8mm;
-    }
-
-    .titulo {
-      margin: 0;
-      color: #b98a45;
-      font-size: 14mm;
-      line-height: 1;
-      text-align: center;
-      font-weight: 700;
-      letter-spacing: 0.5mm;
-    }
-
-    .ornamento {
-      margin: 5mm auto;
-      width: 56mm;
-      height: 1px;
-      background: linear-gradient(
-        to right,
-        transparent,
-        #b98a45,
-        transparent
-      );
-    }
-
-    .nome {
-      margin: 0;
-      color: #0f2f48;
-      font-size: 10mm;
-      line-height: 1.05;
-      text-align: center;
-      font-weight: 600;
-    }
-
-    .congregacao {
-      margin: 3mm 0 7mm;
-      color: #526777;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 3.8mm;
-      text-align: center;
-    }
-
-    .mensagem {
-      max-width: 150mm;
-      margin: 0 auto;
-      color: #17324a;
-      font-size: 5mm;
-      line-height: 1.55;
-      text-align: center;
-    }
-
-    .mensagem strong {
-      color: #0f2f48;
-    }
-
-    .assinatura-area {
-      margin-top: 9mm;
-      display: flex;
-      justify-content: center;
-    }
-
-    .assinatura-bloco {
-      width: 78mm;
-      text-align: center;
-    }
-
-    .assinatura {
-      display: block;
-      max-width: 60mm;
-      max-height: 22mm;
-      margin: 0 auto 1mm;
-      object-fit: contain;
-    }
-
-    .linha-assinatura {
-      border-top: 1px solid #b98a45;
-      padding-top: 1.5mm;
-      color: #0f2f48;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 3.6mm;
-      font-weight: 700;
-    }
-
-    .cargo-assinatura {
-      margin-top: 1mm;
-      color: #526777;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 3.2mm;
-      text-transform: uppercase;
-      letter-spacing: 0.3mm;
-    }
-
-    .rodape {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 5mm;
-      z-index: 3;
-      text-align: center;
-      color: #0f2f48;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 3.1mm;
-      font-weight: 600;
-    }
-
-    .rodape span {
-      color: #b98a45;
-    }
+    /* =========================================================
+       STATUS
+       ========================================================= */
 
     .status {
       width: 297mm;
       margin: 0 auto 14px;
       padding: 12px 16px;
+
       border: 1px solid #d7e0e9;
       border-radius: 10px;
+
       background: #ffffff;
       color: #526777;
+
       font-family: Arial, Helvetica, sans-serif;
       font-size: 0.92rem;
     }
@@ -353,6 +105,623 @@
       background: #fff2f2;
       color: #9b1c1c;
     }
+
+    /* =========================================================
+       CARTÃO
+       ========================================================= */
+
+    .cartao {
+      position: relative;
+
+      width: 297mm;
+      height: 210mm;
+
+      margin: 0 auto;
+      overflow: hidden;
+
+      background:
+        radial-gradient(
+          circle at 15% 18%,
+          rgba(185, 138, 69, 0.07),
+          transparent 26%
+        ),
+        radial-gradient(
+          circle at 86% 20%,
+          rgba(15, 47, 72, 0.035),
+          transparent 30%
+        ),
+        linear-gradient(
+          135deg,
+          #fffdf8 0%,
+          #fffaf0 48%,
+          #ffffff 72%,
+          #faf4e8 100%
+        );
+
+      border: 3px solid var(--azul);
+
+      box-shadow:
+        0 18px 48px rgba(8, 47, 73, 0.18);
+    }
+
+    /* Moldura dourada interna */
+    .cartao::before {
+      content: "";
+
+      position: absolute;
+      inset: 8mm;
+
+      border: 1.4px solid var(--dourado);
+
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Segunda moldura fina */
+    .cartao::after {
+      content: "";
+
+      position: absolute;
+      inset: 10.5mm;
+
+      border: 0.6px solid rgba(185, 138, 69, 0.48);
+
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* =========================================================
+       FAIXAS SUPERIORES
+       ========================================================= */
+
+    .faixa-superior {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+
+      height: 10mm;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--azul-escuro),
+          var(--azul),
+          var(--azul-escuro)
+        );
+
+      z-index: 1;
+    }
+
+    .faixa-dourada {
+      position: absolute;
+      top: 10mm;
+      left: 0;
+      right: 0;
+
+      height: 2.2mm;
+
+      background:
+        linear-gradient(
+          90deg,
+          #956822,
+          #d6af61,
+          #a87528
+        );
+
+      z-index: 1;
+    }
+
+    /* =========================================================
+       ORNAMENTOS DOS CANTOS
+       ========================================================= */
+
+    .ornamento-canto {
+      position: absolute;
+      z-index: 3;
+
+      width: 27mm;
+      height: 27mm;
+
+      color: var(--dourado);
+
+      font-size: 15mm;
+      line-height: 27mm;
+      text-align: center;
+
+      opacity: 0.9;
+
+      pointer-events: none;
+    }
+
+    .ornamento-canto::before {
+      content: "❦";
+    }
+
+    .ornamento-superior-esquerdo {
+      top: 8mm;
+      left: 8mm;
+      transform: rotate(-45deg);
+    }
+
+    .ornamento-superior-direito {
+      top: 8mm;
+      right: 8mm;
+      transform: rotate(45deg);
+    }
+
+    .ornamento-inferior-esquerdo {
+      bottom: 7mm;
+      left: 8mm;
+      transform: rotate(-135deg);
+    }
+
+    .ornamento-inferior-direito {
+      bottom: 7mm;
+      right: 8mm;
+      transform: rotate(135deg);
+    }
+
+    /* =========================================================
+       MARCA D'ÁGUA
+       ========================================================= */
+
+    .marca-dagua {
+      position: absolute;
+      left: 20mm;
+      top: 45mm;
+
+      width: 58mm;
+      height: 85mm;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          ellipse at center,
+          rgba(185, 138, 69, 0.065),
+          transparent 68%
+        );
+
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* =========================================================
+       CABEÇALHO INSTITUCIONAL
+       ========================================================= */
+
+    .cabecalho-cartao {
+      position: absolute;
+
+      top: 16mm;
+      left: 22mm;
+      right: 22mm;
+
+      z-index: 4;
+
+      display: grid;
+      grid-template-columns: 74mm 1fr 74mm;
+      align-items: center;
+    }
+
+    .logo-box {
+      grid-column: 2;
+
+      width: 72mm;
+      height: 34mm;
+
+      margin: 0 auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo {
+      display: block;
+
+      max-width: 72mm;
+      max-height: 34mm;
+
+      object-fit: contain;
+    }
+
+    /* =========================================================
+       CONTEÚDO PRINCIPAL
+       ========================================================= */
+
+    .conteudo {
+      position: relative;
+      z-index: 4;
+
+      height: 100%;
+
+      display: grid;
+      grid-template-columns: 74mm 1fr;
+      gap: 14mm;
+
+      padding:
+        52mm
+        25mm
+        20mm
+        24mm;
+    }
+
+    /* =========================================================
+       LATERAL DA FOTO
+       ========================================================= */
+
+    .coluna-foto {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      gap: 6mm;
+
+      padding-top: 6mm;
+    }
+
+    .foto-moldura {
+      position: relative;
+
+      width: 60mm;
+      height: 79mm;
+
+      padding: 2.2mm;
+
+      border: 1.7px solid var(--dourado);
+
+      border-radius: 6mm;
+
+      background: #ffffff;
+
+      box-shadow:
+        0 7px 18px rgba(8, 47, 73, 0.10);
+    }
+
+    .foto-moldura::before {
+      content: "";
+
+      position: absolute;
+      inset: -3.3mm;
+
+      border: 0.8px solid rgba(185, 138, 69, 0.48);
+
+      border-radius: 8mm;
+
+      pointer-events: none;
+    }
+
+    .foto-area {
+      width: 100%;
+      height: 100%;
+
+      overflow: hidden;
+
+      border-radius: 4.3mm;
+
+      background:
+        linear-gradient(
+          145deg,
+          #eef3f8,
+          #ffffff
+        );
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .foto-membro {
+      width: 100%;
+      height: 100%;
+
+      display: block;
+
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .foto-placeholder {
+      width: 100%;
+      height: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-family: Arial, Helvetica, sans-serif;
+
+      font-size: 17mm;
+      font-weight: 800;
+
+      color: var(--azul);
+
+      background:
+        radial-gradient(
+          circle at center,
+          #ffffff,
+          #eef3f8
+        );
+    }
+
+    .versiculo-lateral {
+      width: 64mm;
+
+      margin-top: 2mm;
+
+      text-align: center;
+
+      color: var(--azul);
+
+      font-size: 3.9mm;
+      font-style: italic;
+      line-height: 1.42;
+    }
+
+    .versiculo-lateral strong {
+      display: block;
+
+      margin-top: 2.3mm;
+
+      color: var(--dourado);
+
+      font-size: 3.5mm;
+      font-style: normal;
+
+      text-transform: uppercase;
+      letter-spacing: 0.55mm;
+    }
+
+    /* =========================================================
+       COLUNA PRINCIPAL
+       ========================================================= */
+
+    .coluna-mensagem {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding:
+        4mm
+        8mm
+        4mm
+        0;
+    }
+
+    .igreja {
+      margin: 0;
+
+      color: var(--azul);
+
+      font-size: 4.8mm;
+      font-weight: 700;
+
+      text-align: center;
+      text-transform: uppercase;
+
+      letter-spacing: 1.55mm;
+    }
+
+    .ministerio {
+      margin:
+        1.5mm
+        0
+        6mm;
+
+      color: var(--dourado);
+
+      font-size: 4mm;
+      font-weight: 700;
+
+      text-align: center;
+      text-transform: uppercase;
+
+      letter-spacing: 1mm;
+    }
+
+    .titulo {
+      margin: 0;
+
+      color: var(--dourado);
+
+      font-size: 13.5mm;
+      line-height: 1;
+
+      text-align: center;
+
+      font-weight: 700;
+
+      letter-spacing: 0.4mm;
+
+      text-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .ornamento {
+      position: relative;
+
+      width: 78mm;
+      height: 4mm;
+
+      margin: 4mm auto 3mm;
+    }
+
+    .ornamento::before {
+      content: "";
+
+      position: absolute;
+
+      left: 0;
+      right: 0;
+      top: 50%;
+
+      height: 1px;
+
+      background:
+        linear-gradient(
+          to right,
+          transparent,
+          var(--dourado),
+          transparent
+        );
+    }
+
+    .ornamento::after {
+      content: "◆";
+
+      position: absolute;
+
+      left: 50%;
+      top: 50%;
+
+      transform:
+        translate(-50%, -50%)
+        rotate(45deg);
+
+      padding: 0 2mm;
+
+      background: #fffaf0;
+
+      color: var(--dourado);
+
+      font-size: 3.4mm;
+    }
+
+    .nome {
+      margin:
+        1mm
+        0
+        0;
+
+      color: var(--azul);
+
+      font-size: 9.2mm;
+      line-height: 1.08;
+
+      text-align: center;
+
+      font-weight: 700;
+    }
+
+    .congregacao {
+      margin:
+        2.5mm
+        0
+        6mm;
+
+      color: #53697a;
+
+      font-family: Arial, Helvetica, sans-serif;
+
+      font-size: 3.7mm;
+
+      text-align: center;
+    }
+
+    .mensagem {
+      max-width: 150mm;
+
+      margin: 0 auto;
+
+      color: var(--texto);
+
+      font-size: 4.65mm;
+      line-height: 1.52;
+
+      text-align: center;
+    }
+
+    .mensagem strong {
+      color: var(--azul);
+    }
+
+    /* =========================================================
+       ASSINATURA
+       ========================================================= */
+
+    .assinatura-area {
+      margin-top: 7mm;
+
+      display: flex;
+      justify-content: center;
+    }
+
+    .assinatura-bloco {
+      width: 80mm;
+
+      text-align: center;
+    }
+
+    .assinatura {
+      display: block;
+
+      max-width: 62mm;
+      max-height: 20mm;
+
+      margin: 0 auto -0.5mm;
+
+      object-fit: contain;
+    }
+
+    .linha-assinatura {
+      border-top: 1px solid var(--dourado);
+
+      padding-top: 1.2mm;
+
+      color: var(--azul);
+
+      font-family: Arial, Helvetica, sans-serif;
+
+      font-size: 3.55mm;
+      font-weight: 700;
+    }
+
+    .cargo-assinatura {
+      margin-top: 0.7mm;
+
+      color: #526777;
+
+      font-family: Arial, Helvetica, sans-serif;
+
+      font-size: 3mm;
+
+      text-transform: uppercase;
+      letter-spacing: 0.5mm;
+    }
+
+    /* =========================================================
+       RODAPÉ
+       ========================================================= */
+
+    .rodape {
+      position: absolute;
+
+      left: 20mm;
+      right: 20mm;
+      bottom: 5.3mm;
+
+      z-index: 4;
+
+      text-align: center;
+
+      color: var(--azul);
+
+      font-family: Arial, Helvetica, sans-serif;
+
+      font-size: 3mm;
+      font-weight: 600;
+    }
+
+    .rodape span {
+      color: var(--dourado);
+    }
+
+    /* =========================================================
+       RESPONSIVO
+       ========================================================= */
 
     @media (max-width: 1100px) {
       .pagina {
@@ -370,6 +739,10 @@
       }
     }
 
+    /* =========================================================
+       IMPRESSÃO
+       ========================================================= */
+
     @media print {
       @page {
         size: A4 landscape;
@@ -380,13 +753,16 @@
       body {
         width: 297mm;
         height: 210mm;
+
         margin: 0;
         padding: 0;
+
         background: #ffffff;
       }
 
       .pagina {
         width: 297mm;
+
         margin: 0;
         padding: 0;
       }
@@ -399,8 +775,13 @@
       .cartao {
         width: 297mm;
         height: 210mm;
+
         margin: 0;
+
         box-shadow: none;
+
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
       }
     }
   </style>
@@ -411,6 +792,7 @@
   <main class="pagina">
 
     <div class="acoes">
+
       <a
         class="btn"
         href="relatorios.html"
@@ -425,6 +807,7 @@
       >
         Imprimir cartão
       </button>
+
     </div>
 
     <div
@@ -443,19 +826,49 @@
       <div class="faixa-superior"></div>
       <div class="faixa-dourada"></div>
 
+      <div
+        class="ornamento-canto ornamento-superior-esquerdo"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        class="ornamento-canto ornamento-superior-direito"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        class="ornamento-canto ornamento-inferior-esquerdo"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        class="ornamento-canto ornamento-inferior-direito"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        class="marca-dagua"
+        aria-hidden="true"
+      ></div>
+
+      <div class="cabecalho-cartao">
+
+        <div class="logo-box">
+          <img
+            class="logo"
+            src="assets/logo/logo.png"
+            alt="Logo da Assembleia de Deus Ministério Vidas Renovadas"
+          >
+        </div>
+
+      </div>
+
       <div class="conteudo">
 
         <aside class="coluna-foto">
 
-          <div class="logo-box">
-            <img
-              class="logo"
-              src="assets/logo/logo.png"
-              alt="Logo da Assembleia de Deus Ministério Vidas Renovadas"
-            >
-          </div>
-
           <div class="foto-moldura">
+
             <div class="foto-area">
 
               <img
@@ -473,12 +886,18 @@
               </div>
 
             </div>
+
           </div>
 
           <div class="versiculo-lateral">
+
             “Este é o dia que o Senhor fez;
             regozijemo-nos e alegremo-nos nele.”
-            <strong>Salmos 118:24</strong>
+
+            <strong>
+              Salmos 118:24
+            </strong>
+
           </div>
 
         </aside>
@@ -497,7 +916,10 @@
             Feliz Aniversário!
           </h1>
 
-          <div class="ornamento"></div>
+          <div
+            class="ornamento"
+            aria-hidden="true"
+          ></div>
 
           <h2
             class="nome"
@@ -514,21 +936,32 @@
           </p>
 
           <p class="mensagem">
+
             Hoje é um dia especial, pois Deus lhe concedeu
-            mais um ano de vida. Que o Senhor continue
-            conduzindo seus passos, renovando suas forças e
-            derramando sobre sua vida
+            mais um ano de vida.
+
+            Que o Senhor continue conduzindo seus passos,
+            renovando suas forças e derramando sobre sua vida
+
             <strong>
               saúde, sabedoria, paz e muitas realizações.
             </strong>
+
             <br><br>
+
             Receba o carinho e as felicitações de toda a
             Assembleia de Deus Ministério Vidas Renovadas.
+
             <br>
-            <strong>Parabéns pelo seu dia!</strong>
+
+            <strong>
+              Parabéns pelo seu dia!
+            </strong>
+
           </p>
 
           <div class="assinatura-area">
+
             <div class="assinatura-bloco">
 
               <img
@@ -546,6 +979,7 @@
               </div>
 
             </div>
+
           </div>
 
         </div>
@@ -553,9 +987,15 @@
       </div>
 
       <div class="rodape">
+
         Com carinho,
-        <span>Assembleia de Deus Ministério Vidas Renovadas</span>
+
+        <span>
+          Assembleia de Deus Ministério Vidas Renovadas
+        </span>
+
         — Duque de Caxias - RJ
+
       </div>
 
     </section>
@@ -563,9 +1003,9 @@
   </main>
 
   <script src="js/configuracoes.js?v=2"></script>
-<script src="js/api.js?v=1"></script>
-<script src="js/auth.js?v=4"></script>
-<script src="js/cartao-aniversario.js?v=1"></script>
+  <script src="js/api.js?v=1"></script>
+  <script src="js/auth.js?v=4"></script>
+  <script src="js/cartao-aniversario.js?v=1"></script>
 
 </body>
 </html>
