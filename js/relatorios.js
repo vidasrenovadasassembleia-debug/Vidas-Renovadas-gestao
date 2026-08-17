@@ -835,19 +835,44 @@ elementos.cabecalhoTabelaRelatorio.innerHTML = `
 `;
 
     elementos.corpoTabelaRelatorio.innerHTML = registros.map(function (registro) {
-      return `
-        <tr>
-          ${relatorio.colunas.map(function (coluna) {
-            const [chave, , tipo] = coluna;
-            return `
-              <td class="${tipo === "moeda" ? "valor" : ""}">
-                ${escaparHtml(formatarCelula(registro[chave], tipo))}
-              </td>
-            `;
-          }).join("")}
-        </tr>
-      `;
-    }).join("");
+  return `
+    <tr>
+      ${relatorio.colunas.map(function (coluna) {
+        const [chave, , tipo] = coluna;
+
+        return `
+          <td class="${tipo === "moeda" ? "valor" : ""}">
+            ${escaparHtml(
+              formatarCelula(
+                registro[chave],
+                tipo
+              )
+            )}
+          </td>
+        `;
+      }).join("")}
+
+      ${
+        ehRelatorioAniversariantes
+          ? `
+            <td class="relatorios-coluna-cartao">
+              <button
+                type="button"
+                class="btn btn-contorno"
+                data-gerar-cartao-aniversario
+                data-membro-codigo="${escaparHtml(
+                  registro.codigo || ""
+                )}"
+              >
+                🎂 Gerar cartão
+              </button>
+            </td>
+          `
+          : ""
+      }
+    </tr>
+  `;
+}).join("");
 
     elementos.rodapeTabelaRelatorio.innerHTML = resultado?.rodapeHtml || "";
 
