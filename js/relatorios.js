@@ -1184,9 +1184,9 @@ if (botaoCartaoAniversario) {
   }
 
   const url =
-    `cartao-aniversario.html?id=${encodeURIComponent(codigo)}`;
+  `cartao-aniversario.html?id=${encodeURIComponent(codigo)}`;
 
- window.open(url, "_blank");
+window.location.href = url;
 
 return;
 }
