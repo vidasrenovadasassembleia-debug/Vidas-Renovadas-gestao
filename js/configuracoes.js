@@ -56,8 +56,9 @@
     "configuracoes.html",
     "financeiro.html",
     "tesouraria.html",
-    "relatorios.html",
-    "administracao.html"
+"relatorios.html",
+"cartao-aniversario.html",
+"administracao.html"
   ]),
 
   TESOURARIA: Object.freeze([
