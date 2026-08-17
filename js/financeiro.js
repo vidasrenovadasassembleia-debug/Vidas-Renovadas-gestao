@@ -24,8 +24,9 @@
   REJEITAR: "rejeitarLancamentoTesouraria",
   LISTAR_CONGREGACOES: "listarCongregacoes",
   STATUS_MES: "obterStatusMesFinanceiro",
-  FECHAR_MES: "fecharMesFinanceiro",
-  REABRIR_MES: "reabrirMesFinanceiro"
+FECHAR_MES: "fecharMesFinanceiro",
+REABRIR_MES: "reabrirMesFinanceiro",
+SALVAR_SAIDA: "salvarLancamento"
 });
 
   const STATUS = Object.freeze({
