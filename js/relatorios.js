@@ -1163,6 +1163,37 @@ window.setTimeout(function () {
 
         renderizarGrupos(categoriaAtual);
       }
+       const botaoCartaoAniversario =
+  evento.target.closest(
+    "[data-gerar-cartao-aniversario]"
+  );
+
+if (botaoCartaoAniversario) {
+  const codigo =
+    String(
+      botaoCartaoAniversario.dataset
+        .membroCodigo || ""
+    ).trim();
+
+  if (!codigo) {
+    mostrarAviso(
+      "Não foi possível identificar o membro para gerar o cartão.",
+      "erro"
+    );
+    return;
+  }
+
+  const url =
+    `cartao-aniversario.html?id=${encodeURIComponent(codigo)}`;
+
+  window.open(
+    url,
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+  return;
+}
     });
 
     elementos.botaoVoltarCategorias.addEventListener(
