@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Ficha Cadastral | Vidas Renovadas Gestão</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: #eef3f8;
+      color: #071f3b;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    .pagina {
+      width: min(100% - 32px, 980px);
+      margin: 24px auto;
+    }
+
+    .acoes {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .btn {
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 10px;
+      border: 1px solid #cfd9e6;
+      background: #ffffff;
+      color: #071f3b;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-imprimir {
+      border-color: #d7a829;
+      background: #d7a829;
+      color: #071f3b;
+    }
+
+    .folha {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      background: #ffffff;
+      box-shadow: 0 12px 35px rgba(7, 31, 59, 0.12);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .ficha {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    @media (max-width: 900px) {
+      .pagina {
+        width: min(100% - 20px, 980px);
+        margin: 14px auto;
+      }
+
+      .folha {
+        width: 100%;
+        min-height: auto;
+      }
+
+      .acoes {
+        justify-content: stretch;
+      }
+
+      .acoes .btn {
+        flex: 1;
+      }
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+
+      html,
+      body {
+        width: 210mm;
+        height: 297mm;
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+      }
+
+      .pagina {
+        width: 210mm;
+        margin: 0;
+        padding: 0;
+      }
+
+      .acoes {
+        display: none !important;
+      }
+
+      .folha {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0;
+        box-shadow: none;
+        background: #ffffff;
+        overflow: hidden;
+      }
+
+      .ficha {
+        width: 210mm;
+        height: 297mm;
+        object-fit: contain;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="pagina">
+
+    <div class="acoes">
+
+      <a
+        class="btn"
+        href="dashboard.html"
+      >
+        Voltar
+      </a>
+
+      <button
+        type="button"
+        class="btn btn-imprimir"
+        id="botaoImprimirFicha"
+      >
+        Imprimir ficha
+      </button>
+
+    </div>
+
+    <section class="folha">
+
+      <img
+        class="ficha"
+        src="assets/fichas/ficha-cadastral-membro.png"
+        alt="Ficha cadastral de membro em branco"
+      >
+
+    </section>
+
+  </main>
+
+  <script>
+    "use strict";
+
+    document
+      .getElementById("botaoImprimirFicha")
+      .addEventListener(
+        "click",
+        function () {
+          window.print();
+        }
+      );
+  </script>
+
+</body>
+</html>
