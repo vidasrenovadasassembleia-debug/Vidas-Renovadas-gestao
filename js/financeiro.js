@@ -420,6 +420,18 @@ SALVAR_SAIDA: "salvarLancamento"
       "botaoCancelarRejeicao",
       "botaoConfirmarRejeicao",
       "carregamentoGlobal"
+      "botaoRegistrarSaida",
+"dialogoSaidaFinanceiro",
+"formSaidaFinanceiro",
+"saidaData",
+"saidaCategoria",
+"saidaDescricao",
+"saidaValor",
+"saidaFormaPagamento",
+"saidaCongregacao",
+"saidaObservacoes",
+"botaoCancelarSaida",
+"botaoSalvarSaida",
     ];
 
     ids.forEach((id) => {
