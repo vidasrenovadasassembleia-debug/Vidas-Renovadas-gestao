@@ -817,13 +817,22 @@
       return;
     }
 
-    elementos.cabecalhoTabelaRelatorio.innerHTML = `
-      <tr>
-        ${relatorio.colunas.map(function (coluna) {
-          return `<th>${escaparHtml(coluna[1])}</th>`;
-        }).join("")}
-      </tr>
-    `;
+    const ehRelatorioAniversariantes =
+  relatorio.id === "membros_aniversariantes";
+
+elementos.cabecalhoTabelaRelatorio.innerHTML = `
+  <tr>
+    ${relatorio.colunas.map(function (coluna) {
+      return `<th>${escaparHtml(coluna[1])}</th>`;
+    }).join("")}
+
+    ${
+      ehRelatorioAniversariantes
+        ? '<th class="relatorios-coluna-cartao">Cartão</th>'
+        : ""
+    }
+  </tr>
+`;
 
     elementos.corpoTabelaRelatorio.innerHTML = registros.map(function (registro) {
       return `
