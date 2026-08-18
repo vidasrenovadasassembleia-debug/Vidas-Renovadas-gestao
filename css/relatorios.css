@@ -827,7 +827,9 @@ body > .carregamento-global .spinner {
     max-width: none !important;
 
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 4mm !important;
+
+     box-sizing: border-box !important;
 
     border: 0 !important;
     border-radius: 0 !important;
