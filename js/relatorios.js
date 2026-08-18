@@ -1116,29 +1116,40 @@ window.setTimeout(function () {
       );
     }
 
-    const lista = obterListaDaResposta(
-      resposta,
-      ["congregacoes", "dados", "resultado"]
-    );
+    let lista = [];
 
-    estado.congregacoes = [...new Set(
-      lista
-        .map(function (item) {
-          return texto(
-            obterPrimeiroValor(
-              item,
-              [
-                "nome",
-                "NOME",
-                "nomeCongregacao",
-                "congregacao",
-                "Congregação"
-              ]
-            )
-          );
-        })
-        .filter(Boolean)
-    )].sort(function (a, b) {
+    if (Array.isArray(resposta?.congregacoes)) {
+      lista = resposta.congregacoes;
+    } else if (
+      Array.isArray(resposta?.dados?.congregacoes)
+    ) {
+      lista = resposta.dados.congregacoes;
+    } else if (Array.isArray(resposta?.dados)) {
+      lista = resposta.dados;
+    } else if (
+      Array.isArray(resposta?.resultado?.congregacoes)
+    ) {
+      lista = resposta.resultado.congregacoes;
+    } else if (Array.isArray(resposta?.resultado)) {
+      lista = resposta.resultado;
+    }
+
+    estado.congregacoes = [
+      ...new Set(
+        lista
+          .map(function (item) {
+            return texto(
+              item?.nome ||
+              item?.NOME ||
+              item?.nomeCongregacao ||
+              item?.congregacao ||
+              item?.["Congregação"] ||
+              ""
+            );
+          })
+          .filter(Boolean)
+      )
+    ].sort(function (a, b) {
       return a.localeCompare(b, "pt-BR");
     });
 
