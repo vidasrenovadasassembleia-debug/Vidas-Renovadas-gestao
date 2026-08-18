@@ -1181,7 +1181,51 @@ async function abrirLancamentoDaUrl() {
     elementos.dialogoRejeitarFinanceiro.hidden = true;
     elementos.motivoRejeicaoFinanceiro.value = "";
   }
+function abrirDialogoSaida() {
+  if (estado.mesFechado) {
+    mostrarMensagem(
+      "Não é possível registrar uma saída porque o mês está fechado.",
+      "aviso"
+    );
+    return;
+  }
 
+  elementos.formSaidaFinanceiro.reset();
+
+  const hoje = dataIsoLocal(new Date());
+  elementos.saidaData.value = hoje;
+
+  preencherSelectCongregacoesSaida();
+
+  elementos.dialogoSaidaFinanceiro.hidden = false;
+  elementos.saidaData.focus();
+}
+
+function fecharDialogoSaida() {
+  elementos.dialogoSaidaFinanceiro.hidden = true;
+  elementos.formSaidaFinanceiro.reset();
+}
+
+function preencherSelectCongregacoesSaida() {
+  const valorAtual = elementos.saidaCongregacao.value;
+
+  elementos.saidaCongregacao.innerHTML = `
+    <option value="">Geral / não informada</option>
+    ${estado.congregacoes
+      .map(
+        (congregacao) => `
+          <option value="${escaparHtml(congregacao)}">
+            ${escaparHtml(congregacao)}
+          </option>
+        `
+      )
+      .join("")}
+  `;
+
+  if (estado.congregacoes.includes(valorAtual)) {
+    elementos.saidaCongregacao.value = valorAtual;
+  }
+}
   async function aprovarLancamento() {
     if (
       estado.processando ||
