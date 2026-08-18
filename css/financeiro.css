@@ -1208,3 +1208,146 @@ body>.carregamento-global{position:fixed;z-index:1100;inset:0;display:none;place
 @media(max-width:680px){.financeiro-admin-resumo,.financeiro-admin-filtros,.financeiro-detalhes-resumo,.financeiro-detalhes-valores{grid-template-columns:1fr}.financeiro-admin-pesquisa,.financeiro-admin-filtros-acoes{grid-column:auto}.financeiro-admin-filtros-acoes{display:grid;grid-template-columns:1fr 1fr}.financeiro-admin-filtros-acoes .btn{width:100%}.financeiro-admin-pagina .painel-cabecalho{align-items:flex-start;flex-direction:column}.financeiro-admin-contador{align-self:flex-start}.financeiro-detalhes-cabecalho,.financeiro-detalhes-conteudo,.financeiro-detalhes-acoes{padding-right:15px;padding-left:15px}.financeiro-detalhes-acoes{display:grid;grid-template-columns:1fr}.financeiro-detalhes-acoes .btn{width:100%}}
 @media(max-width:440px){.financeiro-admin-cabecalho{padding:18px}.financeiro-admin-resumo{gap:12px}.financeiro-admin-indicador{padding:15px}.financeiro-admin-filtros-acoes{grid-template-columns:1fr}.financeiro-detalhes-painel{width:100%}}
 @media print{.financeiro-admin-cabecalho .btn,.financeiro-admin-filtros-painel,.financeiro-admin-coluna-acoes,.financeiro-detalhes,.tesouraria-dialogo,body>.carregamento-global{display:none!important}.financeiro-admin-pagina{display:block}.financeiro-admin-resumo{grid-template-columns:repeat(4,1fr)}.financeiro-admin-indicador,.financeiro-admin-pagina .painel{break-inside:avoid;box-shadow:none!important}}
+/* ==========================================================================
+   MODAL — REGISTRAR SAÍDA
+   ========================================================================== */
+
+#dialogoSaidaFinanceiro .tesouraria-dialogo-caixa {
+  width: min(92vw, 720px);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px 30px;
+}
+
+#dialogoSaidaFinanceiro .tesouraria-dialogo-caixa > h2 {
+  margin: 0 0 6px;
+  color: #071f3b;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  text-align: left;
+}
+
+#dialogoSaidaFinanceiro .tesouraria-dialogo-caixa > p {
+  margin: 0 0 24px;
+  color: #617287;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  text-align: left;
+}
+
+#formSaidaFinanceiro {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 20px;
+}
+
+#formSaidaFinanceiro .campo {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  margin: 0;
+}
+
+#formSaidaFinanceiro .campo label {
+  display: block;
+  margin: 0;
+  color: #0f2f48;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+#formSaidaFinanceiro .campo input,
+#formSaidaFinanceiro .campo select,
+#formSaidaFinanceiro .campo textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+
+  margin: 0;
+  padding: 10px 12px;
+
+  border: 1px solid #cfdae5;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #17324a;
+
+  font-family: inherit;
+  font-size: 0.92rem;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+#formSaidaFinanceiro .campo input:focus,
+#formSaidaFinanceiro .campo select:focus,
+#formSaidaFinanceiro .campo textarea:focus {
+  border-color: #b98a45;
+  box-shadow: 0 0 0 3px rgba(185, 138, 69, 0.12);
+}
+
+#formSaidaFinanceiro .campo textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+/* Descrição ocupa toda a largura */
+#formSaidaFinanceiro .campo:has(#saidaDescricao) {
+  grid-column: 1 / -1;
+}
+
+/* Observações ocupa toda a largura */
+#formSaidaFinanceiro .campo:has(#saidaObservacoes) {
+  grid-column: 1 / -1;
+}
+
+#formSaidaFinanceiro .tesouraria-dialogo-acoes {
+  grid-column: 1 / -1;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  margin-top: 4px;
+  padding-top: 18px;
+
+  border-top: 1px solid #e1e7ed;
+}
+
+#formSaidaFinanceiro .tesouraria-dialogo-acoes .btn {
+  min-width: 130px;
+}
+
+
+/* ==========================================================================
+   RESPONSIVO — REGISTRAR SAÍDA
+   ========================================================================== */
+
+@media (max-width: 700px) {
+  #dialogoSaidaFinanceiro .tesouraria-dialogo-caixa {
+    width: calc(100vw - 24px);
+    padding: 22px 18px;
+  }
+
+  #formSaidaFinanceiro {
+    grid-template-columns: 1fr;
+  }
+
+  #formSaidaFinanceiro .campo:has(#saidaDescricao),
+  #formSaidaFinanceiro .campo:has(#saidaObservacoes),
+  #formSaidaFinanceiro .tesouraria-dialogo-acoes {
+    grid-column: 1;
+  }
+
+  #formSaidaFinanceiro .tesouraria-dialogo-acoes {
+    flex-direction: column-reverse;
+  }
+
+  #formSaidaFinanceiro .tesouraria-dialogo-acoes .btn {
+    width: 100%;
+  }
+}
