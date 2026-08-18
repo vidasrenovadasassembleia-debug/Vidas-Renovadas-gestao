@@ -252,6 +252,28 @@
               ]
             },
             {
+               {
+  id: "extrato",
+  titulo: "Extrato financeiro",
+  descricao: "Entradas, saídas, saldo e movimentações por período.",
+  relatorios: [
+    {
+      id: "financeiro_extrato",
+      titulo: "Extrato financeiro",
+      descricao: "Apresenta as entradas aprovadas, saídas registradas e o saldo acumulado no período selecionado.",
+      filtros: ["dataInicial", "dataFinal", "congregacao"],
+      colunas: [
+        ["data", "Data"],
+        ["historico", "Histórico"],
+        ["categoria", "Categoria"],
+        ["congregacao", "Congregação"],
+        ["entrada", "Entrada", "moeda"],
+        ["saida", "Saída", "moeda"],
+        ["saldo", "Saldo", "moeda"]
+      ]
+    }
+  ]
+}
               id: "financeiro_resumo_anual",
               titulo: "Resumo anual",
               descricao: "Apresenta a evolução financeira mês a mês no ano selecionado.",
