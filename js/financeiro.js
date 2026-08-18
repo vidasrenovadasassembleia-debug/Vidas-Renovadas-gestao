@@ -26,7 +26,8 @@
   STATUS_MES: "obterStatusMesFinanceiro",
 FECHAR_MES: "fecharMesFinanceiro",
 REABRIR_MES: "reabrirMesFinanceiro",
-SALVAR_SAIDA: "salvarLancamento"
+SALVAR_SAIDA: "salvarLancamento",
+LISTAR_MOVIMENTACOES: "listarLancamentos"
 });
 
   const STATUS = Object.freeze({
@@ -432,6 +433,14 @@ SALVAR_SAIDA: "salvarLancamento"
 "saidaObservacoes",
 "botaoCancelarSaida",
 "botaoSalvarSaida",
+      "competenciaExtratoFinanceiro",
+"extratoTotalEntradas",
+"extratoTotalSaidas",
+"extratoSaldo",
+"estadoCarregandoExtrato",
+"estadoVazioExtrato",
+"tabelaExtratoFinanceiroArea",
+"corpoTabelaExtratoFinanceiro",
     ];
 
     ids.forEach((id) => {
