@@ -1225,6 +1225,89 @@ function preencherSelectCongregacoesSaida() {
   if (estado.congregacoes.includes(valorAtual)) {
     elementos.saidaCongregacao.value = valorAtual;
   }
+async function salvarSaida(evento) {
+  evento.preventDefault();
+
+  if (estado.processando) {
+    return;
+  }
+
+  const dados = {
+    data: texto(elementos.saidaData.value),
+    tipo: "saida",
+    categoria: texto(elementos.saidaCategoria.value),
+    descricao: texto(elementos.saidaDescricao.value),
+    valor: numero(elementos.saidaValor.value),
+    formaPagamento: texto(elementos.saidaFormaPagamento.value),
+    congregacao: texto(elementos.saidaCongregacao.value),
+    observacoes: texto(elementos.saidaObservacoes.value),
+    status: "Ativo"
+  };
+
+  if (!dados.data) {
+    mostrarMensagem("Informe a data da saída.", "aviso");
+    elementos.saidaData.focus();
+    return;
+  }
+
+  if (!dados.categoria) {
+    mostrarMensagem("Informe a categoria da saída.", "aviso");
+    elementos.saidaCategoria.focus();
+    return;
+  }
+
+  if (!dados.descricao) {
+    mostrarMensagem("Informe a descrição da saída.", "aviso");
+    elementos.saidaDescricao.focus();
+    return;
+  }
+
+  if (!dados.valor || dados.valor <= 0) {
+    mostrarMensagem("Informe um valor maior que zero.", "aviso");
+    elementos.saidaValor.focus();
+    return;
+  }
+
+  estado.processando = true;
+  elementos.botaoSalvarSaida.disabled = true;
+
+  try {
+    definirCarregamentoGlobal(
+      true,
+      "Salvando saída..."
+    );
+
+    const resultado = await obterAuth().chamarApi({
+      acao: ACOES_API.SALVAR_SAIDA,
+      dados
+    });
+
+    if (resultado?.sucesso === false) {
+      throw new Error(
+        resultado.mensagem ||
+        "Não foi possível salvar a saída."
+      );
+    }
+
+    fecharDialogoSaida();
+
+    mostrarMensagem(
+      resultado?.mensagem ||
+      "Saída registrada com sucesso.",
+      "sucesso"
+    );
+
+  } catch (erro) {
+    mostrarMensagem(
+      erro?.message ||
+      "Não foi possível registrar a saída.",
+      "erro"
+    );
+  } finally {
+    estado.processando = false;
+    elementos.botaoSalvarSaida.disabled = false;
+    definirCarregamentoGlobal(false);
+  }
 }
   async function aprovarLancamento() {
     if (
