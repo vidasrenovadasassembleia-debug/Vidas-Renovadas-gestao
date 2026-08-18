@@ -1497,10 +1497,20 @@ async function carregarExtratoFinanceiro() {
     }
 
     const saidas =
-      obterListaDaResposta(
-        resultadoSaidas,
-        ["lancamentos", "dados", "resultado"]
-      );
+  obterListaDaResposta(
+    resultadoSaidas,
+    ["lancamentos", "dados", "resultado"]
+  ).filter((item) => {
+    const status = normalizarTexto(
+      obterPrimeiroValor(
+        item,
+        ["status", "STATUS"],
+        ""
+      )
+    );
+
+    return status !== "cancelado";
+  });
 
     const entradas = estado.lancamentos
       .filter((item) =>
