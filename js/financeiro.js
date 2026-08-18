@@ -639,6 +639,7 @@ LISTAR_MOVIMENTACOES: "listarLancamentos"
     );
 
     renderizarTabela();
+    carregarExtratoFinanceiro();
   }
 
   function atualizarResumo() {
