@@ -1559,7 +1559,29 @@ elementos.botaoAlternarFechamentoMes.addEventListener(
           fecharDialogoRejeicao
         );
       });
+elementos.botaoRegistrarSaida.addEventListener(
+  "click",
+  abrirDialogoSaida
+);
 
+elementos.botaoCancelarSaida.addEventListener(
+  "click",
+  fecharDialogoSaida
+);
+
+elementos.formSaidaFinanceiro.addEventListener(
+  "submit",
+  salvarSaida
+);
+
+document
+  .querySelectorAll('[data-acao="fechar-dialogo-saida"]')
+  .forEach((elemento) => {
+    elemento.addEventListener(
+      "click",
+      fecharDialogoSaida
+    );
+  });
     document.addEventListener(
       "keydown",
       function (evento) {
