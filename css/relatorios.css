@@ -794,8 +794,9 @@ body > .carregamento-global .spinner {
 @media print {
 
   @page {
-    margin: 12mm;
-  }
+  size: A4;
+  margin: 18mm;
+}
 
   html,
   body {
