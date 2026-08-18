@@ -1463,7 +1463,200 @@ async function salvarSaida(evento) {
     atualizarResumo();
     aplicarFiltros();
   }
+async function carregarExtratoFinanceiro() {
+  const mes =
+    texto(elementos.filtroMes.value) ||
+    mesAtual();
 
+  elementos.estadoCarregandoExtrato.hidden = false;
+  elementos.estadoVazioExtrato.hidden = true;
+  elementos.tabelaExtratoFinanceiroArea.hidden = true;
+
+  elementos.competenciaExtratoFinanceiro.textContent =
+    mes;
+
+  try {
+    const resultadoSaidas =
+      await obterAuth().chamarApi({
+        acao: ACOES_API.LISTAR_MOVIMENTACOES,
+        filtros: {
+          mes,
+          tipo: "saida"
+        }
+      });
+
+    if (resultadoSaidas?.sucesso === false) {
+      throw new Error(
+        resultadoSaidas.mensagem ||
+        "Não foi possível carregar as saídas."
+      );
+    }
+
+    const saidas =
+      obterListaDaResposta(
+        resultadoSaidas,
+        ["lancamentos", "dados", "resultado"]
+      );
+
+    const entradas = estado.lancamentos
+      .filter((item) =>
+        item.status === STATUS.APROVADO &&
+        String(item.data || "").startsWith(mes)
+      )
+      .map((item) => ({
+        data: item.data,
+        historico: "Dízimos e ofertas",
+        categoria: "Entrada",
+        congregacao: item.congregacao || "—",
+        entrada: numero(item.totalGeral),
+        saida: 0
+      }));
+
+    const saidasNormalizadas =
+      saidas.map((item) => ({
+        data: dataIsoLocal(
+          obterPrimeiroValor(
+            item,
+            ["data", "DATA"]
+          )
+        ),
+
+        historico: texto(
+          obterPrimeiroValor(
+            item,
+            ["descricao", "DESCRICAO"],
+            "Saída financeira"
+          )
+        ),
+
+        categoria: texto(
+          obterPrimeiroValor(
+            item,
+            ["categoria", "CATEGORIA"],
+            "Saída"
+          )
+        ),
+
+        congregacao: texto(
+          obterPrimeiroValor(
+            item,
+            ["congregacao", "CONGREGACAO"],
+            "—"
+          )
+        ),
+
+        entrada: 0,
+
+        saida: numero(
+          obterPrimeiroValor(
+            item,
+            ["valor", "VALOR"],
+            0
+          )
+        )
+      }));
+
+    const movimentacoes = [
+      ...entradas,
+      ...saidasNormalizadas
+    ].sort((a, b) =>
+      String(a.data || "")
+        .localeCompare(String(b.data || ""))
+    );
+
+    let saldoAcumulado = 0;
+
+    const linhas = movimentacoes.map(
+      (movimentacao) => {
+        saldoAcumulado +=
+          numero(movimentacao.entrada) -
+          numero(movimentacao.saida);
+
+        return {
+          ...movimentacao,
+          saldo: saldoAcumulado
+        };
+      }
+    );
+
+    const totalEntradas =
+      entradas.reduce(
+        (total, item) =>
+          total + numero(item.entrada),
+        0
+      );
+
+    const totalSaidas =
+      saidasNormalizadas.reduce(
+        (total, item) =>
+          total + numero(item.saida),
+        0
+      );
+
+    elementos.extratoTotalEntradas.textContent =
+      moeda(totalEntradas);
+
+    elementos.extratoTotalSaidas.textContent =
+      moeda(totalSaidas);
+
+    elementos.extratoSaldo.textContent =
+      moeda(totalEntradas - totalSaidas);
+
+    elementos.corpoTabelaExtratoFinanceiro.innerHTML =
+      linhas.map((item) => `
+        <tr>
+          <td>${escaparHtml(dataFormatada(item.data))}</td>
+
+          <td>${escaparHtml(item.historico || "—")}</td>
+
+          <td>${escaparHtml(item.categoria || "—")}</td>
+
+          <td>${escaparHtml(item.congregacao || "—")}</td>
+
+          <td class="financeiro-extrato-entrada">
+            ${
+              item.entrada
+                ? escaparHtml(moeda(item.entrada))
+                : "—"
+            }
+          </td>
+
+          <td class="financeiro-extrato-saida">
+            ${
+              item.saida
+                ? escaparHtml(moeda(item.saida))
+                : "—"
+            }
+          </td>
+
+          <td class="financeiro-extrato-saldo">
+            ${escaparHtml(moeda(item.saldo))}
+          </td>
+        </tr>
+      `).join("");
+
+    elementos.estadoCarregandoExtrato.hidden = true;
+
+    if (!linhas.length) {
+      elementos.estadoVazioExtrato.hidden = false;
+      elementos.tabelaExtratoFinanceiroArea.hidden = true;
+      return;
+    }
+
+    elementos.estadoVazioExtrato.hidden = true;
+    elementos.tabelaExtratoFinanceiroArea.hidden = false;
+
+  } catch (erro) {
+    console.error(
+      "[FINANCEIRO] Erro ao carregar extrato:",
+      erro
+    );
+
+    elementos.estadoCarregandoExtrato.hidden = true;
+    elementos.estadoVazioExtrato.hidden = false;
+    elementos.tabelaExtratoFinanceiroArea.hidden = true;
+  }
+}
   function configurarEventos() {
     elementos.formFiltrosFinanceiro.addEventListener(
       "submit",
