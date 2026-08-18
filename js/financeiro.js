@@ -1865,6 +1865,22 @@ document
       fecharDialogoSaida
     );
   });
+    elementos.corpoTabelaExtratoFinanceiro.addEventListener(
+  "click",
+  function (evento) {
+    const botao = evento.target.closest(
+      '[data-acao="excluir-saida"]'
+    );
+
+    if (!botao) {
+      return;
+    }
+
+    excluirSaida(
+      botao.dataset.idSaida
+    );
+  }
+);
     document.addEventListener(
       "keydown",
       function (evento) {
