@@ -1517,6 +1517,12 @@ async function carregarExtratoFinanceiro() {
 
     const saidasNormalizadas =
       saidas.map((item) => ({
+        id: texto(
+  obterPrimeiroValor(
+    item,
+    ["id", "ID"]
+  )
+),
         data: dataIsoLocal(
           obterPrimeiroValor(
             item,
