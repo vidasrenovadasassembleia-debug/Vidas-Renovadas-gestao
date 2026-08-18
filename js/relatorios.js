@@ -265,9 +265,8 @@
               ]
             }
           ]
-        }
-      ]
-    },
+        },
+      
 {
   id: "extrato",
   titulo: "Extrato financeiro",
@@ -290,6 +289,9 @@
     }
   ]
 }
+         
+]
+},
     certificados: {
       titulo: "Certificados",
       descricao: "Emissões de batismo, consagração e reimpressões.",
