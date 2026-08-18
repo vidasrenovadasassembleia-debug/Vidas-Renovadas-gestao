@@ -1829,6 +1829,8 @@ document
   carregarStatusMesFinanceiro()
 ]);
 
+await carregarExtratoFinanceiro();
+
 await abrirLancamentoDaUrl();
       
     } catch (erro) {
