@@ -419,7 +419,7 @@ SALVAR_SAIDA: "salvarLancamento"
       "motivoRejeicaoFinanceiro",
       "botaoCancelarRejeicao",
       "botaoConfirmarRejeicao",
-      "carregamentoGlobal"
+      "carregamentoGlobal",
       "botaoRegistrarSaida",
 "dialogoSaidaFinanceiro",
 "formSaidaFinanceiro",
