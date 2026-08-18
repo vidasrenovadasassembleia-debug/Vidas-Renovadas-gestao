@@ -27,7 +27,8 @@
 FECHAR_MES: "fecharMesFinanceiro",
 REABRIR_MES: "reabrirMesFinanceiro",
 SALVAR_SAIDA: "salvarLancamento",
-LISTAR_MOVIMENTACOES: "listarLancamentos"
+LISTAR_MOVIMENTACOES: "listarLancamentos",
+EXCLUIR_LANCAMENTO: "excluirLancamento"
 });
 
   const STATUS = Object.freeze({
