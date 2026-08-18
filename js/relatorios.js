@@ -252,7 +252,23 @@
               ]
             },
             {
-               {
+               
+              id: "financeiro_resumo_anual",
+              titulo: "Resumo anual",
+              descricao: "Apresenta a evolução financeira mês a mês no ano selecionado.",
+              filtros: ["ano", "congregacao"],
+              colunas: [
+                ["mes", "Mês"],
+                ["dizimos", "Dízimos", "moeda"],
+                ["ofertas", "Ofertas", "moeda"],
+                ["total", "Total", "moeda"]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+{
   id: "extrato",
   titulo: "Extrato financeiro",
   descricao: "Entradas, saídas, saldo e movimentações por período.",
@@ -274,22 +290,6 @@
     }
   ]
 }
-              id: "financeiro_resumo_anual",
-              titulo: "Resumo anual",
-              descricao: "Apresenta a evolução financeira mês a mês no ano selecionado.",
-              filtros: ["ano", "congregacao"],
-              colunas: [
-                ["mes", "Mês"],
-                ["dizimos", "Dízimos", "moeda"],
-                ["ofertas", "Ofertas", "moeda"],
-                ["total", "Total", "moeda"]
-              ]
-            }
-          ]
-        }
-      ]
-    },
-
     certificados: {
       titulo: "Certificados",
       descricao: "Emissões de batismo, consagração e reimpressões.",
