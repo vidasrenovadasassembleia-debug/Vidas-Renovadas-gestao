@@ -1248,7 +1248,7 @@ async function salvarSaida(evento) {
     tipo: "saida",
     categoria: texto(elementos.saidaCategoria.value),
     descricao: texto(elementos.saidaDescricao.value),
-    valor: numero(elementos.saidaValor.value),
+    valor: Number(elementos.saidaValor.value),
     formaPagamento: texto(elementos.saidaFormaPagamento.value),
     congregacao: texto(elementos.saidaCongregacao.value),
     observacoes: texto(elementos.saidaObservacoes.value),
