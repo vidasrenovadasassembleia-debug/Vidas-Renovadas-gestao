@@ -1306,7 +1306,9 @@ async function salvarSaida(evento) {
       "Saída registrada com sucesso.",
       "sucesso"
     );
-
+    
+await carregarExtratoFinanceiro();
+    
   } catch (erro) {
     mostrarMensagem(
       erro?.message ||
