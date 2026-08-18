@@ -1683,6 +1683,60 @@ async function carregarExtratoFinanceiro() {
     elementos.tabelaExtratoFinanceiroArea.hidden = true;
   }
 }
+  async function excluirSaida(id) {
+  if (!id || estado.processando) {
+    return;
+  }
+
+  const confirmar = window.confirm(
+    "Deseja realmente excluir esta saída?\n\n" +
+    "O lançamento será cancelado e deixará de aparecer no extrato."
+  );
+
+  if (!confirmar) {
+    return;
+  }
+
+  estado.processando = true;
+
+  try {
+    definirCarregamentoGlobal(
+      true,
+      "Excluindo saída..."
+    );
+
+    const resultado =
+      await obterAuth().chamarApi({
+        acao: ACOES_API.EXCLUIR_LANCAMENTO,
+        id
+      });
+
+    if (resultado?.sucesso === false) {
+      throw new Error(
+        resultado.mensagem ||
+        "Não foi possível excluir a saída."
+      );
+    }
+
+    mostrarMensagem(
+      resultado?.mensagem ||
+      "Saída excluída com sucesso.",
+      "sucesso"
+    );
+
+    await carregarExtratoFinanceiro();
+
+  } catch (erro) {
+    mostrarMensagem(
+      erro?.message ||
+      "Não foi possível excluir a saída.",
+      "erro"
+    );
+  } finally {
+    estado.processando = false;
+    definirCarregamentoGlobal(false);
+  }
+}
   function configurarEventos() {
     elementos.formFiltrosFinanceiro.addEventListener(
       "submit",
