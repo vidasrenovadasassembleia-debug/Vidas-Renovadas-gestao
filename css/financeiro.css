@@ -1351,3 +1351,177 @@ body>.carregamento-global{position:fixed;z-index:1100;inset:0;display:none;place
     width: 100%;
   }
 }
+/* ==========================================================================
+   EXTRATO FINANCEIRO — PAINEL DO PASTOR
+   ========================================================================== */
+
+.financeiro-extrato-painel {
+  overflow: hidden;
+}
+
+.financeiro-extrato-resumo {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.financeiro-extrato-indicador {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 18px;
+
+  border: 1px solid var(--financeiro-borda);
+  border-radius: 14px;
+
+  background: var(--financeiro-superficie-suave);
+}
+
+.financeiro-extrato-indicador span {
+  color: var(--financeiro-texto-suave);
+
+  font-size: 0.7rem;
+  font-weight: 900;
+
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.financeiro-extrato-indicador strong {
+  color: var(--financeiro-azul-900);
+
+  font-size: clamp(1.35rem, 2.3vw, 1.9rem);
+  font-weight: 950;
+
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.financeiro-extrato-indicador small {
+  color: var(--financeiro-texto-suave);
+
+  font-size: 0.67rem;
+  line-height: 1.45;
+}
+
+
+/* Entradas */
+
+.financeiro-extrato-indicador:first-child {
+  border-color: #b8dfca;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(21, 115, 71, 0.055),
+      rgba(234, 248, 241, 0.55)
+    ),
+    #ffffff;
+}
+
+.financeiro-extrato-indicador:first-child strong {
+  color: var(--financeiro-verde-700);
+}
+
+
+/* Saídas */
+
+.financeiro-extrato-indicador:nth-child(2) {
+  border-color: #e4bcbc;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(165, 52, 52, 0.045),
+      rgba(255, 241, 241, 0.6)
+    ),
+    #ffffff;
+}
+
+.financeiro-extrato-indicador:nth-child(2) strong {
+  color: var(--financeiro-vermelho-700);
+}
+
+
+/* Saldo */
+
+.financeiro-extrato-indicador:nth-child(3) {
+  border-color: #ead49a;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(215, 166, 37, 0.1),
+      rgba(255, 246, 216, 0.55)
+    ),
+    #ffffff;
+}
+
+.financeiro-extrato-indicador:nth-child(3) strong {
+  color: var(--financeiro-dourado-700);
+}
+
+
+/* Tabela do extrato */
+
+.financeiro-extrato-painel .financeiro-admin-tabela {
+  min-width: 980px;
+}
+
+.financeiro-extrato-painel .financeiro-admin-tabela th:nth-child(5),
+.financeiro-extrato-painel .financeiro-admin-tabela th:nth-child(6),
+.financeiro-extrato-painel .financeiro-admin-tabela th:nth-child(7),
+.financeiro-extrato-painel .financeiro-admin-tabela td:nth-child(5),
+.financeiro-extrato-painel .financeiro-admin-tabela td:nth-child(6),
+.financeiro-extrato-painel .financeiro-admin-tabela td:nth-child(7) {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.financeiro-extrato-entrada {
+  color: var(--financeiro-verde-700) !important;
+  font-weight: 900;
+}
+
+.financeiro-extrato-saida {
+  color: var(--financeiro-vermelho-700) !important;
+  font-weight: 900;
+}
+
+.financeiro-extrato-saldo {
+  color: var(--financeiro-azul-900) !important;
+  font-weight: 950;
+}
+
+
+/* Competência no cabeçalho */
+
+#competenciaExtratoFinanceiro {
+  text-transform: uppercase;
+}
+
+
+/* ==========================================================================
+   RESPONSIVO — EXTRATO
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .financeiro-extrato-resumo {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ==========================================================================
+   IMPRESSÃO
+   ========================================================================== */
+
+@media print {
+  .financeiro-extrato-indicador {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+}
