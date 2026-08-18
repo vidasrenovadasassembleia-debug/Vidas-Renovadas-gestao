@@ -944,37 +944,65 @@
     );
   }
 
-  async function carregarCongregacoes() {
-    try {
-      const resposta = await obterAuth().chamarApi({
-        acao: "listarCongregacoes"
-      });
+ async function carregarCongregacoes() {
+  try {
+    const resposta = await obterAuth().chamarApi({
+      acao: "listarCongregacoes"
+    });
 
-      const lista = Array.isArray(resposta?.congregacoes)
-        ? resposta.congregacoes
-        : [];
-
-      estado.congregacoes = lista
-        .map(function (item) {
-          return texto(
-            item.nome ||
-            item.NOME ||
-            item.congregacao ||
-            item.nomeCongregacao
-          );
-        })
-        .filter(Boolean)
-        .sort(function (a, b) {
-          return a.localeCompare(b, "pt-BR");
-        });
-
-    } catch (erro) {
-      console.warn(
-        "[RELATÓRIOS] Congregações não carregadas:",
-        erro
+    if (resposta?.sucesso === false) {
+      throw new Error(
+        resposta.mensagem ||
+        "Não foi possível carregar as congregações."
       );
     }
+
+    let lista = [];
+
+    if (Array.isArray(resposta?.congregacoes)) {
+      lista = resposta.congregacoes;
+    } else if (
+      Array.isArray(resposta?.dados?.congregacoes)
+    ) {
+      lista = resposta.dados.congregacoes;
+    } else if (Array.isArray(resposta?.dados)) {
+      lista = resposta.dados;
+    } else if (
+      Array.isArray(resposta?.resultado?.congregacoes)
+    ) {
+      lista = resposta.resultado.congregacoes;
+    } else if (Array.isArray(resposta?.resultado)) {
+      lista = resposta.resultado;
+    }
+
+    estado.congregacoes = [
+      ...new Set(
+        lista
+          .map(function (item) {
+            return texto(
+              item?.nome ||
+              item?.NOME ||
+              item?.nomeCongregacao ||
+              item?.congregacao ||
+              item?.["Congregação"] ||
+              ""
+            );
+          })
+          .filter(Boolean)
+      )
+    ].sort(function (a, b) {
+      return a.localeCompare(b, "pt-BR");
+    });
+
+  } catch (erro) {
+    console.warn(
+      "[RELATÓRIOS] Congregações não carregadas:",
+      erro
+    );
+
+    estado.congregacoes = [];
   }
+}
 
   function configurarEventos() {
     document.addEventListener("click", function (evento) {
