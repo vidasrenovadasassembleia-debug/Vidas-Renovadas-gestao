@@ -1576,6 +1576,10 @@ elementos.botaoAlternarFechamentoMes.addEventListener(
           fecharDialogoRejeicao();
           return;
         }
+        if (!elementos.dialogoSaidaFinanceiro.hidden) {
+  fecharDialogoSaida();
+  return;
+}
 
         if (!elementos.financeiroDetalhes.hidden) {
           fecharDetalhes();
