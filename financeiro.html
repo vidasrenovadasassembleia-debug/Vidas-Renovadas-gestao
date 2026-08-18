@@ -192,7 +192,126 @@
             </div>
           </div>
         </section>
+        <!-- =========================================================
+             EXTRATO FINANCEIRO
+             Somente visualização no Painel do Pastor
+             ========================================================= -->
 
+        <section
+          class="painel financeiro-extrato-painel"
+          aria-labelledby="tituloExtratoFinanceiro"
+        >
+          <div class="painel-cabecalho">
+            <div>
+              <h2
+                id="tituloExtratoFinanceiro"
+                class="painel-titulo"
+              >
+                Extrato financeiro do mês
+              </h2>
+
+              <p class="painel-subtitulo">
+                Acompanhe as entradas aprovadas, saídas registradas e o saldo da competência.
+              </p>
+            </div>
+
+            <span
+              id="competenciaExtratoFinanceiro"
+              class="financeiro-admin-contador"
+            >
+              —
+            </span>
+          </div>
+
+          <div class="painel-corpo">
+
+            <!-- RESUMO DO EXTRATO -->
+
+            <div class="financeiro-extrato-resumo">
+
+              <article class="financeiro-extrato-indicador">
+                <span>Entradas</span>
+                <strong id="extratoTotalEntradas">
+                  R$ 0,00
+                </strong>
+                <small>Dízimos e ofertas aprovados</small>
+              </article>
+
+              <article class="financeiro-extrato-indicador">
+                <span>Saídas</span>
+                <strong id="extratoTotalSaidas">
+                  R$ 0,00
+                </strong>
+                <small>Despesas e pagamentos registrados</small>
+              </article>
+
+              <article class="financeiro-extrato-indicador">
+                <span>Saldo</span>
+                <strong id="extratoSaldo">
+                  R$ 0,00
+                </strong>
+                <small>Entradas menos saídas</small>
+              </article>
+
+            </div>
+
+            <!-- ESTADO DE CARREGAMENTO -->
+
+            <div
+              id="estadoCarregandoExtrato"
+              class="financeiro-admin-estado"
+              hidden
+            >
+              <span
+                class="spinner"
+                aria-hidden="true"
+              ></span>
+
+              <p>Carregando movimentações...</p>
+            </div>
+
+            <!-- ESTADO VAZIO -->
+
+            <div
+              id="estadoVazioExtrato"
+              class="financeiro-admin-estado"
+            >
+              <strong>Nenhuma movimentação encontrada</strong>
+
+              <p>
+                As entradas aprovadas e as saídas registradas aparecerão aqui.
+              </p>
+            </div>
+
+            <!-- TABELA -->
+
+            <div
+              id="tabelaExtratoFinanceiroArea"
+              class="financeiro-admin-tabela-area"
+              hidden
+            >
+              <table class="financeiro-admin-tabela">
+
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Histórico</th>
+                    <th>Categoria</th>
+                    <th>Congregação</th>
+                    <th>Entrada</th>
+                    <th>Saída</th>
+                    <th>Saldo</th>
+                  </tr>
+                </thead>
+
+                <tbody id="corpoTabelaExtratoFinanceiro">
+                </tbody>
+
+              </table>
+            </div>
+
+          </div>
+        </section>
       </div>
 
     </main>
