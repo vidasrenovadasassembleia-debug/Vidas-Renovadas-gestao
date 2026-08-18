@@ -1225,6 +1225,7 @@ function preencherSelectCongregacoesSaida() {
   if (estado.congregacoes.includes(valorAtual)) {
     elementos.saidaCongregacao.value = valorAtual;
   }
+}
 async function salvarSaida(evento) {
   evento.preventDefault();
 
