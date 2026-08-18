@@ -1641,6 +1641,22 @@ async function carregarExtratoFinanceiro() {
           <td class="financeiro-extrato-saldo">
             ${escaparHtml(moeda(item.saldo))}
           </td>
+          <td class="financeiro-admin-coluna-acoes">
+  ${
+    item.saida && item.id
+      ? `
+        <button
+          type="button"
+          class="financeiro-admin-botao-conferir financeiro-extrato-botao-excluir"
+          data-acao="excluir-saida"
+          data-id-saida="${escaparHtml(item.id)}"
+        >
+          Excluir
+        </button>
+      `
+      : "—"
+  }
+</td>
         </tr>
       `).join("");
 
