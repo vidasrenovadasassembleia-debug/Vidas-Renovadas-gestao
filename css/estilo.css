@@ -613,7 +613,7 @@ body.sistema-page {
   color: #fff;
   font-size: 0.94rem;
   font-weight: 850;
-  line-height: 1.2;
+  line-height: 1.2.3;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
