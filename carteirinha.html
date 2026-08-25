@@ -3450,13 +3450,7 @@ function ajustarTextoCarteirinha(elemento, configuracao) {
     "texto-quatro-linhas"
   );
 
-  if (maxLinhas === 1) {
-    elemento.classList.add("texto-uma-linha");
-  } else if (maxLinhas >= 4) {
-    elemento.classList.add("texto-quatro-linhas");
-  } else {
-    elemento.classList.add("texto-duas-linhas");
-  }
+  if (maxLinhas === 1) { elemento.classList.add("texto-uma-linha"); } else if (maxLinhas >= 4) { elemento.classList.add("texto-quatro-linhas"); } else if (maxLinhas === 3) { elemento.classList.add("texto-tres-linhas"); } else { elemento.classList.add("texto-duas-linhas"); }
 
   elemento.style.fontSize = fonteMaxima + "px";
 
