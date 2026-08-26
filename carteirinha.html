@@ -3373,8 +3373,9 @@ function ajustarTodosOsTextosCarteirinha() {
     {
       id: "nomeMembroCarteirinha",
       fonteMaxima: 15,
-      fonteMinima: 7,
-      maxLinhas: 2
+  fonteMinima: 8,
+  maxLinhas: 2,
+  ajustarPorQuantidade: true
     },
     {
       id: "cargoMembroCarteirinha",
@@ -3433,6 +3434,17 @@ function ajustarTodosOsTextosCarteirinha() {
       return;
     }
 
+    if (config.id === "nomeMembroCarteirinha") {
+  const quantidade = elemento.textContent.trim().length;
+
+  if (quantidade > 38) {
+    config.fonteMaxima = 10;
+  } else if (quantidade > 30) {
+    config.fonteMaxima = 11;
+  } else if (quantidade > 24) {
+    config.fonteMaxima = 13;
+  }
+}
     ajustarTextoCarteirinha(elemento, configuracao);
   });
 }
