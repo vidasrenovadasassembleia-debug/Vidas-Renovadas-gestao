@@ -3434,27 +3434,17 @@ function ajustarTodosOsTextosCarteirinha() {
       return;
     }
 
-    if (config.id === "nomeMembroCarteirinha") {
-  const quantidade = elemento.textContent.trim().length;
-
-  if (quantidade > 38) {
-    config.fonteMaxima = 10;
-  } else if (quantidade > 30) {
-    config.fonteMaxima = 11;
-  } else if (quantidade > 24) {
-    config.fonteMaxima = 13;
-  }
-}
     ajustarTextoCarteirinha(elemento, configuracao);
   });
 }
 
-function ajustarTextoCarteirinha(elemento, configuracao) {
+    function ajustarTextoCarteirinha(elemento, configuracao) {
   const fonteMaxima = Number(configuracao.fonteMaxima) || 16;
   const fonteMinima = Number(configuracao.fonteMinima) || 8;
   const maxLinhas = Number(configuracao.maxLinhas) || 2;
 
   elemento.classList.add("texto-ajustavel");
+
   elemento.classList.remove(
     "texto-uma-linha",
     "texto-duas-linhas",
@@ -3462,27 +3452,58 @@ function ajustarTextoCarteirinha(elemento, configuracao) {
     "texto-quatro-linhas"
   );
 
-  if (maxLinhas === 1) { elemento.classList.add("texto-uma-linha"); } else if (maxLinhas >= 4) { elemento.classList.add("texto-quatro-linhas"); } else if (maxLinhas === 3) { elemento.classList.add("texto-tres-linhas"); } else { elemento.classList.add("texto-duas-linhas"); }
-
-  elemento.style.setProperty("font-size", fonteMaxima + "px", "important");
+  if (maxLinhas === 1) {
+    elemento.classList.add("texto-uma-linha");
+  } else if (maxLinhas >= 4) {
+    elemento.classList.add("texto-quatro-linhas");
+  } else if (maxLinhas === 3) {
+    elemento.classList.add("texto-tres-linhas");
+  } else {
+    elemento.classList.add("texto-duas-linhas");
+  }
 
   let tamanho = fonteMaxima;
-  let tentativas = 0;
-  const limiteTentativas = 40;
 
-  while (
-    tamanho > fonteMinima &&
-    textoUltrapassaEspaco(elemento) &&
-    tentativas < limiteTentativas
-  ) {
+  // Remove temporariamente o corte para medir o texto real
+  const displayOriginal = elemento.style.display;
+  const clampOriginal = elemento.style.webkitLineClamp;
+  const maxHeightOriginal = elemento.style.maxHeight;
+  const overflowOriginal = elemento.style.overflow;
+
+  elemento.style.setProperty("display", "block", "important");
+  elemento.style.setProperty("-webkit-line-clamp", "unset", "important");
+  elemento.style.setProperty("max-height", "none", "important");
+  elemento.style.setProperty("overflow", "visible", "important");
+
+  while (tamanho > fonteMinima) {
+    elemento.style.setProperty(
+      "font-size",
+      tamanho + "px",
+      "important"
+    );
+
+    const estilo = window.getComputedStyle(elemento);
+    const lineHeight = parseFloat(estilo.lineHeight);
+    const alturaMaxima = lineHeight * maxLinhas;
+
+    if (elemento.scrollHeight <= alturaMaxima + 1) {
+      break;
+    }
+
     tamanho -= 0.5;
-    elemento.style.setProperty("font-size", tamanho + "px", "important");
-    tentativas += 1;
   }
 
-  if (textoUltrapassaEspaco(elemento)) {
-    elemento.style.setProperty("font-size", fonteMinima + "px", "important");
-  }
+  elemento.style.setProperty(
+    "font-size",
+    Math.max(tamanho, fonteMinima) + "px",
+    "important"
+  );
+
+  // Restaura a exibição normal
+  elemento.style.removeProperty("display");
+  elemento.style.removeProperty("-webkit-line-clamp");
+  elemento.style.removeProperty("max-height");
+  elemento.style.removeProperty("overflow");
 }
 
 function textoUltrapassaEspaco(elemento) {
