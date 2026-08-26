@@ -3372,9 +3372,9 @@ function ajustarTodosOsTextosCarteirinha() {
   const configuracoes = [
     {
       id: "nomeMembroCarteirinha",
-      fonteMaxima: 15,
+      fonteMaxima: 14,
       fonteMinima: 10,
-      maxLinhas: 3
+      maxLinhas: 2
     },
     {
       id: "cargoMembroCarteirinha",
@@ -3452,7 +3452,7 @@ function ajustarTextoCarteirinha(elemento, configuracao) {
 
   if (maxLinhas === 1) { elemento.classList.add("texto-uma-linha"); } else if (maxLinhas >= 4) { elemento.classList.add("texto-quatro-linhas"); } else if (maxLinhas === 3) { elemento.classList.add("texto-tres-linhas"); } else { elemento.classList.add("texto-duas-linhas"); }
 
-  elemento.style.fontSize = fonteMaxima + "px";
+  elemento.style.setProperty("font-size", fonteMaxima + "px", "important");
 
   let tamanho = fonteMaxima;
   let tentativas = 0;
@@ -3464,12 +3464,12 @@ function ajustarTextoCarteirinha(elemento, configuracao) {
     tentativas < limiteTentativas
   ) {
     tamanho -= 0.5;
-    elemento.style.fontSize = tamanho + "px";
+    elemento.style.setProperty("font-size", tamanho + "px", "important");
     tentativas += 1;
   }
 
   if (textoUltrapassaEspaco(elemento)) {
-    elemento.style.fontSize = fonteMinima + "px";
+    elemento.style.setProperty("font-size", fonteMinima + "px", "important");
   }
 }
 
