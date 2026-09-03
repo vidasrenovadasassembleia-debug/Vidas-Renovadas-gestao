@@ -248,10 +248,10 @@ cep?.addEventListener(
           );
 
         dados.foto =
-          resultadoFoto.url ||
-          resultadoFoto.foto ||
-          resultadoFoto.link ||
-          "";
+  resultadoFoto.url ||
+  resultadoFoto.foto?.url ||
+  resultadoFoto.link ||
+  "";
       }
 
       const resposta =
