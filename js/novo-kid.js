@@ -34,6 +34,19 @@
     const congregacao =
       document.getElementById("CONGREGACAO");
 
+    const cep =
+  document.getElementById("CEP");
+
+cep?.addEventListener(
+  "blur",
+  buscarEnderecoPorCep
+);
+
+cep?.addEventListener(
+  "input",
+  formatarCep
+);
+
     formulario?.addEventListener(
       "submit",
       cadastrarKid
