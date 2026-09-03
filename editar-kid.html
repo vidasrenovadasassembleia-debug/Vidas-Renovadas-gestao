@@ -1,1 +1,1032 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
 
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Editar criança | Vidas Renovadas Gestão</title>
+
+  <meta
+    name="description"
+    content="Cadastro de criança no Ministério Kids."
+  >
+
+  <meta name="theme-color" content="#071f3b">
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="logo.png"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/estilo.css?v=50"
+  >
+
+  <style>
+    :root {
+      --kid-azul: var(--azul-900, #071f3b);
+      --kid-azul-medio: var(--azul-700, #144b7f);
+      --kid-dourado: var(--dourado-700, #9f7620);
+      --kid-superficie: var(--superficie, #ffffff);
+      --kid-borda: var(--borda-sistema, #dce3e8);
+      --kid-texto: var(--texto, #263442);
+      --kid-texto-suave: var(--texto-suave-sistema, #687785);
+      --kid-raio: var(--raio-card, 16px);
+      --kid-sombra: var(
+        --sombra-card,
+        0 10px 28px rgba(7, 31, 59, 0.08)
+      );
+    }
+
+    .kid-apresentacao {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 18px;
+    }
+
+    .kid-etiqueta {
+      margin: 0 0 5px;
+      color: var(--kid-dourado);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.085em;
+      text-transform: uppercase;
+    }
+
+    .kid-titulo {
+      margin: 0;
+      color: var(--kid-azul);
+      font-size: clamp(1.6rem, 3vw, 2.15rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+    }
+
+    .kid-descricao {
+      margin: 7px 0 0;
+      color: var(--kid-texto-suave);
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    .kid-acoes-topo {
+      display: flex;
+      gap: 9px;
+    }
+
+    .kid-botao {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 14px;
+      border: 1px solid var(--kid-borda);
+      border-radius: 10px;
+      background: #ffffff;
+      color: var(--kid-azul);
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 850;
+      text-decoration: none;
+    }
+
+    .kid-botao:hover {
+      border-color: var(--kid-azul-medio);
+      background: #f8fbfd;
+    }
+
+    .kid-botao-primario {
+      border-color: var(--kid-azul);
+      background: var(--kid-azul);
+      color: #ffffff;
+    }
+
+    .kid-botao-primario:hover {
+      background: var(--kid-azul-medio);
+      color: #ffffff;
+    }
+
+    .kid-resumo {
+      display: grid;
+      grid-template-columns: 145px minmax(0, 1fr);
+      align-items: center;
+      gap: 22px;
+      margin-bottom: 18px;
+      padding: 22px;
+      border: 1px solid var(--kid-borda);
+      border-radius: var(--kid-raio);
+      background: #ffffff;
+      box-shadow: var(--kid-sombra);
+    }
+
+    .kid-foto-box {
+      position: relative;
+      width: 130px;
+      height: 150px;
+      overflow: hidden;
+      border: 5px solid #ffffff;
+      border-radius: 16px;
+      background: #eaf0f4;
+      box-shadow:
+        0 0 0 1px var(--kid-borda),
+        0 10px 22px rgba(7, 31, 59, 0.12);
+    }
+
+    .kid-foto {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .kid-foto-placeholder {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      color: var(--kid-texto-suave);
+      font-size: 0.72rem;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .kid-resumo h2 {
+      margin: 0 0 7px;
+      color: var(--kid-azul);
+      font-size: 1.45rem;
+      font-weight: 900;
+    }
+
+    .kid-resumo p {
+      margin: 0 0 14px;
+      color: var(--kid-texto-suave);
+      font-size: 0.8rem;
+    }
+
+    .foto-acoes {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .input-arquivo {
+      max-width: 100%;
+      font-size: 0.75rem;
+    }
+
+    .foto-ajuda {
+      width: 100%;
+      margin: 0;
+      color: var(--kid-texto-suave);
+      font-size: 0.68rem;
+    }
+
+    .ficha-card {
+      margin-bottom: 16px;
+      overflow: hidden;
+      border: 1px solid var(--kid-borda);
+      border-radius: var(--kid-raio);
+      background: var(--kid-superficie);
+      box-shadow: var(--kid-sombra);
+    }
+
+    .ficha-card-cabecalho {
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--kid-borda);
+      background: #fafbfd;
+    }
+
+    .ficha-card-titulo {
+      margin: 0;
+      color: var(--kid-azul);
+      font-size: 0.9rem;
+      font-weight: 900;
+    }
+
+    .ficha-card-subtitulo {
+      margin: 3px 0 0;
+      color: var(--kid-texto-suave);
+      font-size: 0.7rem;
+    }
+
+    .ficha-card-corpo {
+      padding: 18px;
+    }
+
+    .dados-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .dados-grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .dado-item {
+      min-width: 0;
+    }
+
+    .dado-item-largo {
+      grid-column: 1 / -1;
+    }
+
+    .dado-label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--kid-texto-suave);
+      font-size: 0.7rem;
+      font-weight: 850;
+    }
+
+    .campo {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 12px;
+      border: 1px solid var(--kid-borda);
+      border-radius: 10px;
+      outline: none;
+      background: #f9fbfc;
+      color: var(--kid-texto);
+      font: inherit;
+      font-size: 0.8rem;
+    }
+
+    textarea.campo {
+      min-height: 105px;
+      padding-top: 11px;
+      padding-bottom: 11px;
+      resize: vertical;
+    }
+
+    .campo:focus {
+      border-color: var(--kid-azul-medio);
+      background: #ffffff;
+      box-shadow:
+        0 0 0 3px rgba(20, 75, 127, 0.1);
+    }
+
+    .obrigatorio {
+      color: #b3261e;
+    }
+
+    .kid-aviso {
+      display: none;
+      margin-bottom: 16px;
+      padding: 12px 15px;
+      border: 1px solid var(--kid-borda);
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .kid-aviso.ativo {
+      display: block;
+    }
+
+    .kid-aviso.erro {
+      border-color: #efc1bd;
+      background: #fcebea;
+      color: #a92a22;
+    }
+
+    .kid-aviso.sucesso {
+      border-color: #b9dfca;
+      background: #e7f6ee;
+      color: #16794f;
+    }
+
+    .form-acoes {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--kid-borda);
+    }
+
+    .kid-rodape {
+      margin-top: 20px;
+      padding: 13px 0 2px;
+      color: var(--kid-texto-suave);
+      font-size: 0.68rem;
+      text-align: center;
+    }
+
+    @media (max-width: 800px) {
+      .kid-apresentacao {
+        flex-direction: column;
+      }
+
+      .kid-resumo {
+        grid-template-columns: 1fr;
+      }
+
+      .kid-foto-box {
+        margin: 0 auto;
+      }
+
+      .dados-grid,
+      .dados-grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .dado-item-largo {
+        grid-column: auto;
+      }
+
+      .form-acoes {
+        flex-direction: column-reverse;
+      }
+
+      .kid-botao {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body
+  class="sistema-page"
+  data-page="kids"
+  data-titulo="Editar criança"
+  data-subtitulo="Ministério Kids"
+>
+
+  <div class="sistema-layout">
+
+    <div id="layoutSidebar"></div>
+
+    <div
+      class="overlay-menu"
+      data-acao="fechar-menu"
+    ></div>
+
+    <main class="sistema-main">
+
+      <div id="layoutTopbar"></div>
+
+      <div class="sistema-conteudo">
+
+        <section class="kid-apresentacao">
+
+          <div>
+            <p class="kid-etiqueta">
+              Ministério Kids
+            </p>
+
+            <h2 class="kid-titulo">
+              Editar criança
+            </h2>
+
+            <p class="kid-descricao">
+              Atualize os dados cadastrados da criança.
+            </p>
+          </div>
+
+          <div class="kid-acoes-topo">
+
+            <a
+              href="kids.html"
+              class="kid-botao"
+            >
+              ← Voltar
+            </a>
+
+          </div>
+
+        </section>
+
+
+        <div
+          id="avisoKid"
+          class="kid-aviso"
+          role="alert"
+          aria-live="polite"
+        ></div>
+
+
+        <form
+          id="formNovoKid"
+          autocomplete="off"
+        >
+
+          <input
+            type="hidden"
+            id="FOTO"
+            name="FOTO"
+          >
+
+
+          <!-- FOTO -->
+
+          <section class="kid-resumo">
+
+            <div class="kid-foto-box">
+
+              <img
+                id="fotoKid"
+                class="kid-foto"
+                alt="Foto da criança"
+                hidden
+              >
+
+              <div
+                id="fotoKidPlaceholder"
+                class="kid-foto-placeholder"
+              >
+                Foto da criança
+              </div>
+
+            </div>
+
+            <div>
+
+              <h2 id="resumoNomeKid">
+                Carregando...
+              </h2>
+
+              <p id="resumoCongregacaoKid">
+                Congregação ainda não informada
+              </p>
+
+              <div class="foto-acoes">
+
+                <input
+                  type="file"
+                  id="arquivoFotoKid"
+                  class="input-arquivo"
+                  accept="image/jpeg,image/png,image/webp"
+                >
+
+                <p class="foto-ajuda">
+                  Use uma foto JPG, PNG ou WebP.
+                </p>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- DADOS DA CRIANÇA -->
+
+          <section class="ficha-card">
+
+            <header class="ficha-card-cabecalho">
+
+              <h3 class="ficha-card-titulo">
+                Dados da criança
+              </h3>
+
+              <p class="ficha-card-subtitulo">
+                Informações principais para identificação
+              </p>
+
+            </header>
+
+            <div class="ficha-card-corpo">
+
+              <div class="dados-grid dados-grid-3">
+
+                <div class="dado-item dado-item-largo">
+
+                  <label
+                    class="dado-label"
+                    for="NOME_COMPLETO"
+                  >
+                    Nome completo
+                    <span class="obrigatorio">*</span>
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="NOME_COMPLETO"
+                    name="NOME_COMPLETO"
+                    type="text"
+                    required
+                  >
+
+                </div>
+
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="DATA_NASCIMENTO"
+                  >
+                    Data de nascimento
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="DATA_NASCIMENTO"
+                    name="DATA_NASCIMENTO"
+                    type="date"
+                  >
+
+                </div>
+
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="SEXO"
+                  >
+                    Sexo
+                  </label>
+
+                  <select
+                    class="campo"
+                    id="SEXO"
+                    name="SEXO"
+                  >
+                    <option value="">
+                      Selecione
+                    </option>
+
+                    <option value="Feminino">
+                      Feminino
+                    </option>
+
+                    <option value="Masculino">
+                      Masculino
+                    </option>
+                  </select>
+
+                </div>
+
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="CONGREGACAO"
+                  >
+                    Congregação
+                    <span class="obrigatorio">*</span>
+                  </label>
+
+                  <select
+                    class="campo"
+                    id="CONGREGACAO"
+                    name="CONGREGACAO"
+                    required
+                  >
+                    <option value="">
+                      Selecione
+                    </option>
+                  </select>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- RESPONSÁVEIS -->
+
+          <section class="ficha-card">
+
+            <header class="ficha-card-cabecalho">
+
+              <h3 class="ficha-card-titulo">
+                Pais e responsável
+              </h3>
+
+              <p class="ficha-card-subtitulo">
+                Dados familiares e contato principal
+              </p>
+
+            </header>
+
+            <div class="ficha-card-corpo">
+
+              <div class="dados-grid">
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="MAE"
+                  >
+                    Nome da mãe
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="MAE"
+                    name="MAE"
+                    type="text"
+                  >
+
+                </div>
+
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="PAI"
+                  >
+                    Nome do pai
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="PAI"
+                    name="PAI"
+                    type="text"
+                  >
+
+                </div>
+
+
+                <div class="dado-item dado-item-largo">
+
+                  <label
+                    class="dado-label"
+                    for="RESPONSAVEL_PRINCIPAL"
+                  >
+                    Responsável principal
+                    <span class="obrigatorio">*</span>
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="RESPONSAVEL_PRINCIPAL"
+                    name="RESPONSAVEL_PRINCIPAL"
+                    type="text"
+                    required
+                  >
+
+                </div>
+
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="TELEFONE_RESPONSAVEL"
+                  >
+                    Telefone do responsável
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="TELEFONE_RESPONSAVEL"
+                    name="TELEFONE_RESPONSAVEL"
+                    type="tel"
+                    inputmode="tel"
+                    placeholder="(00) 00000-0000"
+                  >
+
+                </div>
+
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="WHATSAPP_RESPONSAVEL"
+                  >
+                    WhatsApp do responsável
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="WHATSAPP_RESPONSAVEL"
+                    name="WHATSAPP_RESPONSAVEL"
+                    type="tel"
+                    inputmode="tel"
+                    placeholder="(00) 00000-0000"
+                  >
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- ENDEREÇO -->
+
+          <section class="ficha-card">
+
+            <header class="ficha-card-cabecalho">
+
+              <h3 class="ficha-card-titulo">
+                Endereço
+              </h3>
+
+              <p class="ficha-card-subtitulo">
+                Endereço residencial da criança
+              </p>
+
+            </header>
+
+            <div class="ficha-card-corpo">
+
+              <div class="dados-grid dados-grid-3">
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="CEP"
+                  >
+                    CEP
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="CEP"
+                    name="CEP"
+                    type="text"
+                    inputmode="numeric"
+                    maxlength="9"
+                    placeholder="00000-000"
+                  >
+
+                </div>
+
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="NUMERO"
+                  >
+                    Número
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="NUMERO"
+                    name="NUMERO"
+                    type="text"
+                  >
+
+                </div>
+
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="COMPLEMENTO"
+                  >
+                    Complemento
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="COMPLEMENTO"
+                    name="COMPLEMENTO"
+                    type="text"
+                  >
+
+                </div>
+
+
+                <div class="dado-item dado-item-largo">
+
+                  <label
+                    class="dado-label"
+                    for="ENDERECO"
+                  >
+                    Endereço
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="ENDERECO"
+                    name="ENDERECO"
+                    type="text"
+                  >
+
+                </div>
+
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="BAIRRO"
+                  >
+                    Bairro
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="BAIRRO"
+                    name="BAIRRO"
+                    type="text"
+                  >
+
+                </div>
+
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="CIDADE"
+                  >
+                    Cidade
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="CIDADE"
+                    name="CIDADE"
+                    type="text"
+                  >
+
+                </div>
+
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="ESTADO"
+                  >
+                    Estado
+                  </label>
+
+                  <input
+                    class="campo"
+                    id="ESTADO"
+                    name="ESTADO"
+                    type="text"
+                  >
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- OUTRAS INFORMAÇÕES -->
+
+          <section class="ficha-card">
+
+            <header class="ficha-card-cabecalho">
+
+              <h3 class="ficha-card-titulo">
+                Outras informações
+              </h3>
+
+              <p class="ficha-card-subtitulo">
+                Situação do cadastro e observações
+              </p>
+
+            </header>
+
+            <div class="ficha-card-corpo">
+
+              <div class="dados-grid">
+
+                <div class="dado-item">
+
+                  <label
+                    class="dado-label"
+                    for="SITUACAO"
+                  >
+                    Situação
+                  </label>
+
+                  <select
+                    class="campo"
+                    id="SITUACAO"
+                    name="SITUACAO"
+                  >
+                    <option
+                      value="Ativo"
+                      selected
+                    >
+                      Ativo
+                    </option>
+
+                    <option value="Inativo">
+                      Inativo
+                    </option>
+                  </select>
+
+                </div>
+
+
+                <div class="dado-item dado-item-largo">
+
+                  <label
+                    class="dado-label"
+                    for="OBSERVACOES"
+                  >
+                    Observações
+                  </label>
+
+                  <textarea
+                    class="campo"
+                    id="OBSERVACOES"
+                    name="OBSERVACOES"
+                  ></textarea>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- AÇÕES -->
+
+          <div class="form-acoes">
+
+            <a
+              href="kids.html"
+              class="kid-botao"
+            >
+              ← Cancelar
+            </a>
+
+            <button
+              type="submit"
+              id="botaoSalvarKid"
+              class="kid-botao kid-botao-primario"
+              data-permissao="membros-editar"
+            >
+              ✓ Salvar alterações
+            </button>
+
+          </div>
+
+        </form>
+
+
+        <footer class="kid-rodape">
+          Vidas Renovadas Gestão — Projeto Neemias
+        </footer>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <div
+    id="carregamentoGlobal"
+    class="carregamento-global"
+    aria-hidden="true"
+  >
+    <div
+      class="carregamento-caixa"
+      role="status"
+      aria-live="polite"
+    >
+      <span
+        class="spinner"
+        aria-hidden="true"
+      ></span>
+
+      <span>Carregando...</span>
+    </div>
+  </div>
+
+
+  <script src="js/configuracoes.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
+  <script src="js/auth.js?v=5"></script>
+  <script src="js/componentes.js?v=3"></script>
+  <script src="js/app.js?v=3"></script>
+
+  <script src="js/editar-kid.js?v=1"></script>
+
+</body>
+</html>
