@@ -422,7 +422,109 @@ cep?.addEventListener(
     );
   }
 
+function formatarCep(evento) {
+  const input = evento.target;
 
+  let numeros =
+    String(input.value || "")
+      .replace(/\D/g, "")
+      .slice(0, 8);
+
+  if (numeros.length > 5) {
+    numeros =
+      numeros.slice(0, 5) +
+      "-" +
+      numeros.slice(5);
+  }
+
+  input.value = numeros;
+}
+
+
+async function buscarEnderecoPorCep() {
+  const campoCep =
+    document.getElementById("CEP");
+
+  if (!campoCep) return;
+
+  const cep =
+    String(campoCep.value || "")
+      .replace(/\D/g, "");
+
+  if (cep.length !== 8) {
+    return;
+  }
+
+  try {
+    const resposta =
+      await fetch(
+        `https://viacep.com.br/ws/${cep}/json/`
+      );
+
+    if (!resposta.ok) {
+      throw new Error(
+        "Não foi possível consultar o CEP."
+      );
+    }
+
+    const dados =
+      await resposta.json();
+
+    if (dados.erro) {
+      mostrarAviso(
+        "CEP não encontrado.",
+        "erro"
+      );
+      return;
+    }
+
+    const endereco =
+      document.getElementById("ENDERECO");
+
+    const bairro =
+      document.getElementById("BAIRRO");
+
+    const cidade =
+      document.getElementById("CIDADE");
+
+    const estado =
+      document.getElementById("ESTADO");
+
+    if (endereco) {
+      endereco.value = dados.logradouro || "";
+    }
+
+    if (bairro) {
+      bairro.value = dados.bairro || "";
+    }
+
+    if (cidade) {
+      cidade.value = dados.localidade || "";
+    }
+
+    if (estado) {
+      estado.value = dados.uf || "";
+    }
+
+    limparAviso();
+
+    document
+      .getElementById("NUMERO")
+      ?.focus();
+
+  } catch (erro) {
+    console.error(
+      "Erro ao consultar CEP:",
+      erro
+    );
+
+    mostrarAviso(
+      "Não foi possível consultar o CEP agora.",
+      "erro"
+    );
+  }
+}
+  
   function valor(id) {
     return String(
       document.getElementById(id)?.value || ""
