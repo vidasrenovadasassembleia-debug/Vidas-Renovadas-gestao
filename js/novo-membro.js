@@ -3,9 +3,11 @@
   "use strict";
 
   let M;
-  let F;
-  let salvando = false;
-  let preview = "";
+let F;
+let salvando = false;
+let preview = "";
+let kidOrigem = null;
+let fotoKidOrigem = "";
 
 
   function statusOculto() {
@@ -143,7 +145,270 @@
     }
   }
 
+function obterOrigemKids() {
+  const parametros =
+    new URLSearchParams(
+      window.location.search
+    );
 
+  const origem =
+    String(
+      parametros.get("origem") || ""
+    )
+      .trim()
+      .toLowerCase();
+
+  const id =
+    String(
+      parametros.get("id") || ""
+    ).trim();
+
+  if (
+    origem !== "kids" ||
+    !id
+  ) {
+    return null;
+  }
+
+  return id;
+}
+
+
+function definirCampo(
+  id,
+  valor
+) {
+  const campo =
+    document.getElementById(id);
+
+  if (
+    !campo ||
+    valor === undefined ||
+    valor === null ||
+    String(valor).trim() === ""
+  ) {
+    return;
+  }
+
+  campo.value =
+    String(valor).trim();
+
+  campo.dispatchEvent(
+    new Event(
+      "change",
+      { bubbles: true }
+    )
+  );
+}
+
+
+function normalizarDataKids(valor) {
+  if (!valor) {
+    return "";
+  }
+
+  const texto =
+    String(valor).trim();
+
+  const iso =
+    texto.match(
+      /^(\d{4})-(\d{2})-(\d{2})/
+    );
+
+  if (iso) {
+    return (
+      iso[1] +
+      "-" +
+      iso[2] +
+      "-" +
+      iso[3]
+    );
+  }
+
+  const br =
+    texto.match(
+      /^(\d{2})\/(\d{2})\/(\d{4})$/
+    );
+
+  if (br) {
+    return (
+      br[3] +
+      "-" +
+      br[2] +
+      "-" +
+      br[1]
+    );
+  }
+
+  return "";
+}
+
+
+async function carregarKidOrigem() {
+  const codigo =
+    obterOrigemKids();
+
+  if (!codigo) {
+    return;
+  }
+
+  try {
+    M.carregando(
+      true,
+      "Carregando dados da criança..."
+    );
+
+    const resposta =
+      await M.auth().chamarApi({
+        acao: "buscarKid",
+        id: codigo
+      });
+
+    if (
+      !resposta ||
+      resposta.sucesso === false
+    ) {
+      throw new Error(
+        resposta?.mensagem ||
+        "Não foi possível carregar a criança."
+      );
+    }
+
+    const kid =
+      resposta.kid ||
+      resposta.dados ||
+      resposta.crianca ||
+      resposta;
+
+    if (
+      !kid ||
+      typeof kid !== "object"
+    ) {
+      throw new Error(
+        "Os dados da criança não foram encontrados."
+      );
+    }
+
+    kidOrigem = kid;
+
+    definirCampo(
+      "NOME_COMPLETO",
+      kid.nomeCompleto
+    );
+
+    definirCampo(
+      "DATA_NASCIMENTO",
+      normalizarDataKids(
+        kid.dataNascimento
+      )
+    );
+
+    definirCampo(
+      "SEXO",
+      kid.sexo
+    );
+
+    definirCampo(
+      "CONGREGACAO",
+      kid.congregacao
+    );
+
+    definirCampo(
+      "TELEFONE",
+      kid.telefoneResponsavel
+    );
+
+    definirCampo(
+      "WHATSAPP",
+      kid.whatsappResponsavel
+    );
+
+    definirCampo(
+      "CEP",
+      kid.cep
+    );
+
+    definirCampo(
+      "ENDERECO",
+      kid.endereco
+    );
+
+    definirCampo(
+      "NUMERO",
+      kid.numero
+    );
+
+    definirCampo(
+      "COMPLEMENTO",
+      kid.complemento
+    );
+
+    definirCampo(
+      "BAIRRO",
+      kid.bairro
+    );
+
+    definirCampo(
+      "CIDADE",
+      kid.cidade
+    );
+
+    definirCampo(
+      "ESTADO",
+      kid.estado
+    );
+
+    definirCampo(
+      "NOME_PAI",
+      kid.pai
+    );
+
+    definirCampo(
+      "NOME_MAE",
+      kid.mae
+    );
+
+    definirCampo(
+      "OBSERVACOES",
+      kid.observacoes
+    );
+
+    fotoKidOrigem =
+      String(
+        kid.foto ||
+        kid.fotoUrl ||
+        kid.FOTO ||
+        ""
+      ).trim();
+
+    if (fotoKidOrigem) {
+      M.atualizarFoto(
+        fotoKidOrigem
+      );
+    }
+
+    M.aviso(
+      "Dados do Ministério Kids carregados. Confira e complete a ficha antes de cadastrar.",
+      "sucesso"
+    );
+
+  } catch (err) {
+    console.error(
+      "Erro ao carregar criança para conversão:",
+      err
+    );
+
+    M.aviso(
+      err.message ||
+      "Não foi possível carregar os dados da criança.",
+      "erro"
+    );
+
+  } finally {
+    M.carregando(false);
+  }
+}
+  
   function iniciar() {
     M =
       window.VRGMembroFormulario;
@@ -167,7 +432,9 @@
     );
 
     window.VRGMembroMascaras
-      ?.inicializar(F);
+  ?.inicializar(F);
+
+carregarKidOrigem();
   }
 
 
