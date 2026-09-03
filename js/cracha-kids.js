@@ -206,6 +206,9 @@
       area.hidden = false;
     }
 
+    requestAnimationFrame(() => {
+  ajustarNomeCracha();
+});
 
     document.title =
       nome +
@@ -446,4 +449,44 @@ foto.src = url;
       .chamarApi(payload);
   }
 
+  function ajustarNomeCracha() {
+  const nome =
+    document.getElementById(
+      "nomeKidCracha"
+    );
+
+  const caixa =
+    document.querySelector(
+      ".nome-dinamico"
+    );
+
+  if (!nome || !caixa) {
+    return;
+  }
+
+  const fonteMaxima = 20;
+  const fonteMinima = 11;
+
+  let tamanho = fonteMaxima;
+
+  nome.style.fontSize =
+    tamanho + "px";
+
+  nome.style.lineHeight = "1.05";
+
+  while (
+    tamanho > fonteMinima &&
+    (
+      nome.scrollWidth >
+        caixa.clientWidth ||
+      nome.scrollHeight >
+        caixa.clientHeight
+    )
+  ) {
+    tamanho -= 0.5;
+
+    nome.style.fontSize =
+      tamanho + "px";
+  }
+}
 })();
