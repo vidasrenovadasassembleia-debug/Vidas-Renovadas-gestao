@@ -50,6 +50,40 @@ let fotoKidOrigem = "";
       ) {
         i.value = "";
 
+        const codigoKid =
+  obterOrigemKids();
+
+const codigoMembro =
+  String(
+    r.codigo ||
+    r.id ||
+    ""
+  ).trim();
+
+if (
+  codigoKid &&
+  codigoMembro
+) {
+  const conversao =
+    await M.auth().chamarApi({
+      acao: "converterKidEmMembro",
+      id: codigoKid,
+      dados: {
+        codigoMembro:
+          codigoMembro
+      }
+    });
+
+  if (
+    conversao?.sucesso === false
+  ) {
+    throw new Error(
+      conversao.mensagem ||
+      "O membro foi cadastrado, mas não foi possível concluir o vínculo com o Ministério Kids."
+    );
+  }
+}
+        
         M.aviso(
           f.size > 5 * 1024 * 1024
             ? "A foto deve ter no máximo 4 MB."
