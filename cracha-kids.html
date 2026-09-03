@@ -383,76 +383,83 @@
       margin: 12mm;
     }
 
-    @media print {
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        background: #ffffff;
-      }
+   @media print {
 
-      .pagina-cracha-kids {
-        width: auto;
-        margin: 0;
-        padding: 0;
-      }
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
 
-      .barra-superior,
-      .mensagem-estado {
-        display: none !important;
-      }
+  .pagina-cracha-kids {
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
 
-      .area-crachas {
-        display: flex;
-        flex-direction: column;
+  .barra-superior,
+  .mensagem-estado {
+    display: none !important;
+  }
 
-        align-items: center;
-        justify-content: flex-start;
+  /*
+    Área física reservada para:
+    frente 9x7 + verso 9x7
+  */
+  .area-crachas {
+    position: relative !important;
 
-        gap: 10mm;
+    display: block !important;
 
-        margin: 0;
-        padding: 0;
-      }
+    width: 9cm !important;
+    height: 15cm !important;
 
-      .cracha-kids {
-        width: 9cm !important;
-        height: 7cm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
 
-        aspect-ratio: auto;
+  /*
+    IMPORTANTE:
+    mantemos o crachá exatamente
+    no tamanho usado na visualização:
+    540 x 420 px.
 
-        border-radius: 3mm;
+    Depois reduzimos o conjunto inteiro
+    proporcionalmente para 9 x 7 cm.
+  */
+  .cracha-kids {
+    position: absolute !important;
+    left: 0 !important;
 
-        box-shadow: none;
+    width: 540px !important;
+    height: 420px !important;
 
-        break-inside: avoid;
-        page-break-inside: avoid;
+    aspect-ratio: auto !important;
 
-        print-color-adjust: exact;
-        -webkit-print-color-adjust: exact;
+    margin: 0 !important;
 
-        .nome-dinamico strong {
-  font-size: 7.5pt !important;
-  line-height: 1 !important;
+    box-shadow: none !important;
+
+    transform: scale(0.62992126);
+    transform-origin: top left;
+
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* FRENTE */
+  .cracha-kids:nth-child(1) {
+    top: 0 !important;
+  }
+
+  /* VERSO */
+  .cracha-kids:nth-child(2) {
+    top: 7.6cm !important;
+  }
+  }
+
 }
-
-.dado-verso {
-  font-size: 5.2pt !important;
-  overflow: hidden !important;
-}
-
-.dado-verso strong {
-  width: 100% !important;
-  max-width: 100% !important;
-
-  font-size: inherit !important;
-  line-height: 1 !important;
-
-  white-space: nowrap !important;
-  overflow: hidden !important;
-}
-      }
-    }
   </style>
 </head>
 
