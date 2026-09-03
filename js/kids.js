@@ -308,19 +308,33 @@
   }
 
 
-  function configurarBotoesConverter() {
-    document
-      .querySelectorAll('[data-acao="converter"]')
-      .forEach((botao) => {
-        botao.addEventListener("click", () => {
-          const codigo = botao.dataset.id;
+ function configurarBotoesConverter() {
+  document
+    .querySelectorAll('[data-acao="converter"]')
+    .forEach((botao) => {
 
-          alert(
-            `A conversão de ${codigo} para membro será ativada na próxima etapa.`
-          );
-        });
-      });
-  }
+      botao.addEventListener(
+        "click",
+        () => {
+
+          const codigo =
+            String(
+              botao.dataset.id || ""
+            ).trim();
+
+          if (!codigo) {
+            return;
+          }
+
+          window.location.href =
+            "novo-membro.html?origem=kids&id=" +
+            encodeURIComponent(codigo);
+
+        }
+      );
+
+    });
+}
 
 
   function criarBadgeSituacao(situacao) {
