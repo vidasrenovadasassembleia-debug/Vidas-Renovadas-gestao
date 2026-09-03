@@ -95,23 +95,59 @@
   }
 
 
-  function configurarImpressao() {
-    const botao =
-      document.getElementById(
-        "botaoImprimir"
+ function configurarImpressao() {
+  const botao =
+    document.getElementById(
+      "botaoImprimir"
+    );
+
+  if (!botao) {
+    return;
+  }
+
+  botao.addEventListener(
+    "click",
+    function () {
+
+      document.body.classList.add(
+        "modo-impressao"
       );
 
-    if (!botao) {
-      return;
-    }
+      /*
+        Aguarda o navegador aplicar
+        as medidas físicas de 9 x 7 cm.
+      */
+      requestAnimationFrame(() => {
 
-    botao.addEventListener(
-      "click",
-      function () {
-        window.print();
-      }
-    );
-  }
+        ajustarNomeCracha();
+        ajustarDadosVerso();
+
+        requestAnimationFrame(() => {
+          window.print();
+        });
+
+      });
+
+    }
+  );
+
+
+  window.addEventListener(
+    "afterprint",
+    function () {
+
+      document.body.classList.remove(
+        "modo-impressao"
+      );
+
+      requestAnimationFrame(() => {
+        ajustarNomeCracha();
+        ajustarDadosVerso();
+      });
+
+    }
+  );
+}
 
 
   function preencherCracha(
