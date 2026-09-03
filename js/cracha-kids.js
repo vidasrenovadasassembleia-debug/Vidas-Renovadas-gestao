@@ -180,9 +180,12 @@
 
 
     preencherFoto(
-      kid.foto,
-      nome
-    );
+  kid.foto ||
+  kid.fotoUrl ||
+  kid.FOTO ||
+  "",
+  nome
+);
 
 
     const mensagem =
