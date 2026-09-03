@@ -516,7 +516,7 @@ foto.src = url;
     const fonteMinima =
       id === "telefoneKidCracha"
         ? 11
-        : 9;
+        : 6;
 
     let tamanho = fonteMaxima;
 
