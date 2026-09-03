@@ -483,3 +483,4 @@ function obterAuth() {
 async function chamarApi(payload) {
   return obterAuth().chamarApi(payload);
 }
+})();
