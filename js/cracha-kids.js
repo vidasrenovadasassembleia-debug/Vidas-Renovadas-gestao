@@ -208,6 +208,7 @@
 
     requestAnimationFrame(() => {
   ajustarNomeCracha();
+  ajustarDadosVerso();
 });
 
     document.title =
@@ -488,5 +489,52 @@ foto.src = url;
     nome.style.fontSize =
       tamanho + "px";
   }
+}
+  function ajustarDadosVerso() {
+  const ids = [
+    "maeKidCracha",
+    "paiKidCracha",
+    "telefoneKidCracha"
+  ];
+
+  ids.forEach((id) => {
+    const elemento =
+      document.getElementById(id);
+
+    const caixa =
+      elemento?.closest(".dado-verso");
+
+    if (!elemento || !caixa) {
+      return;
+    }
+
+    const fonteMaxima =
+      id === "telefoneKidCracha"
+        ? 16
+        : 16;
+
+    const fonteMinima =
+      id === "telefoneKidCracha"
+        ? 11
+        : 9;
+
+    let tamanho = fonteMaxima;
+
+    elemento.style.fontSize =
+      tamanho + "px";
+
+    elemento.style.lineHeight = "1";
+
+    while (
+      tamanho > fonteMinima &&
+      elemento.scrollWidth >
+        caixa.clientWidth
+    ) {
+      tamanho -= 0.5;
+
+      elemento.style.fontSize =
+        tamanho + "px";
+    }
+  });
 }
 })();
