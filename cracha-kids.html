@@ -286,29 +286,32 @@
     }
 
     .dado-mae {
-  top: 28.4%;
+  top: 31%;
   color: #0a8783;
 }
 
 .dado-pai {
-  top: 46.2%;
+  top: 49%;
   color: #082f67;
 }
 
 .dado-telefone {
-  top: 64.5%;
+  top: 67%;
   color: #f15e4b;
 }
 
-    ..dado-verso strong {
+    .dado-verso strong {
   display: block;
   width: 100%;
   max-width: 100%;
 
-  line-height: 1;
-  white-space: nowrap;
+  line-height: 1 !important;
 
-  overflow: hidden;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+
+  overflow: visible;
 }
 
     /*
