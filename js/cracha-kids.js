@@ -258,8 +258,7 @@
     foto.alt =
       "Foto de " + nome;
 
-    foto.crossOrigin = "anonymous";
-foto.referrerPolicy = "no-referrer";
+    foto.referrerPolicy = "no-referrer";
 
 foto.src = url;
   }
