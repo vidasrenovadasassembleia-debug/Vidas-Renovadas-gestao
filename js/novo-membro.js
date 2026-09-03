@@ -115,6 +115,39 @@ let fotoKidOrigem = "";
         );
       }
 
+      const codigoKid =
+  obterOrigemKids();
+
+const codigoMembro =
+  String(
+    r.codigo ||
+    r.id ||
+    ""
+  ).trim();
+
+if (
+  codigoKid &&
+  codigoMembro
+) {
+  const conversao =
+    await M.auth().chamarApi({
+      acao: "converterKidEmMembro",
+      id: codigoKid,
+      dados: {
+        codigoMembro:
+          codigoMembro
+      }
+    });
+
+  if (
+    conversao?.sucesso === false
+  ) {
+    throw new Error(
+      conversao.mensagem ||
+      "O membro foi cadastrado, mas não foi possível concluir o vínculo com o Ministério Kids."
+    );
+  }
+}
       M.aviso(
         r.mensagem ||
         "Membro cadastrado com sucesso.",
