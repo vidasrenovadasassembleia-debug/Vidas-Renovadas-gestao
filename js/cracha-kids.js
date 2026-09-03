@@ -119,7 +119,6 @@
       */
       requestAnimationFrame(() => {
 
-        ajustarNomeCracha();
         ajustarDadosVerso();
 
         requestAnimationFrame(() => {
