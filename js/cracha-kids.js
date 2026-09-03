@@ -108,28 +108,10 @@
   botao.addEventListener(
     "click",
     function () {
-
-      document.body.classList.add(
-        "modo-impressao"
-      );
-
-      /*
-        Aguarda o navegador aplicar
-        as medidas físicas de 9 x 7 cm.
-      */
-      requestAnimationFrame(() => {
-
-        ajustarDadosVerso();
-
-        requestAnimationFrame(() => {
-          window.print();
-        });
-
-      });
-
+      window.print();
     }
   );
-
+}
 
   window.addEventListener(
     "afterprint",
