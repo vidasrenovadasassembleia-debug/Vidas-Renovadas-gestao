@@ -246,14 +246,26 @@
     }
 
     foto.onload = function () {
-      foto.hidden = false;
-      placeholder.hidden = true;
-    };
+  foto.hidden = false;
+  placeholder.hidden = true;
 
-    foto.onerror = function () {
-      foto.hidden = true;
-      placeholder.hidden = false;
-    };
+  console.log(
+    "FOTO KIDS CARREGOU:",
+    foto.src,
+    foto.naturalWidth,
+    foto.naturalHeight
+  );
+};
+
+foto.onerror = function () {
+  console.error(
+    "ERRO FOTO KIDS:",
+    foto.src
+  );
+
+  foto.hidden = true;
+  placeholder.hidden = false;
+};
 
     foto.alt =
       "Foto de " + nome;
