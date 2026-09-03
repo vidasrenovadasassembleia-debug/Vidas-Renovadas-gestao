@@ -467,24 +467,19 @@
     `;
   }
 
+function obterAuth() {
+  const auth = window.VRGAuth || window.Auth;
 
-  async function chamarApi(payload) {
-    if (
-      window.VRApi &&
-      typeof window.VRApi.chamarApi === "function"
-    ) {
-      return window.VRApi.chamarApi(payload);
-    }
-
-    if (
-      typeof window.chamarApi === "function"
-    ) {
-      return window.chamarApi(payload);
-    }
-
+  if (!auth || typeof auth.chamarApi !== "function") {
     throw new Error(
-      "A comunicação com a API não está disponível."
+      "O módulo de autenticação não foi carregado corretamente."
     );
   }
 
-})();
+  return auth;
+}
+
+
+async function chamarApi(payload) {
+  return obterAuth().chamarApi(payload);
+}
