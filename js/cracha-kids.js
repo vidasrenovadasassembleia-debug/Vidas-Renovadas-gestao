@@ -112,25 +112,6 @@
     }
   );
 }
-
-  window.addEventListener(
-    "afterprint",
-    function () {
-
-      document.body.classList.remove(
-        "modo-impressao"
-      );
-
-      requestAnimationFrame(() => {
-        ajustarNomeCracha();
-        ajustarDadosVerso();
-      });
-
-    }
-  );
-}
-
-
   function preencherCracha(
     kid,
     codigo
