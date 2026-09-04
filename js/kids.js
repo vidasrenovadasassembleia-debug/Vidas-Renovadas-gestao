@@ -285,15 +285,21 @@
                   Crachá
                 </a>
 
-                <button
-                  type="button"
-                  class="btn-acao btn-converter"
-                  data-acao="converter"
-                  data-id="${escaparHtml(codigo)}"
-                  title="Tornar membro"
-                >
-                  Tornar membro
-                </button>
+                ${
+  normalizarTexto(situacao) === "convertido"
+    ? ""
+    : `
+      <button
+        type="button"
+        class="btn-acao btn-converter"
+        data-acao="converter"
+        data-id="${escaparHtml(codigo)}"
+        title="Tornar membro"
+      >
+        Tornar membro
+      </button>
+    `
+}
 
               </div>
 
