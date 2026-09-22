@@ -73,6 +73,20 @@
          ]
       },
     {
+          id: "documentos",
+          titulo: "Documentos",
+          descricao: "Emissão de documentos relacionados aos membros.",
+          relatorios: [
+            {
+              id: "carta_mudanca",
+              titulo: "Carta de Mudança",
+              descricao: "Pesquise um membro e gere sua carta de mudança.",
+              filtros: [],
+              colunas: []
+            }
+          ]
+        },
+        {
           id: "datas",
           titulo: "Datas e aniversários",
           descricao: "Consultas por aniversário e período.",
@@ -690,6 +704,11 @@
   }
 
   function selecionarRelatorio(relatorioId) {
+    if (relatorioId === "carta_mudanca") {
+      window.location.href = "carta-mudanca.html";
+      return;
+    }
+
     estado.relatorioAtual = relatorioId;
     estado.resultadoAtual = null;
 
