@@ -186,6 +186,9 @@
     const linkCarteirinha =
       `carteirinha.html?id=${idCodificado}`;
 
+    const linkCartaMudanca =
+      `carta-mudanca.html?id=${idCodificado}`;
+
     const botaoVisualizar = `
       <a
         class="btn-acao btn-visualizar"
@@ -223,11 +226,25 @@
       `
       : "";
 
+    const botaoCartaMudanca = membroPermiteCarteirinha(membro)
+      ? `
+        <a
+          class="btn-acao btn-carta-mudanca"
+          href="${linkCartaMudanca}"
+          aria-label="Gerar Carta de Mudança de ${escaparHtml(membro.nome)}"
+          title="Carta de Mudança"
+        >
+          Carta de Mudança
+        </a>
+      `
+      : "";
+
     return `
       <div class="acoes-tabela">
         ${botaoVisualizar}
         ${botaoEditar}
         ${botaoCarteirinha}
+        ${botaoCartaMudanca}
       </div>
     `;
   }
