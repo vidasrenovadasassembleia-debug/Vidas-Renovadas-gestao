@@ -4,19 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Carta de Mudança - Assembleia de Deus Ministério Vidas Renovadas">
+  <meta name="theme-color" content="#071f3b">
   <title>Carta de Mudança | Vidas Renovadas Gestão</title>
-  <link rel="stylesheet" href="css/carta-mudanca.css?v=1">
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="stylesheet" href="css/estilo.css?v=51">
+  <link rel="stylesheet" href="css/carta-mudanca.css?v=2">
 </head>
 <body>
   <main class="pagina-carta">
-    <div class="barra-acoes" aria-label="Ações da carta">
-      <a class="botao botao-secundario" href="membros.html">← Voltar</a>
-      <button class="botao botao-imprimir" id="botaoImprimir" type="button">Imprimir carta</button>
-    </div>
+    <section class="painel-carta-controle">
+      <div class="controle-topo">
+        <div>
+          <p class="controle-etiqueta">RELATÓRIOS • MEMBROS • DOCUMENTOS</p>
+          <h1 class="controle-titulo">Carta de Mudança</h1>
+          <p class="controle-descricao">Pesquise o membro que será apresentado à igreja de destino.</p>
+        </div>
+        <div class="barra-acoes">
+          <a class="botao botao-secundario" href="relatorios.html">← Voltar aos relatórios</a>
+          <button class="botao botao-imprimir" id="botaoImprimir" type="button" disabled>Imprimir carta</button>
+        </div>
+      </div>
 
-    <div class="mensagem" id="mensagemCarta" role="status" aria-live="polite">Carregando dados do membro...</div>
+      <div class="pesquisa-area">
+        <label for="pesquisaMembroCarta">Pesquisar membro por nome ou código</label>
+        <input id="pesquisaMembroCarta" type="search" autocomplete="off" placeholder="Ex.: Maria da Silva ou VR14">
+        <div id="resultadosMembros" class="resultados-membros" hidden></div>
+        <p class="membro-selecionado">Membro selecionado: <strong id="membroSelecionado">Nenhum</strong></p>
+      </div>
 
-    <section class="folha-a4" id="cartaMudanca" aria-label="Carta de Mudança">
+      <div class="destino-carta">
+        <div>
+          <label for="igrejaDestino">Igreja de destino</label>
+          <input id="igrejaDestino" type="text" autocomplete="off" placeholder="Nome da igreja que receberá o membro">
+        </div>
+        <div>
+          <label for="cidadeDestino">Cidade / UF</label>
+          <input id="cidadeDestino" type="text" autocomplete="off" placeholder="Ex.: Duque de Caxias - RJ">
+        </div>
+      </div>
+    </section>
+
+    <div class="mensagem" id="mensagemCarta" role="status" aria-live="polite" hidden></div>
+
+    <section class="folha-a4" id="cartaMudanca" aria-label="Carta de Mudança" hidden>
       <div class="faixa-superior" aria-hidden="true"></div>
 
       <header class="cabecalho-carta">
@@ -28,16 +58,8 @@
       </header>
 
       <p class="local-data">Duque de Caxias - RJ, <span id="dataEmissao"></span></p>
-
-      <h1>CARTA DE MUDANÇA</h1>
+      <h2 class="titulo-documento">CARTA DE MUDANÇA</h2>
       <div class="ornamento" aria-hidden="true"><span></span><b>◇</b><span></span></div>
-
-      <section class="destino-carta" aria-label="Destino da carta">
-        <label for="igrejaDestino">Igreja de destino</label>
-        <input id="igrejaDestino" type="text" autocomplete="off" placeholder="Digite o nome da igreja que receberá o membro">
-        <label for="cidadeDestino">Cidade / UF</label>
-        <input id="cidadeDestino" type="text" autocomplete="off" placeholder="Ex.: Duque de Caxias - RJ">
-      </section>
 
       <p class="texto-apresentacao">
         Apresentamos à Igreja <strong id="igrejaDestinoTexto">________________________________</strong>
@@ -85,8 +107,10 @@
 
   <script src="js/configuracoes.js?v=2"></script>
   <script src="js/api.js?v=2"></script>
+  <script src="js/componentes.js?v=3"></script>
+  <script src="js/app.js?v=2"></script>
   <script src="js/auth.js?v=5"></script>
   <script src="js/membro-formulario.js?v=10"></script>
-  <script src="js/carta-mudanca.js?v=1"></script>
+  <script src="js/carta-mudanca.js?v=2"></script>
 </body>
 </html>
