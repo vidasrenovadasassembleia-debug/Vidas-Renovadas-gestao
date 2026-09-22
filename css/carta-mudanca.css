@@ -1,0 +1,219 @@
+* { box-sizing: border-box; }
+
+:root {
+  --azul: #082d59;
+  --azul-escuro: #061f3f;
+  --dourado: #d6a234;
+  --papel: #ffffff;
+  --fundo: #edf2f7;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--fundo);
+  color: #101828;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.pagina-carta {
+  width: min(100% - 24px, 980px);
+  margin: 22px auto 40px;
+}
+
+.barra-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.botao {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid #c9d4e0;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--azul-escuro);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.botao-imprimir { background: var(--dourado); border-color: var(--dourado); }
+
+.mensagem {
+  width: 210mm;
+  max-width: 100%;
+  margin: 0 auto 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #eaf2fb;
+  color: var(--azul-escuro);
+  font-family: Arial, Helvetica, sans-serif;
+}
+.mensagem.erro { background: #fff0f0; color: #8b1e1e; }
+
+.folha-a4 {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  margin: 0 auto;
+  padding: 15mm 16mm 14mm;
+  background: var(--papel);
+  box-shadow: 0 12px 34px rgba(6, 31, 63, .15);
+  overflow: hidden;
+}
+
+.faixa-superior, .faixa-inferior {
+  position: absolute;
+  left: -18mm;
+  width: 115mm;
+  height: 13mm;
+  background: var(--azul);
+  transform: rotate(-7deg);
+  z-index: 0;
+}
+.faixa-superior { top: -7mm; }
+.faixa-inferior { left: auto; right: -20mm; bottom: -8mm; transform: rotate(-7deg); }
+.faixa-superior::after, .faixa-inferior::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2.2mm;
+  height: 1.2mm;
+  background: var(--dourado);
+}
+
+.cabecalho-carta {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 78mm 1fr;
+  gap: 8mm;
+  align-items: center;
+  min-height: 44mm;
+}
+
+.logo-igreja { width: 72mm; max-height: 43mm; object-fit: contain; }
+.cabecalho-texto { border-left: 1px solid var(--dourado); padding-left: 7mm; color: var(--azul-escuro); }
+.versiculo { margin: 0; font-size: 10.5pt; line-height: 1.35; font-style: italic; }
+.referencia { margin: 2mm 0 0; text-align: right; font-size: 9.5pt; }
+
+.local-data { margin: 3mm 0 4mm; text-align: right; color: var(--azul-escuro); font-size: 10.5pt; }
+
+h1 {
+  margin: 0;
+  text-align: center;
+  color: var(--azul-escuro);
+  font-size: 25pt;
+  letter-spacing: .5px;
+}
+
+.ornamento { display: flex; align-items: center; justify-content: center; gap: 3mm; margin: 2mm 0 4mm; color: var(--dourado); }
+.ornamento span { width: 38mm; height: .5mm; background: var(--dourado); }
+.ornamento b { font-size: 15pt; font-weight: 400; }
+
+.destino-carta {
+  display: grid;
+  grid-template-columns: 32mm 1fr 24mm 42mm;
+  gap: 2mm 3mm;
+  align-items: center;
+  margin-bottom: 4mm;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8.5pt;
+}
+.destino-carta label { font-weight: 700; color: var(--azul-escuro); }
+.destino-carta input {
+  min-width: 0;
+  height: 8mm;
+  padding: 0 2mm;
+  border: 0;
+  border-bottom: .35mm solid #758399;
+  background: transparent;
+  font-size: 9pt;
+  outline: none;
+}
+
+.texto-apresentacao { margin: 0 0 3mm; font-size: 10.5pt; line-height: 1.42; text-align: justify; }
+
+.foto-area {
+  width: 29mm;
+  height: 35mm;
+  margin: 0 auto 4mm;
+  border: .35mm solid var(--azul);
+  background: #f3f5f7;
+  overflow: hidden;
+}
+.foto-membro { width: 100%; height: 100%; object-fit: cover; display: block; }
+.foto-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #718096; font: 700 8pt Arial, sans-serif; }
+
+.quadro-dados {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2mm 7mm;
+  padding: 4mm 5mm;
+  border: .55mm solid var(--azul);
+  border-radius: 3mm;
+  font-size: 9.7pt;
+}
+.dado { display: grid; grid-template-columns: 32mm 1fr; gap: 2mm; min-width: 0; }
+.dado-largo { grid-column: 1 / -1; grid-template-columns: 32mm 1fr; }
+.dado strong { color: var(--azul-escuro); }
+.dado span { overflow-wrap: anywhere; }
+
+.assinatura-area { margin-top: 6mm; font-size: 10pt; }
+.assinatura-area > p { margin: 0; }
+.assinatura { width: 78mm; margin: 1mm auto 0; text-align: center; color: var(--azul-escuro); }
+.assinatura img { display: block; width: 55mm; height: 18mm; margin: 0 auto -2mm; object-fit: contain; }
+.linha-assinatura { border-top: .35mm solid var(--azul-escuro); }
+.assinatura strong, .assinatura span { display: block; }
+.assinatura strong { margin-top: 1mm; font-size: 10.5pt; }
+.assinatura span { font-size: 9.5pt; }
+
+.rodape-carta {
+  position: absolute;
+  left: 16mm;
+  right: 16mm;
+  bottom: 10mm;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8mm;
+  color: var(--azul-escuro);
+}
+.slogan { font-size: 8.8pt; font-weight: 700; line-height: 1.25; }
+.endereco { font: 8pt Arial, Helvetica, sans-serif; text-align: right; }
+
+.marca-dagua {
+  position: absolute;
+  right: 9mm;
+  bottom: 28mm;
+  color: rgba(8, 45, 89, .035);
+  font: 700 74pt Georgia, serif;
+  transform: rotate(-12deg);
+  user-select: none;
+}
+
+@media (max-width: 900px) {
+  .pagina-carta { width: 100%; margin: 10px 0 24px; overflow-x: auto; }
+  .barra-acoes { position: sticky; left: 0; width: 100vw; padding: 0 10px; justify-content: stretch; }
+  .barra-acoes .botao { flex: 1; }
+  .mensagem { margin-left: 10px; width: calc(100vw - 20px); }
+  .folha-a4 { transform-origin: top left; }
+}
+
+@media print {
+  @page { size: A4 portrait; margin: 0; }
+  html, body { width: 210mm; height: 297mm; margin: 0; padding: 0; background: #fff; }
+  .pagina-carta { width: 210mm; margin: 0; padding: 0; }
+  .barra-acoes, .mensagem, .destino-carta { display: none !important; }
+  .folha-a4 { width: 210mm; height: 297mm; margin: 0; box-shadow: none; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
