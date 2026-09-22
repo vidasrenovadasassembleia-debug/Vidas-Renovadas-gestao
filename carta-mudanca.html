@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Carta de Mudança - Assembleia de Deus Ministério Vidas Renovadas">
+  <title>Carta de Mudança | Vidas Renovadas Gestão</title>
+  <link rel="stylesheet" href="css/carta-mudanca.css?v=1">
+</head>
+<body>
+  <main class="pagina-carta">
+    <div class="barra-acoes" aria-label="Ações da carta">
+      <a class="botao botao-secundario" href="membros.html">← Voltar</a>
+      <button class="botao botao-imprimir" id="botaoImprimir" type="button">Imprimir carta</button>
+    </div>
+
+    <div class="mensagem" id="mensagemCarta" role="status" aria-live="polite">Carregando dados do membro...</div>
+
+    <section class="folha-a4" id="cartaMudanca" aria-label="Carta de Mudança">
+      <div class="faixa-superior" aria-hidden="true"></div>
+
+      <header class="cabecalho-carta">
+        <img class="logo-igreja" src="assets/logo/logo.png" alt="Assembleia de Deus Ministério Vidas Renovadas">
+        <div class="cabecalho-texto">
+          <p class="versiculo">“Assim, já não sois estrangeiros e peregrinos, mas concidadãos dos santos, e sois da família de Deus.”</p>
+          <p class="referencia">Efésios 2:19</p>
+        </div>
+      </header>
+
+      <p class="local-data">Duque de Caxias - RJ, <span id="dataEmissao"></span></p>
+
+      <h1>CARTA DE MUDANÇA</h1>
+      <div class="ornamento" aria-hidden="true"><span></span><b>◇</b><span></span></div>
+
+      <section class="destino-carta" aria-label="Destino da carta">
+        <label for="igrejaDestino">Igreja de destino</label>
+        <input id="igrejaDestino" type="text" autocomplete="off" placeholder="Digite o nome da igreja que receberá o membro">
+        <label for="cidadeDestino">Cidade / UF</label>
+        <input id="cidadeDestino" type="text" autocomplete="off" placeholder="Ex.: Duque de Caxias - RJ">
+      </section>
+
+      <p class="texto-apresentacao">
+        Apresentamos à Igreja <strong id="igrejaDestinoTexto">________________________________</strong>
+        o(a) irmão(ã) <strong id="nomeApresentacao">—</strong>, membro da Assembleia de Deus – Ministério Vidas Renovadas,
+        que se encontra em plena comunhão com esta igreja, recomendando-o(a) para que seja recebido(a) no Senhor e
+        integrado(a) à comunhão dessa igreja, como fazem os santos.
+      </p>
+
+      <div class="foto-area">
+        <img id="fotoMembroCarta" class="foto-membro" alt="Foto do membro" hidden>
+        <div id="fotoPlaceholder" class="foto-placeholder">SEM FOTO</div>
+      </div>
+
+      <section class="quadro-dados" aria-label="Dados do membro">
+        <div class="dado dado-largo"><strong>Nome:</strong><span id="nomeMembro">—</span></div>
+        <div class="dado"><strong>Nascimento:</strong><span id="nascimentoMembro">—</span></div>
+        <div class="dado"><strong>Naturalidade:</strong><span id="naturalidadeMembro">—</span></div>
+        <div class="dado"><strong>Estado Civil:</strong><span id="estadoCivilMembro">—</span></div>
+        <div class="dado"><strong>Sexo:</strong><span id="sexoMembro">—</span></div>
+        <div class="dado"><strong>Data do Batismo:</strong><span id="batismoMembro">—</span></div>
+        <div class="dado"><strong>Membro desde:</strong><span id="admissaoMembro">—</span></div>
+        <div class="dado"><strong>Cargo:</strong><span id="cargoMembro">—</span></div>
+        <div class="dado"><strong>Congregação:</strong><span id="congregacaoMembro">—</span></div>
+      </section>
+
+      <section class="assinatura-area">
+        <p>Fraternalmente em Cristo,</p>
+        <div class="assinatura">
+          <img src="assets/assinaturas/assinatura-pastor-presidente.png" alt="Assinatura do Pastor Presidente">
+          <div class="linha-assinatura"></div>
+          <strong>Pr. Rogério Lemos da Silva</strong>
+          <span>Pastor Presidente</span>
+        </div>
+      </section>
+
+      <footer class="rodape-carta">
+        <div class="slogan">UMA IGREJA, UMA FAMÍLIA,<br>MUITAS VIDAS RENOVADAS.</div>
+        <div class="endereco">Estrada Rio D'Ouro, KM 51 — Duque de Caxias - RJ</div>
+      </footer>
+
+      <div class="marca-dagua" aria-hidden="true">VR</div>
+      <div class="faixa-inferior" aria-hidden="true"></div>
+    </section>
+  </main>
+
+  <script src="js/configuracoes.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
+  <script src="js/auth.js?v=5"></script>
+  <script src="js/membro-formulario.js?v=10"></script>
+  <script src="js/carta-mudanca.js?v=1"></script>
+</body>
+</html>
