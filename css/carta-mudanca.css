@@ -264,3 +264,26 @@ h1 {
 @media print {
   .painel-carta-controle { display:none !important; }
 }
+/* ===== AJUSTE FINAL — CABEÇALHO DA CARTA ===== */
+
+/* Aumenta o espaço reservado para a logo */
+.folha-a4 .cabecalho-carta {
+  grid-template-columns: 86mm 1fr;
+  gap: 6mm;
+}
+
+/* Logo maior */
+.folha-a4 .logo-igreja {
+  width: 84mm;
+  max-height: 50mm;
+  object-fit: contain;
+}
+
+/* Centraliza o título da carta */
+.folha-a4 > h1 {
+  display: block;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
