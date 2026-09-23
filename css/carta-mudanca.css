@@ -268,14 +268,16 @@ h1 {
 
 /* Dá mais espaço para a logo */
 .folha-a4 .cabecalho-carta {
-  grid-template-columns: 86mm 1fr;
-  gap: 6mm;
+  grid-template-columns: 100mm 1fr;
+  gap: 4mm;
 }
 
 /* Logo maior */
-.folha-a4 .logo-igreja {
-  width: 84mm;
-  max-height: 50mm;
+.folha-a4 .cabecalho-carta .logo-igreja {
+  width: 100mm !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: 58mm !important;
   object-fit: contain;
 }
 
