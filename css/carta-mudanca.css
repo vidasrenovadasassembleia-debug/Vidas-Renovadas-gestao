@@ -264,9 +264,9 @@ h1 {
 @media print {
   .painel-carta-controle { display:none !important; }
 }
-/* ===== AJUSTE FINAL — CABEÇALHO DA CARTA ===== */
+/* ===== AJUSTES VISUAIS FINAIS DA CARTA ===== */
 
-/* Aumenta o espaço reservado para a logo */
+/* Dá mais espaço para a logo */
 .folha-a4 .cabecalho-carta {
   grid-template-columns: 86mm 1fr;
   gap: 6mm;
@@ -279,11 +279,14 @@ h1 {
   object-fit: contain;
 }
 
-/* Centraliza o título da carta */
-.folha-a4 > h1 {
+/* TÍTULO CORRETO: no HTML ele é h2.titulo-documento */
+.folha-a4 .titulo-documento {
   display: block;
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0;
+  padding: 0;
   text-align: center;
+  color: var(--azul-escuro);
+  font-size: 30pt;
+  letter-spacing: .6px;
 }
