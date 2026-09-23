@@ -279,6 +279,8 @@ h1 {
   height: auto !important;
   max-height: 58mm !important;
   object-fit: contain;
+  transform: scale(1.45);
+  transform-origin: center center;
 }
 
 /* TÍTULO CORRETO: no HTML ele é h2.titulo-documento */
