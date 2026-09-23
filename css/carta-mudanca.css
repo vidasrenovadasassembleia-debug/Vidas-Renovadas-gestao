@@ -264,48 +264,46 @@ h1 {
 @media print {
   .painel-carta-controle { display:none !important; }
 }
-/* =========================================================
-   AJUSTES VISUAIS — CARTA DE MUDANÇA
-   ========================================================= */
+/* Logo maior */
+.folha-a4 .logo-igreja {
+  width: 88mm;
+  max-height: 52mm;
+  object-fit: contain;
+}
 
-/* Mais espaço entre a data e o título */
+/* Mantém o espaço maior depois da data */
 .folha-a4 .local-data {
   margin-bottom: 10mm;
 }
 
-/* Título com um pouco mais de destaque */
+/* Título realmente centralizado na largura da carta */
 .folha-a4 h1 {
-  font-size: 28pt;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 30pt;
   color: #061f3f;
+  letter-spacing: .6px;
 }
 
-/* Logo um pouco maior */
-.folha-a4 .logo-igreja {
-  width: 78mm;
-  max-height: 48mm;
+/* Ornamento acompanha o centro do título */
+.folha-a4 .ornamento {
+  width: 100%;
+  justify-content: center;
+  margin: 3mm auto 5mm;
 }
 
-/* Foto permanece exatamente no tamanho atual */
+/* Foto permanece no tamanho que já aprovamos */
 .folha-a4 .foto-area {
   width: 29mm;
   height: 35mm;
 }
 
-/* Mantém o detalhe dourado */
-.folha-a4 .ornamento {
-  color: #d6a234;
-}
-
-.folha-a4 .ornamento span {
-  background: #d6a234;
-}
-
-/* Retira a frase do canto inferior esquerdo */
+/* Continua sem a frase no rodapé */
 .folha-a4 .slogan {
   display: none;
 }
 
-/* Mantém somente o endereço alinhado à direita */
 .folha-a4 .rodape-carta {
   justify-content: flex-end;
 }
