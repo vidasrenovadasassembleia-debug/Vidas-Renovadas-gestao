@@ -63,26 +63,19 @@
     }
 
     .cartao {
-      position: relative;
-      width: 297mm;
-      height: 210mm;
-      margin: 0 auto;
-      overflow: hidden;
-      background:
-        radial-gradient(
-          circle at 82% 22%,
-          rgba(213, 165, 41, 0.08),
-          transparent 28%
-        ),
-        linear-gradient(
-          135deg,
-          #fffdf8 0%,
-          #ffffff 60%,
-          #f8f4ea 100%
-        );
-      box-shadow: 0 16px 45px rgba(8, 47, 73, 0.18);
-      border: 4px solid #0f2f48;
-    }
+  position: relative;
+  width: 297mm;
+  height: 210mm;
+  margin: 0 auto;
+  overflow: hidden;
+
+  background-image: url("assets/cartoes/moldura-aniversario.png");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  box-shadow: 0 16px 45px rgba(8, 47, 73, 0.18);
+}
 
     .cartao::before {
       content: "";
