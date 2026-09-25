@@ -91,6 +91,10 @@
       document.getElementById(
         "congregacaoMembroAniversario"
       );
+     elementos.dataAniversario =
+  document.getElementById(
+    "dataAniversarioTexto"
+  );
 
     elementos.foto =
       document.getElementById(
