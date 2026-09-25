@@ -245,6 +245,7 @@
   primeiroValor(
     membro.dataNascimento,
     membro.DATA_NASCIMENTO,
+    membro.data_nascimento,
     membro.nascimento
   );
      
