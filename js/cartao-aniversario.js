@@ -241,6 +241,13 @@
         membro.local
       );
 
+     const dataNascimento =
+  primeiroValor(
+    membro.dataNascimento,
+    membro.DATA_NASCIMENTO,
+    membro.nascimento
+  );
+     
     const foto =
       primeiroValor(
         membro.foto,
@@ -260,6 +267,11 @@
       "Congregação não informada"
     );
 
+     definirTexto(
+  elementos.dataAniversario,
+  formatarDiaMesAniversario(dataNascimento)
+);
+
     preencherFoto(
       foto,
       nome
@@ -268,6 +280,49 @@
     document.title =
       `${nome || "Membro"} | Cartão de Aniversário`;
   }
+   function formatarDiaMesAniversario(valor) {
+  if (!valor) {
+    return "";
+  }
+
+  const textoData = String(valor).trim();
+
+  let dia;
+  let mes;
+
+  if (/^\d{4}-\d{2}-\d{2}/.test(textoData)) {
+    const partes = textoData.slice(0, 10).split("-");
+    dia = Number(partes[2]);
+    mes = Number(partes[1]);
+  } else if (/^\d{2}\/\d{2}\/\d{4}/.test(textoData)) {
+    const partes = textoData.slice(0, 10).split("/");
+    dia = Number(partes[0]);
+    mes = Number(partes[1]);
+  } else {
+    return "";
+  }
+
+  const meses = [
+    "janeiro",
+    "fevereiro",
+    "março",
+    "abril",
+    "maio",
+    "junho",
+    "julho",
+    "agosto",
+    "setembro",
+    "outubro",
+    "novembro",
+    "dezembro"
+  ];
+
+  if (!dia || mes < 1 || mes > 12) {
+    return "";
+  }
+
+  return `${dia} de ${meses[mes - 1]}`;
+}
 
   function preencherFoto(
     url,
